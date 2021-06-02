@@ -64,7 +64,7 @@ const LatestProducts = (props) => (
               alt={product.name}
               src={product.imageUrl}
               style={{
-                height: 48,
+                // height: 48,
                 width: 48
               }}
             />
