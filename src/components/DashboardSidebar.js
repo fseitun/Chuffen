@@ -11,14 +11,16 @@ import {
   Typography
 } from '@material-ui/core';
 import {
-  // AlertCircle as AlertCircleIcon,
+  AlertCircle as AlertCircleIcon,
   BarChart as BarChartIcon,
   Lock as LockIcon,
   Settings as SettingsIcon,
-  // ShoppingBag as ShoppingBagIcon,
+  ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
   UserPlus as UserPlusIcon,
-  Users as UsersIcon
+  Users as UsersIcon,
+  Folder as Rubros,
+  Umbrella as Pruebas
 } from 'react-feather';
 import NavItem from './NavItem';
 
@@ -39,11 +41,11 @@ const items = [
     icon: UsersIcon,
     title: 'Clientes'
   },
-  // {
-  //   href: '/app/products',
-  //   icon: ShoppingBagIcon,
-  //   title: 'Productos'
-  // },
+  {
+    href: '/app/products',
+    icon: ShoppingBagIcon,
+    title: 'Productos'
+  },
   {
     href: '/app/account',
     icon: UserIcon,
@@ -63,12 +65,27 @@ const items = [
     href: '/register',
     icon: UserPlusIcon,
     title: 'Nuevo Usuario'
+  },
+  {
+    href: '/app/usuarios',
+    icon: UsersIcon,
+    title: 'Usuarios'
+  },
+  {
+    href: '/app/rubros',
+    icon: Rubros,
+    title: 'Rubros y Subrubros'
+  },
+  {
+    href: '/app/pruebas',
+    icon: Pruebas,
+    title: 'Pruebas'
+  },
+  {
+    href: '/404',
+    icon: AlertCircleIcon,
+    title: 'Error'
   }
-  // {
-  //   href: '/404',
-  //   icon: AlertCircleIcon,
-  //   title: 'Error'
-  // }
 ];
 
 const DashboardSidebar = ({ onMobileClose, openMobile }) => {
