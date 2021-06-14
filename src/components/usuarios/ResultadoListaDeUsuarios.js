@@ -10,7 +10,7 @@ import {
   TableCell,
   TableHead,
   TablePagination,
-  TableRow,
+  TableRow
 } from '@material-ui/core';
 
 const ResultadoListaDeUsuarios = ({ users, ...rest }) => {

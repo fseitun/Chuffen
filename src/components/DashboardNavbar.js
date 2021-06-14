@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'; // type checker para props
 import {
   AppBar,
+  Avatar,
   Badge,
   Box,
   Hidden,
@@ -13,6 +14,10 @@ import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import InputIcon from '@material-ui/icons/Input';
 import Logo from './Logo';
+
+const user = {
+  avatar: '/static/images/avatars/avatar_6.png'
+};
 
 const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
   const [notifications] = useState([]);
@@ -43,6 +48,18 @@ const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
             <MenuIcon />
           </IconButton>
         </Hidden>
+        <IconButton color="inherit">
+          <Avatar
+            component={RouterLink}
+            src={user.avatar}
+            sx={{
+              cursor: 'pointer',
+              width: 30,
+              height: 30
+            }}
+            to="/app/account"
+          />
+        </IconButton>
       </Toolbar>
     </AppBar>
   );

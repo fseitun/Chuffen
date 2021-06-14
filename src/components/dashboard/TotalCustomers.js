@@ -24,7 +24,7 @@ const TotalCustomers = (props) => (
             gutterBottom
             variant="h6"
           >
-            RECLAMOS DE CLIENTES
+            RECLAMOS
           </Typography>
           <Typography
             color="textPrimary"

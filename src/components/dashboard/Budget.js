@@ -19,7 +19,7 @@ const Budget = (props) => (
             PRESUPUESTO
           </Typography>
           <Typography color="textPrimary" variant="h3">
-            USD 15.024.423
+            USD 15.024
           </Typography>
         </Grid>
         <Grid item>
