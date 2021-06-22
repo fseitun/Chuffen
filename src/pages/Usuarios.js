@@ -1,49 +1,51 @@
+import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
-import ResultadoListaDeUsuarios from 'src/components/usuarios/ResultadoListaDeUsuarios';
 import CustomerListToolbar from 'src/components/customer/CustomerListToolbar'; // pendiente corregir src
-import axios from 'axios';
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import DatagridUsuarios from 'src/components/usuarios/DatagridUsuarios';
 
-let usersAxios;
-axios.get('http://localhost:3000/usuario/listar/1').then((res) => {
-  console.log(res.data);
-  usersAxios = res.data;
-  console.log(`type Axios ${Array.isArray(usersAxios)}`);
-});
+const queryClient = new QueryClient();
 
-// const userFunction = async () => {
-//   const response = await fetch('http://localhost:3000/usuario/listar/1');
-//   return response.json();
-// };
+export default function ListaDeUsuarios() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BuscarUsuarios />
+    </QueryClientProvider>
+  );
+}
 
-// const users = userFunction();
-// console.log(users[0]);
-// .then((datos) => {
-//   console.log(`datos ${datos}`);
-//   return datos;
-// });
-// console.log(`contenido de users: ${users} es array? ${Array.isArray(users)}`);
+function BuscarUsuarios() {
+  const api = () =>
+    fetch('http://localhost:3000/usuario/listar/1').then((res) => res.json());
 
-const ListaDeUsuarios = () => (
-  <>
-    <Helmet>
-      <title>Usuarios | TSF Desarrollos</title>
-    </Helmet>
-    <Box
-      sx={{
-        backgroundColor: 'background.default',
-        minHeight: '100%',
-        py: 3
-      }}
-    >
-      <Container maxWidth={false}>
-        <CustomerListToolbar />
-        <Box sx={{ pt: 3 }}>
-          <ResultadoListaDeUsuarios users={usersAxios} />
-        </Box>
-      </Container>
-    </Box>
-  </>
-);
+  const { isLoading, error, data } = useQuery('buscarUsuarios', api);
 
-export default ListaDeUsuarios;
+  if (isLoading) return 'Cargando...';
+
+  if (error) return `Hubo un error: ${error.message}`;
+
+  const filas = data.map((el) => ({ id: el.id, mail: el.mail, user: el.user }));
+
+  return (
+    <>
+      <Helmet>
+        <title>Usuarios | TSF Desarrollos</title>
+      </Helmet>
+      <Box
+        sx={{
+          backgroundColor: 'background.default',
+          minHeight: '100%',
+          py: 3
+        }}
+      >
+        <Container maxWidth={false}>
+          <CustomerListToolbar />
+          <Box sx={{ pt: 3 }}>
+            <DatagridUsuarios usuarios={filas} />
+          </Box>
+        </Container>
+      </Box>
+    </>
+  );
+}

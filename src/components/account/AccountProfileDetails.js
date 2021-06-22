@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { React, useState } from 'react';
 import {
   Box,
   Button,
@@ -43,11 +43,7 @@ const AccountProfileDetails = (props) => {
   };
 
   return (
-    <form
-      autoComplete="off"
-      noValidate
-      {...props}
-    >
+    <form autoComplete="off" noValidate {...props}>
       <Card>
         <CardHeader
           subheader="La información puede ser editada"
@@ -55,15 +51,8 @@ const AccountProfileDetails = (props) => {
         />
         <Divider />
         <CardContent>
-          <Grid
-            container
-            spacing={3}
-          >
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+          <Grid container spacing={3}>
+            <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
                 helperText="Especificar el Primer Nombre"
@@ -75,11 +64,7 @@ const AccountProfileDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+            <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
                 label="Apellido"
@@ -90,11 +75,7 @@ const AccountProfileDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+            <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
                 label="Correo"
@@ -105,11 +86,7 @@ const AccountProfileDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+            <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
                 label="Teléfono"
@@ -120,11 +97,7 @@ const AccountProfileDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+            <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
                 label="País"
@@ -135,11 +108,7 @@ const AccountProfileDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+            <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
                 label="Ciudad"
@@ -152,10 +121,7 @@ const AccountProfileDetails = (props) => {
                 variant="outlined"
               >
                 {states.map((option) => (
-                  <option
-                    key={option.value}
-                    value={option.value}
-                  >
+                  <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
@@ -171,10 +137,7 @@ const AccountProfileDetails = (props) => {
             p: 2
           }}
         >
-          <Button
-            color="primary"
-            variant="contained"
-          >
+          <Button color="primary" variant="contained">
             Guardar Cambios
           </Button>
         </Box>

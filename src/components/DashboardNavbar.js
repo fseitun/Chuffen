@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { React, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types'; // type checker para props
 import {
@@ -6,20 +6,18 @@ import {
   Avatar,
   Badge,
   Box,
-  Hidden,
   IconButton,
   Toolbar
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
-import InputIcon from '@material-ui/icons/Input';
 import Logo from './Logo';
 
 const user = {
   avatar: '/static/images/avatars/avatar_6.png'
 };
 
-const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
+export default function DashboardNavbar({ onMobileNavOpen, ...rest }) {
   const [notifications] = useState([]);
 
   return (
@@ -29,25 +27,22 @@ const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
           <Logo />
         </RouterLink>
         <Box sx={{ flexGrow: 1 }} />
-        <Hidden lgDown>
-          <IconButton color="inherit">
-            <Badge
-              badgeContent={notifications.length}
-              color="primary"
-              variant="dot"
-            >
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-          <IconButton color="inherit">
-            <InputIcon />
-          </IconButton>
-        </Hidden>
-        <Hidden lgUp>
-          <IconButton color="inherit" onClick={onMobileNavOpen}>
-            <MenuIcon />
-          </IconButton>
-        </Hidden>
+        <IconButton color="inherit">
+          <Badge
+            badgeContent={notifications.length}
+            color="primary"
+            variant="dot"
+          >
+            <NotificationsIcon />
+          </Badge>
+        </IconButton>
+        <IconButton
+          color="inherit"
+          sx={{ display: { sm: 'block', md: 'none' } }}
+          onClick={onMobileNavOpen}
+        >
+          <MenuIcon />
+        </IconButton>
         <IconButton color="inherit">
           <Avatar
             component={RouterLink}
@@ -63,10 +58,8 @@ const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
       </Toolbar>
     </AppBar>
   );
-};
+}
 
 DashboardNavbar.propTypes = {
   onMobileNavOpen: PropTypes.func
 };
-
-export default DashboardNavbar;

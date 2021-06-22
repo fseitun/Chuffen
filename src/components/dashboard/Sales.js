@@ -1,3 +1,4 @@
+import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import {
   Box,
@@ -46,7 +47,7 @@ const Sales = (props) => {
     maintainAspectRatio: false,
     responsive: true,
     scales: {
-      xAxes: [
+      dataset: [
         {
           barThickness: 12,
           maxBarThickness: 10,

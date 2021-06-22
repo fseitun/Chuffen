@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { React, useState } from 'react';
 import { Outlet } from 'react-router-dom'; // permite que los childs vean las rutas
 import { styled } from '@material-ui/core';
 import DashboardNavbar from './DashboardNavbar';
@@ -34,15 +34,15 @@ const DashboardLayoutContent = styled('div')({
   overflow: 'auto'
 });
 
-const DashboardLayout = () => {
-  const [isMobileNavOpen, setMobileNavOpen] = useState(false);
+export default function DashboardLayout() {
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
     <DashboardLayoutRoot>
       <DashboardNavbar onMobileNavOpen={() => setMobileNavOpen(true)} />
       <DashboardSidebar
         onMobileClose={() => setMobileNavOpen(false)}
-        openMobile={isMobileNavOpen}
+        openMobile={mobileNavOpen}
       />
       <DashboardLayoutWrapper>
         <DashboardLayoutContainer>
@@ -53,6 +53,4 @@ const DashboardLayout = () => {
       </DashboardLayoutWrapper>
     </DashboardLayoutRoot>
   );
-};
-
-export default DashboardLayout;
+}

@@ -1,3 +1,4 @@
+import React from 'react';
 // import 'react-perfect-scrollbar/dist/css/styles.css'; // venía con el template, lo usa?
 import { useRoutes } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core'; // manda a los childs el theme de Material-UI

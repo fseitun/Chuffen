@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
+import { React, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Box, Drawer, Hidden, List } from '@material-ui/core';
+import { Box, Drawer, List } from '@material-ui/core';
 import {
   AlertCircle as AlertCircleIcon,
   BarChart as BarChartIcon,
@@ -74,7 +74,7 @@ const items = [
   }
 ];
 
-const DashboardSidebar = ({ onMobileClose, openMobile }) => {
+export default function DashboardSidebar({ onMobileClose, openMobile }) {
   const location = useLocation();
 
   useEffect(() => {
@@ -109,40 +109,38 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
 
   return (
     <>
-      <Hidden lgUp>
-        <Drawer
-          anchor="left"
-          onClose={onMobileClose}
-          open={openMobile}
-          variant="temporary"
-          PaperProps={{
-            sx: {
-              width: 256
-            }
-          }}
-        >
-          {content}
-        </Drawer>
-      </Hidden>
-      <Hidden lgDown>
-        <Drawer
-          anchor="left"
-          open
-          variant="persistent"
-          PaperProps={{
-            sx: {
-              width: 256,
-              top: 64,
-              height: 'calc(100% - 64px)'
-            }
-          }}
-        >
-          {content}
-        </Drawer>
-      </Hidden>
+      <Drawer
+        sx={{ display: { sm: 'block', md: 'none' } }}
+        anchor="left"
+        onClose={onMobileClose}
+        open={openMobile}
+        variant="temporary"
+        PaperProps={{
+          sx: {
+            width: 256
+          }
+        }}
+      >
+        {content}
+      </Drawer>
+      <Drawer
+        sx={{ display: { sm: 'none', md: 'block' } }}
+        anchor="left"
+        open
+        variant="persistent"
+        PaperProps={{
+          sx: {
+            width: 256,
+            top: 64,
+            height: 'calc(100% - 64px)'
+          }
+        }}
+      >
+        {content}
+      </Drawer>
     </>
   );
-};
+}
 
 DashboardSidebar.propTypes = {
   onMobileClose: PropTypes.func,
@@ -153,5 +151,3 @@ DashboardSidebar.defaultProps = {
   onMobileClose: () => {},
   openMobile: false
 };
-
-export default DashboardSidebar;
