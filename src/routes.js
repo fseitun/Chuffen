@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom'; //según la documentación de react-router-dom conviene usar useNavigate ya que no uso classes sino hooks
 import DashboardLayout from 'src/components/DashboardLayout';
 import MainLayout from 'src/components/MainLayout';
 import Account from 'src/pages/Account';
@@ -12,7 +12,11 @@ import Register from 'src/pages/Register';
 import Settings from 'src/pages/Settings';
 import Usuarios from 'src/pages/Usuarios';
 import Rubros from 'src/pages/Rubros';
-import Pruebas from 'src/pages/Pruebas';
+import { Dolar } from 'src/pages/Dolar';
+import { Formulario } from 'src/pages/Pruebas';
+import Proveedores from 'src/pages/Proveedores';
+
+let sociedad = 1; // esto después lo pisaremos desde la autenticación de usuario
 
 const routes = [
   {
@@ -26,7 +30,9 @@ const routes = [
       { path: 'settings', element: <Settings /> },
       { path: 'usuarios', element: <Usuarios /> },
       { path: 'rubros', element: <Rubros /> },
-      { path: 'pruebas', element: <Pruebas /> },
+      { path: 'pruebas', element: <Formulario /> },
+      { path: 'dolar', element: <Dolar sociedad={sociedad} /> },
+      { path: 'proveedores', element: <Proveedores /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   },
@@ -43,4 +49,4 @@ const routes = [
   }
 ];
 
-export default routes;
+export { routes };

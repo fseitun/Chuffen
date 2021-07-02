@@ -2,5 +2,9 @@
     "prettier.arrowParens": "avoid",
     "prettier.singleQuote": true,
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.wordWrapColumn": 100,
+    "editor.mouseWheelZoom": true,
+    "editor.wordWrap": "on",
+    "prettier.printWidth": 100
 }

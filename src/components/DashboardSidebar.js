@@ -12,6 +12,8 @@ import {
   UserPlus as UserPlusIcon,
   Users as UsersIcon,
   Folder as Rubros,
+  DollarSign as Dolar,
+  Truck as Proveedores,
   Umbrella as Pruebas
 } from 'react-feather';
 import NavItem from './NavItem';
@@ -66,6 +68,16 @@ const items = [
     href: '/app/pruebas',
     icon: Pruebas,
     title: 'Pruebas'
+  },
+  {
+    href: '/app/dolar',
+    icon: Dolar,
+    title: 'Dólar'
+  },
+  {
+    href: '/app/proveedores',
+    icon: Proveedores,
+    title: 'Proveedores'
   },
   {
     href: '/404',
