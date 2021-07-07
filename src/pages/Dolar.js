@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { PropTypes } from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
 
-import { CargarDolar } from 'src/components/dolar/CargarDolar';
+import { ManipularDolar } from 'src/components/dolar/ManipularDolar';
 import { TiposDeCambio } from '../components/dolar/TiposDeCambio';
 
 const queryClient = new QueryClient();
 
 export function Dolar(props) {
+  const [selectionModel, setSelectionModel] = useState([]);
   return (
     <QueryClientProvider client={queryClient}>
       <Helmet>
@@ -25,10 +26,14 @@ export function Dolar(props) {
       >
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <CargarDolar sociedad={props.sociedad} queryClient={queryClient} />
+            <ManipularDolar sociedad={props.sociedad} selectionModel={selectionModel} />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <TiposDeCambio sociedad={props.sociedad} />
+            <TiposDeCambio
+              sociedad={props.sociedad}
+              selectionModel={selectionModel}
+              setSelectionModel={setSelectionModel}
+            />
           </Box>
         </Container>
       </Box>

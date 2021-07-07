@@ -9,6 +9,7 @@ const columns = [
     field: 'fecha',
     headerName: 'Fecha',
     width: 150,
+    type: 'date'
     // valueFormatter: (params) => {
     //   const fecha = new Date(params.value);
     //   format(fecha, 'P');
@@ -30,21 +31,31 @@ const columns = [
   }
 ];
 
-export default function DatagridDolar(props) {
+export function DatagridDolar({ dolar, selectionModel, setSelectionModel }) {
   return (
     <div style={{ width: '100%' }}>
       <DataGrid
-        rows={props.dolar}
+        rows={dolar}
         columns={columns}
         pageSize={25}
         checkboxSelection
         disableSelectionOnClick
         autoHeight
+        // rowHeight={40}
+        scrollbarSize
+        // onRowSelected={(e) => console.log(e)}
+        onSelectionModelChange={(newSelection) => {
+          console.log(newSelection);
+          setSelectionModel(newSelection.selectionModel);
+        }}
+        selectionModel={selectionModel}
       />
     </div>
   );
 }
 
 DatagridDolar.propTypes = {
-  dolar: PropTypes.array.isRequired
+  dolar: PropTypes.array.isRequired,
+  selectionModel: PropTypes.array.isRequired,
+  setSelectionModel: PropTypes.func.isRequired
 };

@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from 'react-query';
 
-import DatagridDolar from 'src/components/dolar/DatagridDolar';
+import { DatagridDolar } from 'src/components/dolar/DatagridDolar';
 import { listarDolar } from 'src/components/API';
 
-export function TiposDeCambio({ sociedad }) {
+export function TiposDeCambio({ sociedad, selectionModel, setSelectionModel }) {
   const { data, isLoading, error } = useQuery(['dolar', sociedad], () =>
     listarDolar(sociedad)
   );
@@ -22,9 +22,17 @@ export function TiposDeCambio({ sociedad }) {
     mep: el.mep
   }));
 
-  return <DatagridDolar dolar={filas} />;
+  return (
+    <DatagridDolar
+      dolar={filas}
+      selectionModel={selectionModel}
+      setSelectionModel={setSelectionModel}
+    />
+  );
 }
 
 TiposDeCambio.propTypes = {
-  sociedad: PropTypes.number
+  sociedad: PropTypes.number,
+  selectionModel: PropTypes.array.isRequired,
+  setSelectionModel: PropTypes.func.isRequired
 };
