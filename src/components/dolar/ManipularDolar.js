@@ -41,7 +41,7 @@ export function ManipularDolar({ sociedad, selectionModel }) {
         }}
         onSubmit={(values, { setSubmitting }) => {
           mutateCargar(values);
-          setSubmitting(false);
+          setSubmitting(false); //todo: ver de mandarlo a onSuccess
         }}
       >
         {({ isSubmitting }) => (
@@ -62,7 +62,6 @@ export function ManipularDolar({ sociedad, selectionModel }) {
       </Formik>
       <Button
         onClick={() => {
-          console.log(selectionModel);
           mutateEliminar(selectionModel);
         }}
       >
