@@ -5,7 +5,7 @@ import { useQuery } from 'react-query';
 import { DatagridDolar } from 'src/components/dolar/DatagridDolar';
 import { listarDolar } from 'src/components/API';
 
-export function TiposDeCambio({ sociedad, selectionModel, setSelectionModel }) {
+export function GrillaDolar({ sociedad, selectionModel, setSelectionModel }) {
   const { data, isLoading, error } = useQuery(['dolar', sociedad], () =>
     listarDolar(sociedad)
   );
@@ -31,7 +31,7 @@ export function TiposDeCambio({ sociedad, selectionModel, setSelectionModel }) {
   );
 }
 
-TiposDeCambio.propTypes = {
+GrillaDolar.propTypes = {
   sociedad: PropTypes.number,
   selectionModel: PropTypes.array.isRequired,
   setSelectionModel: PropTypes.func.isRequired

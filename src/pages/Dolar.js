@@ -6,13 +6,13 @@ import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
 
 import { ManipularDolar } from 'src/components/dolar/ManipularDolar';
-import { TiposDeCambio } from '../components/dolar/TiposDeCambio';
+import { GrillaDolar } from '../components/dolar/GrillaDolar';
 
 const queryClient = new QueryClient();
 
 export function Dolar(props) {
   const [selectionModel, setSelectionModel] = useState([]);
-  return (
+   return (
     <QueryClientProvider client={queryClient}>
       <Helmet>
         <title>Dólar | TSF Desarrollos</title>
@@ -29,7 +29,7 @@ export function Dolar(props) {
             <ManipularDolar sociedad={props.sociedad} selectionModel={selectionModel} />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <TiposDeCambio
+            <GrillaDolar
               sociedad={props.sociedad}
               selectionModel={selectionModel}
               setSelectionModel={setSelectionModel}
