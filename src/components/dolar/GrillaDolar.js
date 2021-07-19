@@ -34,9 +34,9 @@ const columns = [
   }
 ];
 
-export function GrillaDolar({ sociedad, selectionModel, setSelectionModel }) {
-  const { data, isLoading, error } = useQuery(['dolar', sociedad], () =>
-    listarDolar(sociedad)
+export function GrillaDolar({ idSociedad, selectedRows, setSelectedRows }) {
+  const { data, isLoading, error } = useQuery(['dolar', idSociedad], () =>
+    listarDolar(idSociedad)
   );
 
   if (isLoading) return 'Cargando...';
@@ -60,19 +60,17 @@ export function GrillaDolar({ sociedad, selectionModel, setSelectionModel }) {
         autoHeight
         // rowHeight={40}
         scrollbarSize
-        // onRowSelected={(e) => console.log(e)}
         onSelectionModelChange={(newSelection) => {
-          console.log(newSelection);
-          setSelectionModel(newSelection.selectionModel);
+          setSelectedRows(newSelection.selectionModel);
         }}
-        selectionModel={selectionModel}
+        selectedRows={selectedRows}
       />
     </div>
   );
 }
 
 GrillaDolar.propTypes = {
-  sociedad: PropTypes.number,
-  selectionModel: PropTypes.array.isRequired,
-  setSelectionModel: PropTypes.func.isRequired
+  idSociedad: PropTypes.number,
+  selectedRows: PropTypes.array.isRequired,
+  setSelectedRows: PropTypes.func.isRequired
 };

@@ -7,25 +7,25 @@ import PropTypes from 'prop-types';
 import { cargarDolar } from 'src/components/API';
 import { eliminarDolar } from 'src/components/API';
 
-export function ManipularDolar({ sociedad, selectionModel }) {
+export function ManipularDolar({ idSociedad, selectedRows }) {
   const queryClient = useQueryClient();
 
   const { mutate: mutateCargar } = useMutation(
-    async (nuevoDolar) => await cargarDolar(sociedad, nuevoDolar),
+    async (nuevoDolar) => await cargarDolar(idSociedad, nuevoDolar),
     {
       onSuccess: async () =>
-        await queryClient.refetchQueries(['dolar', sociedad])
+        await queryClient.refetchQueries(['dolar', idSociedad])
       //hay dos formas más eficientes: 1) con queryCache.setQueryData ya que no vuelve al api y 2) con onMutate queryCache.setQueryData pq ni siquiere espera a mandar al api
     }
   );
 
   const { mutate: mutateEliminar } = useMutation(
     async () => {
-      await eliminarDolar(sociedad, selectionModel);
+      await eliminarDolar(idSociedad, selectedRows);
     },
     {
       onSuccess: async () =>
-        await queryClient.refetchQueries(['dolar', sociedad])
+        await queryClient.refetchQueries(['dolar', idSociedad])
       //hay dos formas más eficientes: 1) con queryCache.setQueryData ya que no vuelve al api y 2) con onMutate queryCache.setQueryData pq ni siquiere espera a mandar al api
     }
   );
@@ -62,7 +62,7 @@ export function ManipularDolar({ sociedad, selectionModel }) {
       </Formik>
       <Button
         onClick={() => {
-          mutateEliminar(selectionModel);
+          mutateEliminar(selectedRows);
         }}
       >
         Eliminar
@@ -71,6 +71,6 @@ export function ManipularDolar({ sociedad, selectionModel }) {
   );
 }
 ManipularDolar.propTypes = {
-  sociedad: PropTypes.number.isRequired,
-  selectionModel: PropTypes.array.isRequired
+  idSociedad: PropTypes.number.isRequired,
+  selectedRows: PropTypes.array.isRequired
 };

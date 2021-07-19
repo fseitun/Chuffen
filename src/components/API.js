@@ -2,20 +2,20 @@ import axios from 'axios';
 
 const PATH = 'http://localhost:3000/'; //ver si se hace (y cómo se hace) desde el .env
 
-export const listarDolar = async (sociedad) => {
-  const { data } = await axios.get(`${PATH}dolar/listar/${sociedad}`);
+export const listarDolar = async (idSociedad) => {
+  const { data } = await axios.get(`${PATH}dolar/listar/${idSociedad}`);
   return data;
 };
 
-export const cargarDolar = async (sociedad, nuevoDolar) => {
-  axios.post(`${PATH}dolar/agregar/${sociedad}`, nuevoDolar);
+export const cargarDolar = async (idSociedad, nuevoDolar) => {
+  axios.post(`${PATH}dolar/agregar/${idSociedad}`, nuevoDolar);
   return nuevoDolar;
 };
 
-export const eliminarDolar = async (sociedad, arrayIds) => {
-  arrayIds.forEach((el) => {
-    console.log(`${PATH}dolar/eliminar/${sociedad}, body: id:${el}`);
-    axios.delete(`${PATH}dolar/eliminar/${sociedad}`, {
+export const eliminarDolar = async (idSociedad, selectedRows) => {
+  selectedRows.forEach((el) => {
+    console.log(`${PATH}dolar/eliminar/${idSociedad}, body: id:${el}`);
+    axios.delete(`${PATH}dolar/eliminar/${idSociedad}`, {
       headers: {
         'Content-Type': 'application/json'
       },
@@ -24,7 +24,7 @@ export const eliminarDolar = async (sociedad, arrayIds) => {
   });
 };
 
-export const modificarCeldaDolar = async (sociedad, nuevoDato) => {
-  axios.post(`${PATH}dolar/modificar/${sociedad}`, nuevoDato);
+export const modificarCeldaDolar = async (idSociedad, nuevoDato) => {
+  axios.post(`${PATH}dolar/modificar/${idSociedad}`, nuevoDato);
   return nuevoDato;
 };

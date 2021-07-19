@@ -16,7 +16,7 @@ import { Dolar } from 'src/pages/Dolar';
 import { Formulario } from 'src/pages/Pruebas';
 import Proveedores from 'src/pages/Proveedores';
 
-let sociedad = 1; // esto después lo pisaremos desde la autenticación de usuario
+let idSociedad = 1; // esto después lo pisaremos desde la autenticación de usuario
 
 const routes = [
   {
@@ -31,7 +31,7 @@ const routes = [
       { path: 'usuarios', element: <Usuarios /> },
       { path: 'rubros', element: <Rubros /> },
       { path: 'pruebas', element: <Formulario /> },
-      { path: 'dolar', element: <Dolar sociedad={sociedad} /> },
+      { path: 'dolar', element: <Dolar idSociedad={idSociedad} /> },
       { path: 'proveedores', element: <Proveedores /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]

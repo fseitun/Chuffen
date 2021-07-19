@@ -6,12 +6,12 @@ import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
 
 import { ManipularDolar } from 'src/components/dolar/ManipularDolar';
-import { GrillaDolar } from '../components/dolar/GrillaDolar';
+import { GrillaDolar } from 'src/components/dolar/GrillaDolar';
 
 const queryClient = new QueryClient();
 
-export function Dolar(props) {
-  const [selectionModel, setSelectionModel] = useState([]);
+export function Dolar({ idSociedad }) {
+  const [selectedRows, setSelectedRows] = useState([]);
   return (
     <QueryClientProvider client={queryClient}>
       <Helmet>
@@ -26,16 +26,13 @@ export function Dolar(props) {
       >
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <ManipularDolar
-              sociedad={props.sociedad}
-              selectionModel={selectionModel}
-            />
+            <ManipularDolar idSociedad={idSociedad} selectedRows={selectedRows} />
           </Box>
           <Box sx={{ pt: 3 }}>
             <GrillaDolar
-              sociedad={props.sociedad}
-              selectionModel={selectionModel}
-              setSelectionModel={setSelectionModel}
+              idSociedad={idSociedad}
+              selectedRows={selectedRows}
+              setSelectedRows={setSelectedRows}
             />
           </Box>
         </Container>
@@ -45,5 +42,5 @@ export function Dolar(props) {
   );
 }
 Dolar.propTypes = {
-  sociedad: PropTypes.number
+  idSociedad: PropTypes.number
 };
