@@ -3,28 +3,26 @@ import PropTypes from 'prop-types';
 import { useQuery } from 'react-query';
 import { DataGrid } from '@material-ui/data-grid';
 import { changeCellDollar } from 'src/components/API';
-// import { format } from 'date-fns';
 
 import { listarDolar } from 'src/components/API';
 
 const columns = [
-  { field: 'id', headerName: 'ID', width: 100 },
+  // { field: 'id', headerName: 'ID', width: 100 },
   {
     field: 'fecha',
     headerName: 'Fecha',
     width: 150,
-    type: 'date'
-    // valueFormatter: (params) => {
-    //   const fecha = new Date(params.value);
-    //   format(fecha, 'P');
-    // }
+    type: 'date',
+    valueFormatter: (params) =>
+      new Date(params.value).toLocaleDateString('es-AR')
   },
   {
     field: 'BCRA',
     headerName: 'BCRA',
     width: 120,
     editable: true,
-    valueFormatter: (params) => Number(params.value).toFixed(2)
+    valueFormatter: (params) =>
+      Number(params.value).toFixed(2).toLocaleString('es-AR')
   },
   {
     field: 'mep',

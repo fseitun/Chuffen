@@ -15,9 +15,7 @@ export function ManipularDolar({ idSociedad, selectedRows }) {
     {
       onSuccess: () => {
         queryClient.refetchQueries(['dolar', idSociedad]);
-        // queryClient.invalidateQueries();
       }
-      //hay dos formas más eficientes: 1) con queryCache.setQueryData ya que no vuelve al api y 2) con onMutate queryCache.setQueryData pq ni siquiere espera a mandar al api
     }
   );
 
@@ -28,7 +26,6 @@ export function ManipularDolar({ idSociedad, selectedRows }) {
     {
       onSuccess: async () =>
         await queryClient.refetchQueries(['dolar', idSociedad])
-      //hay dos formas más eficientes: 1) con queryCache.setQueryData ya que no vuelve al api y 2) con onMutate queryCache.setQueryData pq ni siquiere espera a mandar al api
     }
   );
 
@@ -36,13 +33,14 @@ export function ManipularDolar({ idSociedad, selectedRows }) {
     <>
       <Formik
         initialValues={{
-          fecha: '2000-01-01',
+          fecha: new Date(),
           mep: 99,
           // blue: 99,
           BCRA: 99
         }}
         onSubmit={(values, { setSubmitting }) => {
           mutateCargar(values);
+          console.log(values);
           setSubmitting(false); //todo: ver de mandarlo a onSuccess
         }}
       >

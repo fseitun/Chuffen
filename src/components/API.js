@@ -29,6 +29,9 @@ export const eliminarDolar = async (idSociedad, selectedRows) => {
 };
 
 export const changeCellDollar = async (idSociedad, newData) => {
-  axios.post(`${PATH}dolar/modificar/${idSociedad}`, newData);
-  return newData;
+  const { data } = await axios.post(
+    `${PATH}dolar/modificar/${idSociedad}`,
+    newData
+  );
+  return data;
 };
