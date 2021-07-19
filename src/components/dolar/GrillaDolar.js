@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from 'react-query';
 import { DataGrid } from '@material-ui/data-grid';
+import { changeCellDollar } from 'src/components/API';
 // import { format } from 'date-fns';
 
 import { listarDolar } from 'src/components/API';
@@ -42,6 +43,15 @@ export function GrillaDolar({ idSociedad, selectedRows, setSelectedRows }) {
   if (isLoading) return 'Cargando...';
   if (error) return `Hubo un error: ${error.message}`;
 
+  function handleModification(e) {
+    let newData = {
+      id: e.id,
+      [e.field]: e.props.value
+    };
+
+    changeCellDollar(idSociedad, newData);
+  }
+
   return (
     <div style={{ width: '100%' }}>
       <DataGrid
@@ -64,6 +74,7 @@ export function GrillaDolar({ idSociedad, selectedRows, setSelectedRows }) {
           setSelectedRows(newSelection.selectionModel);
         }}
         selectedRows={selectedRows}
+        onEditCellChangeCommitted={handleModification}
       />
     </div>
   );

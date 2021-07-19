@@ -11,10 +11,12 @@ export function ManipularDolar({ idSociedad, selectedRows }) {
   const queryClient = useQueryClient();
 
   const { mutate: mutateCargar } = useMutation(
-    async (nuevoDolar) => await cargarDolar(idSociedad, nuevoDolar),
+    (nuevoDolar) => cargarDolar(idSociedad, nuevoDolar),
     {
-      onSuccess: async () =>
-        await queryClient.refetchQueries(['dolar', idSociedad])
+      onSuccess: () => {
+        queryClient.refetchQueries(['dolar', idSociedad]);
+        // queryClient.invalidateQueries();
+      }
       //hay dos formas más eficientes: 1) con queryCache.setQueryData ya que no vuelve al api y 2) con onMutate queryCache.setQueryData pq ni siquiere espera a mandar al api
     }
   );

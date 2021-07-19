@@ -8,23 +8,27 @@ export const listarDolar = async (idSociedad) => {
 };
 
 export const cargarDolar = async (idSociedad, nuevoDolar) => {
-  axios.post(`${PATH}dolar/agregar/${idSociedad}`, nuevoDolar);
-  return nuevoDolar;
+  const { data } = await axios.post(
+    `${PATH}dolar/agregar/${idSociedad}`,
+    nuevoDolar
+  );
+  return data;
 };
 
 export const eliminarDolar = async (idSociedad, selectedRows) => {
-  selectedRows.forEach((el) => {
-    console.log(`${PATH}dolar/eliminar/${idSociedad}, body: id:${el}`);
-    axios.delete(`${PATH}dolar/eliminar/${idSociedad}`, {
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: JSON.stringify({ id: `${el}` })
-    });
-  });
+  await Promise.all(
+    selectedRows.map((el) => {
+      return axios.delete(`${PATH}dolar/eliminar/${idSociedad}`, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: JSON.stringify({ id: `${el}` })
+      });
+    })
+  );
 };
 
-export const modificarCeldaDolar = async (idSociedad, nuevoDato) => {
-  axios.post(`${PATH}dolar/modificar/${idSociedad}`, nuevoDato);
-  return nuevoDato;
+export const changeCellDollar = async (idSociedad, newData) => {
+  axios.post(`${PATH}dolar/modificar/${idSociedad}`, newData);
+  return newData;
 };
