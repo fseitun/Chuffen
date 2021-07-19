@@ -12,7 +12,7 @@ const queryClient = new QueryClient();
 
 export function Dolar(props) {
   const [selectionModel, setSelectionModel] = useState([]);
-   return (
+  return (
     <QueryClientProvider client={queryClient}>
       <Helmet>
         <title>Dólar | TSF Desarrollos</title>
@@ -26,7 +26,10 @@ export function Dolar(props) {
       >
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <ManipularDolar sociedad={props.sociedad} selectionModel={selectionModel} />
+            <ManipularDolar
+              sociedad={props.sociedad}
+              selectionModel={selectionModel}
+            />
           </Box>
           <Box sx={{ pt: 3 }}>
             <GrillaDolar
