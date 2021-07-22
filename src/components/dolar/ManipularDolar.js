@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field, ErrorMessage } from 'formik'; //traer yup para validar
 import { TextField, Button } from '@material-ui/core';
@@ -9,20 +9,17 @@ import PropTypes from 'prop-types';
 import { cargarDolar } from 'src/components/API';
 import { eliminarDolar } from 'src/components/API';
 
-function Picker({ date, setDate, field }) {
-  console.log(field);
-  const handleChange = (newDate) => {
-    setDate(newDate);
-    // console.log(`newDate del handler del Picker: ${newDate}`);
-  };
+function Picker({ field, form }) {
+  const { name, value } = field;
+  const { setFieldValue } = form;
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DesktopDatePicker
         label="Fecha"
         inputFormat="dd/MM/yyyy"
-        value={date}
-        onChange={handleChange}
+        value={value}
+        onChange={(value) => setFieldValue(name, value)}
         renderInput={(params) => <TextField {...params} />}
       />
     </LocalizationProvider>
@@ -30,7 +27,6 @@ function Picker({ date, setDate, field }) {
 }
 
 export function ManipularDolar({ idSociedad, selectedRows }) {
-  const [date, setDate] = useState(new Date());
   // console.log(`variable de date de useState: ${date}`);
   const queryClient = useQueryClient();
 
@@ -74,15 +70,7 @@ export function ManipularDolar({ idSociedad, selectedRows }) {
     >
       {({ isSubmitting }) => (
         <Form>
-          <Field
-            component={Picker}
-            label="Fecha"
-            type="date"
-            name="fecha"
-            date={date}
-            setDate={setDate}
-            
-          />
+          <Field component={Picker} label="Fecha" type="date" name="fecha" />
           <ErrorMessage name="fecha" component="div" />
           <Field as={TextField} label="BCRA" type="float" name="BCRA" />
           <ErrorMessage name="BCRA" component="div" />
@@ -117,9 +105,8 @@ function formatDate(date) {
 }
 
 Picker.propTypes = {
-  setDate: PropTypes.func.isRequired,
-  date: PropTypes.object.isRequired,
-  field: PropTypes.object.isRequired
+  field: PropTypes.object.isRequired,
+  form: PropTypes.object.isRequired
 };
 
 ManipularDolar.propTypes = {
