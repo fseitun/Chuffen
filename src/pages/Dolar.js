@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { PropTypes } from 'prop-types';
@@ -11,7 +11,6 @@ import { GrillaDolar } from 'src/components/dolar/GrillaDolar';
 const queryClient = new QueryClient();
 
 export function Dolar({ idSociedad }) {
-  const [selectedRows, setSelectedRows] = useState([]);
   return (
     <QueryClientProvider client={queryClient}>
       <Helmet>
@@ -26,14 +25,10 @@ export function Dolar({ idSociedad }) {
       >
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <ManipularDolar idSociedad={idSociedad} selectedRows={selectedRows} />
+            <ManipularDolar idSociedad={idSociedad} />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <GrillaDolar
-              idSociedad={idSociedad}
-              selectedRows={selectedRows}
-              setSelectedRows={setSelectedRows}
-            />
+            <GrillaDolar idSociedad={idSociedad} />
           </Box>
         </Container>
       </Box>
