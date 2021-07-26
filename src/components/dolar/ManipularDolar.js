@@ -6,8 +6,7 @@ import { LocalizationProvider, DesktopDatePicker } from '@material-ui/lab';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import PropTypes from 'prop-types';
 
-import { cargarDolar } from 'src/components/API';
-import { eliminarDolar } from 'src/components/API';
+import { loadDollar } from 'src/components/API';
 
 function Picker({ field, form }) {
   const { name, value } = field;
@@ -26,26 +25,15 @@ function Picker({ field, form }) {
   );
 }
 
-export function ManipularDolar({ idSociedad, selectedRows }) {
-  // console.log(`variable de date de useState: ${date}`);
+export function ManipularDolar({ idSociedad }) {
   const queryClient = useQueryClient();
 
-  const { mutate: mutateCargar } = useMutation(
-    (nuevoDolar) => cargarDolar(idSociedad, nuevoDolar),
+  const { mutate: sendValues } = useMutation(
+    (nuevoDolar) => loadDollar(idSociedad, nuevoDolar),
     {
       onSuccess: () => {
         queryClient.refetchQueries(['dolar', idSociedad]);
       }
-    }
-  );
-
-  const { mutate: mutateEliminar } = useMutation(
-    async () => {
-      await eliminarDolar(idSociedad, selectedRows);
-    },
-    {
-      onSuccess: async () =>
-        await queryClient.refetchQueries(['dolar', idSociedad])
     }
   );
 
@@ -57,14 +45,7 @@ export function ManipularDolar({ idSociedad, selectedRows }) {
         BCRA: ''
       }}
       onSubmit={(values, { setSubmitting }) => {
-        console.log(
-          `el values que manda formik a mutate: ${JSON.stringify(
-            values,
-            null,
-            2
-          )}`
-        );
-        mutateCargar(values);
+        sendValues(values);
         setSubmitting(false);
       }}
     >
@@ -78,13 +59,6 @@ export function ManipularDolar({ idSociedad, selectedRows }) {
           <ErrorMessage name="mep" component="div" />
           <Button type="submit" disabled={isSubmitting}>
             Agregar
-          </Button>
-          <Button
-            onClick={() => {
-              mutateEliminar(selectedRows);
-            }}
-          >
-            Eliminar
           </Button>
         </Form>
       )}
@@ -110,6 +84,5 @@ Picker.propTypes = {
 };
 
 ManipularDolar.propTypes = {
-  idSociedad: PropTypes.number.isRequired,
-  selectedRows: PropTypes.array.isRequired
+  idSociedad: PropTypes.number.isRequired
 };

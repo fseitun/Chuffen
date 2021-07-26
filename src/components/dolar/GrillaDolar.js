@@ -1,10 +1,14 @@
 import React from 'react';
+import {
+  DataGrid,
+  GridToolbarContainer,
+  GridToolbarExport
+} from '@material-ui/data-grid';
+import { useQuery, useQueryClient, useMutation } from 'react-query';
+import { Button } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import { useQuery } from 'react-query';
-import { DataGrid } from '@material-ui/data-grid';
-import { changeCellDollar } from 'src/components/API';
 
-import { listarDolar } from 'src/components/API';
+import { listDollar, changeCellDollar, deleteDollar } from 'src/components/API';
 
 const columns = [
   // { field: 'id', headerName: 'ID', width: 100 },
@@ -19,7 +23,7 @@ const columns = [
   {
     field: 'BCRA',
     headerName: 'BCRA',
-    width: 120,
+    width: 130,
     editable: true,
     valueFormatter: (params) =>
       Number(params.value).toFixed(2).toLocaleString('es-AR')
@@ -27,26 +31,42 @@ const columns = [
   {
     field: 'mep',
     headerName: 'MEP',
-    width: 120,
+    width: 130,
     editable: true,
     valueFormatter: (params) => Number(params.value).toFixed(2)
+  },
+  {
+    field: 'deleteIcon',
+    headerName: ' ',
+    renderCell: DeleteButton
   }
 ];
 
-export function GrillaDolar({ idSociedad, selectedRows, setSelectedRows }) {
+export function GrillaDolar({ idSociedad }) {
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteRowFromGrid } = useMutation(
+    async (id) => {
+      await deleteDollar(idSociedad, id);
+    },
+    {
+      onSuccess: async () =>
+        await queryClient.refetchQueries(['dolar', idSociedad])
+    }
+  );
+
   const { data, isLoading, error } = useQuery(['dolar', idSociedad], () =>
-    listarDolar(idSociedad)
+    listDollar(idSociedad)
   );
 
   if (isLoading) return 'Cargando...';
   if (error) return `Hubo un error: ${error.message}`;
 
-  function handleModification(e) {
+  function handleCellModification(e) {
     let newData = {
       id: e.id,
       [e.field]: e.props.value
     };
-
     changeCellDollar(idSociedad, newData);
   }
 
@@ -59,27 +79,51 @@ export function GrillaDolar({ idSociedad, selectedRows, setSelectedRows }) {
           BCRA: el.BCRA,
           blue: el.blue,
           descripcion: el.descripcion,
-          mep: el.mep
+          mep: el.mep,
+          onDelete: () => deleteRowFromGrid(el.id)
         }))}
         columns={columns}
         pageSize={25}
-        checkboxSelection
         disableSelectionOnClick
         autoHeight
-        // rowHeight={40}
+        sortModel={[
+          {
+            field: 'fecha',
+            sort: 'asc'
+          }
+        ]}
         scrollbarSize
-        onSelectionModelChange={(newSelection) => {
-          setSelectedRows(newSelection.selectionModel);
+        onEditCellChangeCommitted={handleCellModification}
+        components={{
+          Toolbar: CustomToolbar
         }}
-        selectedRows={selectedRows}
-        onEditCellChangeCommitted={handleModification}
       />
     </div>
   );
 }
 
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarExport />
+    </GridToolbarContainer>
+  );
+}
+
+function DeleteButton(params) {
+  const deleteRow = params.row.onDelete;
+  return (
+    <Button
+      variant="contained"
+      color="primary"
+      size="small"
+      onClick={deleteRow}
+    >
+      Delete
+    </Button>
+  );
+}
+
 GrillaDolar.propTypes = {
-  idSociedad: PropTypes.number,
-  selectedRows: PropTypes.array.isRequired,
-  setSelectedRows: PropTypes.func.isRequired
+  idSociedad: PropTypes.number
 };
