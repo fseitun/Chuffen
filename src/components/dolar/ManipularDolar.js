@@ -50,13 +50,25 @@ export function ManipularDolar({ idSociedad }) {
         setSubmitting(false);
       }}
     >
-      {({ isSubmitting }) => (
+      {({ isSubmitting, setFieldValue }) => (
         <Form>
           <Field component={Picker} label="Fecha" type="date" name="fecha" />
           <ErrorMessage name="fecha" component="div" />
-          <Field as={TextField} label="BCRA" type="float" name="BCRA" />
+          <Field
+            as={TextField}
+            label="BCRA"
+            type="float"
+            name="BCRA"
+            onChange={(event) => onlyNumbers(event, setFieldValue, 'BCRA')}
+          />
           <ErrorMessage name="BCRA" component="div" />
-          <Field as={TextField} label="MEP" type="float" name="mep" />
+          <Field
+            as={TextField}
+            label="MEP"
+            type="float"
+            name="mep"
+            onChange={(event) => onlyNumbers(event, setFieldValue, 'mep')}
+          />
           <ErrorMessage name="mep" component="div" />
           <Button type="submit" disabled={isSubmitting}>
             Agregar
@@ -77,6 +89,15 @@ function formatDate(date) {
   if (day.length < 2) day = '0' + day;
 
   return [year, month, day].join('-');
+}
+
+function onlyNumbers(event, setFieldValue, typeOfData) {
+  event.preventDefault();
+  const { value } = event.target;
+  const regex = /^[0-9\b]+$/;
+  if (regex.test(value.toString())) {
+    setFieldValue(typeOfData, value);
+  }
 }
 
 Picker.propTypes = {
