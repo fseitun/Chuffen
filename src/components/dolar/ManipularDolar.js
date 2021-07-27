@@ -44,8 +44,9 @@ export function ManipularDolar({ idSociedad }) {
         mep: '',
         BCRA: ''
       }}
-      onSubmit={(values, { setSubmitting }) => {
+      onSubmit={(values, { setSubmitting, resetForm }) => {
         sendValues(values);
+        resetForm();
         setSubmitting(false);
       }}
     >
