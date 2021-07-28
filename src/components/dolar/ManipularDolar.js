@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import { TextField, Button } from '@material-ui/core';
 import { LocalizationProvider, DesktopDatePicker } from '@material-ui/lab';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
@@ -41,17 +41,10 @@ export function ManipularDolar({ idSociedad }) {
   return (
     <Formik
       initialValues={{
-        fecha: formatDate(new Date()),
+        fecha: new Date(),
         mep: '',
         BCRA: ''
       }}
-      // validationSchema={Yup.object({
-      //   BCRA: Yup.number()
-      //     .positive()
-      //     .lessThan(1000)
-      //     //.test((number) => number.toFixed(2))
-      //     .required('Required')
-      // })}
       onSubmit={(values, { setSubmitting, resetForm }) => {
         sendValues(values);
         resetForm();
@@ -83,18 +76,6 @@ export function ManipularDolar({ idSociedad }) {
       )}
     </Formik>
   );
-}
-
-function formatDate(date) {
-  var d = new Date(date),
-    month = '' + (d.getMonth() + 1),
-    day = '' + d.getDate(),
-    year = d.getFullYear();
-
-  if (month.length < 2) month = '0' + month;
-  if (day.length < 2) day = '0' + day;
-
-  return [year, month, day].join('-');
 }
 
 function onlyNumbers(event, setFieldValue, typeOfData) {

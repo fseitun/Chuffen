@@ -17,23 +17,24 @@ const columns = [
     headerName: 'Fecha',
     width: 150,
     type: 'date',
-    valueFormatter: (params) =>
-      new Date(params.value).toLocaleDateString('es-AR')
+    valueFormatter: ({ value }) =>
+      new Date(value).toLocaleDateString('es-AR', { timeZone: 'UTC' })
   },
   {
     field: 'BCRA',
     headerName: 'BCRA',
     width: 130,
     editable: true,
-    valueFormatter: (params) =>
-      Number(params.value).toFixed(2).toLocaleString('es-AR')
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-ES').format(Number(value))
   },
   {
     field: 'mep',
     headerName: 'MEP',
     width: 130,
     editable: true,
-    valueFormatter: (params) => Number(params.value).toFixed(2)
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-ES').format(Number(value))
   },
   {
     field: 'deleteIcon',
