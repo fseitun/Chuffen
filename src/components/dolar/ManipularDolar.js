@@ -100,9 +100,9 @@ function formatDate(date) {
 function onlyNumbers(event, setFieldValue, typeOfData) {
   event.preventDefault();
   const { value } = event.target;
-  const regex = /^[0-9.\b]+$/;
+  const regex = /^\d{0,3}(\.\d{0,2})?$/;
   if (regex.test(value.toString())) {
-    setFieldValue(typeOfData, value.toString().slice(0, 6));
+    setFieldValue(typeOfData, value.toString());
   }
 }
 
