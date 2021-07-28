@@ -94,7 +94,7 @@ export function GrillaDolar({ idSociedad }) {
           }
         ]}
         scrollbarSize
-        onEditCellChangeCommitted={handleCellModification}
+        onEditCellChange={handleCellModification}
         components={{
           Toolbar: CustomToolbar
         }}

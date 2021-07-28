@@ -1,4 +1,4 @@
-export default {
+const obj = {
   h1: {
     fontWeight: 500,
     fontSize: 35,
@@ -33,3 +33,4 @@ export default {
     fontWeight: 500
   }
 };
+export default obj;

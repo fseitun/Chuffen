@@ -4,10 +4,9 @@ import { Formik, Form, Field } from 'formik';
 import { TextField, Button } from '@material-ui/core';
 import { LocalizationProvider, DesktopDatePicker } from '@material-ui/lab';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
-// import * as Yup from 'yup';
 import PropTypes from 'prop-types';
 
-import { loadDollar } from 'src/components/API';
+import { loadDollar, dollarInDate } from 'src/components/API';
 
 function Picker({ field, form }) {
   const { name, value } = field;
@@ -45,8 +44,11 @@ export function ManipularDolar({ idSociedad }) {
         mep: '',
         BCRA: ''
       }}
-      onSubmit={(values, { setSubmitting, resetForm }) => {
-        sendValues(values);
+      onSubmit={async (values, { setSubmitting, resetForm }) => {
+        !(await checkDate(idSociedad, values.fecha))
+          ? sendValues(values)
+          : console.log('ya lo tenés'); //cambiar por un pop up
+
         resetForm();
         setSubmitting(false);
       }}
@@ -76,6 +78,10 @@ export function ManipularDolar({ idSociedad }) {
       )}
     </Formik>
   );
+}
+
+async function checkDate(idSociedad, fecha) {
+  return Boolean(await dollarInDate(idSociedad, fecha));
 }
 
 function onlyNumbers(event, setFieldValue, typeOfData) {

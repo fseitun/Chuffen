@@ -7,6 +7,17 @@ export const listDollar = async (idSociedad) => {
   return data;
 };
 
+export const dollarInDate = async (idSociedad, date) => {
+  const { data } = await axios.get(
+    `${PATH}dolar/mostrar/${idSociedad}/${date.getFullYear(date)}-${(
+      1 + date.getMonth(date)
+    )
+      .toString()
+      .padStart(2, '0')}-${date.getDate(date).toString().padStart(2, '0')}`
+  );
+  return data;
+};
+
 export const loadDollar = async (idSociedad, nuevoDolar) => {
   const { data } = await axios.post(
     `${PATH}dolar/agregar/${idSociedad}`,
