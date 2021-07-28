@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 
-export default [
+const data = [
   {
     id: uuid(),
     address: {
@@ -142,3 +142,5 @@ export default [
     phone: '119456316'
   }
 ];
+
+export default data;

@@ -93,7 +93,7 @@ export default function DashboardSidebar({ onMobileClose, openMobile }) {
     if (openMobile && onMobileClose) {
       onMobileClose();
     }
-  }, [location.pathname]);
+  }, [location.pathname, openMobile, onMobileClose]); //openMobile, onMobileClose los agregué como dependencias por epdido del linter
 
   const content = (
     <Box
