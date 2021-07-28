@@ -1,9 +1,10 @@
 import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { Formik, Form, Field, ErrorMessage } from 'formik'; //traer yup para validar
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { TextField, Button } from '@material-ui/core';
 import { LocalizationProvider, DesktopDatePicker } from '@material-ui/lab';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
+// import * as Yup from 'yup';
 import PropTypes from 'prop-types';
 
 import { loadDollar } from 'src/components/API';
@@ -44,6 +45,13 @@ export function ManipularDolar({ idSociedad }) {
         mep: '',
         BCRA: ''
       }}
+      // validationSchema={Yup.object({
+      //   BCRA: Yup.number()
+      //     .positive()
+      //     .lessThan(1000)
+      //     //.test((number) => number.toFixed(2))
+      //     .required('Required')
+      // })}
       onSubmit={(values, { setSubmitting, resetForm }) => {
         sendValues(values);
         resetForm();
@@ -53,15 +61,14 @@ export function ManipularDolar({ idSociedad }) {
       {({ isSubmitting, setFieldValue }) => (
         <Form>
           <Field component={Picker} label="Fecha" type="date" name="fecha" />
-          <ErrorMessage name="fecha" component="div" />
           <Field
             as={TextField}
             label="BCRA"
             type="float"
+            maxLength={4}
             name="BCRA"
             onChange={(event) => onlyNumbers(event, setFieldValue, 'BCRA')}
           />
-          <ErrorMessage name="BCRA" component="div" />
           <Field
             as={TextField}
             label="MEP"
@@ -69,7 +76,6 @@ export function ManipularDolar({ idSociedad }) {
             name="mep"
             onChange={(event) => onlyNumbers(event, setFieldValue, 'mep')}
           />
-          <ErrorMessage name="mep" component="div" />
           <Button type="submit" disabled={isSubmitting}>
             Agregar
           </Button>
@@ -94,9 +100,9 @@ function formatDate(date) {
 function onlyNumbers(event, setFieldValue, typeOfData) {
   event.preventDefault();
   const { value } = event.target;
-  const regex = /^[0-9\b]+$/;
+  const regex = /^[0-9.\b]+$/;
   if (regex.test(value.toString())) {
-    setFieldValue(typeOfData, value);
+    setFieldValue(typeOfData, value.toString().slice(0, 6));
   }
 }
 
