@@ -5,8 +5,10 @@ import {
   GridToolbarExport
 } from '@material-ui/data-grid';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { Button } from '@material-ui/core';
+import { Button, Box } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { listDollar, changeCellDollar, deleteDollar } from 'src/components/API';
 
@@ -73,6 +75,7 @@ export function GrillaDolar({ idSociedad }) {
 
   return (
     <div style={{ width: '100%' }}>
+      <ToastContainer />
       <DataGrid
         rows={data.map((el) => ({
           id: el.id,
@@ -113,15 +116,38 @@ function CustomToolbar() {
 
 function DeleteButton(params) {
   const deleteRow = params.row.onDelete;
+  const Notify = (e) =>
+    toast(({ closeToast }) => (
+      <Box>
+        <Button
+          sx={{ p: 1, m: 1 }}
+          variant="contained"
+          color="secondary"
+          size="small"
+          onClick={closeToast}
+        >
+          No quiero borrar
+        </Button>
+        <Button
+          sx={{ p: 1, m: 1 }}
+          variant="contained"
+          color="secondary"
+          size="small"
+          onClick={() => {
+            deleteRow(e);
+            closeToast();
+          }}
+        >
+          Sí quiero borrar
+        </Button>
+      </Box>
+    ));
   return (
-    <Button
-      variant="contained"
-      color="primary"
-      size="small"
-      onClick={deleteRow}
-    >
-      Delete
-    </Button>
+    <>
+      <Button variant="contained" color="primary" size="small" onClick={Notify}>
+        Borrar
+      </Button>
+    </>
   );
 }
 
