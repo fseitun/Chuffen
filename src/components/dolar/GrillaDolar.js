@@ -6,6 +6,7 @@ import {
 } from '@material-ui/data-grid';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { Button, Box } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
 import PropTypes from 'prop-types';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,12 +14,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import { listDollar, changeCellDollar, deleteDollar } from 'src/components/API';
 
 const columns = [
-  // { field: 'id', headerName: 'ID', width: 100 },
+  // { field: 'id', headerName: 'ID', width: 100 , headerAlign: 'center',},
   {
     field: 'fecha',
     headerName: 'Fecha',
     width: 150,
     type: 'date',
+    headerAlign: 'center',
+    align: 'center',
     valueFormatter: ({ value }) =>
       new Date(value).toLocaleDateString('es-AR', { timeZone: 'UTC' })
   },
@@ -27,21 +30,33 @@ const columns = [
     headerName: 'BCRA',
     width: 130,
     editable: true,
+    headerAlign: 'center',
+    align: 'right',
+
     valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-ES').format(Number(value))
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(
+        Number(value)
+      )
   },
   {
     field: 'mep',
     headerName: 'MEP',
     width: 130,
     editable: true,
+    headerAlign: 'center',
+    align: 'right',
     valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-ES').format(Number(value))
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(
+        Number(value)
+      )
   },
   {
     field: 'deleteIcon',
     headerName: ' ',
-    renderCell: DeleteButton
+    width: 50,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: DeleteRow
   }
 ];
 
@@ -114,7 +129,7 @@ function CustomToolbar() {
   );
 }
 
-function DeleteButton(params) {
+function DeleteRow(params) {
   const deleteRow = params.row.onDelete;
   const Notify = (e) =>
     toast(({ closeToast }) => (
@@ -142,13 +157,7 @@ function DeleteButton(params) {
         </Button>
       </Box>
     ));
-  return (
-    <>
-      <Button variant="contained" color="primary" size="small" onClick={Notify}>
-        Borrar
-      </Button>
-    </>
-  );
+  return <DeleteIcon onClick={Notify} />;
 }
 
 GrillaDolar.propTypes = {
