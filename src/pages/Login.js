@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import * as Yup from 'yup';
+// import * as Yup from 'yup';
 import { Formik } from 'formik';
 import {
   Box,
@@ -38,10 +38,10 @@ const Login = () => {
               email: 'jvidal@gmail.com',
               password: 'abc123'
             }}
-            validationSchema={Yup.object().shape({
-              email: Yup.string().email('Debe ser un correo válido').max(255).required('Ingresar correo'),
-              password: Yup.string().max(255).required('Ingresar contraseña')
-            })}
+            // validationSchema={Yup.object().shape({
+            //   email: Yup.string().email('Debe ser un correo válido').max(255).required('Ingresar correo'),
+            //   password: Yup.string().max(255).required('Ingresar contraseña')
+            // })}
             onSubmit={() => {
               navigate('/app/dashboard', { replace: true });
             }}

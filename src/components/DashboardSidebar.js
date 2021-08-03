@@ -2,92 +2,20 @@ import { React, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Box, Drawer, List } from '@material-ui/core';
-import {
-  AlertCircle as AlertCircleIcon,
-  BarChart as BarChartIcon,
-  Lock as LockIcon,
-  Settings as SettingsIcon,
-  ShoppingBag as ShoppingBagIcon,
-  User as UserIcon,
-  UserPlus as UserPlusIcon,
-  Users as UsersIcon,
-  Folder as Rubros,
-  DollarSign as Dolar,
-  Truck as Proveedores,
-  Umbrella as Pruebas
-} from 'react-feather';
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
+import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import NavItem from './NavItem';
 
 const items = [
   {
-    href: '/app/dashboard',
-    icon: BarChartIcon,
-    title: 'Tablero de Control'
-  },
-  {
-    href: '/app/customers',
-    icon: UsersIcon,
-    title: 'Clientes'
-  },
-  {
-    href: '/app/products',
-    icon: ShoppingBagIcon,
-    title: 'Productos'
-  },
-  {
-    href: '/app/account',
-    icon: UserIcon,
-    title: 'Usuario'
-  },
-  {
-    href: '/app/settings',
-    icon: SettingsIcon,
-    title: 'Configuración'
-  },
-  {
-    href: '/login',
-    icon: LockIcon,
-    title: 'Login'
-  },
-  {
-    href: '/register',
-    icon: UserPlusIcon,
-    title: 'Nuevo Usuario'
-  },
-  {
-    href: '/app/usuarios',
-    icon: UsersIcon,
-    title: 'Usuarios'
-  },
-  {
-    href: '/app/rubros',
-    icon: Rubros,
-    title: 'Rubros y Subrubros'
-  },
-  {
-    href: '/app/pruebas',
-    icon: Pruebas,
-    title: 'Pruebas'
-  },
-  {
     href: '/app/dolar',
-    icon: Dolar,
+    icon: AttachMoneyIcon,
     title: 'Dólar'
   },
   {
     href: '/app/cac',
-    icon: Dolar,
+    icon: TrendingUpIcon,
     title: 'CAC'
-  },
-  {
-    href: '/app/proveedores',
-    icon: Proveedores,
-    title: 'Proveedores'
-  },
-  {
-    href: '/404',
-    icon: AlertCircleIcon,
-    title: 'Error'
   }
 ];
 
