@@ -75,6 +75,11 @@ const items = [
     title: 'Dólar'
   },
   {
+    href: '/app/cac',
+    icon: Dolar,
+    title: 'CAC'
+  },
+  {
     href: '/app/proveedores',
     icon: Proveedores,
     title: 'Proveedores'

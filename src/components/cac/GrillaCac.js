@@ -23,12 +23,16 @@ const columns = [
     headerAlign: 'center',
     align: 'center',
     valueFormatter: ({ value }) =>
-      new Date(value).toLocaleDateString('es-AR', { timeZone: 'UTC' })
+      new Date(value).toLocaleDateString('es-AR', {
+        year: 'numeric',
+        month: 'short',
+        timeZone: 'UTC'
+      })
   },
   {
-    field: 'BCRA',
-    headerName: 'BCRA',
-    width: 130,
+    field: 'estimado',
+    headerName: 'Estimado',
+    width: 150,
     editable: true,
     headerAlign: 'center',
     align: 'right',
@@ -39,9 +43,9 @@ const columns = [
       )
   },
   {
-    field: 'mep',
-    headerName: 'MEP',
-    width: 130,
+    field: 'definitivo',
+    headerName: 'Definitivo',
+    width: 150,
     editable: true,
     headerAlign: 'center',
     align: 'right',
@@ -60,21 +64,21 @@ const columns = [
   }
 ];
 
-export function GrillaDolar({ idSociedad }) {
+export function GrillaCac({ idSociedad }) {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation(
     async (id) => {
-      await deleteMethod(`dolar/eliminar/${idSociedad}`, id);
+      await deleteMethod(`cac/eliminar/${idSociedad}`, id);
     },
     {
       onSuccess: async () =>
-        await queryClient.refetchQueries(['dolar', idSociedad])
+        await queryClient.refetchQueries(['cac', idSociedad])
     }
   );
 
-  const { data, isLoading, error } = useQuery(['dolar', idSociedad], () =>
-    getMethod(`dolar/listar/${idSociedad}`)
+  const { data, isLoading, error } = useQuery(['cac', idSociedad], () =>
+    getMethod(`CAC/listar/${idSociedad}`)
   );
 
   if (isLoading) return 'Cargando...';
@@ -85,7 +89,7 @@ export function GrillaDolar({ idSociedad }) {
       id: e.id,
       [e.field]: e.props.value
     };
-    postMethod(`dolar/modificar/${idSociedad}`, newData);
+    postMethod(`cac/modificar/${idSociedad}`, newData);
   }
 
   return (
@@ -95,11 +99,11 @@ export function GrillaDolar({ idSociedad }) {
         rows={data.map((el) => ({
           id: el.id,
           fecha: el.fecha,
-          BCRA: el.BCRA,
-          blue: el.blue,
-          descripcion: el.descripcion,
-          mep: el.mep,
-          onDelete: () => mutate(el.id)
+          estimado: el.estimado,
+          definitivo: el.definitivo,
+          onDelete: () => {
+            mutate(el.id);
+          }
         }))}
         columns={columns}
         pageSize={25}
@@ -160,6 +164,6 @@ function DeleteRow(params) {
   return <DeleteIcon onClick={notify} />;
 }
 
-GrillaDolar.propTypes = {
+GrillaCac.propTypes = {
   idSociedad: PropTypes.number
 };

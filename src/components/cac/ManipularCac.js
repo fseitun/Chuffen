@@ -7,7 +7,7 @@ import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import PropTypes from 'prop-types';
 
 import { getMethod, postMethod } from 'src/utils/api';
-import { yearMonthDayString } from 'src/utils/dateToString';
+import { yearMonthOneString } from 'src/utils/dateToString';
 
 function Picker({ field, form }) {
   const { name, value } = field;
@@ -26,15 +26,16 @@ function Picker({ field, form }) {
   );
 }
 
-export function ManipularDolar({ idSociedad }) {
+export function ManipularCac({ idSociedad }) {
   const queryClient = useQueryClient();
-
   const { mutate } = useMutation(
-    (newData) => postMethod(`dolar/agregar/${idSociedad}`, newData),
+    (newData) =>
+      // console.log(newData);
+      // console.log(`cac/agregar/${idSociedad}`);
+
+      postMethod(`cac/agregar/${idSociedad}`, newData),
     {
-      onSuccess: () => {
-        queryClient.refetchQueries(['dolar', idSociedad]);
-      }
+      onSuccess: () => queryClient.refetchQueries(['cac', idSociedad])
     }
   );
 
@@ -42,14 +43,14 @@ export function ManipularDolar({ idSociedad }) {
     <Formik
       initialValues={{
         fecha: new Date(),
-        mep: '',
-        BCRA: ''
+        estimado: '',
+        definitivo: ''
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        let bool = await checkDate(idSociedad, values.fecha);
-        console.log(bool);
-        // !(await checkDate(idSociedad, values.fecha))
-        !bool ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
+        values.fecha = yearMonthOneString(values.fecha);
+        !(await checkDate(idSociedad, values.fecha))
+          ? mutate(values)
+          : console.log('ya lo tenés'); //cambiar por un pop up
 
         resetForm();
         setSubmitting(false);
@@ -60,18 +61,20 @@ export function ManipularDolar({ idSociedad }) {
           <Field component={Picker} label="Fecha" type="date" name="fecha" />
           <Field
             as={TextField}
-            label="BCRA"
+            label="Estimado"
             type="float"
             maxLength={4}
-            name="BCRA"
-            onChange={(event) => onlyNumbers(event, setFieldValue, 'BCRA')}
+            name="estimado"
+            onChange={(event) => onlyNumbers(event, setFieldValue, 'estimado')}
           />
           <Field
             as={TextField}
-            label="MEP"
+            label="Definitivo"
             type="float"
-            name="mep"
-            onChange={(event) => onlyNumbers(event, setFieldValue, 'mep')}
+            name="definitivo"
+            onChange={(event) =>
+              onlyNumbers(event, setFieldValue, 'definitivo')
+            }
           />
           <Button type="submit" disabled={isSubmitting}>
             Agregar
@@ -83,15 +86,14 @@ export function ManipularDolar({ idSociedad }) {
 }
 
 async function checkDate(idSociedad, date) {
-  let url = `dolar/mostrar/${idSociedad}/${yearMonthDayString(date)}`;
-  console.log(url);
+  let url = `cac/mostrar/${idSociedad}/${date}`;
   return Boolean(await getMethod(url));
 }
 
 function onlyNumbers(event, setFieldValue, typeOfData) {
   event.preventDefault();
   const { value } = event.target;
-  const regex = /^\d{0,3}(\.\d{0,2})?$/;
+  const regex = /^\d{0,4}(\.\d{0,2})?$/;
   if (regex.test(value.toString())) {
     setFieldValue(typeOfData, value.toString());
   }
@@ -102,6 +104,6 @@ Picker.propTypes = {
   form: PropTypes.object.isRequired
 };
 
-ManipularDolar.propTypes = {
+ManipularCac.propTypes = {
   idSociedad: PropTypes.number.isRequired
 };
