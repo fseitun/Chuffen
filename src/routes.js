@@ -13,6 +13,7 @@ import Settings from 'src/pages/Settings';
 import Usuarios from 'src/pages/Usuarios';
 import Rubros from 'src/pages/Rubros';
 import { Dolar } from 'src/pages/Dolar';
+import { Cac } from 'src/pages/Cac';
 import { Formulario } from 'src/pages/Pruebas';
 import Proveedores from 'src/pages/Proveedores';
 
@@ -32,6 +33,7 @@ const routes = [
       { path: 'rubros', element: <Rubros /> },
       { path: 'pruebas', element: <Formulario /> },
       { path: 'dolar', element: <Dolar idSociedad={idSociedad} /> },
+      { path: 'cac', element: <Cac idSociedad={idSociedad} /> },
       { path: 'proveedores', element: <Proveedores /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
