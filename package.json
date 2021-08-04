@@ -34,6 +34,7 @@
     "@material-ui/lab": "^5.0.0-alpha.41",
     "@material-ui/styles": "^5.0.0-beta.2",
     "axios": "^0.21.1",
+    "dotenv": "^10.0.0",
     "formik": "^2.2.9",
     "history": "^5.0.0",
     "npm": "^7.20.2",

@@ -12,8 +12,6 @@ import {
   TextField,
   Typography
 } from '@material-ui/core';
-import FacebookIcon from 'src/icons/Facebook';
-import GoogleIcon from 'src/icons/Google';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -83,7 +81,6 @@ const Login = () => {
                     <Button
                       color="primary"
                       fullWidth
-                      startIcon={<FacebookIcon />}
                       onClick={handleSubmit}
                       size="large"
                       variant="contained"
@@ -98,7 +95,6 @@ const Login = () => {
                   >
                     <Button
                       fullWidth
-                      startIcon={<GoogleIcon />}
                       onClick={handleSubmit}
                       size="large"
                       variant="contained"

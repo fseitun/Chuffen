@@ -5,6 +5,10 @@ import { ThemeProvider } from '@material-ui/core'; // manda a los childs el them
 import GlobalStyles from 'src/components/GlobalStyles';
 import theme from 'src/theme'; // trae el theme de src/theme/index.js, lo reparte con ThemeProvider
 import { routes } from 'src/routes';
+// require('dotenv').config();
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export default function App() {
   const routing = useRoutes(routes);

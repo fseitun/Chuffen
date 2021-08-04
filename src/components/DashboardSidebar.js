@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Box, Drawer, List } from '@material-ui/core';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
+import LocalShippingIcon from '@material-ui/icons/LocalShipping';
 import NavItem from './NavItem';
 
 const items = [
@@ -16,6 +17,11 @@ const items = [
     href: '/app/cac',
     icon: TrendingUpIcon,
     title: 'CAC'
+  },
+  {
+    href: '/app/proveedores',
+    icon: LocalShippingIcon,
+    title: 'Proveedores'
   }
 ];
 
