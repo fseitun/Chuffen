@@ -5,16 +5,16 @@ import { PropTypes } from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
 
-import { ManipularCac } from 'src/components/cac/ManipularCac';
-import { GrillaCac } from 'src/components/cac/GrillaCac';
+import { ManipularProveedores } from 'src/components/proveedores/ManipularProveedores';
+import { GrillaProveedores } from 'src/components/proveedores/GrillaProveedores';
 
 const queryClient = new QueryClient();
 
-export function Cac({ idSociedad }) {
+export function Proveedores({ idSociedad }) {
   return (
     <QueryClientProvider client={queryClient}>
       <Helmet>
-        <title>CAC | TSF Desarrollos</title>
+        <title>Proveedores | TSF Desarrollos</title>
       </Helmet>
       <Box
         sx={{
@@ -25,10 +25,10 @@ export function Cac({ idSociedad }) {
       >
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <ManipularCac idSociedad={idSociedad} />
+            <ManipularProveedores idSociedad={idSociedad} />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <GrillaCac idSociedad={idSociedad} />
+            <GrillaProveedores idSociedad={idSociedad} />
           </Box>
         </Container>
       </Box>
@@ -36,6 +36,6 @@ export function Cac({ idSociedad }) {
     </QueryClientProvider>
   );
 }
-Cac.propTypes = {
+Proveedores.propTypes = {
   idSociedad: PropTypes.number
 };
