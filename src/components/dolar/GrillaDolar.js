@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  DataGrid,
-  GridToolbarContainer,
-  GridToolbarExport
-} from '@material-ui/data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@material-ui/data-grid';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { Button, Box } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -22,8 +18,7 @@ const columns = [
     type: 'date',
     headerAlign: 'center',
     align: 'center',
-    valueFormatter: ({ value }) =>
-      new Date(value).toLocaleDateString('es-AR', { timeZone: 'UTC' })
+    valueFormatter: ({ value }) => new Date(value).toLocaleDateString('es-AR', { timeZone: 'UTC' }),
   },
   {
     field: 'BCRA',
@@ -34,9 +29,7 @@ const columns = [
     align: 'right',
 
     valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(
-        Number(value)
-      )
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
   {
     field: 'mep',
@@ -46,9 +39,7 @@ const columns = [
     headerAlign: 'center',
     align: 'right',
     valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(
-        Number(value)
-      )
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
   {
     field: 'deleteIcon',
@@ -56,20 +47,19 @@ const columns = [
     width: 50,
     headerAlign: 'center',
     align: 'center',
-    renderCell: DeleteRow
-  }
+    renderCell: DeleteRow,
+  },
 ];
 
 export function GrillaDolar({ idSociedad }) {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation(
-    async (id) => {
+    async id => {
       await deleteMethod(`dolar/eliminar/${idSociedad}`, id);
     },
     {
-      onSuccess: async () =>
-        await queryClient.refetchQueries(['dolar', idSociedad])
+      onSuccess: async () => await queryClient.refetchQueries(['dolar', idSociedad]),
     }
   );
 
@@ -83,7 +73,7 @@ export function GrillaDolar({ idSociedad }) {
   function handleCellModification(e) {
     let newData = {
       id: e.id,
-      [e.field]: e.props.value
+      [e.field]: e.props.value,
     };
     postMethod(`dolar/modificar/${idSociedad}`, newData);
   }
@@ -92,14 +82,14 @@ export function GrillaDolar({ idSociedad }) {
     <div style={{ width: '100%' }}>
       <ToastContainer />
       <DataGrid
-        rows={data.map((el) => ({
+        rows={data.map(el => ({
           id: el.id,
           fecha: el.fecha,
           BCRA: el.BCRA,
           blue: el.blue,
           descripcion: el.descripcion,
           mep: el.mep,
-          onDelete: () => mutate(el.id)
+          onDelete: () => mutate(el.id),
         }))}
         columns={columns}
         pageSize={25}
@@ -108,13 +98,13 @@ export function GrillaDolar({ idSociedad }) {
         sortModel={[
           {
             field: 'fecha',
-            sort: 'asc'
-          }
+            sort: 'asc',
+          },
         ]}
         scrollbarSize
         onEditCellChange={handleCellModification}
         components={{
-          Toolbar: CustomToolbar
+          Toolbar: CustomToolbar,
         }}
       />
     </div>
@@ -136,23 +126,21 @@ function DeleteRow(params) {
       <Box>
         <Button
           sx={{ p: 1, m: 1 }}
-          variant="contained"
-          color="secondary"
-          size="small"
-          onClick={closeToast}
-        >
+          variant='contained'
+          color='secondary'
+          size='small'
+          onClick={closeToast}>
           No quiero borrar
         </Button>
         <Button
           sx={{ p: 1, m: 1 }}
-          variant="contained"
-          color="secondary"
-          size="small"
+          variant='contained'
+          color='secondary'
+          size='small'
           onClick={() => {
             deleteRow();
             closeToast();
-          }}
-        >
+          }}>
           Sí quiero borrar
         </Button>
       </Box>
@@ -161,5 +149,5 @@ function DeleteRow(params) {
 }
 
 GrillaDolar.propTypes = {
-  idSociedad: PropTypes.number
+  idSociedad: PropTypes.number,
 };

@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  DataGrid,
-  GridToolbarContainer,
-  GridToolbarExport
-} from '@material-ui/data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@material-ui/data-grid';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { Button, Box } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -20,7 +16,7 @@ const columns = [
     headerName: 'Razón Social',
     width: 170,
     editable: true,
-    headerAlign: 'center'
+    headerAlign: 'center',
   },
   {
     field: 'CUIT',
@@ -35,7 +31,7 @@ const columns = [
       value.splice(9, 0, '.');
       value.splice(13, 0, '-');
       return value.join('');
-    }
+    },
   },
   {
     field: 'telefono',
@@ -50,14 +46,14 @@ const columns = [
         value.splice(7, 0, '-');
         return value.join('');
       }
-    }
+    },
   },
   {
     field: 'mail',
     headerName: 'Mail',
     width: 150,
     editable: true,
-    headerAlign: 'center'
+    headerAlign: 'center',
   },
   {
     field: 'deleteIcon',
@@ -65,20 +61,19 @@ const columns = [
     width: 50,
     headerAlign: 'center',
     align: 'center',
-    renderCell: DeleteRow
-  }
+    renderCell: DeleteRow,
+  },
 ];
 
 export function GrillaProveedores({ idSociedad }) {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation(
-    async (id) => {
+    async id => {
       await deleteMethod(`proveedor/eliminar/${idSociedad}`, id);
     },
     {
-      onSuccess: async () =>
-        await queryClient.refetchQueries(['empresas', idSociedad])
+      onSuccess: async () => await queryClient.refetchQueries(['empresas', idSociedad]),
     }
   );
 
@@ -92,7 +87,7 @@ export function GrillaProveedores({ idSociedad }) {
   function handleCellModification(e) {
     let newData = {
       id: e.id,
-      [e.field]: e.props.value
+      [e.field]: e.props.value,
     };
     postMethod(`proveedor/modificar/${idSociedad}`, newData);
   }
@@ -101,7 +96,7 @@ export function GrillaProveedores({ idSociedad }) {
     <div style={{ width: '100%' }}>
       <ToastContainer />
       <DataGrid
-        rows={data.map((el) => ({
+        rows={data.map(el => ({
           id: el.id,
           razonSocial: el.razonSocial,
           CUIT: el.CUIT,
@@ -110,7 +105,7 @@ export function GrillaProveedores({ idSociedad }) {
           cuentaBancariaId: el.cuentaBancariaId,
           onDelete: () => {
             mutate(el.id);
-          }
+          },
         }))}
         columns={columns}
         pageSize={25}
@@ -119,7 +114,7 @@ export function GrillaProveedores({ idSociedad }) {
         scrollbarSize
         onEditCellChange={handleCellModification}
         components={{
-          Toolbar: CustomToolbar
+          Toolbar: CustomToolbar,
         }}
       />
     </div>
@@ -141,23 +136,21 @@ function DeleteRow(params) {
       <Box>
         <Button
           sx={{ p: 1, m: 1 }}
-          variant="contained"
-          color="secondary"
-          size="small"
-          onClick={closeToast}
-        >
+          variant='contained'
+          color='secondary'
+          size='small'
+          onClick={closeToast}>
           No quiero borrar
         </Button>
         <Button
           sx={{ p: 1, m: 1 }}
-          variant="contained"
-          color="secondary"
-          size="small"
+          variant='contained'
+          color='secondary'
+          size='small'
           onClick={() => {
             deleteRow();
             closeToast();
-          }}
-        >
+          }}>
           Sí quiero borrar
         </Button>
       </Box>
@@ -166,5 +159,5 @@ function DeleteRow(params) {
 }
 
 GrillaProveedores.propTypes = {
-  idSociedad: PropTypes.number
+  idSociedad: PropTypes.number,
 };

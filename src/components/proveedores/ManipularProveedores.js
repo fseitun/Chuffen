@@ -9,13 +9,13 @@ import { getMethod, postMethod } from 'src/utils/api';
 export function ManipularProveedores({ idSociedad }) {
   const queryClient = useQueryClient();
   const { mutate } = useMutation(
-    (newData) =>
+    newData =>
       // console.log(newData);
       // console.log(`cac/agregar/${idSociedad}`);
 
       postMethod(`proveedor/agregar/${idSociedad}`, newData),
     {
-      onSuccess: () => queryClient.refetchQueries(['empresas', idSociedad])
+      onSuccess: () => queryClient.refetchQueries(['empresas', idSociedad]),
     }
   );
 
@@ -23,34 +23,26 @@ export function ManipularProveedores({ idSociedad }) {
     <Formik
       initialValues={{
         CUIT: '',
-        razonSocial: ''
+        razonSocial: '',
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        !(await checkCuit(idSociedad, values.CUIT))
-          ? mutate(values)
-          : console.log('ya lo tenés'); //cambiar por un pop up
+        !(await checkCuit(idSociedad, values.CUIT)) ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
 
         resetForm();
         setSubmitting(false);
-      }}
-    >
+      }}>
       {({ isSubmitting, setFieldValue }) => (
         <Form>
           <Field
             as={TextField}
-            label="CUIT"
-            type="string"
+            label='CUIT'
+            type='string'
             maxLength={11}
-            name="CUIT"
-            onChange={(event) => onlyNumbers(event, setFieldValue, 'CUIT')}
+            name='CUIT'
+            onChange={event => onlyNumbers(event, setFieldValue, 'CUIT')}
           />
-          <Field
-            as={TextField}
-            label="Razón Social"
-            type="string"
-            name="razonSocial"
-          />
-          <Button type="submit" disabled={isSubmitting}>
+          <Field as={TextField} label='Razón Social' type='string' name='razonSocial' />
+          <Button type='submit' disabled={isSubmitting}>
             Agregar
           </Button>
         </Form>
@@ -74,5 +66,5 @@ function onlyNumbers(event, setFieldValue, typeOfData) {
 }
 
 ManipularProveedores.propTypes = {
-  idSociedad: PropTypes.number.isRequired
+  idSociedad: PropTypes.number.isRequired,
 };

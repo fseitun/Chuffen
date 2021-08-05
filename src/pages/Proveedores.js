@@ -16,9 +16,8 @@ export function Proveedores({ idSociedad }) {
         sx={{
           backgroundColor: 'background.default',
           minHeight: '100%',
-          py: 3
-        }}
-      >
+          py: 3,
+        }}>
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
             <ManipularProveedores idSociedad={idSociedad} />
@@ -32,5 +31,5 @@ export function Proveedores({ idSociedad }) {
   );
 }
 Proveedores.propTypes = {
-  idSociedad: PropTypes.number
+  idSociedad: PropTypes.number,
 };
