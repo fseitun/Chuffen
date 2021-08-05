@@ -3,6 +3,8 @@ import { Outlet } from 'react-router-dom'; // permite que los childs vean las ru
 import { styled } from '@material-ui/core';
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
+// import { ReactQueryDevtools } from 'react-query/devtools';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 const DashboardLayoutRoot = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -34,6 +36,8 @@ const DashboardLayoutContent = styled('div')({
   overflow: 'auto'
 });
 
+const queryClient = new QueryClient();
+
 export default function DashboardLayout() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
@@ -47,7 +51,10 @@ export default function DashboardLayout() {
       <DashboardLayoutWrapper>
         <DashboardLayoutContainer>
           <DashboardLayoutContent>
-            <Outlet />
+            <QueryClientProvider client={queryClient}>
+              <Outlet />
+              {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+            </QueryClientProvider>
           </DashboardLayoutContent>
         </DashboardLayoutContainer>
       </DashboardLayoutWrapper>

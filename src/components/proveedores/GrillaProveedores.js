@@ -29,7 +29,7 @@ const columns = [
     // editable: true,
     headerAlign: 'center',
     valueFormatter: ({ value }) => {
-      value = value.toString().split('');
+      value = value.split('');
       value.splice(2, 0, '-');
       value.splice(5, 0, '.');
       value.splice(9, 0, '.');
@@ -45,7 +45,7 @@ const columns = [
     headerAlign: 'center',
     valueFormatter: ({ value }) => {
       if (value) {
-        value = value.toString().split('');
+        value = value.split('');
         value.splice(2, 0, '-');
         value.splice(7, 0, '-');
         return value.join('');

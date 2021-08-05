@@ -1,17 +1,9 @@
 import React from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 // import * as Yup from 'yup';
 import { Formik } from 'formik';
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Link,
-  TextField,
-  Typography
-} from '@material-ui/core';
+import { Box, Button, Container, TextField } from '@material-ui/core';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -33,8 +25,8 @@ const Login = () => {
         <Container maxWidth="sm">
           <Formik
             initialValues={{
-              email: 'jvidal@gmail.com',
-              password: 'abc123'
+              email: ' @tsfdesarrollos.com',
+              password: ''
             }}
             // validationSchema={Yup.object().shape({
             //   email: Yup.string().email('Debe ser un correo válido').max(255).required('Ingresar correo'),
@@ -54,69 +46,6 @@ const Login = () => {
               values
             }) => (
               <form onSubmit={handleSubmit}>
-                <Box sx={{ mb: 3 }}>
-                  <Typography
-                    color="textPrimary"
-                    variant="h2"
-                  >
-                    Entrar
-                  </Typography>
-                  <Typography
-                    color="textSecondary"
-                    gutterBottom
-                    variant="body2"
-                  >
-                    Entrar a TSF
-                  </Typography>
-                </Box>
-                <Grid
-                  container
-                  spacing={3}
-                >
-                  <Grid
-                    item
-                    xs={12}
-                    md={6}
-                  >
-                    <Button
-                      color="primary"
-                      fullWidth
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained"
-                    >
-                      Entrar con Facebook
-                    </Button>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    md={6}
-                  >
-                    <Button
-                      fullWidth
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained"
-                    >
-                      Entrar con Google
-                    </Button>
-                  </Grid>
-                </Grid>
-                <Box
-                  sx={{
-                    pb: 1,
-                    pt: 3
-                  }}
-                >
-                  <Typography
-                    align="center"
-                    color="textSecondary"
-                    variant="body1"
-                  >
-                    o usar correo
-                  </Typography>
-                </Box>
                 <TextField
                   error={Boolean(touched.email && errors.email)}
                   fullWidth
@@ -155,20 +84,6 @@ const Login = () => {
                     Ingresar
                   </Button>
                 </Box>
-                <Typography
-                  color="textSecondary"
-                  variant="body1"
-                >
-                  ¿No podés acceder?
-                  {' '}
-                  <Link
-                    component={RouterLink}
-                    to="/register"
-                    variant="h6"
-                  >
-                    Contactate con el administrador
-                  </Link>
-                </Typography>
               </form>
             )}
           </Formik>

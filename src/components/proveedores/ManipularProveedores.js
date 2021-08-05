@@ -39,7 +39,7 @@ export function ManipularProveedores({ idSociedad }) {
           <Field
             as={TextField}
             label="CUIT"
-            type="number"
+            type="string"
             maxLength={11}
             name="CUIT"
             onChange={(event) => onlyNumbers(event, setFieldValue, 'CUIT')}

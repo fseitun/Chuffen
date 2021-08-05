@@ -11,10 +11,10 @@ import {
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
-import Logo from './Logo';
+import Logo from 'src/components/Logo.js';
 
 const user = {
-  avatar: '/static/images/avatars/avatar_6.png'
+  avatar: '/static/images/avatars/ingeniero.png'
 };
 
 export default function DashboardNavbar({ onMobileNavOpen, ...rest }) {
