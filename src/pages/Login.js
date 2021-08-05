@@ -19,14 +19,13 @@ const Login = () => {
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
-          justifyContent: 'center'
-        }}
-      >
-        <Container maxWidth="sm">
+          justifyContent: 'center',
+        }}>
+        <Container maxWidth='sm'>
           <Formik
             initialValues={{
               email: ' @tsfdesarrollos.com',
-              password: ''
+              password: '',
             }}
             // validationSchema={Yup.object().shape({
             //   email: Yup.string().email('Debe ser un correo válido').max(255).required('Ingresar correo'),
@@ -34,8 +33,7 @@ const Login = () => {
             // })}
             onSubmit={() => {
               navigate('/app/dashboard', { replace: true });
-            }}
-          >
+            }}>
             {({
               errors,
               handleBlur,
@@ -43,44 +41,43 @@ const Login = () => {
               handleSubmit,
               isSubmitting,
               touched,
-              values
+              values,
             }) => (
               <form onSubmit={handleSubmit}>
                 <TextField
                   error={Boolean(touched.email && errors.email)}
                   fullWidth
                   helperText={touched.email && errors.email}
-                  label="Correo"
-                  margin="normal"
-                  name="email"
+                  label='Correo'
+                  margin='normal'
+                  name='email'
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  type="email"
+                  type='email'
                   value={values.email}
-                  variant="outlined"
+                  variant='outlined'
                 />
                 <TextField
                   error={Boolean(touched.password && errors.password)}
                   fullWidth
                   helperText={touched.password && errors.password}
-                  label="Contraseña"
-                  margin="normal"
-                  name="password"
+                  label='Contraseña'
+                  margin='normal'
+                  name='password'
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  type="password"
+                  type='password'
                   value={values.password}
-                  variant="outlined"
+                  variant='outlined'
                 />
                 <Box sx={{ py: 2 }}>
                   <Button
-                    color="primary"
+                    color='primary'
                     disabled={isSubmitting}
                     fullWidth
-                    size="large"
-                    type="submit"
-                    variant="contained"
-                  >
+                    size='large'
+                    type='submit'
+                    variant='contained'>
                     Ingresar
                   </Button>
                 </Box>

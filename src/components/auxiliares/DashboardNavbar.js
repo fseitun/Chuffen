@@ -1,20 +1,13 @@
 import { React, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {
-  AppBar,
-  Avatar,
-  Badge,
-  Box,
-  IconButton,
-  Toolbar
-} from '@material-ui/core';
+import { AppBar, Avatar, Badge, Box, IconButton, Toolbar } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
-import Logo from 'src/components/Logo.js';
+import Logo from 'src/components/auxiliares/Logo.js';
 
 const user = {
-  avatar: '/static/images/avatars/ingeniero.png'
+  avatar: '/static/images/avatars/ingeniero.png',
 };
 
 export default function DashboardNavbar({ onMobileNavOpen, ...rest }) {
@@ -23,36 +16,31 @@ export default function DashboardNavbar({ onMobileNavOpen, ...rest }) {
   return (
     <AppBar elevation={0} {...rest}>
       <Toolbar>
-        <RouterLink to="/">
+        <RouterLink to='/'>
           <Logo />
         </RouterLink>
         <Box sx={{ flexGrow: 1 }} />
-        <IconButton color="inherit">
-          <Badge
-            badgeContent={notifications.length}
-            color="primary"
-            variant="dot"
-          >
+        <IconButton color='inherit'>
+          <Badge badgeContent={notifications.length} color='primary' variant='dot'>
             <NotificationsIcon />
           </Badge>
         </IconButton>
         <IconButton
-          color="inherit"
+          color='inherit'
           sx={{ display: { sm: 'block', md: 'none' } }}
-          onClick={onMobileNavOpen}
-        >
+          onClick={onMobileNavOpen}>
           <MenuIcon />
         </IconButton>
-        <IconButton color="inherit">
+        <IconButton color='inherit'>
           <Avatar
             component={RouterLink}
             src={user.avatar}
             sx={{
               cursor: 'pointer',
               width: 30,
-              height: 30
+              height: 30,
             }}
-            to="/app/account"
+            to='/app/account'
           />
         </IconButton>
       </Toolbar>
@@ -61,5 +49,5 @@ export default function DashboardNavbar({ onMobileNavOpen, ...rest }) {
 }
 
 DashboardNavbar.propTypes = {
-  onMobileNavOpen: PropTypes.func
+  onMobileNavOpen: PropTypes.func,
 };

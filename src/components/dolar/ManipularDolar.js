@@ -16,11 +16,11 @@ function Picker({ field, form }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DesktopDatePicker
-        label="Fecha"
-        inputFormat="dd/MM/yyyy"
+        label='Fecha'
+        inputFormat='dd/MM/yyyy'
         value={value}
-        onChange={(value) => setFieldValue(name, value)}
-        renderInput={(params) => <TextField {...params} />}
+        onChange={value => setFieldValue(name, value)}
+        renderInput={params => <TextField {...params} />}
       />
     </LocalizationProvider>
   );
@@ -29,21 +29,18 @@ function Picker({ field, form }) {
 export function ManipularDolar({ idSociedad }) {
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation(
-    (newData) => postMethod(`dolar/agregar/${idSociedad}`, newData),
-    {
-      onSuccess: () => {
-        queryClient.refetchQueries(['dolar', idSociedad]);
-      }
-    }
-  );
+  const { mutate } = useMutation(newData => postMethod(`dolar/agregar/${idSociedad}`, newData), {
+    onSuccess: () => {
+      queryClient.refetchQueries(['dolar', idSociedad]);
+    },
+  });
 
   return (
     <Formik
       initialValues={{
         fecha: new Date(),
         mep: '',
-        BCRA: ''
+        BCRA: '',
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         let bool = await checkDate(idSociedad, values.fecha);
@@ -53,27 +50,26 @@ export function ManipularDolar({ idSociedad }) {
 
         resetForm();
         setSubmitting(false);
-      }}
-    >
+      }}>
       {({ isSubmitting, setFieldValue }) => (
         <Form>
-          <Field component={Picker} label="Fecha" type="date" name="fecha" />
+          <Field component={Picker} label='Fecha' type='date' name='fecha' />
           <Field
             as={TextField}
-            label="BCRA"
-            type="float"
+            label='BCRA'
+            type='float'
             maxLength={4}
-            name="BCRA"
-            onChange={(event) => onlyNumbers(event, setFieldValue, 'BCRA')}
+            name='BCRA'
+            onChange={event => onlyNumbers(event, setFieldValue, 'BCRA')}
           />
           <Field
             as={TextField}
-            label="MEP"
-            type="float"
-            name="mep"
-            onChange={(event) => onlyNumbers(event, setFieldValue, 'mep')}
+            label='MEP'
+            type='float'
+            name='mep'
+            onChange={event => onlyNumbers(event, setFieldValue, 'mep')}
           />
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type='submit' disabled={isSubmitting}>
             Agregar
           </Button>
         </Form>
@@ -99,9 +95,9 @@ function onlyNumbers(event, setFieldValue, typeOfData) {
 
 Picker.propTypes = {
   field: PropTypes.object.isRequired,
-  form: PropTypes.object.isRequired
+  form: PropTypes.object.isRequired,
 };
 
 ManipularDolar.propTypes = {
-  idSociedad: PropTypes.number.isRequired
+  idSociedad: PropTypes.number.isRequired,
 };

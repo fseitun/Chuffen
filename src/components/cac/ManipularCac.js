@@ -16,11 +16,11 @@ function Picker({ field, form }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DesktopDatePicker
-        label="Fecha"
-        inputFormat="dd/MM/yyyy"
+        label='Fecha'
+        inputFormat='dd/MM/yyyy'
         value={value}
-        onChange={(value) => setFieldValue(name, value)}
-        renderInput={(params) => <TextField {...params} />}
+        onChange={value => setFieldValue(name, value)}
+        renderInput={params => <TextField {...params} />}
       />
     </LocalizationProvider>
   );
@@ -29,13 +29,13 @@ function Picker({ field, form }) {
 export function ManipularCac({ idSociedad }) {
   const queryClient = useQueryClient();
   const { mutate } = useMutation(
-    (newData) =>
+    newData =>
       // console.log(newData);
       // console.log(`cac/agregar/${idSociedad}`);
 
       postMethod(`cac/agregar/${idSociedad}`, newData),
     {
-      onSuccess: () => queryClient.refetchQueries(['cac', idSociedad])
+      onSuccess: () => queryClient.refetchQueries(['cac', idSociedad]),
     }
   );
 
@@ -44,39 +44,34 @@ export function ManipularCac({ idSociedad }) {
       initialValues={{
         fecha: new Date(),
         estimado: '',
-        definitivo: ''
+        definitivo: '',
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         values.fecha = yearMonthOneString(values.fecha);
-        !(await checkDate(idSociedad, values.fecha))
-          ? mutate(values)
-          : console.log('ya lo tenés'); //cambiar por un pop up
+        !(await checkDate(idSociedad, values.fecha)) ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
 
         resetForm();
         setSubmitting(false);
-      }}
-    >
+      }}>
       {({ isSubmitting, setFieldValue }) => (
         <Form>
-          <Field component={Picker} label="Fecha" type="date" name="fecha" />
+          <Field component={Picker} label='Fecha' type='date' name='fecha' />
           <Field
             as={TextField}
-            label="Estimado"
-            type="float"
+            label='Estimado'
+            type='float'
             maxLength={4}
-            name="estimado"
-            onChange={(event) => onlyNumbers(event, setFieldValue, 'estimado')}
+            name='estimado'
+            onChange={event => onlyNumbers(event, setFieldValue, 'estimado')}
           />
           <Field
             as={TextField}
-            label="Definitivo"
-            type="float"
-            name="definitivo"
-            onChange={(event) =>
-              onlyNumbers(event, setFieldValue, 'definitivo')
-            }
+            label='Definitivo'
+            type='float'
+            name='definitivo'
+            onChange={event => onlyNumbers(event, setFieldValue, 'definitivo')}
           />
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type='submit' disabled={isSubmitting}>
             Agregar
           </Button>
         </Form>
@@ -101,9 +96,9 @@ function onlyNumbers(event, setFieldValue, typeOfData) {
 
 Picker.propTypes = {
   field: PropTypes.object.isRequired,
-  form: PropTypes.object.isRequired
+  form: PropTypes.object.isRequired,
 };
 
 ManipularCac.propTypes = {
-  idSociedad: PropTypes.number.isRequired
+  idSociedad: PropTypes.number.isRequired,
 };

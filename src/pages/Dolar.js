@@ -16,9 +16,8 @@ export function Dolar({ idSociedad }) {
         sx={{
           backgroundColor: 'background.default',
           minHeight: '100%',
-          py: 3
-        }}
-      >
+          py: 3,
+        }}>
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
             <ManipularDolar idSociedad={idSociedad} />
@@ -32,5 +31,5 @@ export function Dolar({ idSociedad }) {
   );
 }
 Dolar.propTypes = {
-  idSociedad: PropTypes.number
+  idSociedad: PropTypes.number,
 };
