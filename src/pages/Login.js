@@ -24,70 +24,63 @@ const Login = () => {
         <Container maxWidth='sm'>
           <Formik
             initialValues={{
-              email: ' @tsfdesarrollos.com',
+              email: '',
               password: '',
             }}
-            // validationSchema={Yup.object().shape({
-            //   email: Yup.string().email('Debe ser un correo válido').max(255).required('Ingresar correo'),
-            //   password: Yup.string().max(255).required('Ingresar contraseña')
-            // })}
-            onSubmit={() => {
-              navigate('/app/dashboard', { replace: true });
+            onSubmit={(values, actions) => {
+              if (userCheck(values.email, values.password)) {
+                actions.resetForm();
+                navigate('/app/cac', { replace: true });
+              } else actions.resetForm();
             }}>
-            {({
-              errors,
-              handleBlur,
-              handleChange,
-              handleSubmit,
-              isSubmitting,
-              touched,
-              values,
-            }) => (
-              <form onSubmit={handleSubmit}>
-                <TextField
-                  error={Boolean(touched.email && errors.email)}
-                  fullWidth
-                  helperText={touched.email && errors.email}
-                  label='Correo'
-                  margin='normal'
-                  name='email'
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  type='email'
-                  value={values.email}
-                  variant='outlined'
-                />
-                <TextField
-                  error={Boolean(touched.password && errors.password)}
-                  fullWidth
-                  helperText={touched.password && errors.password}
-                  label='Contraseña'
-                  margin='normal'
-                  name='password'
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  type='password'
-                  value={values.password}
-                  variant='outlined'
-                />
-                <Box sx={{ py: 2 }}>
-                  <Button
-                    color='primary'
-                    disabled={isSubmitting}
+            {function (props) {
+              return (
+                <form onSubmit={props.handleSubmit}>
+                  <TextField
                     fullWidth
-                    size='large'
-                    type='submit'
-                    variant='contained'>
-                    Ingresar
-                  </Button>
-                </Box>
-              </form>
-            )}
+                    label='Correo'
+                    margin='normal'
+                    name='email'
+                    onBlur={props.handleBlur}
+                    onChange={props.handleChange}
+                    value={props.values.email}
+                    variant='outlined'
+                  />
+                  <TextField
+                    fullWidth
+                    label='Contraseña'
+                    margin='normal'
+                    name='password'
+                    autoComplete='on'
+                    onBlur={props.handleBlur}
+                    onChange={props.handleChange}
+                    type='password'
+                    value={props.values.password}
+                    variant='outlined'
+                  />
+                  <Box sx={{ py: 2 }}>
+                    <Button
+                      color='primary'
+                      disabled={props.isSubmitting}
+                      fullWidth
+                      size='large'
+                      type='submit'
+                      variant='contained'>
+                      Ingresar
+                    </Button>
+                  </Box>
+                </form>
+              );
+            }}
           </Formik>
         </Container>
       </Box>
     </>
   );
 };
+
+function userCheck(email, password) {
+  return email === 'admin' && password === '123';
+}
 
 export default Login;

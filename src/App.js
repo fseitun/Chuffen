@@ -31,7 +31,7 @@ export default function App() {
         <Route path='/' element={<MainLayout />}>
           <Route path='login' element={<Login />} />
           <Route path='404' element={<NotFound />} />
-          <Route path='/' element={<Navigate to='/app/dolar' />} />
+          <Route path='/' element={<Navigate to='/login' />} />
           <Route path='*' element={<Navigate to='/404' />} />
         </Route>
       </Routes>
