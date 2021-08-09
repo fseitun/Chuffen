@@ -8,7 +8,7 @@ import GlobalStyles from 'src/components/auxiliares/GlobalStyles';
 import theme from 'src/theme'; // trae el theme de src/theme/index.js, lo reparte con ThemeProvider
 import DashboardLayout from 'src/components/auxiliares/DashboardLayout';
 import MainLayout from 'src/components/auxiliares/MainLayout';
-import Login from 'src/pages/Login';
+import { Login } from 'src/pages/Login';
 import NotFound from 'src/pages/NotFound';
 import { Dolar } from 'src/pages/Dolar';
 import { Cac } from 'src/pages/Cac';
@@ -29,7 +29,7 @@ export default function App() {
           <Route path='*' element={<Navigate to='/404' />} />
         </Route>
         <Route path='/' element={<MainLayout />}>
-          <Route path='login' element={<Login />} />
+          <Route path='login' element={<Login idSociedad={idSociedad} />} />
           <Route path='404' element={<NotFound />} />
           <Route path='/' element={<Navigate to='/login' />} />
           <Route path='*' element={<Navigate to='/404' />} />

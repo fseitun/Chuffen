@@ -4,8 +4,9 @@ import { Helmet } from 'react-helmet';
 // import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { Box, Button, Container, TextField } from '@material-ui/core';
+import { postMethod } from 'src/utils/api';
 
-const Login = () => {
+export function Login({ idSociedad }) {
   const navigate = useNavigate();
 
   return (
@@ -27,8 +28,8 @@ const Login = () => {
               email: '',
               password: '',
             }}
-            onSubmit={(values, actions) => {
-              if (userCheck(values.email, values.password)) {
+            onSubmit={async (values, actions) => {
+              if (await userCheck(idSociedad, values.email, values.password)) {
                 actions.resetForm();
                 navigate('/app/cac', { replace: true });
               } else actions.resetForm();
@@ -77,10 +78,12 @@ const Login = () => {
       </Box>
     </>
   );
-};
-
-function userCheck(email, password) {
-  return email === 'admin' && password === '123';
 }
 
-export default Login;
+async function userCheck(idSociedad, email, password) {
+  const loggedUser = await postMethod(`usuario/login/${idSociedad}`, {
+    user: email,
+    pass: password,
+  });
+  return loggedUser !== null ? true : false;
+}
