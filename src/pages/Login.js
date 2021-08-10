@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 import { Box, Button, Container, TextField } from '@material-ui/core';
 import { postMethod } from 'src/utils/api';
 
-export function Login({ idSociedad }) {
+export function Login({ idSociedad, setIsAuth }) {
   const navigate = useNavigate();
 
   return (
@@ -30,6 +30,7 @@ export function Login({ idSociedad }) {
             }}
             onSubmit={async (values, actions) => {
               if (await userCheck(idSociedad, values.email, values.password)) {
+                setIsAuth(values.email);
                 actions.resetForm();
                 navigate('/app/cac', { replace: true });
               } else actions.resetForm();

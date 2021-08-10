@@ -13,25 +13,31 @@ import NotFound from 'src/pages/NotFound';
 import { Dolar } from 'src/pages/Dolar';
 import { Cac } from 'src/pages/Cac';
 import { Proveedores } from 'src/pages/Proveedores';
+import { useAuth } from 'src/components/auxiliares/useAuth';
 
 dotenv.config();
 let idSociedad = 1; // esto después lo pisaremos desde la autenticación de usuario
 
 export default function App() {
+  const { isAuth, setIsAuth } = useAuth();
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <Routes>
-        <Route path='app' element={<DashboardLayout />}>
-          <Route path='dolar' element={<Dolar idSociedad={idSociedad} />} />
-          <Route path='cac' element={<Cac idSociedad={idSociedad} />} />
-          <Route path='proveedores' element={<Proveedores idSociedad={idSociedad} />} />
-          <Route path='*' element={<Navigate to='/404' />} />
-        </Route>
+        {isAuth ? (
+          <Route path='app' element={<DashboardLayout setIsAuth={setIsAuth} />}>
+            <Route path='dolar' element={<Dolar idSociedad={idSociedad} />} />
+            <Route path='cac' element={<Cac idSociedad={idSociedad} />} />
+            <Route path='proveedores' element={<Proveedores idSociedad={idSociedad} />} />
+            <Route path='*' element={<Navigate to='/404' />} />
+          </Route>
+        ) : (
+          <Route path='*' element={<Navigate to='/login' />} />
+        )}
         <Route path='/' element={<MainLayout />}>
-          <Route path='login' element={<Login idSociedad={idSociedad} />} />
+          <Route path='login' element={<Login setIsAuth={setIsAuth} idSociedad={idSociedad} />} />
           <Route path='404' element={<NotFound />} />
-          <Route path='/' element={<Navigate to='/login' />} />
+          <Route path='/' element={isAuth ? <Navigate to='app' /> : <Navigate to='login' />} />
           <Route path='*' element={<Navigate to='/404' />} />
         </Route>
       </Routes>
