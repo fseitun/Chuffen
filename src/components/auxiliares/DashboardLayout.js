@@ -11,7 +11,7 @@ const DashboardLayoutRoot = styled('div')(({ theme }) => ({
   display: 'flex',
   height: '100%',
   overflow: 'hidden',
-  width: '100%'
+  width: '100%',
 }));
 
 const DashboardLayoutWrapper = styled('div')(({ theme }) => ({
@@ -20,34 +20,31 @@ const DashboardLayoutWrapper = styled('div')(({ theme }) => ({
   overflow: 'hidden',
   paddingTop: 64,
   [theme.breakpoints.up('lg')]: {
-    paddingLeft: 256
-  }
+    paddingLeft: 256,
+  },
 }));
 
 const DashboardLayoutContainer = styled('div')({
   display: 'flex',
   flex: '1 1 auto',
-  overflow: 'hidden'
+  overflow: 'hidden',
 });
 
 const DashboardLayoutContent = styled('div')({
   flex: '1 1 auto',
   height: '100%',
-  overflow: 'auto'
+  overflow: 'auto',
 });
 
 const queryClient = new QueryClient();
 
-export default function DashboardLayout() {
+export default function DashboardLayout({ setIsAuth }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
     <DashboardLayoutRoot>
-      <DashboardNavbar onMobileNavOpen={() => setMobileNavOpen(true)} />
-      <DashboardSidebar
-        onMobileClose={() => setMobileNavOpen(false)}
-        openMobile={mobileNavOpen}
-      />
+      <DashboardNavbar onMobileNavOpen={() => setMobileNavOpen(true)} setIsAuth={setIsAuth} />
+      <DashboardSidebar onMobileClose={() => setMobileNavOpen(false)} openMobile={mobileNavOpen} />
       <DashboardLayoutWrapper>
         <DashboardLayoutContainer>
           <DashboardLayoutContent>
