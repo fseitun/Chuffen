@@ -44,8 +44,6 @@ export function ManipularDolar({ idSociedad }) {
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         let bool = await checkDate(idSociedad, values.fecha);
-        console.log(bool);
-        // !(await checkDate(idSociedad, values.fecha))
         !bool ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
 
         resetForm();
@@ -80,7 +78,6 @@ export function ManipularDolar({ idSociedad }) {
 
 async function checkDate(idSociedad, date) {
   let url = `dolar/mostrar/${idSociedad}/${yearMonthDayString(date)}`;
-  console.log(url);
   return Boolean(await getMethod(url));
 }
 

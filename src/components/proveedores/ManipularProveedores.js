@@ -10,9 +10,6 @@ export function ManipularProveedores({ idSociedad }) {
   const queryClient = useQueryClient();
   const { mutate } = useMutation(
     newData =>
-      // console.log(newData);
-      // console.log(`cac/agregar/${idSociedad}`);
-
       postMethod(`proveedor/agregar/${idSociedad}`, newData),
     {
       onSuccess: () => queryClient.refetchQueries(['empresas', idSociedad]),

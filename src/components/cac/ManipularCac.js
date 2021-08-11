@@ -30,9 +30,6 @@ export function ManipularCac({ idSociedad }) {
   const queryClient = useQueryClient();
   const { mutate } = useMutation(
     newData =>
-      // console.log(newData);
-      // console.log(`cac/agregar/${idSociedad}`);
-
       postMethod(`cac/agregar/${idSociedad}`, newData),
     {
       onSuccess: () => queryClient.refetchQueries(['cac', idSociedad]),

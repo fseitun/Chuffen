@@ -13,6 +13,7 @@ import NotFound from 'src/pages/NotFound';
 import { Dolar } from 'src/pages/Dolar';
 import { Cac } from 'src/pages/Cac';
 import { Proveedores } from 'src/pages/Proveedores';
+import { Usuarios } from 'src/pages/Usuarios';
 import { useAuth } from 'src/components/auxiliares/useAuth';
 
 dotenv.config();
@@ -29,6 +30,7 @@ export default function App() {
             <Route path='dolar' element={<Dolar idSociedad={idSociedad} />} />
             <Route path='cac' element={<Cac idSociedad={idSociedad} />} />
             <Route path='proveedores' element={<Proveedores idSociedad={idSociedad} />} />
+            <Route path='usuarios' element={<Usuarios idSociedad={idSociedad} />} />
             <Route path='*' element={<Navigate to='/404' />} />
           </Route>
         ) : (
