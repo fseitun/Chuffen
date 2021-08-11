@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom'; // permite que los childs vean las ru
 import { styled } from '@material-ui/core';
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
-// import { ReactQueryDevtools } from 'react-query/devtools';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 const DashboardLayoutRoot = styled('div')(({ theme }) => ({
@@ -50,7 +50,7 @@ export default function DashboardLayout({ setIsAuth }) {
           <DashboardLayoutContent>
             <QueryClientProvider client={queryClient}>
               <Outlet />
-              {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+              <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
           </DashboardLayoutContent>
         </DashboardLayoutContainer>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-// import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { Box, Button, Container, TextField } from '@material-ui/core';
 import { postMethod } from 'src/utils/api';
@@ -31,6 +30,7 @@ export function Login({ idSociedad, setIsAuth }) {
             onSubmit={async (values, actions) => {
               if (await userCheck(idSociedad, values.email, values.password)) {
                 setIsAuth(values.email);
+                setIsAuth('fico');
                 actions.resetForm();
                 navigate('/app/cac', { replace: true });
               } else actions.resetForm();
@@ -83,7 +83,7 @@ export function Login({ idSociedad, setIsAuth }) {
 
 async function userCheck(idSociedad, email, password) {
   const loggedUser = await postMethod(`usuario/login/${idSociedad}`, {
-    user: email,
+    mail: email,
     pass: password,
   });
   return loggedUser !== null ? true : false;

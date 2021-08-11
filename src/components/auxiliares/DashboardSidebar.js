@@ -5,6 +5,7 @@ import { Box, Drawer, List } from '@material-ui/core';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import LocalShippingIcon from '@material-ui/icons/LocalShipping';
+import PeopleIcon from '@material-ui/icons/People';
 import NavItem from './NavItem';
 
 const items = [
@@ -22,7 +23,12 @@ const items = [
     href: '/app/proveedores',
     icon: LocalShippingIcon,
     title: 'Proveedores'
-  }
+  },
+  {
+    href: '/app/usuarios',
+    icon: PeopleIcon,
+    title: 'Usuarios'
+  },
 ];
 
 export default function DashboardSidebar({ onMobileClose, openMobile }) {
