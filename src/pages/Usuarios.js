@@ -6,7 +6,7 @@ import { Box, Container } from '@material-ui/core';
 import { ManipularUsuarios } from 'src/components/usuarios/ManipularUsuarios';
 import { GrillaUsuarios } from 'src/components/usuarios/GrillaUsuarios';
 
-export function Usuarios({ idSociedad }) {
+export function Usuarios({ idSociety }) {
   return (
     <>
       <Helmet>
@@ -20,10 +20,10 @@ export function Usuarios({ idSociedad }) {
         }}>
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <ManipularUsuarios idSociedad={idSociedad} />
+            <ManipularUsuarios idSociety={idSociety} />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <GrillaUsuarios idSociedad={idSociedad} />
+            <GrillaUsuarios idSociety={idSociety} />
           </Box>
         </Container>
       </Box>
@@ -31,5 +31,5 @@ export function Usuarios({ idSociedad }) {
   );
 }
 Usuarios.propTypes = {
-  idSociedad: PropTypes.number,
+  idSociety: PropTypes.number,
 };

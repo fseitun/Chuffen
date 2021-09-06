@@ -6,7 +6,7 @@ import { Box, Container } from '@material-ui/core';
 import { ManipularDolar } from 'src/components/dolar/ManipularDolar';
 import { GrillaDolar } from 'src/components/dolar/GrillaDolar';
 
-export function Dolar({ idSociedad }) {
+export function Dolar({ idSociety }) {
   return (
     <>
       <Helmet>
@@ -20,10 +20,10 @@ export function Dolar({ idSociedad }) {
         }}>
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <ManipularDolar idSociedad={idSociedad} />
+            <ManipularDolar idSociety={idSociety} />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <GrillaDolar idSociedad={idSociedad} />
+            <GrillaDolar idSociety={idSociety} />
           </Box>
         </Container>
       </Box>
@@ -31,5 +31,5 @@ export function Dolar({ idSociedad }) {
   );
 }
 Dolar.propTypes = {
-  idSociedad: PropTypes.number,
+  idSociety: PropTypes.number,
 };

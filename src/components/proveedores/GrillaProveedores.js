@@ -65,20 +65,20 @@ const columns = [
   },
 ];
 
-export function GrillaProveedores({ idSociedad }) {
+export function GrillaProveedores({ idSociety }) {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation(
     async id => {
-      await deleteMethod(`proveedor/eliminar/${idSociedad}`, id);
+      await deleteMethod(`proveedor/eliminar/${idSociety}`, id);
     },
     {
-      onSuccess: async () => await queryClient.refetchQueries(['empresas', idSociedad]),
+      onSuccess: async () => await queryClient.refetchQueries(['empresas', idSociety]),
     }
   );
 
-  const { data, isLoading, error } = useQuery(['empresas', idSociedad], () =>
-    getMethod(`proveedor/listar/${idSociedad}`)
+  const { data, isLoading, error } = useQuery(['empresas', idSociety], () =>
+    getMethod(`proveedor/listar/${idSociety}`)
   );
 
   if (isLoading) return 'Cargando...';
@@ -89,7 +89,7 @@ export function GrillaProveedores({ idSociedad }) {
       id: e.id,
       [e.field]: e.props.value,
     };
-    postMethod(`proveedor/modificar/${idSociedad}`, newData);
+    postMethod(`proveedor/modificar/${idSociety}`, newData);
   }
 
   return (
@@ -159,5 +159,5 @@ function DeleteRow(params) {
 }
 
 GrillaProveedores.propTypes = {
-  idSociedad: PropTypes.number,
+  idSociety: PropTypes.number,
 };

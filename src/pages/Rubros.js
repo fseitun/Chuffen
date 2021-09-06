@@ -3,14 +3,14 @@ import { PropTypes } from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
 
-import { ManipularProveedores } from 'src/components/proveedores/ManipularProveedores';
-import { GrillaProveedores } from 'src/components/proveedores/GrillaProveedores';
+import { ManipularRubros } from 'src/components/rubros/ManipularRubros';
+import { GrillaRubros } from 'src/components/rubros/GrillaRubros';
 
-export function Proveedores({ idSociety }) {
+export function Rubros({ idSociety }) {
   return (
     <>
       <Helmet>
-        <title>Proveedores | TSF Desarrollos</title>
+        <title>Rubros | TSF Desarrollos</title>
       </Helmet>
       <Box
         sx={{
@@ -20,16 +20,16 @@ export function Proveedores({ idSociety }) {
         }}>
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <ManipularProveedores idSociety={idSociety} />
+            <ManipularRubros idSociety={idSociety} />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <GrillaProveedores idSociety={idSociety} />
+            <GrillaRubros idSociety={idSociety} />
           </Box>
         </Container>
       </Box>
     </>
   );
 }
-Proveedores.propTypes = {
+Rubros.propTypes = {
   idSociety: PropTypes.number,
 };
