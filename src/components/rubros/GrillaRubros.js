@@ -12,39 +12,11 @@ import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 const columns = [
   // { field: 'id', headerName: 'ID', width: 100 , headerAlign: 'center',},
   {
-    field: 'fecha',
-    headerName: 'Fecha',
-    width: 150,
-    type: 'date',
-    headerAlign: 'center',
-    align: 'center',
-    valueFormatter: ({ value }) =>
-      new Date(value).toLocaleDateString('es-AR', {
-        year: 'numeric',
-        month: 'short',
-        timeZone: 'UTC',
-      }),
-  },
-  {
-    field: 'estimado',
-    headerName: 'Estimado',
-    width: 150,
+    field: 'rubro',
+    headerName: 'Rubro',
+    width: 170,
     editable: true,
     headerAlign: 'center',
-    align: 'right',
-
-    valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
-  },
-  {
-    field: 'definitivo',
-    headerName: 'Definitivo',
-    width: 150,
-    editable: true,
-    headerAlign: 'center',
-    align: 'right',
-    valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
   {
     field: 'deleteIcon',
@@ -56,20 +28,20 @@ const columns = [
   },
 ];
 
-export function GrillaCac({ idSociety }) {
+export function GrillaRubros({ idSociety }) {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation(
     async id => {
-      await deleteMethod(`cac/eliminar/${idSociety}`, id);
+      await deleteMethod(`rubro/eliminar/${idSociety}`, id);
     },
     {
-      onSuccess: async () => await queryClient.refetchQueries(['cac', idSociety]),
+      onSuccess: async () => await queryClient.refetchQueries(['rubros', idSociety]),
     }
   );
 
-  const { data, isLoading, error } = useQuery(['cac', idSociety], () =>
-    getMethod(`CAC/listar/${idSociety}`)
+  const { data, isLoading, error } = useQuery(['rubros', idSociety], () =>
+    getMethod(`rubro/listar/${idSociety}`)
   );
 
   if (isLoading) return 'Cargando...';
@@ -80,7 +52,7 @@ export function GrillaCac({ idSociety }) {
       id: e.id,
       [e.field]: e.props.value,
     };
-    postMethod(`cac/modificar/${idSociety}`, newData);
+    postMethod(`rubro/modificar/${idSociety}`, newData);
   }
 
   return (
@@ -89,9 +61,7 @@ export function GrillaCac({ idSociety }) {
       <DataGrid
         rows={data.map(el => ({
           id: el.id,
-          fecha: el.fecha,
-          estimado: el.estimado,
-          definitivo: el.definitivo,
+          rubro: el.rubro,
           onDelete: () => {
             mutate(el.id);
           },
@@ -100,12 +70,6 @@ export function GrillaCac({ idSociety }) {
         pageSize={25}
         disableSelectionOnClick
         autoHeight
-        sortModel={[
-          {
-            field: 'fecha',
-            sort: 'asc',
-          },
-        ]}
         scrollbarSize
         onEditCellChange={handleCellModification}
         components={{
@@ -153,6 +117,6 @@ function DeleteRow(params) {
   return <DeleteIcon onClick={notify} />;
 }
 
-GrillaCac.propTypes = {
+GrillaRubros.propTypes = {
   idSociety: PropTypes.number,
 };

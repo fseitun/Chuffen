@@ -6,15 +6,11 @@ import PropTypes from 'prop-types';
 
 import { getMethod, postMethod } from 'src/utils/api';
 
-export function ManipularProveedores({ idSociedad }) {
+export function ManipularProveedores({ idSociety }) {
   const queryClient = useQueryClient();
-  const { mutate } = useMutation(
-    newData =>
-      postMethod(`proveedor/agregar/${idSociedad}`, newData),
-    {
-      onSuccess: () => queryClient.refetchQueries(['empresas', idSociedad]),
-    }
-  );
+  const { mutate } = useMutation(newData => postMethod(`proveedor/agregar/${idSociety}`, newData), {
+    onSuccess: () => queryClient.refetchQueries(['empresas', idSociety]),
+  });
 
   return (
     <Formik
@@ -23,7 +19,7 @@ export function ManipularProveedores({ idSociedad }) {
         razonSocial: '',
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        !(await checkCuit(idSociedad, values.CUIT)) ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
+        !(await checkCuit(idSociety, values.CUIT)) ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
 
         resetForm();
         setSubmitting(false);
@@ -48,8 +44,8 @@ export function ManipularProveedores({ idSociedad }) {
   );
 }
 
-async function checkCuit(idSociedad, cuit) {
-  let url = `proveedor/mostrar/${idSociedad}/${cuit}`;
+async function checkCuit(idSociety, cuit) {
+  let url = `proveedor/mostrar/${idSociety}/${cuit}`;
   return Boolean(await getMethod(url));
 }
 
@@ -63,5 +59,5 @@ function onlyNumbers(event, setFieldValue, typeOfData) {
 }
 
 ManipularProveedores.propTypes = {
-  idSociedad: PropTypes.number.isRequired,
+  idSociety: PropTypes.number,
 };
