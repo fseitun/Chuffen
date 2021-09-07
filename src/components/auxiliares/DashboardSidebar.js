@@ -9,7 +9,11 @@ import MenuBookIcon from '@material-ui/icons/MenuBook';
 import { NavItem } from './NavItem';
 
 export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, idSociety }) {
-  const items = [
+  const items = [ {
+    href: `/${idSociety?.name}/fideicomiso`,
+    icon: LocalShippingIcon,
+    title: 'Fideicomisos'
+  },
     {
       href: `/${idSociety?.name}/dolar`,
       icon: AttachMoneyIcon,
@@ -36,6 +40,7 @@ export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, 
       title: 'Rubros',
     },
   ];
+
 
   const content = (
     <Box

@@ -15,9 +15,13 @@ import { Cac } from 'src/pages/Cac';
 import { Proveedores } from 'src/pages/Proveedores';
 import { Usuarios } from 'src/pages/Usuarios';
 import { Rubros } from 'src/pages/Rubros';
+import { Fideicomiso } from 'src/pages/Fideicomiso';
+import { DetalleFideicomiso } from 'src/pages/DetalleFideicomiso';
 import { useAuth } from 'src/utils/useAuth';
 
 dotenv.config();
+let idFideicomiso = 1; 
+
 
 export default function App() {
   let { societyName } = useParams();
@@ -32,6 +36,7 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <Routes>
+
         {loggedUser ? (
           <>
             <Route path='/' element={<Navigate to={`${idSociety.name}`} />} />
@@ -43,9 +48,12 @@ export default function App() {
               <Route path='proveedores' element={<Proveedores idSociety={idSociety} />} />
               <Route path='usuarios' element={<Usuarios idSociety={idSociety} />} />
               <Route path='rubros' element={<Rubros idSociety={idSociety} />} />
+               <Route path='fideicomiso' element={<Fideicomiso idSociedad={idSociedad} />} />
+            <Route path='detallefideicomiso' element={<DetalleFideicomiso idSociedad={idSociedad} idFideicomiso={idFideicomiso} />} />
               <Route path='*' element={<NotFound />} />
             </Route>
           </>
+
         ) : (
           <MainLayout>
             <Route
