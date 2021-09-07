@@ -28,8 +28,8 @@ function Picker({ field, form }) {
 
 export function ManipularCac({ idSociety }) {
   const queryClient = useQueryClient();
-  const { mutate } = useMutation(newData => postMethod(`cac/agregar/${idSociety}`, newData), {
-    onSuccess: () => queryClient.refetchQueries(['cac', idSociety]),
+  const { mutate } = useMutation(newData => postMethod(`cac/agregar/${idSociety.id}`, newData), {
+    onSuccess: () => queryClient.refetchQueries(['cac', idSociety.id]),
   });
 
   return (
@@ -41,7 +41,7 @@ export function ManipularCac({ idSociety }) {
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         values.fecha = yearMonthOneString(values.fecha);
-        !(await checkDate(idSociety, values.fecha)) ? mutate(values) : void(0); //cambiar por un pop up
+        !(await checkDate(idSociety.id, values.fecha)) ? mutate(values) : void(0); //cambiar por un pop up
 
         resetForm();
         setSubmitting(false);

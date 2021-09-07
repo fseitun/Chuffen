@@ -8,9 +8,12 @@ import { getMethod, postMethod } from 'src/utils/api';
 
 export function ManipularProveedores({ idSociety }) {
   const queryClient = useQueryClient();
-  const { mutate } = useMutation(newData => postMethod(`proveedor/agregar/${idSociety}`, newData), {
-    onSuccess: () => queryClient.refetchQueries(['empresas', idSociety]),
-  });
+  const { mutate } = useMutation(
+    newData => postMethod(`proveedor/agregar/${idSociety.id}`, newData),
+    {
+      onSuccess: () => queryClient.refetchQueries(['empresas', idSociety.id]),
+    }
+  );
 
   return (
     <Formik
@@ -19,7 +22,7 @@ export function ManipularProveedores({ idSociety }) {
         razonSocial: '',
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        !(await checkCuit(idSociety, values.CUIT)) ? mutate(values) : void(0); //cambiar por un pop up
+        !(await checkCuit(idSociety.id, values.CUIT)) ? mutate(values) : void 0; //cambiar por un pop up
 
         resetForm();
         setSubmitting(false);

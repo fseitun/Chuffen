@@ -70,15 +70,15 @@ export function GrillaProveedores({ idSociety }) {
 
   const { mutate } = useMutation(
     async id => {
-      await deleteMethod(`proveedor/eliminar/${idSociety}`, id);
+      await deleteMethod(`proveedor/eliminar/${idSociety.id}`, id);
     },
     {
-      onSuccess: async () => await queryClient.refetchQueries(['empresas', idSociety]),
+      onSuccess: async () => await queryClient.refetchQueries(['empresas', idSociety.id]),
     }
   );
 
-  const { data, isLoading, error } = useQuery(['empresas', idSociety], () =>
-    getMethod(`proveedor/listar/${idSociety}`)
+  const { data, isLoading, error } = useQuery(['empresas', idSociety.id], () =>
+    getMethod(`proveedor/listar/${idSociety.id}`)
   );
 
   if (isLoading) return 'Cargando...';
@@ -89,7 +89,7 @@ export function GrillaProveedores({ idSociety }) {
       id: e.id,
       [e.field]: e.props.value,
     };
-    postMethod(`proveedor/modificar/${idSociety}`, newData);
+    postMethod(`proveedor/modificar/${idSociety.id}`, newData);
   }
 
   return (

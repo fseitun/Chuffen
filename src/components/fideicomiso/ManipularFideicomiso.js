@@ -12,12 +12,14 @@ import { yearMonthDayString } from 'src/utils/dateToString';
 function Picker({ field, form }) {
   const { name, value } = field;
   const { setFieldValue } = form;
-  let labelF = 'Finalización'
-  if(name == 'fechaInicio'){labelF = 'Fecha de inicio'}
+  let labelF = 'Finalización';
+  if (name == 'fechaInicio') {
+    labelF = 'Fecha de inicio';
+  }
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DesktopDatePicker
-        label= {labelF}
+        label={labelF}
         inputFormat='dd/MM/yyyy'
         value={value}
         onChange={value => setFieldValue(name, value)}
@@ -27,15 +29,17 @@ function Picker({ field, form }) {
   );
 }
 
-export function ManipularFideicomiso({ idSociedad }) {
+export function ManipularFideicomiso({ idSociety }) {
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation(newData => postMethod(`fideicomiso/agregar/${idSociedad}`, newData), {
-    
-    onSuccess: () => {      
-      queryClient.refetchQueries(['fideicomiso', idSociedad]);
-    },
-  });
+  const { mutate } = useMutation(
+    newData => postMethod(`fideicomiso/agregar/${idSociety.id}`, newData),
+    {
+      onSuccess: () => {
+        queryClient.refetchQueries(['fideicomiso', idSociety.id]);
+      },
+    }
+  );
 
   return (
     <Formik
@@ -45,7 +49,7 @@ export function ManipularFideicomiso({ idSociedad }) {
         fechaFin: null,
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        let bool = await checkName(idSociedad, values.nombre);
+        let bool = await checkName(idSociety.id, values.nombre);
         !bool ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
 
         resetForm();
@@ -62,8 +66,7 @@ export function ManipularFideicomiso({ idSociedad }) {
           />
           <Field component={Picker} label='Inicio' type='date' name='fechaInicio' />
           <Field component={Picker} label='Finalizacion' type='date' name='fechaFin' />
-       
-       
+
           <Button type='submit' disabled={isSubmitting}>
             Agregar
           </Button>
@@ -73,12 +76,14 @@ export function ManipularFideicomiso({ idSociedad }) {
   );
 }
 
-async function checkName(idSociedad, nombre) {
-  let n = new String(nombre); 
+async function checkName(idSociety, nombre) {
+  let n = new String(nombre);
   // controla blanco y espacios
-  if(n.trim() ==''){return true}
+  if (n.trim() == '') {
+    return true;
+  }
   // controla si ya existe el nombre
-  let url = `fideicomiso/mostrar/${idSociedad}/${nombre}`;
+  let url = `fideicomiso/mostrar/${idSociety}/${nombre}`;
   return Boolean(await getMethod(url));
 }
 
@@ -88,5 +93,5 @@ Picker.propTypes = {
 };
 
 ManipularFideicomiso.propTypes = {
-  idSociedad: PropTypes.number.isRequired,
+  idSociety: PropTypes.object.isRequired,
 };

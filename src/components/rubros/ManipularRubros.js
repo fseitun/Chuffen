@@ -8,8 +8,8 @@ import { getMethod, postMethod } from 'src/utils/api';
 
 export function ManipularRubros({ idSociety }) {
   const queryClient = useQueryClient();
-  const { mutate } = useMutation(newData => postMethod(`rubro/agregar/${idSociety}`, newData), {
-    onSuccess: () => queryClient.refetchQueries(['rubros', idSociety]),
+  const { mutate } = useMutation(newData => postMethod(`rubro/agregar/${idSociety.id}`, newData), {
+    onSuccess: () => queryClient.refetchQueries(['rubros', idSociety.id]),
   });
 
   return (
@@ -18,7 +18,7 @@ export function ManipularRubros({ idSociety }) {
         rubro: '',
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        !(await checkRubro(idSociety, values.Rubro)) ? mutate(values) : void 0; //cambiar por un pop up
+        !(await checkRubro(idSociety.id, values.Rubro)) ? mutate(values) : void 0; //cambiar por un pop up
         resetForm();
         setSubmitting(false);
       }}>

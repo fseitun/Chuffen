@@ -13,15 +13,14 @@ import { blue } from '@material-ui/core/colors';
 
 const columns = [
   // { field: 'id', headerName: 'ID', width: 100 , headerAlign: 'center',},
- 
-  
+
   {
     field: 'nombre',
     headerName: 'Nombre',
     width: 200,
     editable: false,
     headerAlign: 'center',
-    align: 'left'
+    align: 'left',
   },
 
   {
@@ -54,11 +53,11 @@ const columns = [
         month: 'short',
         timeZone: 'UTC',
       }),
-  }, 
+  },
 
   {
-    field: "id",
-    headerName: "Ver detalle",
+    field: 'id',
+    headerName: 'Ver detalle',
     width: 160,
     renderCell: IrDetalle,
   },
@@ -73,32 +72,31 @@ const columns = [
   },
 ];
 
-export function GrillaFideicomiso({ idSociedad }) {
+export function GrillaFideicomiso({ idSociety }) {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation(
     async id => {
-      await deleteMethod(`fideicomiso/eliminar/${idSociedad}`, id);
+      await deleteMethod(`fideicomiso/eliminar/${idSociety.id}`, id);
     },
     {
-      onSuccess: async () => await queryClient.refetchQueries(['fideicomiso', idSociedad]),
+      onSuccess: async () => await queryClient.refetchQueries(['fideicomiso', idSociety.id]),
     }
   );
 
-  const { data, isLoading, error } = useQuery(['fideicomiso', idSociedad], () =>
-    getMethod(`fideicomiso/listar/${idSociedad}`)
+  const { data, isLoading, error } = useQuery(['fideicomiso', idSociety.id], () =>
+    getMethod(`fideicomiso/listar/${idSociety.id}`)
   );
 
   if (isLoading) return 'Cargando...';
   if (error) return `Hubo un error: ${error.message}`;
 
   function handleCellModification(e) {
-    console.log(e);
     let newData = {
       id: e.id,
       [e.field]: e.props.value,
     };
-    postMethod(`fideicomiso/modificar/${idSociedad}`, newData);
+    postMethod(`fideicomiso/modificar/${idSociety.id}`, newData);
   }
 
   return (
@@ -142,9 +140,9 @@ function CustomToolbar() {
 }
 
 function IrDetalle(params) {
-  const url = "detallefideicomiso?nom=" + params.row.nombre + "&fide=" + params.row.idFide;
-  
-  return (<a href={url} >ver</a>);
+  const url = 'detallefideicomiso?nom=' + params.row.nombre + '&fide=' + params.row.idFide;
+
+  return <a href={url}>ver</a>;
 }
 
 function DeleteRow(params) {
@@ -177,5 +175,5 @@ function DeleteRow(params) {
 }
 
 GrillaFideicomiso.propTypes = {
-  idSociedad: PropTypes.number,
+  idSociety: PropTypes.object,
 };

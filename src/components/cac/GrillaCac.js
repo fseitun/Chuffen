@@ -61,15 +61,15 @@ export function GrillaCac({ idSociety }) {
 
   const { mutate } = useMutation(
     async id => {
-      await deleteMethod(`cac/eliminar/${idSociety}`, id);
+      await deleteMethod(`cac/eliminar/${idSociety.id}`, id);
     },
     {
-      onSuccess: async () => await queryClient.refetchQueries(['cac', idSociety]),
+      onSuccess: async () => await queryClient.refetchQueries(['cac', idSociety.id]),
     }
   );
 
-  const { data, isLoading, error } = useQuery(['cac', idSociety], () =>
-    getMethod(`CAC/listar/${idSociety}`)
+  const { data, isLoading, error } = useQuery(['cac', idSociety.id], () =>
+    getMethod(`CAC/listar/${idSociety.id}`)
   );
 
   if (isLoading) return 'Cargando...';
@@ -80,7 +80,7 @@ export function GrillaCac({ idSociety }) {
       id: e.id,
       [e.field]: e.props.value,
     };
-    postMethod(`cac/modificar/${idSociety}`, newData);
+    postMethod(`cac/modificar/${idSociety.id}`, newData);
   }
 
   return (

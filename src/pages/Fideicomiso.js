@@ -5,7 +5,7 @@ import { Box, Container } from '@material-ui/core';
 import { ManipularFideicomiso } from 'src/components/fideicomiso/ManipularFideicomiso';
 import { GrillaFideicomiso } from 'src/components/fideicomiso/GrillaFideicomiso';
 
-export function Fideicomiso({ idSociedad }) {
+export function Fideicomiso({ idSociety }) {
   return (
     <>
       <Helmet>
@@ -18,13 +18,11 @@ export function Fideicomiso({ idSociedad }) {
           py: 3,
         }}>
         <Container maxWidth={false}>
-          
           <Box sx={{ pt: 3 }}>
-            <ManipularFideicomiso idSociedad={idSociedad} />
+            <ManipularFideicomiso idSociety={idSociety} />
           </Box>
-
           <Box sx={{ pt: 3 }}>
-            <GrillaFideicomiso idSociedad={idSociedad} />
+            <GrillaFideicomiso idSociety={idSociety} />
           </Box>
         </Container>
       </Box>
@@ -32,5 +30,5 @@ export function Fideicomiso({ idSociedad }) {
   );
 }
 Fideicomiso.propTypes = {
-  idSociedad: PropTypes.number,
+  idSociety: PropTypes.object,
 };

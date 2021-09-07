@@ -33,15 +33,15 @@ export function GrillaRubros({ idSociety }) {
 
   const { mutate } = useMutation(
     async id => {
-      await deleteMethod(`rubro/eliminar/${idSociety}`, id);
+      await deleteMethod(`rubro/eliminar/${idSociety.id}`, id);
     },
     {
-      onSuccess: async () => await queryClient.refetchQueries(['rubros', idSociety]),
+      onSuccess: async () => await queryClient.refetchQueries(['rubros', idSociety.id]),
     }
   );
 
-  const { data, isLoading, error } = useQuery(['rubros', idSociety], () =>
-    getMethod(`rubro/listar/${idSociety}`)
+  const { data, isLoading, error } = useQuery(['rubros', idSociety.id], () =>
+    getMethod(`rubro/listar/${idSociety.id}`)
   );
 
   if (isLoading) return 'Cargando...';
@@ -52,7 +52,7 @@ export function GrillaRubros({ idSociety }) {
       id: e.id,
       [e.field]: e.props.value,
     };
-    postMethod(`rubro/modificar/${idSociety}`, newData);
+    postMethod(`rubro/modificar/${idSociety.id}`, newData);
   }
 
   return (

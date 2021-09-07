@@ -29,9 +29,9 @@ function Picker({ field, form }) {
 export function ManipularDolar({ idSociety }) {
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation(newData => postMethod(`dolar/agregar/${idSociety}`, newData), {
+  const { mutate } = useMutation(newData => postMethod(`dolar/agregar/${idSociety.id}`, newData), {
     onSuccess: () => {
-      queryClient.refetchQueries(['dolar', idSociety]);
+      queryClient.refetchQueries(['dolar', idSociety.id]);
     },
   });
 
@@ -43,7 +43,7 @@ export function ManipularDolar({ idSociety }) {
         BCRA: '',
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        let bool = await checkDate(idSociety, values.fecha);
+        let bool = await checkDate(idSociety.id, values.fecha);
         !bool && mutate(values); //cambiar por un pop up
 
         resetForm();

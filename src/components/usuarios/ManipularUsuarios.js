@@ -8,9 +8,12 @@ import { getMethod, postMethod } from 'src/utils/api';
 
 export function ManipularUsuarios({ idSociety }) {
   const queryClient = useQueryClient();
-  const { mutate } = useMutation(newData => postMethod(`usuario/agregar/${idSociety}`, newData), {
-    onSuccess: () => queryClient.refetchQueries(['usuarios', idSociety]),
-  });
+  const { mutate } = useMutation(
+    newData => postMethod(`usuario/agregar/${idSociety.id}`, newData),
+    {
+      onSuccess: () => queryClient.refetchQueries(['usuarios', idSociety.id]),
+    }
+  );
 
   return (
     <Formik
@@ -19,7 +22,7 @@ export function ManipularUsuarios({ idSociety }) {
         Mail: '',
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        !(await checkMail(idSociety, values.mail)) ? mutate(values) : void(0); //cambiar por un pop up
+        !(await checkMail(idSociety.id, values.mail)) ? mutate(values) : void 0; //cambiar por un pop up
 
         // resetForm();
         setSubmitting(false);

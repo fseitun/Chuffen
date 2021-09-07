@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 // import 'react-perfect-scrollbar/dist/css/styles.css'; // venía con el template, lo usa?
-import { Routes, Route, Navigate, useParams } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core'; // manda a los childs el theme de Material-UI
 import dotenv from 'dotenv';
-
 import GlobalStyles from 'src/components/auxiliares/GlobalStyles';
 import theme from 'src/theme'; // trae el theme de src/theme/index.js, lo reparte con ThemeProvider
 import DashboardLayout from 'src/components/auxiliares/DashboardLayout';
@@ -20,23 +19,18 @@ import { DetalleFideicomiso } from 'src/pages/DetalleFideicomiso';
 import { useAuth } from 'src/utils/useAuth';
 
 dotenv.config();
-let idFideicomiso = 1; 
-
+let idFideicomiso = 1;
 
 export default function App() {
-  let { societyName } = useParams();
-
   const { loggedUser, setLoggedUser } = useAuth();
   const [idSociety, setIdSociety] = useState(() => {
     const auxiliaryState = localStorage.getItem('idSociety');
     return auxiliaryState ? JSON.parse(auxiliaryState) : null;
   });
-  console.log(societyName);
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <Routes>
-
         {loggedUser ? (
           <>
             <Route path='/' element={<Navigate to={`${idSociety.name}`} />} />
@@ -48,12 +42,14 @@ export default function App() {
               <Route path='proveedores' element={<Proveedores idSociety={idSociety} />} />
               <Route path='usuarios' element={<Usuarios idSociety={idSociety} />} />
               <Route path='rubros' element={<Rubros idSociety={idSociety} />} />
-               <Route path='fideicomiso' element={<Fideicomiso idSociedad={idSociedad} />} />
-            <Route path='detallefideicomiso' element={<DetalleFideicomiso idSociedad={idSociedad} idFideicomiso={idFideicomiso} />} />
+              <Route path='fideicomiso' element={<Fideicomiso idSociety={idSociety} />} />
+              <Route
+                path='detallefideicomiso'
+                element={<DetalleFideicomiso idSociety={idSociety} idFideicomiso={idFideicomiso} />}
+              />
               <Route path='*' element={<NotFound />} />
             </Route>
           </>
-
         ) : (
           <MainLayout>
             <Route
