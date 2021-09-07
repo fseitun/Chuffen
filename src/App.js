@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // import 'react-perfect-scrollbar/dist/css/styles.css'; // venía con el template, lo usa?
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core'; // manda a los childs el theme de Material-UI
 import dotenv from 'dotenv';
 
@@ -20,17 +20,21 @@ import { useAuth } from 'src/utils/useAuth';
 dotenv.config();
 
 export default function App() {
+  let { societyName } = useParams();
+
   const { loggedUser, setLoggedUser } = useAuth();
   const [idSociety, setIdSociety] = useState(() => {
     const auxiliaryState = localStorage.getItem('idSociety');
     return auxiliaryState ? JSON.parse(auxiliaryState) : null;
   });
+  console.log(societyName);
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <Routes>
         {loggedUser ? (
           <>
+            <Route path='/' element={<Navigate to={`${idSociety.name}`} />} />
             <Route
               path=':societyName'
               element={<DashboardLayout setLoggedUser={setLoggedUser} idSociety={idSociety} />}>
@@ -54,8 +58,6 @@ export default function App() {
                 />
               }
             />
-            <Route path='/' element={<Navigate to='TSF/login' />} />
-            <Route path=':societyName/*' element={<Navigate to='/TSF/login' />} />
           </MainLayout>
         )}
       </Routes>

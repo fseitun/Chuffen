@@ -9,7 +9,6 @@ import MenuBookIcon from '@material-ui/icons/MenuBook';
 import { NavItem } from './NavItem';
 
 export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, idSociety }) {
-  console.log(idSociety);
   const items = [
     {
       href: `/${idSociety?.name}/dolar`,
@@ -60,7 +59,7 @@ export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, 
     <>
       <Drawer
         variant='temporary'
-        sx={{ display: { xs: 'block', md: 'none' } }}
+        sx={{ display: { xs: 'block', lg: 'none' } }}
         anchor='left'
         onClose={setisMobileNavOpen}
         open={isMobileNavOpen}
@@ -74,7 +73,7 @@ export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, 
       <Drawer
         variant='persistent'
         open
-        sx={{ display: { xs: 'none', md: 'block' } }}
+        sx={{ display: { xs: 'none', lg: 'block' } }}
         anchor='left'
         PaperProps={{
           sx: {

@@ -31,5 +31,5 @@ export function Proveedores({ idSociety }) {
   );
 }
 Proveedores.propTypes = {
-  idSociety: PropTypes.number,
+  idSociety: PropTypes.object,
 };

@@ -154,5 +154,5 @@ function DeleteRow(params) {
 }
 
 GrillaCac.propTypes = {
-  idSociety: PropTypes.number,
+  idSociety: PropTypes.object,
 };

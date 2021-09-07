@@ -30,5 +30,5 @@ export function Cac({ idSociety }) {
   );
 }
 Cac.propTypes = {
-  idSociety: PropTypes.number,
+  idSociety: PropTypes.object,
 };

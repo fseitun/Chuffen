@@ -7,7 +7,8 @@ import { postMethod } from 'src/utils/api';
 import { nameToId } from 'src/utils/nameToId';
 
 export function Login({ setLoggedUser, idSociety, setIdSociety }) {
-  const { societyName } = useParams();
+  let { societyName } = useParams();
+  console.log(societyName);
   const navigate = useNavigate();
   useEffect(() => {
     async function societyStateObjectSetter() {

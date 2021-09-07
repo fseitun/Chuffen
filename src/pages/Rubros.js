@@ -31,5 +31,5 @@ export function Rubros({ idSociety }) {
   );
 }
 Rubros.propTypes = {
-  idSociety: PropTypes.number,
+  idSociety: PropTypes.object,
 };
