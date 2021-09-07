@@ -10,6 +10,16 @@ import NavItem from './NavItem';
 
 const items = [
   {
+    href: '/app/fideicomiso',
+    icon: LocalShippingIcon,
+    title: 'Fideicomisos'
+  },
+  {
+    href: '/app/proveedores',
+    icon: LocalShippingIcon,
+    title: 'Proveedores'
+  },
+  {
     href: '/app/dolar',
     icon: AttachMoneyIcon,
     title: 'Dólar'
@@ -18,11 +28,6 @@ const items = [
     href: '/app/cac',
     icon: TrendingUpIcon,
     title: 'CAC'
-  },
-  {
-    href: '/app/proveedores',
-    icon: LocalShippingIcon,
-    title: 'Proveedores'
   },
   {
     href: '/app/usuarios',

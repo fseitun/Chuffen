@@ -14,10 +14,13 @@ import { Dolar } from 'src/pages/Dolar';
 import { Cac } from 'src/pages/Cac';
 import { Proveedores } from 'src/pages/Proveedores';
 import { Usuarios } from 'src/pages/Usuarios';
+import { Fideicomiso } from 'src/pages/Fideicomiso';
+import { DetalleFideicomiso } from 'src/pages/DetalleFideicomiso';
 import { useAuth } from 'src/components/auxiliares/useAuth';
 
 dotenv.config();
 let idSociedad = 1; // esto después lo pisaremos desde la autenticación de usuario
+let idFideicomiso = 1; 
 
 export default function App() {
   const { isAuth, setIsAuth } = useAuth();
@@ -31,6 +34,9 @@ export default function App() {
             <Route path='cac' element={<Cac idSociedad={idSociedad} />} />
             <Route path='proveedores' element={<Proveedores idSociedad={idSociedad} />} />
             <Route path='usuarios' element={<Usuarios idSociedad={idSociedad} />} />
+            <Route path='fideicomiso' element={<Fideicomiso idSociedad={idSociedad} />} />
+            <Route path='detallefideicomiso' element={<DetalleFideicomiso idSociedad={idSociedad} idFideicomiso={idFideicomiso} />} />
+            
             <Route path='*' element={<Navigate to='/404' />} />
           </Route>
         ) : (
