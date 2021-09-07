@@ -51,20 +51,20 @@ const columns = [
   },
 ];
 
-export function GrillaDolar({ idSociedad }) {
+export function GrillaDolar({ idSociety }) {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation(
     async id => {
-      await deleteMethod(`dolar/eliminar/${idSociedad}`, id);
+      await deleteMethod(`dolar/eliminar/${idSociety}`, id);
     },
     {
-      onSuccess: async () => await queryClient.refetchQueries(['dolar', idSociedad]),
+      onSuccess: async () => await queryClient.refetchQueries(['dolar', idSociety]),
     }
   );
 
-  const { data, isLoading, error } = useQuery(['dolar', idSociedad], () =>
-    getMethod(`dolar/listar/${idSociedad}`)
+  const { data, isLoading, error } = useQuery(['dolar', idSociety], () =>
+    getMethod(`dolar/listar/${idSociety}`)
   );
 
   if (isLoading) return 'Cargando...';
@@ -75,7 +75,7 @@ export function GrillaDolar({ idSociedad }) {
       id: e.id,
       [e.field]: e.props.value,
     };
-    postMethod(`dolar/modificar/${idSociedad}`, newData);
+    postMethod(`dolar/modificar/${idSociety}`, newData);
   }
 
   return (
@@ -149,5 +149,5 @@ function DeleteRow(params) {
 }
 
 GrillaDolar.propTypes = {
-  idSociedad: PropTypes.number,
+  idSociety: PropTypes.object,
 };

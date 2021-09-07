@@ -1,5 +1,5 @@
-import { React, useState } from 'react';
-import { Outlet } from 'react-router-dom'; // permite que los childs vean las rutas
+import React, { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import { styled } from '@material-ui/core';
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
@@ -38,13 +38,20 @@ const DashboardLayoutContent = styled('div')({
 
 const queryClient = new QueryClient();
 
-export default function DashboardLayout({ setIsAuth }) {
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+export default function DashboardLayout({ setLoggedUser, idSociety }) {
+  const [isMobileNavOpen, setisMobileNavOpen] = useState(false);
 
   return (
     <DashboardLayoutRoot>
-      <DashboardNavbar onMobileNavOpen={() => setMobileNavOpen(true)} setIsAuth={setIsAuth} />
-      <DashboardSidebar onMobileClose={() => setMobileNavOpen(false)} openMobile={mobileNavOpen} />
+      <DashboardNavbar
+        setisMobileNavOpen={() => setisMobileNavOpen(!isMobileNavOpen)}
+        setLoggedUser={setLoggedUser}
+      />
+      <DashboardSidebar
+        idSociety={idSociety}
+        setisMobileNavOpen={() => setisMobileNavOpen(!isMobileNavOpen)}
+        isMobileNavOpen={isMobileNavOpen}
+      />
       <DashboardLayoutWrapper>
         <DashboardLayoutContainer>
           <DashboardLayoutContent>

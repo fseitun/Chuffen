@@ -3,14 +3,14 @@ import { PropTypes } from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
 
-import { ManipularDolar } from 'src/components/dolar/ManipularDolar';
-import { GrillaDolar } from 'src/components/dolar/GrillaDolar';
+import { ManipularRubros } from 'src/components/rubros/ManipularRubros';
+import { GrillaRubros } from 'src/components/rubros/GrillaRubros';
 
-export function Dolar({ idSociety }) {
+export function Rubros({ idSociety }) {
   return (
     <>
       <Helmet>
-        <title>Dólar | TSF Desarrollos</title>
+        <title>Rubros | TSF Desarrollos</title>
       </Helmet>
       <Box
         sx={{
@@ -20,16 +20,16 @@ export function Dolar({ idSociety }) {
         }}>
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <ManipularDolar idSociety={idSociety} />
+            <ManipularRubros idSociety={idSociety} />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <GrillaDolar idSociety={idSociety} />
+            <GrillaRubros idSociety={idSociety} />
           </Box>
         </Container>
       </Box>
     </>
   );
 }
-Dolar.propTypes = {
+Rubros.propTypes = {
   idSociety: PropTypes.object,
 };

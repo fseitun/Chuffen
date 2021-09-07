@@ -5,7 +5,7 @@ import { Box, Container } from '@material-ui/core';
 import { ManipularCac } from 'src/components/cac/ManipularCac';
 import { GrillaCac } from 'src/components/cac/GrillaCac';
 
-export function Cac({ idSociedad }) {
+export function Cac({ idSociety }) {
   return (
     <>
       <Helmet>
@@ -19,10 +19,10 @@ export function Cac({ idSociedad }) {
         }}>
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <ManipularCac idSociedad={idSociedad} />
+            <ManipularCac idSociety={idSociety} />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <GrillaCac idSociedad={idSociedad} />
+            <GrillaCac idSociety={idSociety} />
           </Box>
         </Container>
       </Box>
@@ -30,5 +30,5 @@ export function Cac({ idSociedad }) {
   );
 }
 Cac.propTypes = {
-  idSociedad: PropTypes.number,
+  idSociety: PropTypes.object,
 };

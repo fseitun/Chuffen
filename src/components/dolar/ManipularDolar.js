@@ -26,12 +26,12 @@ function Picker({ field, form }) {
   );
 }
 
-export function ManipularDolar({ idSociedad }) {
+export function ManipularDolar({ idSociety }) {
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation(newData => postMethod(`dolar/agregar/${idSociedad}`, newData), {
+  const { mutate } = useMutation(newData => postMethod(`dolar/agregar/${idSociety}`, newData), {
     onSuccess: () => {
-      queryClient.refetchQueries(['dolar', idSociedad]);
+      queryClient.refetchQueries(['dolar', idSociety]);
     },
   });
 
@@ -43,8 +43,8 @@ export function ManipularDolar({ idSociedad }) {
         BCRA: '',
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        let bool = await checkDate(idSociedad, values.fecha);
-        !bool ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
+        let bool = await checkDate(idSociety, values.fecha);
+        !bool && mutate(values); //cambiar por un pop up
 
         resetForm();
         setSubmitting(false);
@@ -76,8 +76,8 @@ export function ManipularDolar({ idSociedad }) {
   );
 }
 
-async function checkDate(idSociedad, date) {
-  let url = `dolar/mostrar/${idSociedad}/${yearMonthDayString(date)}`;
+async function checkDate(idSociety, date) {
+  let url = `dolar/mostrar/${idSociety}/${yearMonthDayString(date)}`;
   return Boolean(await getMethod(url));
 }
 
@@ -96,5 +96,5 @@ Picker.propTypes = {
 };
 
 ManipularDolar.propTypes = {
-  idSociedad: PropTypes.number.isRequired,
+  idSociety: PropTypes.object,
 };

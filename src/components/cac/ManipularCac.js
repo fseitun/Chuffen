@@ -26,15 +26,11 @@ function Picker({ field, form }) {
   );
 }
 
-export function ManipularCac({ idSociedad }) {
+export function ManipularCac({ idSociety }) {
   const queryClient = useQueryClient();
-  const { mutate } = useMutation(
-    newData =>
-      postMethod(`cac/agregar/${idSociedad}`, newData),
-    {
-      onSuccess: () => queryClient.refetchQueries(['cac', idSociedad]),
-    }
-  );
+  const { mutate } = useMutation(newData => postMethod(`cac/agregar/${idSociety}`, newData), {
+    onSuccess: () => queryClient.refetchQueries(['cac', idSociety]),
+  });
 
   return (
     <Formik
@@ -45,7 +41,7 @@ export function ManipularCac({ idSociedad }) {
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         values.fecha = yearMonthOneString(values.fecha);
-        !(await checkDate(idSociedad, values.fecha)) ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
+        !(await checkDate(idSociety, values.fecha)) ? mutate(values) : void(0); //cambiar por un pop up
 
         resetForm();
         setSubmitting(false);
@@ -77,8 +73,8 @@ export function ManipularCac({ idSociedad }) {
   );
 }
 
-async function checkDate(idSociedad, date) {
-  let url = `cac/mostrar/${idSociedad}/${date}`;
+async function checkDate(idSociety, date) {
+  let url = `cac/mostrar/${idSociety}/${date}`;
   return Boolean(await getMethod(url));
 }
 
@@ -97,5 +93,5 @@ Picker.propTypes = {
 };
 
 ManipularCac.propTypes = {
-  idSociedad: PropTypes.number.isRequired,
+  idSociety: PropTypes.object,
 };

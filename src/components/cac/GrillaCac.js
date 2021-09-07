@@ -56,20 +56,20 @@ const columns = [
   },
 ];
 
-export function GrillaCac({ idSociedad }) {
+export function GrillaCac({ idSociety }) {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation(
     async id => {
-      await deleteMethod(`cac/eliminar/${idSociedad}`, id);
+      await deleteMethod(`cac/eliminar/${idSociety}`, id);
     },
     {
-      onSuccess: async () => await queryClient.refetchQueries(['cac', idSociedad]),
+      onSuccess: async () => await queryClient.refetchQueries(['cac', idSociety]),
     }
   );
 
-  const { data, isLoading, error } = useQuery(['cac', idSociedad], () =>
-    getMethod(`CAC/listar/${idSociedad}`)
+  const { data, isLoading, error } = useQuery(['cac', idSociety], () =>
+    getMethod(`CAC/listar/${idSociety}`)
   );
 
   if (isLoading) return 'Cargando...';
@@ -80,7 +80,7 @@ export function GrillaCac({ idSociedad }) {
       id: e.id,
       [e.field]: e.props.value,
     };
-    postMethod(`cac/modificar/${idSociedad}`, newData);
+    postMethod(`cac/modificar/${idSociety}`, newData);
   }
 
   return (
@@ -154,5 +154,5 @@ function DeleteRow(params) {
 }
 
 GrillaCac.propTypes = {
-  idSociedad: PropTypes.number,
+  idSociety: PropTypes.object,
 };

@@ -6,7 +6,7 @@ import { Box, Container } from '@material-ui/core';
 import { ManipularProveedores } from 'src/components/proveedores/ManipularProveedores';
 import { GrillaProveedores } from 'src/components/proveedores/GrillaProveedores';
 
-export function Proveedores({ idSociedad }) {
+export function Proveedores({ idSociety }) {
   return (
     <>
       <Helmet>
@@ -20,10 +20,10 @@ export function Proveedores({ idSociedad }) {
         }}>
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <ManipularProveedores idSociedad={idSociedad} />
+            <ManipularProveedores idSociety={idSociety} />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <GrillaProveedores idSociedad={idSociedad} />
+            <GrillaProveedores idSociety={idSociety} />
           </Box>
         </Container>
       </Box>
@@ -31,5 +31,5 @@ export function Proveedores({ idSociedad }) {
   );
 }
 Proveedores.propTypes = {
-  idSociedad: PropTypes.number,
+  idSociety: PropTypes.object,
 };

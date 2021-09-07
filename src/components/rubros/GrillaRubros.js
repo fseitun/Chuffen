@@ -12,26 +12,11 @@ import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 const columns = [
   // { field: 'id', headerName: 'ID', width: 100 , headerAlign: 'center',},
   {
-    field: 'user',
-    headerName: 'Usuario',
+    field: 'rubro',
+    headerName: 'Rubro',
     width: 170,
     editable: true,
     headerAlign: 'center',
-  },
-  {
-    field: 'mail',
-    headerName: 'Mail',
-    width: 220,
-    // editable: true,
-    headerAlign: 'center',
-  },
-  {
-    field: 'pass',
-    headerName: 'Clave',
-    width: 150,
-    editable: true,
-    headerAlign: 'center',
-    // renderCell: '*****',
   },
   {
     field: 'deleteIcon',
@@ -43,20 +28,20 @@ const columns = [
   },
 ];
 
-export function GrillaUsuarios({ idSociety }) {
+export function GrillaRubros({ idSociety }) {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation(
     async id => {
-      await deleteMethod(`usuario/eliminar/${idSociety}`, id);
+      await deleteMethod(`rubro/eliminar/${idSociety}`, id);
     },
     {
-      onSuccess: async () => await queryClient.refetchQueries(['usuarios', idSociety]),
+      onSuccess: async () => await queryClient.refetchQueries(['rubros', idSociety]),
     }
   );
 
-  const { data, isLoading, error } = useQuery(['usuarios', idSociety], () =>
-    getMethod(`usuario/listar/${idSociety}`)
+  const { data, isLoading, error } = useQuery(['rubros', idSociety], () =>
+    getMethod(`rubro/listar/${idSociety}`)
   );
 
   if (isLoading) return 'Cargando...';
@@ -67,7 +52,7 @@ export function GrillaUsuarios({ idSociety }) {
       id: e.id,
       [e.field]: e.props.value,
     };
-    postMethod(`usuario/modificar/${idSociety}`, newData);
+    postMethod(`rubro/modificar/${idSociety}`, newData);
   }
 
   return (
@@ -76,9 +61,7 @@ export function GrillaUsuarios({ idSociety }) {
       <DataGrid
         rows={data.map(el => ({
           id: el.id,
-          user: el.user,
-          mail: el.mail,
-          pass: el.pass,
+          rubro: el.rubro,
           onDelete: () => {
             mutate(el.id);
           },
@@ -134,6 +117,6 @@ function DeleteRow(params) {
   return <DeleteIcon onClick={notify} />;
 }
 
-GrillaUsuarios.propTypes = {
+GrillaRubros.propTypes = {
   idSociety: PropTypes.object,
 };

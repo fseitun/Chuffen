@@ -1,13 +1,22 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Formik } from 'formik';
 import { Box, Button, Container, TextField } from '@material-ui/core';
 import { postMethod } from 'src/utils/api';
+import { nameToId } from 'src/utils/nameToId';
 
-export function Login({ idSociedad, setIsAuth }) {
+export function Login({ setLoggedUser, idSociety, setIdSociety }) {
+  let { societyName } = useParams();
+  console.log(societyName);
   const navigate = useNavigate();
-
+  useEffect(() => {
+    async function societyStateObjectSetter() {
+      const id = await nameToId(societyName);
+      setIdSociety({ name: societyName, id: id });
+    }
+    societyStateObjectSetter();
+  }, [setIdSociety, societyName]);
   return (
     <>
       <Helmet>
@@ -28,11 +37,8 @@ export function Login({ idSociedad, setIsAuth }) {
               password: '',
             }}
             onSubmit={async (values, actions) => {
-              if (await userCheck(idSociedad, values.email, values.password)) {
-                setIsAuth(values.email);
-                setIsAuth('fico');
-                actions.resetForm();
-                navigate('/app/cac', { replace: true });
+              if (await userCheck(idSociety.id, values.email, values.password, setLoggedUser)) {
+                navigate(`/${societyName}`, { replace: true });
               } else actions.resetForm();
             }}>
             {function (props) {
@@ -81,10 +87,11 @@ export function Login({ idSociedad, setIsAuth }) {
   );
 }
 
-async function userCheck(idSociedad, email, password) {
-  const loggedUser = await postMethod(`usuario/login/${idSociedad}`, {
+async function userCheck(idSociety, email, password, setLoggedUser) {
+  const loggedUserInfo = await postMethod(`usuario/login/${await idSociety}`, {
     mail: email,
     pass: password,
   });
-  return loggedUser !== null ? true : false;
+  setLoggedUser(loggedUserInfo);
+  return loggedUserInfo !== null ? true : false;
 }
