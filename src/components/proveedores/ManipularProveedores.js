@@ -19,7 +19,7 @@ export function ManipularProveedores({ idSociety }) {
         razonSocial: '',
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        !(await checkCuit(idSociety, values.CUIT)) ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
+        !(await checkCuit(idSociety, values.CUIT)) ? mutate(values) : void(0); //cambiar por un pop up
 
         resetForm();
         setSubmitting(false);
@@ -59,5 +59,5 @@ function onlyNumbers(event, setFieldValue, typeOfData) {
 }
 
 ManipularProveedores.propTypes = {
-  idSociety: PropTypes.number,
+  idSociety: PropTypes.object,
 };

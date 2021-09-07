@@ -149,5 +149,5 @@ function DeleteRow(params) {
 }
 
 GrillaDolar.propTypes = {
-  idSociety: PropTypes.number,
+  idSociety: PropTypes.object,
 };

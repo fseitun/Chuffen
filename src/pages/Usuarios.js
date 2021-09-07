@@ -31,5 +31,5 @@ export function Usuarios({ idSociety }) {
   );
 }
 Usuarios.propTypes = {
-  idSociety: PropTypes.number,
+  idSociety: PropTypes.object,
 };

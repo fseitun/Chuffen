@@ -18,7 +18,7 @@ export function ManipularRubros({ idSociety }) {
         rubro: '',
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        !(await checkRubro(idSociety, values.Rubro)) ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
+        !(await checkRubro(idSociety, values.Rubro)) ? mutate(values) : void 0; //cambiar por un pop up
         resetForm();
         setSubmitting(false);
       }}>
@@ -40,5 +40,5 @@ async function checkRubro(idSociety, rubro) {
 }
 
 ManipularRubros.propTypes = {
-  idSociety: PropTypes.number,
+  idSociety: PropTypes.object,
 };

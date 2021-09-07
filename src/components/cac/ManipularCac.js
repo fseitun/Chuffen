@@ -41,7 +41,7 @@ export function ManipularCac({ idSociety }) {
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         values.fecha = yearMonthOneString(values.fecha);
-        !(await checkDate(idSociety, values.fecha)) ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
+        !(await checkDate(idSociety, values.fecha)) ? mutate(values) : void(0); //cambiar por un pop up
 
         resetForm();
         setSubmitting(false);
@@ -93,5 +93,5 @@ Picker.propTypes = {
 };
 
 ManipularCac.propTypes = {
-  idSociety: PropTypes.number,
+  idSociety: PropTypes.object,
 };

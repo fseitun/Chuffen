@@ -29,7 +29,7 @@ export default function DashboardNavbar({ setisMobileNavOpen, setLoggedUser, ...
         </IconButton>
         <IconButton
           color='inherit'
-          sx={{ display: { sm: 'block', md: 'none' } }}
+          sx={{ display: { md: 'block', lg: 'none' } }}
           onClick={setisMobileNavOpen}>
           <MenuIcon />
         </IconButton>

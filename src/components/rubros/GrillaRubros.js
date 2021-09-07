@@ -118,5 +118,5 @@ function DeleteRow(params) {
 }
 
 GrillaRubros.propTypes = {
-  idSociety: PropTypes.number,
+  idSociety: PropTypes.object,
 };

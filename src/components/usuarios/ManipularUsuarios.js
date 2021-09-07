@@ -19,7 +19,7 @@ export function ManipularUsuarios({ idSociety }) {
         Mail: '',
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        !(await checkMail(idSociety, values.mail)) ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
+        !(await checkMail(idSociety, values.mail)) ? mutate(values) : void(0); //cambiar por un pop up
 
         // resetForm();
         setSubmitting(false);
@@ -43,5 +43,5 @@ async function checkMail(idSociety, mail) {
 }
 
 ManipularUsuarios.propTypes = {
-  idSociety: PropTypes.number,
+  idSociety: PropTypes.object,
 };
