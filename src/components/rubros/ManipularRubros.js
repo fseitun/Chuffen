@@ -1,8 +1,8 @@
-import React from 'react';
+import { TextField, Button } from '@mui/material';
+import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
-import { TextField, Button } from '@material-ui/core';
-import PropTypes from 'prop-types';
 
 import { getMethod, postMethod } from 'src/utils/api';
 
@@ -38,7 +38,3 @@ async function checkRubro(idSociety, rubro) {
   let url = `rubro/mostrar/${idSociety}/${rubro}`;
   return Boolean(await getMethod(url));
 }
-
-ManipularRubros.propTypes = {
-  idSociety: PropTypes.object,
-};

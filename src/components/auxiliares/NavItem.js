@@ -1,7 +1,5 @@
-import React from 'react';
 import { NavLink as RouterLink, matchPath, useLocation } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { Button, ListItem } from '@material-ui/core';
+import { ListItem, Button } from '@mui/material';
 
 export function NavItem({ href, icon: Icon, title, ...rest }) {
   const location = useLocation();
@@ -48,9 +46,3 @@ export function NavItem({ href, icon: Icon, title, ...rest }) {
     </ListItem>
   );
 }
-
-NavItem.propTypes = {
-  href: PropTypes.string,
-  icon: PropTypes.elementType,
-  title: PropTypes.string,
-};

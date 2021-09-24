@@ -1,7 +1,5 @@
-import React from 'react';
-import { PropTypes } from 'prop-types';
+import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
-import { Box, Container } from '@material-ui/core';
 
 import { ManipularRubros } from 'src/components/rubros/ManipularRubros';
 import { GrillaRubros } from 'src/components/rubros/GrillaRubros';
@@ -30,6 +28,3 @@ export function Rubros({ idSociety }) {
     </>
   );
 }
-Rubros.propTypes = {
-  idSociety: PropTypes.object,
-};

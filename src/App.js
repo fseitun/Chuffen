@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-// import 'react-perfect-scrollbar/dist/css/styles.css'; // venía con el template, lo usa?
+import { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider } from '@material-ui/core'; // manda a los childs el theme de Material-UI
 import dotenv from 'dotenv';
+import { ThemeProvider } from '@mui/material/styles';
 import GlobalStyles from 'src/components/auxiliares/GlobalStyles';
-import theme from 'src/theme'; // trae el theme de src/theme/index.js, lo reparte con ThemeProvider
+import theme from 'src/theme';
 import DashboardLayout from 'src/components/auxiliares/DashboardLayout';
 import MainLayout from 'src/components/auxiliares/MainLayout';
 import { Login } from 'src/pages/Login';

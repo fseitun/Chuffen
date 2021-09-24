@@ -1,10 +1,9 @@
-import React from 'react';
+import { TextField, Button } from '@mui/material';
+import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
-import { TextField, Button } from '@material-ui/core';
-import { LocalizationProvider, DesktopDatePicker } from '@material-ui/lab';
-import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
-import PropTypes from 'prop-types';
 
 import { getMethod, postMethod } from 'src/utils/api';
 import { yearMonthOneString } from 'src/utils/dateToString';
@@ -41,7 +40,7 @@ export function ManipularCac({ idSociety }) {
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         values.fecha = yearMonthOneString(values.fecha);
-        !(await checkDate(idSociety.id, values.fecha)) ? mutate(values) : void(0); //cambiar por un pop up
+        !(await checkDate(idSociety.id, values.fecha)) ? mutate(values) : void 0; //cambiar por un pop up
 
         resetForm();
         setSubmitting(false);
@@ -86,12 +85,3 @@ function onlyNumbers(event, setFieldValue, typeOfData) {
     setFieldValue(typeOfData, value.toString());
   }
 }
-
-Picker.propTypes = {
-  field: PropTypes.object.isRequired,
-  form: PropTypes.object.isRequired,
-};
-
-ManipularCac.propTypes = {
-  idSociety: PropTypes.object,
-};

@@ -1,7 +1,5 @@
-import React from 'react';
-import { PropTypes } from 'prop-types';
+import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
-import { Box, Container } from '@material-ui/core';
 
 import { ManipularProveedores } from 'src/components/proveedores/ManipularProveedores';
 import { GrillaProveedores } from 'src/components/proveedores/GrillaProveedores';
@@ -30,6 +28,3 @@ export function Proveedores({ idSociety }) {
     </>
   );
 }
-Proveedores.propTypes = {
-  idSociety: PropTypes.object,
-};

@@ -1,10 +1,8 @@
-import { React, useState } from 'react';
+import { useState } from 'react';
+import { AppBar, Toolbar, Box, IconButton, Badge, Avatar } from '@mui/material';
+import { Notifications, Menu, ExitToApp } from '@mui/icons-material';
+
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { AppBar, Avatar, Badge, Box, IconButton, Toolbar } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Logo from 'src/components/auxiliares/Logo.js';
 
 const user = {
@@ -24,14 +22,14 @@ export default function DashboardNavbar({ setisMobileNavOpen, setLoggedUser, ...
 
         <IconButton color='inherit'>
           <Badge badgeContent={notifications.length} color='primary' variant='dot'>
-            <NotificationsIcon />
+            <Notifications />
           </Badge>
         </IconButton>
         <IconButton
           color='inherit'
           sx={{ display: { md: 'block', lg: 'none' } }}
           onClick={setisMobileNavOpen}>
-          <MenuIcon />
+          <Menu />
         </IconButton>
         <IconButton color='inherit'>
           <Avatar
@@ -46,13 +44,9 @@ export default function DashboardNavbar({ setisMobileNavOpen, setLoggedUser, ...
           />
         </IconButton>
         <IconButton color='inherit' onClick={logOut}>
-          <ExitToAppIcon />
+          <ExitToApp />
         </IconButton>
       </Toolbar>
     </AppBar>
   );
 }
-
-DashboardNavbar.propTypes = {
-  setisMobileNavOpen: PropTypes.func,
-};

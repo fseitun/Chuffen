@@ -1,25 +1,19 @@
-import React from 'react';
+import { TextField, Button } from '@mui/material';
+import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
-import { TextField, Button } from '@material-ui/core';
-import { LocalizationProvider, DesktopDatePicker } from '@material-ui/lab';
-import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
-import PropTypes from 'prop-types';
 
 import { getMethod, postMethod } from 'src/utils/api';
-import { yearMonthDayString } from 'src/utils/dateToString';
 
 function Picker({ field, form }) {
   const { name, value } = field;
   const { setFieldValue } = form;
-  let labelF = 'Finalización';
-  if (name == 'fechaInicio') {
-    labelF = 'Fecha de inicio';
-  }
+
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DesktopDatePicker
-        label={labelF}
+        label={1}
         inputFormat='dd/MM/yyyy'
         value={value}
         onChange={value => setFieldValue(name, value)}
@@ -50,7 +44,7 @@ export function ManipularFideicomiso({ idSociety }) {
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         let bool = await checkName(idSociety.id, values.nombre);
-        !bool ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
+        !bool && mutate(values); //cambiar por un pop up
 
         resetForm();
         setSubmitting(false);
@@ -86,12 +80,3 @@ async function checkName(idSociety, nombre) {
   let url = `fideicomiso/mostrar/${idSociety}/${nombre}`;
   return Boolean(await getMethod(url));
 }
-
-Picker.propTypes = {
-  field: PropTypes.object.isRequired,
-  form: PropTypes.object.isRequired,
-};
-
-ManipularFideicomiso.propTypes = {
-  idSociety: PropTypes.object.isRequired,
-};

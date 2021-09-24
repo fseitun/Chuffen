@@ -1,9 +1,7 @@
-import React from 'react';
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@material-ui/data-grid';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { Button, Box } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import PropTypes from 'prop-types';
+import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { Box, Button } from '@mui/material';
+import { Delete } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -150,9 +148,5 @@ function DeleteRow(params) {
         </Button>
       </Box>
     ));
-  return <DeleteIcon onClick={notify} />;
+  return <Delete onClick={notify} />;
 }
-
-GrillaCac.propTypes = {
-  idSociety: PropTypes.object,
-};

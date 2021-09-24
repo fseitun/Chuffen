@@ -1,8 +1,7 @@
-import React from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import { TextField, Button } from '@mui/material';
+import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
-import { TextField, Button } from '@material-ui/core';
-import PropTypes from 'prop-types';
 
 import { getMethod, postMethod } from 'src/utils/api';
 
@@ -60,7 +59,3 @@ function onlyNumbers(event, setFieldValue, typeOfData) {
     setFieldValue(typeOfData, value.toString());
   }
 }
-
-ManipularProveedores.propTypes = {
-  idSociety: PropTypes.object,
-};

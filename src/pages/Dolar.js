@@ -1,7 +1,5 @@
-import React from 'react';
-import { PropTypes } from 'prop-types';
+import {Container, Box, Typography } from '@mui/material';
 import { Helmet } from 'react-helmet';
-import { Box, Container } from '@material-ui/core';
 
 import { ManipularDolar } from 'src/components/dolar/ManipularDolar';
 import { GrillaDolar } from 'src/components/dolar/GrillaDolar';
@@ -28,8 +26,4 @@ export function Dolar({ idSociety }) {
         </Container>
       </Box>
     </>
-  );
-}
-Dolar.propTypes = {
-  idSociety: PropTypes.object,
-};
+  );}

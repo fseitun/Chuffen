@@ -1,15 +1,10 @@
-import React from 'react';
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@material-ui/data-grid';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { Button, Box } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-// import DetailIcon from '@material-ui/icons/Detail';
-import PropTypes from 'prop-types';
-import { ToastContainer, toast } from 'react-toastify';
+import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { Box, Button } from '@mui/material';
+import { Delete } from '@mui/icons-material';import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
-import { blue } from '@material-ui/core/colors';
 
 const columns = [
   // { field: 'id', headerName: 'ID', width: 100 , headerAlign: 'center',},
@@ -171,9 +166,5 @@ function DeleteRow(params) {
         </Button>
       </Box>
     ));
-  return <DeleteIcon onClick={notify} />;
+  return <Delete onClick={notify} />;
 }
-
-GrillaFideicomiso.propTypes = {
-  idSociety: PropTypes.object,
-};

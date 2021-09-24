@@ -1,14 +1,13 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Container, Box, TextField, Button } from '@mui/material';
 import { Helmet } from 'react-helmet';
 import { Formik } from 'formik';
-import { Box, Button, Container, TextField } from '@material-ui/core';
 import { postMethod } from 'src/utils/api';
 import { nameToId } from 'src/utils/nameToId';
 
 export function Login({ setLoggedUser, idSociety, setIdSociety }) {
   let { societyName } = useParams();
-  console.log(societyName);
   const navigate = useNavigate();
   useEffect(() => {
     async function societyStateObjectSetter() {

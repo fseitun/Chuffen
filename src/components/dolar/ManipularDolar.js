@@ -1,10 +1,8 @@
-import React from 'react';
+import { TextField, Button } from '@mui/material';
+import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
-import { TextField, Button } from '@material-ui/core';
-import { LocalizationProvider, DesktopDatePicker } from '@material-ui/lab';
-import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
-import PropTypes from 'prop-types';
 
 import { getMethod, postMethod } from 'src/utils/api';
 import { yearMonthDayString } from 'src/utils/dateToString';
@@ -89,12 +87,3 @@ function onlyNumbers(event, setFieldValue, typeOfData) {
     setFieldValue(typeOfData, value.toString());
   }
 }
-
-Picker.propTypes = {
-  field: PropTypes.object.isRequired,
-  form: PropTypes.object.isRequired,
-};
-
-ManipularDolar.propTypes = {
-  idSociety: PropTypes.object,
-};

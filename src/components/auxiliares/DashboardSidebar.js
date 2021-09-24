@@ -1,46 +1,41 @@
-import { React } from 'react';
-import PropTypes from 'prop-types';
-import { Box, Drawer, List } from '@material-ui/core';
-import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
-import TrendingUpIcon from '@material-ui/icons/TrendingUp';
-import LocalShippingIcon from '@material-ui/icons/LocalShipping';
-import PeopleIcon from '@material-ui/icons/People';
-import MenuBookIcon from '@material-ui/icons/MenuBook';
+import { Box, List, Drawer } from '@mui/material';
+import { AttachMoney, TrendingUp, LocalShipping, People, MenuBook } from '@mui/icons-material';
+
 import { NavItem } from './NavItem';
 
 export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, idSociety }) {
-  const items = [ {
-    href: `/${idSociety?.name}/fideicomiso`,
-    icon: LocalShippingIcon,
-    title: 'Fideicomisos'
-  },
+  const items = [
+    {
+      href: `/${idSociety?.name}/fideicomiso`,
+      icon: LocalShipping,
+      title: 'Fideicomisos',
+    },
     {
       href: `/${idSociety?.name}/dolar`,
-      icon: AttachMoneyIcon,
+      icon: AttachMoney,
       title: 'Dólar',
     },
     {
       href: `/${idSociety?.name}/cac`,
-      icon: TrendingUpIcon,
+      icon: TrendingUp,
       title: 'CAC',
     },
     {
       href: `/${idSociety?.name}/proveedores`,
-      icon: LocalShippingIcon,
+      icon: LocalShipping,
       title: 'Proveedores',
     },
     {
       href: `/${idSociety?.name}/usuarios`,
-      icon: PeopleIcon,
+      icon: People,
       title: 'Usuarios',
     },
     {
       href: `/${idSociety?.name}/rubros`,
-      icon: MenuBookIcon,
+      icon: MenuBook,
       title: 'Rubros',
     },
   ];
-
 
   const content = (
     <Box
@@ -48,15 +43,13 @@ export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, 
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
+        p: 2,
       }}>
-      <Box sx={{ p: 2 }}>
-        <List>
-          {items.map(item => (
-            <NavItem href={item.href} key={item.title} title={item.title} icon={item.icon} />
-          ))}
-        </List>
-      </Box>
-      {/* <Box sx={{ flexGrow: 1 }} /> estaba en el template, no se con que fin */}
+      <List>
+        {items.map(item => (
+          <NavItem href={item.href} key={item.title} title={item.title} icon={item.icon} />
+        ))}
+      </List>
     </Box>
   );
 
@@ -92,13 +85,3 @@ export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, 
     </>
   );
 }
-
-DashboardSidebar.propTypes = {
-  setisMobileNavOpen: PropTypes.func,
-  isMobileNavOpen: PropTypes.bool,
-};
-
-DashboardSidebar.defaultProps = {
-  setisMobileNavOpen: () => {},
-  isMobileNavOpen: false,
-};

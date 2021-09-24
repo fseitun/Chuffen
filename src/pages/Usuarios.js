@@ -1,7 +1,5 @@
-import React from 'react';
-import { PropTypes } from 'prop-types';
+import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
-import { Box, Container } from '@material-ui/core';
 
 import { ManipularUsuarios } from 'src/components/usuarios/ManipularUsuarios';
 import { GrillaUsuarios } from 'src/components/usuarios/GrillaUsuarios';
@@ -30,6 +28,3 @@ export function Usuarios({ idSociety }) {
     </>
   );
 }
-Usuarios.propTypes = {
-  idSociety: PropTypes.object,
-};

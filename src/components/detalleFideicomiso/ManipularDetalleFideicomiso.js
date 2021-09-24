@@ -1,10 +1,7 @@
-import React from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import { TextField, Button } from '@mui/material';
+import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
-import { TextField, Button } from '@material-ui/core';
-import { LocalizationProvider, DesktopDatePicker } from '@material-ui/lab';
-import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
-import PropTypes from 'prop-types';
 
 import { getMethod, postMethod } from 'src/utils/api';
 // import { yearMonthDayString } from 'src/utils/dateToString';
@@ -95,13 +92,3 @@ async function checkName(idSociedad, idFideicomiso, nombre) {
   let url = `producto/mostrar/${idSociedad}/${idFideicomiso}/${nombre}`;
   return Boolean(await getMethod(url));
 }
-
-Picker.propTypes = {
-  field: PropTypes.object.isRequired,
-  form: PropTypes.object.isRequired,
-};
-
-ManipularDetalleFideicomiso.propTypes = {
-  idSociedad: PropTypes.number.isRequired,
-  idFideicomiso: PropTypes.number.isRequired,
-};

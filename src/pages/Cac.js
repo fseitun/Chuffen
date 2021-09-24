@@ -1,7 +1,5 @@
-import React from 'react';
-import { PropTypes } from 'prop-types';
+import {Box, Container} from '@mui/material'
 import { Helmet } from 'react-helmet';
-import { Box, Container } from '@material-ui/core';
 import { ManipularCac } from 'src/components/cac/ManipularCac';
 import { GrillaCac } from 'src/components/cac/GrillaCac';
 
@@ -29,6 +27,3 @@ export function Cac({ idSociety }) {
     </>
   );
 }
-Cac.propTypes = {
-  idSociety: PropTypes.object,
-};
