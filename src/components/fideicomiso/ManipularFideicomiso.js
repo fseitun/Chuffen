@@ -6,23 +6,6 @@ import { Formik, Form, Field } from 'formik';
 
 import { getMethod, postMethod } from 'src/utils/api';
 
-function Picker({ field, form }) {
-  const { name, value } = field;
-  const { setFieldValue } = form;
-
-  return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <DesktopDatePicker
-        label={1}
-        inputFormat='dd/MM/yyyy'
-        value={value}
-        onChange={value => setFieldValue(name, value)}
-        renderInput={params => <TextField {...params} />}
-      />
-    </LocalizationProvider>
-  );
-}
-
 export function ManipularFideicomiso({ idSociety }) {
   const queryClient = useQueryClient();
 
@@ -43,7 +26,7 @@ export function ManipularFideicomiso({ idSociety }) {
         fechaFin: null,
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        let bool = await checkName(idSociety.id, values.nombre);
+        let bool = await checkIfNameExists(idSociety.id, values.nombre);
         !bool && mutate(values); //cambiar por un pop up
 
         resetForm();
@@ -58,8 +41,21 @@ export function ManipularFideicomiso({ idSociety }) {
             maxLength={40}
             name='nombre'
           />
-          <Field component={Picker} label='Inicio' type='date' name='fechaInicio' />
-          <Field component={Picker} label='Finalizacion' type='date' name='fechaFin' />
+          <Field name='fechaInicio'>
+            {({ field: { value, name }, form: { setFieldValue } }) => (
+              <Picker label='Inicio' value={value} setFieldValue={setFieldValue} name={name} />
+            )}
+          </Field>
+          <Field name='fechaFin'>
+            {({ field: { value, name }, form: { setFieldValue } }) => (
+              <Picker
+                label='Finalizacion'
+                value={value}
+                setFieldValue={setFieldValue}
+                name={name}
+              />
+            )}
+          </Field>
 
           <Button type='submit' disabled={isSubmitting}>
             Agregar
@@ -68,15 +64,22 @@ export function ManipularFideicomiso({ idSociety }) {
       )}
     </Formik>
   );
-}
 
-async function checkName(idSociety, nombre) {
-  let n = new String(nombre);
-  // controla blanco y espacios
-  if (n.trim() == '') {
-    return true;
+  function Picker({ value, name, setFieldValue, label }) {
+    return (
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <DesktopDatePicker
+          label={label}
+          value={value}
+          inputFormat='dd/MM/yyyy'
+          renderInput={params => <TextField {...params} />}
+          onChange={value => setFieldValue(name, value)}
+        />
+      </LocalizationProvider>
+    );
   }
   // controla si ya existe el nombre
-  let url = `fideicomiso/mostrar/${idSociety}/${nombre}`;
-  return Boolean(await getMethod(url));
+  async function checkIfNameExists(idSociety, nombre) {
+    return Boolean(await getMethod(`fideicomiso/mostrar/${idSociety}/${nombre}`));
+  }
 }

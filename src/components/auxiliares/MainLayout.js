@@ -1,4 +1,3 @@
-import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { styled } from '@mui/system';
 import MainNavbar from 'src/components/auxiliares/MainNavbar';
