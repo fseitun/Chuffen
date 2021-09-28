@@ -5,19 +5,81 @@ import { Box, Drawer, List } from '@material-ui/core';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import LocalShippingIcon from '@material-ui/icons/LocalShipping';
+import Assignment from '@material-ui/icons/Assignment';
+import Apartment from '@material-ui/icons/Apartment';
 import PeopleIcon from '@material-ui/icons/People';
+import ListAlt from '@material-ui/icons/ListAlt';
+import CreditCard from '@material-ui/icons/CreditCard';
+import Construction from '@material-ui/icons/Construction';
+import MonetizationOn from '@material-ui/icons/MonetizationOn';
+import Business from '@material-ui/icons/Business';
+import PeopleAlt from '@material-ui/icons/PeopleAlt';
+import Schema from '@material-ui/icons/Schema';
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+
 import NavItem from './NavItem';
 
 const items = [
   {
-    href: '/app/fideicomiso',
-    icon: LocalShippingIcon,
-    title: 'Fideicomisos'
+    href: '/app/contratos',
+    icon: Assignment,
+    title: 'Ver contratos '
+  },
+  {
+    href: '/app/contratoalta',
+    icon: Assignment,
+    title: 'Crear contrato'
+  },
+  {
+    href: '/app/cobros',
+    icon: MonetizationOn,
+    title: 'Cobros'
+  },
+
+  {
+    href: '/app/op',
+    icon: CreditCard,
+    title: 'OPs'
+  },
+  {
+    href: '/app/factura',
+    icon: ListAlt,
+    title: 'Facturas'
+  },
+  {
+    href: '/app/cobros',
+    icon: Construction,
+    title: 'OTs'
+  },
+  {
+    href: '/app/certificado',
+    icon: AssignmentTurnedInIcon,
+    title: 'Certificados'
+  },
+  {
+    href: '/app/empresa',
+    icon: Business,
+    title: 'Empresa'
+  },
+  {
+    href: '/app/persona',
+    icon: PeopleAlt,
+    title: 'Personas'
   },
   {
     href: '/app/proveedores',
     icon: LocalShippingIcon,
     title: 'Proveedores'
+  },
+  {
+    href: '/app/fideicomiso',
+    icon: Apartment,
+    title: 'Fideicomisos'
+  },
+  {
+    href: '/app/rubro',
+    icon: Schema,
+    title: 'Rubros & Sub'
   },
   {
     href: '/app/dolar',
