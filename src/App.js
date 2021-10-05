@@ -41,11 +41,13 @@ export default function App() {
               <Route path='proveedores' element={<Proveedores idSociety={idSociety} />} />
               <Route path='usuarios' element={<Usuarios idSociety={idSociety} />} />
               <Route path='rubros' element={<Rubros idSociety={idSociety} />} />
-              <Route path='fideicomiso' element={<Fideicomiso idSociety={idSociety} />} />
-              <Route
-                path='detallefideicomiso'
-                element={<DetalleFideicomiso idSociety={idSociety} idFideicomiso={idFideicomiso} />}
-              />
+              <Route path='fideicomiso'>
+                <Route path='' element={<Fideicomiso idSociety={idSociety} />} />
+                <Route
+                  path=':nombreFideicomiso'
+                  element={<DetalleFideicomiso idSociety={idSociety} />}
+                />
+              </Route>
               <Route path='*' element={<NotFound />} />
             </Route>
           </>

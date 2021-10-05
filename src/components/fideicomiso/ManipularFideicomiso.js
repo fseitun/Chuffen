@@ -27,7 +27,7 @@ export function ManipularFideicomiso({ idSociety }) {
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         let bool = await checkIfNameExists(idSociety.id, values.nombre);
-        !bool && mutate(values); //cambiar por un pop up
+        !bool && mutate(values);
 
         resetForm();
         setSubmitting(false);
@@ -78,7 +78,7 @@ export function ManipularFideicomiso({ idSociety }) {
       </LocalizationProvider>
     );
   }
-  // controla si ya existe el nombre
+
   async function checkIfNameExists(idSociety, nombre) {
     return Boolean(await getMethod(`fideicomiso/mostrar/${idSociety}/${nombre}`));
   }

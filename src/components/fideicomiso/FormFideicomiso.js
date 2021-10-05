@@ -9,12 +9,14 @@ import { getMethod, postMethod } from 'src/utils/api';
 function Picker({ field, form }) {
   const { name, value } = field;
   const { setFieldValue } = form;
-  let labelF = 'Finalización'
-  if(name == 'fechaInicio'){labelF = 'Fecha de inicio'}
+  let labelF = 'Finalización';
+  if (name === 'fechaInicio') {
+    labelF = 'Fecha de inicio';
+  }
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DesktopDatePicker
-        label= {labelF}
+        label={labelF}
         inputFormat='dd/MM/yyyy'
         value={value}
         onChange={value => setFieldValue(name, value)}
@@ -27,13 +29,14 @@ function Picker({ field, form }) {
 export function FormFideicomiso({ idSociedad }) {
   const queryClient = useQueryClient();
   const idFideicomiso = '1'; // params.queryClient.fide;
-  const { mutate } = useMutation(newData => 
-    postMethod(`fideicomiso/modificar_DIR/${idSociedad}/${idFideicomiso}`, newData), {
-    
-    onSuccess: () => {      
-      queryClient.refetchQueries(['fideicomiso', idSociedad]);
-    },
-  });
+  const { mutate } = useMutation(
+    newData => postMethod(`fideicomiso/modificar_DIR/${idSociedad}/${idFideicomiso}`, newData),
+    {
+      onSuccess: () => {
+        queryClient.refetchQueries(['fideicomiso', idSociedad]);
+      },
+    }
+  );
 
   return (
     <Formik
@@ -51,34 +54,31 @@ export function FormFideicomiso({ idSociedad }) {
         <Form>
           <Box sx={{ pt: 3 }}>
             <Field
-                as={TextField}
-                label='Dirección de Obra'
-                type='string'
-                //width='200'
-                maxLength={200}
-                name='localizacionId'
+              as={TextField}
+              label='Dirección de Obra'
+              type='string'
+              //width='200'
+              maxLength={200}
+              name='localizacionId'
             />
-
             <Field
-                as={TextField}
-                label='Contacto'
-                //width='200'
-                type='integer'
-                // maxLength={40}
-                name='personaId'
+              as={TextField}
+              label='Contacto'
+              //width='200'
+              type='integer'
+              // maxLength={40}
+              name='personaId'
             />
             &nbsp;&nbsp;&nbsp;lalalala@gmail.com
           </Box>
           <Box sx={{ pt: 3 }}>
             <Field component={Picker} label='Inicio' type='date' name='fechaInicio' />
             <Field component={Picker} label='Finalizacion' type='date' name='fechaFin' />
-        
-        
+
             <Button type='submit' disabled={isSubmitting}>
-                Actualizar
+              Actualizar
             </Button>
           </Box>
-          
         </Form>
       )}
     </Formik>
@@ -86,9 +86,11 @@ export function FormFideicomiso({ idSociedad }) {
 }
 
 async function checkName(idSociedad, nombre) {
-  let n = new String(nombre); 
+  let n = new String(nombre);
   // controla blanco y espacios
-  if(n.trim() ==''){return true}
+  if (n.trim() == '') {
+    return true;
+  }
   // controla si ya existe el nombre
   let url = `fideicomiso/mostrar/${idSociedad}/${nombre}`;
   return Boolean(await getMethod(url));

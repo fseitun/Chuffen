@@ -1,4 +1,4 @@
-import {Container, Box } from '@mui/material';
+import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
 import { ManipularFideicomiso } from 'src/components/fideicomiso/ManipularFideicomiso';
 import { GrillaFideicomiso } from 'src/components/fideicomiso/GrillaFideicomiso';

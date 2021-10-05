@@ -1,14 +1,14 @@
 import { useQuery, useQueryClient, useMutation } from 'react-query';
+import { Link } from 'react-router-dom';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, Button } from '@mui/material';
-import { Delete } from '@mui/icons-material';import { ToastContainer, toast } from 'react-toastify';
+import { Delete } from '@mui/icons-material';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 
 const columns = [
-  // { field: 'id', headerName: 'ID', width: 100 , headerAlign: 'center',},
-
   {
     field: 'nombre',
     headerName: 'Nombre',
@@ -54,7 +54,7 @@ const columns = [
     field: 'id',
     headerName: 'Ver detalle',
     width: 160,
-    renderCell: IrDetalle,
+    renderCell: IrAFideicomiso,
   },
 
   {
@@ -82,6 +82,7 @@ export function GrillaFideicomiso({ idSociety }) {
   const { data, isLoading, error } = useQuery(['fideicomiso', idSociety.id], () =>
     getMethod(`fideicomiso/listar/${idSociety.id}`)
   );
+  console.log(data);
 
   if (isLoading) return 'Cargando...';
   if (error) return `Hubo un error: ${error.message}`;
@@ -103,7 +104,6 @@ export function GrillaFideicomiso({ idSociety }) {
           nombre: el.nombre,
           fechaInicio: el.fechaInicio,
           fechaFin: el.fechaFin,
-          idFide: el.id,
           onDelete: () => mutate(el.id),
         }))}
         columns={columns}
@@ -134,10 +134,8 @@ function CustomToolbar() {
   );
 }
 
-function IrDetalle(params) {
-  const url = 'detallefideicomiso?nom=' + params.row.nombre + '&fide=' + params.row.idFide;
-
-  return <a href={url}>ver</a>;
+function IrAFideicomiso(params) {
+  return <Link to={params.row.nombre}>ver</Link>;
 }
 
 function DeleteRow(params) {

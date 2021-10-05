@@ -4,7 +4,6 @@ import { Outlet } from 'react-router-dom';
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
 const DashboardLayoutRoot = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -36,8 +35,6 @@ const DashboardLayoutContent = styled('div')({
   overflow: 'auto',
 });
 
-const queryClient = new QueryClient();
-
 export default function DashboardLayout({ setLoggedUser, idSociety }) {
   const [isMobileNavOpen, setisMobileNavOpen] = useState(false);
 
@@ -55,10 +52,8 @@ export default function DashboardLayout({ setLoggedUser, idSociety }) {
       <DashboardLayoutWrapper>
         <DashboardLayoutContainer>
           <DashboardLayoutContent>
-            <QueryClientProvider client={queryClient}>
-              <Outlet />
-              <ReactQueryDevtools initialIsOpen={false} />
-            </QueryClientProvider>
+            <Outlet />
+            <ReactQueryDevtools initialIsOpen={false} />
           </DashboardLayoutContent>
         </DashboardLayoutContainer>
       </DashboardLayoutWrapper>
