@@ -18,7 +18,6 @@ import { DetalleFideicomiso } from 'src/pages/DetalleFideicomiso';
 import { useAuth } from 'src/utils/useAuth';
 
 dotenv.config();
-let idFideicomiso = 1;
 
 export default function App() {
   const { loggedUser, setLoggedUser } = useAuth();

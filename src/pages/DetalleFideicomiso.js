@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { getMethod } from 'src/utils/api';
 import { Container, Box, Typography } from '@mui/material';
 import { Helmet } from 'react-helmet';
-import { FormFideicomiso } from 'src/components/fideicomiso/FormFideicomiso';
+import { DatosPrincipalesFideicomiso } from 'src/components/fideicomiso/DatosPrincipalesFideicomiso';
 import { ManipularDetalleFideicomiso } from 'src/components/detalleFideicomiso/ManipularDetalleFideicomiso';
 import { GrillaDetalleFideicomiso } from 'src/components/detalleFideicomiso/GrillaDetalleFideicomiso';
 
@@ -21,7 +21,6 @@ export function DetalleFideicomiso({ idSociety }) {
       <Helmet>
         <title>{nombreFideicomiso} | TSF Desarrollos</title>
       </Helmet>
-
       <Box
         sx={{
           backgroundColor: 'background.default',
@@ -30,12 +29,10 @@ export function DetalleFideicomiso({ idSociety }) {
         }}>
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <Typography align='left' color='textPrimary' variant='h3'>
-              {nombreFideicomiso}
-            </Typography>
-          </Box>
-          <Box sx={{ pt: 3 }}>
-            <FormFideicomiso />
+            <DatosPrincipalesFideicomiso
+              idSociety={idSociety}
+              selectedFideicomisoData={selectedFideicomisoData}
+            />
           </Box>
           <Box sx={{ pt: 3 }}>
             <Typography align='left' color='textPrimary' variant='h5'>

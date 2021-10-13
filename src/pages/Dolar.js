@@ -1,4 +1,4 @@
-import {Container, Box, Typography } from '@mui/material';
+import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
 
 import { ManipularDolar } from 'src/components/dolar/ManipularDolar';
@@ -26,4 +26,5 @@ export function Dolar({ idSociety }) {
         </Container>
       </Box>
     </>
-  );}
+  );
+}

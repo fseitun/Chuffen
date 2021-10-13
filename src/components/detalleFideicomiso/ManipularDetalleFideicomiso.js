@@ -1,39 +1,20 @@
 import { TextField, Button } from '@mui/material';
-import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 
 import { getMethod, postMethod } from 'src/utils/api';
-// import { yearMonthDayString } from 'src/utils/dateToString';
 
-function Picker({ field, form }) {
-  const { name, value } = field;
-  const { setFieldValue } = form;
-  let labelF = 'Finalización'
-  if(name == 'fechaInicio'){labelF = 'Fecha de inicio'}
-  return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <DesktopDatePicker
-        label= {labelF}
-        inputFormat='dd/MM/yyyy'
-        value={value}
-        onChange={value => setFieldValue(name, value)}
-        renderInput={params => <TextField {...params} />}
-      />
-    </LocalizationProvider>
-  );
-}
-
-export function ManipularDetalleFideicomiso({ idSociedad },{ idFideicomiso }) {
-  
+export function ManipularDetalleFideicomiso({ idSociedad }, { idFideicomiso }) {
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation(newData => postMethod(`producto/agregar/${idSociedad}/${idFideicomiso}`, newData), {
-    
-    onSuccess: () => {      
-      queryClient.refetchQueries(['producto', idSociedad, idFideicomiso]);
-    },
-  });
+  const { mutate } = useMutation(
+    newData => postMethod(`producto/agregar/${idSociedad}/${idFideicomiso}`, newData),
+    {
+      onSuccess: () => {
+        queryClient.refetchQueries(['producto', idSociedad, idFideicomiso]);
+      },
+    }
+  );
 
   return (
     <Formik
@@ -51,21 +32,15 @@ export function ManipularDetalleFideicomiso({ idSociedad },{ idFideicomiso }) {
       }}>
       {({ isSubmitting, setFieldValue }) => (
         <Form>
-          <Field
-            as={TextField}
-            label='Código'
-            type='string'
-            maxLength={40}
-            name='codigo'
-          />
+          <Field as={TextField} label='Código' type='string' maxLength={40} name='codigo' />
 
-          <Field
+          <Field /*TODO armar dropdown con tipos */
             as={TextField}
             label='Tipo'
             type='integer'
             maxLength={100}
             name='tipo'
-          />     
+          />
 
           <Field
             as={TextField}
@@ -85,9 +60,11 @@ export function ManipularDetalleFideicomiso({ idSociedad },{ idFideicomiso }) {
 }
 
 async function checkName(idSociedad, idFideicomiso, nombre) {
-  let n = new String(nombre); 
+  let n = String(nombre);
   // controla blanco y espacios
-  if(n.trim() ==''){return true}
+  if (n.trim() === '') {
+    return true;
+  }
   // controla si ya existe el nombre
   let url = `producto/mostrar/${idSociedad}/${idFideicomiso}/${nombre}`;
   return Boolean(await getMethod(url));
