@@ -6,58 +6,50 @@ import { ThemeProvider } from '@mui/material/styles';
 import GlobalStyles from 'src/components/auxiliares/GlobalStyles';
 import theme from 'src/theme';
 
-
-
 // *** Generales *********************************
 
 import DashboardLayout from 'src/components/auxiliares/DashboardLayout';
 import MainLayout from 'src/components/auxiliares/MainLayout';
 import { Login } from 'src/pages/Login';
 import NotFound from 'src/pages/NotFound';
-import { useAuth } from 'src/components/auxiliares/useAuth';
+import { useAuth } from 'src/utils/useAuth';
 
 // *** Auxiliares *********************************
 import { Dolar } from 'src/pages/Dolar';
 import { Cac } from 'src/pages/Cac';
-import { Rubro } from 'src/pages/Rubro';
+import { Rubros } from 'src/pages/Rubros';
+//import { Rubro } from 'src/pages/Rubro';
 //import { SubRubro } from 'src/pages/SubRubro'; ..o DetalleRubro
 
 // *** Maestros *********************************
 import { Usuarios } from 'src/pages/Usuarios';
 
-import { Rubros } from 'src/pages/Rubros';
-
-
-import { useAuth } from 'src/utils/useAuth';
 
 import { Proveedores } from 'src/pages/Proveedores';
-import { Persona } from 'src/pages/Persona';
-import { Empresa } from 'src/pages/Empresa';
+//import { Persona } from 'src/pages/Persona';
+//import { Empresa } from 'src/pages/Empresa';
 
 // *** Fide *********************************
 import { Fideicomiso } from 'src/pages/Fideicomiso';
-import { DetalleFideicomiso } from 'src/pages/DetalleFideicomiso'
+import { DetalleFideicomiso } from 'src/pages/DetalleFideicomiso';
 
 // *** Contrato *********************************
-import { Contratos } from 'src/pages/Contratos';
-import { ContratoAlta } from 'src/pages/ContratoAlta';
-import { Cobros } from 'src/pages/Cobros';
-import { Cuotas } from 'src/pages/Cuotas';
-import { DetalleContrato } from 'src/pages/DetalleContrato';
+//import { Contratos } from 'src/pages/Contratos';
+//import { ContratoAlta } from 'src/pages/ContratoAlta';
+//import { Cobros } from 'src/pages/Cobros';
+//import { Cuotas } from 'src/pages/Cuotas';
+//import { DetalleContrato } from 'src/pages/DetalleContrato';
 //import { ContratoVista } from 'src/pages/ContratoVista';
 
 // *** Pagos *********************************
-import { OP } from 'src/pages/OP';
-import { DetalleOP } from 'src/pages/DetalleOP';
-import { Factura } from 'src/pages/Factura';
+//import { OP } from 'src/pages/OP';
+//import { DetalleOP } from 'src/pages/DetalleOP';
+//import { Factura } from 'src/pages/Factura';
 
 // *** Orden de Trabajo **********************
-import { OT } from 'src/pages/OT';
-import { DetalleOT } from 'src/pages/DetalleOT';
-import { Certificado } from 'src/pages/Certificado';
-
-
-
+//import { OT } from 'src/pages/OT';
+//import { DetalleOT } from 'src/pages/DetalleOT';
+//import { Certificado } from 'src/pages/Certificado';
 
 dotenv.config();
 

@@ -5,12 +5,7 @@ import {
   LocalShipping,
   People,
   MenuBook,
-  AttachMoneyIcon,
-  TrendingUpIcon,
-  LocalShippingIcon,
   Assignment,
-  Apartment,
-  PeopleIcon,
   ListAlt,
   CreditCard,
   Construction,
@@ -18,92 +13,80 @@ import {
   Business,
   PeopleAlt,
   Schema,
-  AssignmentTurnedInIcon,
+  AssignmentTurnedIn,
 } from '@mui/icons-material';
 
 import { NavItem } from './NavItem';
 
-const items = [
-  {
-    href: '/app/contratos',
-    icon: Assignment,
-    title: 'Ver contratos ',
-  },
-  {
-    href: '/app/contratoalta',
-    icon: Assignment,
-    title: 'Crear contrato',
-  },
-  {
-    href: '/app/cobros',
-    icon: MonetizationOn,
-    title: 'Cobros',
-  },
-
-  {
-    href: '/app/op',
-    icon: CreditCard,
-    title: 'OPs',
-  },
-  {
-    href: '/app/factura',
-    icon: ListAlt,
-    title: 'Facturas',
-  },
-  {
-    href: '/app/cobros',
-    icon: Construction,
-    title: 'OTs',
-  },
-  {
-    href: '/app/certificado',
-    icon: AssignmentTurnedInIcon,
-    title: 'Certificados',
-  },
-  {
-    href: '/app/empresa',
-    icon: Business,
-    title: 'Empresa',
-  },
-  {
-    href: '/app/persona',
-    icon: PeopleAlt,
-    title: 'Personas',
-  },
-  {
-    href: '/app/proveedores',
-    icon: LocalShippingIcon,
-    title: 'Proveedores',
-  },
-  {
-    href: '/app/fideicomiso',
-    icon: Apartment,
-    title: 'Fideicomisos',
-  },
-  {
-    href: '/app/rubro',
-    icon: Schema,
-    title: 'Rubros & Sub',
-  },
-  {
-    href: '/app/dolar',
-    icon: AttachMoneyIcon,
-    title: 'Dólar',
-  },
-  {
-    href: '/app/cac',
-    icon: TrendingUpIcon,
-    title: 'CAC',
-  },
-  {
-    href: '/app/usuarios',
-    icon: PeopleIcon,
-    title: 'Usuarios',
-  },
-];
-
 export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, idSociety }) {
   const items = [
+    {
+      href: `/${idSociety?.name}/contratos`,
+      icon: Assignment,
+      title: 'Ver contratos ',
+    },
+    {
+      href: `/${idSociety?.name}/contratoalta`,
+      icon: Assignment,
+      title: 'Crear contrato',
+    },
+    {
+      href: `/${idSociety?.name}/cobros`,
+      icon: MonetizationOn,
+      title: 'Cobros',
+    },
+
+    {
+      href: `/${idSociety?.name}/op`,
+      icon: CreditCard,
+      title: 'OPs',
+    },
+    {
+      href: `/${idSociety?.name}/factura`,
+      icon: ListAlt,
+      title: 'Facturas',
+    },
+    {
+      href: `/${idSociety?.name}/cobros`,
+      icon: Construction,
+      title: 'OTs',
+    },
+    {
+      href: `/${idSociety?.name}/certificado`,
+      icon: AssignmentTurnedIn,
+      title: 'Certificados',
+    },
+    {
+      href: `/${idSociety?.name}/empresa`,
+      icon: Business,
+      title: 'Empresa',
+    },
+    {
+      href: `/${idSociety?.name}/persona`,
+      icon: PeopleAlt,
+      title: 'Personas',
+    },
+    {
+      href: `/${idSociety?.name}/proveedores`,
+      icon: LocalShipping,
+      title: 'Proveedores',
+    },
+    {
+      href: `/${idSociety?.name}/rubro`,
+      icon: Schema,
+      title: 'Rubros & Sub',
+    },
+
+    {
+      href: `/${idSociety?.name}/cac`,
+      icon: TrendingUp,
+      title: 'CAC',
+    },
+    {
+      href: `/${idSociety?.name}/usuarios`,
+      icon: People,
+      title: 'Usuarios',
+    },
     {
       href: `/${idSociety?.name}/fideicomiso`,
       icon: LocalShipping,
@@ -113,21 +96,6 @@ export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, 
       href: `/${idSociety?.name}/dolar`,
       icon: AttachMoney,
       title: 'Dólar',
-    },
-    {
-      href: `/${idSociety?.name}/cac`,
-      icon: TrendingUp,
-      title: 'CAC',
-    },
-    {
-      href: `/${idSociety?.name}/proveedores`,
-      icon: LocalShipping,
-      title: 'Proveedores',
-    },
-    {
-      href: `/${idSociety?.name}/usuarios`,
-      icon: People,
-      title: 'Usuarios',
     },
     {
       href: `/${idSociety?.name}/rubros`,

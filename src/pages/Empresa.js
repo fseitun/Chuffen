@@ -1,7 +1,6 @@
 import React from 'react';
-import { PropTypes } from 'prop-types';
 import { Helmet } from 'react-helmet';
-import { Box, Container } from '@material-ui/core';
+import { Box, Container } from '@mui/material';
 
 import { ManipularEmpresa } from 'src/components/empresa/ManipularEmpresa';
 import { GrillaEmpresa } from 'src/components/empresa/GrillaEmpresa';
@@ -30,6 +29,3 @@ export function Empresa({ idSociedad }) {
     </>
   );
 }
-Empresa.propTypes = {
-  idSociedad: PropTypes.number,
-};

@@ -1,20 +1,15 @@
 import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
-import { TextField, Button } from '@material-ui/core';
-import PropTypes from 'prop-types';
+import { TextField, Button } from '@mui/material';
 
 import { getMethod, postMethod } from 'src/utils/api';
 
 export function ManipularEmpresa({ idSociedad }) {
   const queryClient = useQueryClient();
-  const { mutate } = useMutation(
-    newData =>
-      postMethod(`empresa/agregar/${idSociedad}`, newData),
-    {
-      onSuccess: () => queryClient.refetchQueries(['empresas', idSociedad]),
-    }
-  );
+  const { mutate } = useMutation(newData => postMethod(`empresa/agregar/${idSociedad}`, newData), {
+    onSuccess: () => queryClient.refetchQueries(['empresas', idSociedad]),
+  });
 
   return (
     <Formik
@@ -31,7 +26,6 @@ export function ManipularEmpresa({ idSociedad }) {
       }}>
       {({ isSubmitting, setFieldValue }) => (
         <Form>
-          
           <Field as={TextField} label='Razón Social' type='string' name='razonSocial' />
           <Field as={TextField} label='Email' type='string' name='mail' />
 
@@ -66,7 +60,3 @@ function onlyNumbers(event, setFieldValue, typeOfData) {
     setFieldValue(typeOfData, value.toString());
   }
 }
-
-ManipularEmpresa.propTypes = {
-  idSociedad: PropTypes.number.isRequired,
-};

@@ -1,7 +1,6 @@
 import React from 'react';
-import { PropTypes } from 'prop-types';
 import { Helmet } from 'react-helmet';
-import { Box, Container } from '@material-ui/core';
+import { Box, Container } from '@mui/material';
 // import { ManipularFideicomiso } from 'src/components/fideicomiso/ManipularFideicomiso';
 // import { GrillaFideicomiso } from 'src/components/fideicomiso/GrillaFideicomiso';
 
@@ -17,13 +16,8 @@ export function Cuotas({ idSociedad }) {
           minHeight: '100%',
           py: 3,
         }}>
-        <Container maxWidth={false}>
-        
-        </Container>
+        <Container maxWidth={false}></Container>
       </Box>
     </>
   );
 }
-Cuotas.propTypes = {
-  idSociedad: PropTypes.number,
-};
