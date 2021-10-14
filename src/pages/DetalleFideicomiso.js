@@ -40,7 +40,10 @@ export function DetalleFideicomiso({ idSociety }) {
             </Typography>
           </Box>
           <Box sx={{ pt: 3 }}>
-            <ManipularDetalleFideicomiso />
+            <ManipularDetalleFideicomiso
+              idSociety={idSociety}
+              selectedFideicomisoData={selectedFideicomisoData}
+            />
           </Box>
           <Box sx={{ pt: 3 }}>
             <GrillaDetalleFideicomiso />
