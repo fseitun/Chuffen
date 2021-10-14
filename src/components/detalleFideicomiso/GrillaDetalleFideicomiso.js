@@ -14,27 +14,28 @@ const columns = [
     width: 140,
     editable: false,
     headerAlign: 'center',
-    align: 'center'
+    align: 'center',
   },
 
   {
     field: 'metros',
     headerName: 'Metros',
+    type: 'number',
     width: 130,
-    editable: false,
+    editable: true,
     headerAlign: 'center',
-    align: 'right'
+    align: 'right',
   },
 
   {
     field: 'precioULT',
+    type: 'number',
     headerName: 'Precio',
     width: 150,
-    editable: false,
+    editable: true,
     headerAlign: 'center',
-    align: 'right'
+    align: 'right',
   },
-
 
   {
     field: 'deleteIcon',
@@ -46,45 +47,55 @@ const columns = [
   },
 ];
 
-export function GrillaDetalleFideicomiso() {
-  const queryClient = useQueryClient();
-
-  const { mutate } = useMutation(
-    async id => {
-      await deleteMethod(`producto/eliminar/1/1`, id);
-    },
-    {
-      onSuccess: async () => await queryClient.refetchQueries(['producto', '1']),
-    }
+export function GrillaDetalleFideicomiso({ idSociety, selectedFideicomisoData }) {
+  // console.log('idSociety:', idSociety);
+  // console.log('selectedFideicomisoData:', selectedFideicomisoData);
+  const {
+    data: products,
+    isLoading,
+    error,
+  } = useQuery(['productos', idSociety, selectedFideicomisoData], () =>
+    getMethod(`producto/listar/${idSociety?.id}/${selectedFideicomisoData?.id}`)
   );
 
-  const { data, isLoading, error } = useQuery(['producto', '1'], () =>
-    getMethod(`producto/listar/1/1`)
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteProduct } = useMutation(
+    async id =>
+      await deleteMethod(`producto/eliminar/${idSociety?.id}`, {
+        fideicomisoId: selectedFideicomisoData?.id,
+        id: id,
+      }),
+    {
+      onSuccess: async () =>
+        await queryClient.refetchQueries(['productos', idSociety, selectedFideicomisoData]),
+    }
   );
 
   if (isLoading) return 'Cargando...';
   if (error) return `Hubo un error: ${error.message}`;
 
   function handleCellModification(e) {
-    console.log(e);
+    // console.log('e:', e);
     let newData = {
       id: e.id,
-      [e.field]: e.props.value,
+      idFideicomiso: selectedFideicomisoData?.id,
+      [e.field]: e.value,
     };
-    postMethod(`producto/modificar/1/1`, newData);
+    console.log('newData:', newData);
+    postMethod(`producto/modificar/${idSociety?.id}`, newData);
   }
 
   return (
     <div style={{ width: '100%' }}>
       <ToastContainer />
       <DataGrid
-        rows={data.map(el => ({
+        rows={products.map(el => ({
           id: el.id,
-        // fideicomisoId: el.fideicomisoId,
           codigo: el.codigo,
           metros: el.metros,
           precioULT: el.precioULT,
-          onDelete: () => mutate(el.id),
+          onDelete: () => deleteProduct(el.id),
         }))}
         columns={columns}
         pageSize={25}
@@ -97,7 +108,7 @@ export function GrillaDetalleFideicomiso() {
           },
         ]}
         scrollbarSize
-        onEditCellChange={handleCellModification}
+        onCellEditCommit={handleCellModification}
         components={{
           Toolbar: CustomToolbar,
         }}
@@ -113,7 +124,6 @@ function CustomToolbar() {
     </GridToolbarContainer>
   );
 }
-
 
 function DeleteRow(params) {
   const deleteRow = params.row.onDelete;

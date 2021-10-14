@@ -46,7 +46,10 @@ export function DetalleFideicomiso({ idSociety }) {
             />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <GrillaDetalleFideicomiso />
+            <GrillaDetalleFideicomiso
+              idSociety={idSociety}
+              selectedFideicomisoData={selectedFideicomisoData}
+            />
           </Box>
         </Container>
       </Box>

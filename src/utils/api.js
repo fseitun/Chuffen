@@ -12,11 +12,7 @@ export const postMethod = async (url, newData) => {
   return data;
 };
 
-export const deleteMethod = async (url, rowId) => {
-  return await axios.delete(`${apiServerUrl}${url}`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: JSON.stringify({ id: `${rowId}` }),
-  });
+export const deleteMethod = async (url, infoOfElementToDelete) => {
+  // console.log('infoOfElementToDelete:', infoOfElementToDelete);
+  return await axios.delete(`${apiServerUrl}${url}`, { data: infoOfElementToDelete });
 };

@@ -75,13 +75,8 @@ export function ManipularDetalleFideicomiso({ idSociety, selectedFideicomisoData
   const { mutate: addProduct } = useMutation(
     newData => postMethod(`producto/agregar/${idSociety.id}`, newData),
     {
-      onSuccess: () => {
-        queryClient.refetchQueries([
-          'producto',
-          idSociety.id,
-          selectedFideicomisoData?.localizacionId,
-        ]);
-      },
+      onSuccess: async () =>
+        await queryClient.refetchQueries(['productos', idSociety, selectedFideicomisoData]),
     }
   );
 

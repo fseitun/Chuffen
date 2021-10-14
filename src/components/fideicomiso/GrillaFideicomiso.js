@@ -117,7 +117,7 @@ export function GrillaFideicomiso({ idSociety }) {
           },
         ]}
         scrollbarSize
-        onEditCellChange={handleCellModification}
+        onCellEditCommit={handleCellModification}
         components={{
           Toolbar: CustomToolbar,
         }}

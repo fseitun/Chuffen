@@ -85,7 +85,7 @@ export function GrillaUsuarios({ idSociety }) {
         disableSelectionOnClick
         autoHeight
         scrollbarSize
-        onEditCellChange={handleCellModification}
+        onCellEditCommit={handleCellModification}
         components={{
           Toolbar: CustomToolbar,
         }}
