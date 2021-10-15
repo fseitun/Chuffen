@@ -1,19 +1,18 @@
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, Button } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
+import { getMethod, deleteMethod } from 'src/utils/api';
 
 const columns = [
   {
     field: 'nombre',
     headerName: 'Nombre',
     width: 200,
-    editable: false,
     headerAlign: 'center',
     align: 'left',
   },
@@ -23,7 +22,6 @@ const columns = [
     headerName: 'Inicio',
     width: 170,
     type: 'date',
-    editable: true,
     headerAlign: 'center',
     align: 'center',
     valueFormatter: ({ value }) =>
@@ -39,7 +37,6 @@ const columns = [
     headerName: 'Finalización',
     width: 170,
     type: 'date',
-    editable: true,
     headerAlign: 'center',
     align: 'center',
     valueFormatter: ({ value }) =>
@@ -49,14 +46,13 @@ const columns = [
         timeZone: 'UTC',
       }),
   },
-
   {
-    field: 'id',
-    headerName: 'Ver detalle',
-    width: 160,
-    renderCell: IrAFideicomiso,
+    field: 'color',
+    headerName: 'Color',
+    width: 150,
+    headerAlign: 'center',
+    renderCell: ({ value }) => <div style={{ width: '100%', height: '100%', background: value }} />,
   },
-
   {
     field: 'deleteIcon',
     headerName: '',
@@ -66,12 +62,12 @@ const columns = [
     renderCell: DeleteRow,
   },
 ];
-
 export function GrillaFideicomiso({ idSociety }) {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation(
-    async id => {
+    async (id) => {
       await deleteMethod(`fideicomiso/eliminar/${idSociety.id}`, id);
     },
     {
@@ -82,28 +78,21 @@ export function GrillaFideicomiso({ idSociety }) {
   const { data, isLoading, error } = useQuery(['fideicomiso', idSociety.id], () =>
     getMethod(`fideicomiso/listar/${idSociety.id}`)
   );
-  console.log(data);
+  // console.log(data);
 
   if (isLoading) return 'Cargando...';
   if (error) return `Hubo un error: ${error.message}`;
-
-  function handleCellModification(e) {
-    let newData = {
-      id: e.id,
-      [e.field]: e.props.value,
-    };
-    postMethod(`fideicomiso/modificar/${idSociety.id}`, newData);
-  }
 
   return (
     <div style={{ width: '100%' }}>
       <ToastContainer />
       <DataGrid
-        rows={data.map(el => ({
+        rows={data.map((el) => ({
           id: el.id,
           nombre: el.nombre,
           fechaInicio: el.fechaInicio,
           fechaFin: el.fechaFin,
+          color: el.color,
           onDelete: () => mutate(el.id),
         }))}
         columns={columns}
@@ -117,13 +106,16 @@ export function GrillaFideicomiso({ idSociety }) {
           },
         ]}
         scrollbarSize
-        onCellEditCommit={handleCellModification}
+        onRowDoubleClick={(a) => IrAFideicomiso(a)}
         components={{
           Toolbar: CustomToolbar,
         }}
       />
     </div>
   );
+  function IrAFideicomiso(params) {
+    navigate(`./${params.row.nombre}`);
+  }
 }
 
 function CustomToolbar() {
@@ -134,10 +126,6 @@ function CustomToolbar() {
   );
 }
 
-function IrAFideicomiso(params) {
-  return <Link to={params.row.nombre}>ver</Link>;
-}
-
 function DeleteRow(params) {
   const deleteRow = params.row.onDelete;
   const notify = () =>
@@ -145,21 +133,23 @@ function DeleteRow(params) {
       <Box>
         <Button
           sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={closeToast}>
+          variant="contained"
+          color="secondary"
+          size="small"
+          onClick={closeToast}
+        >
           No quiero borrar
         </Button>
         <Button
           sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
+          variant="contained"
+          color="secondary"
+          size="small"
           onClick={() => {
             deleteRow();
             closeToast();
-          }}>
+          }}
+        >
           Sí quiero borrar
         </Button>
       </Box>
