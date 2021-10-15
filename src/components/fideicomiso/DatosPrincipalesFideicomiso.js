@@ -38,14 +38,14 @@ export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety
     getMethod(`persona/listar/${idSociety.id}`)
   );
 
-  const { mutate: setManagerInFideicomiso } = useMutation(newData =>
+  const { mutate: setManagerInFideicomiso } = useMutation((newData) =>
     postMethod(`fideicomiso/modificar/${idSociety.id}`, newData)
   );
 
   const { mutate: addNewPerson } = useMutation(
-    newData => postMethod(`persona/agregar/${idSociety.id}`, newData),
+    (newData) => postMethod(`persona/agregar/${idSociety.id}`, newData),
     {
-      onSuccess: data => {
+      onSuccess: (data) => {
         setManagerId(data.id);
         setManagerInFideicomiso({
           id: selectedFideicomisoData.id,
@@ -117,7 +117,7 @@ export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety
     <>
       <AlertDialog isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} />
       <Box width={'auto'}>
-        <Typography align='left' color='textPrimary' variant='h3'>
+        <Typography align="left" color="textPrimary" variant="h3">
           {selectedFideicomisoData?.nombre}
         </Typography>
         {selectedFideicomisoData && (
@@ -129,7 +129,7 @@ export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety
             hideFooter
             autoHeight={'false'}
             pageSize={1}
-            onCellDoubleClick={e => {
+            onCellDoubleClick={(e) => {
               if (e.field === 'contacto') {
                 setIsDialogOpen(true);
                 // console.log('isDialogOpen:', isDialogOpen);
@@ -142,24 +142,23 @@ export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety
   );
 
   function AlertDialog({ isDialogOpen, setIsDialogOpen }) {
-    const close = () => setIsDialogOpen(false);
-
     return (
       <>
         <Dialog
           open={isDialogOpen}
-          onClose={close}
+          onClose={() => setIsDialogOpen(false)}
           fullWidth
-          style={{ transform: 'translate(0, -200px)' }}>
+          style={{ transform: 'translate(0, -200px)' }}
+        >
           <DialogContent>
-            <Select peopleInfo={peopleInfo} />
+            <Select peopleInfo={peopleInfo} closeDialog={() => setIsDialogOpen(false)} />
           </DialogContent>
         </Dialog>
       </>
     );
   }
 
-  function Select({ peopleInfo }) {
+  function Select({ peopleInfo, closeDialog }) {
     return (
       <Autocomplete
         value={contactInfo?.nombre}
@@ -167,9 +166,11 @@ export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety
           if (typeof newName === 'string') {
             //agrego desde el teclado sin ir a agregar
             addNewPerson({ nombre: newName });
+            closeDialog();
           } else if (newName && newName.inputValue) {
             //agrego nuevo yendo a "agregar" en el dd
             addNewPerson({ nombre: newName.inputValue });
+            closeDialog();
           } else {
             //elijo opción del dd
             if (newName?.id !== managerId) {
@@ -178,6 +179,7 @@ export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety
                 id: selectedFideicomisoData.id,
                 personaId: newName.id,
               });
+              closeDialog();
             }
           }
         }}
@@ -185,7 +187,7 @@ export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety
           // console.log('options:', options);
           const filtered = filter(options, params);
           const { inputValue } = params;
-          const isExisting = options.some(option => inputValue === option.nombre);
+          const isExisting = options.some((option) => inputValue === option.nombre);
           if (inputValue !== '' && !isExisting) {
             filtered.push({
               inputValue,
@@ -199,7 +201,7 @@ export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety
         clearOnBlur
         handleHomeEndKeys
         options={peopleInfo}
-        getOptionLabel={option => {
+        getOptionLabel={(option) => {
           if (typeof option === 'string') {
             return option;
           }
@@ -210,7 +212,7 @@ export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety
         }}
         renderOption={(props, option) => <li {...props}>{option.nombre}</li>}
         freeSolo
-        renderInput={params => <TextField {...params} />}
+        renderInput={(params) => <TextField {...params} />}
       />
     );
   }
