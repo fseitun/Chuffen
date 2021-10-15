@@ -46,6 +46,7 @@ const columns = [
         timeZone: 'UTC',
       }),
   },
+  //TODO: trabajar concepto desarrollado en https://codesandbox.io/s/ecstatic-ganguly-zi67p?file=/src/App.js
   {
     field: 'color',
     headerName: 'Color',
