@@ -8,14 +8,15 @@ export function Rubros({ idSociety }) {
   return (
     <>
       <Helmet>
-        <title>Rubros | TSF Desarrollos</title>
+        <title>Rubros | {idSociety?.nombre ?? ''}</title>
       </Helmet>
       <Box
         sx={{
           backgroundColor: 'background.default',
           minHeight: '100%',
           py: 3,
-        }}>
+        }}
+      >
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
             <ManipularRubros idSociety={idSociety} />

@@ -24,7 +24,6 @@ import { Rubros } from 'src/pages/Rubros';
 // *** Maestros *********************************
 import { Usuarios } from 'src/pages/Usuarios';
 
-
 import { Proveedores } from 'src/pages/Proveedores';
 //import { Persona } from 'src/pages/Persona';
 //import { Empresa } from 'src/pages/Empresa';
@@ -55,39 +54,37 @@ dotenv.config();
 
 export default function App() {
   const { loggedUser, setLoggedUser } = useAuth();
-  const [idSociety, setIdSociety] = useState(() => {
-    const auxiliaryState = localStorage.getItem('idSociety');
-    return auxiliaryState ? JSON.parse(auxiliaryState) : null;
-  });
+  const [idSociety, setIdSociety] = useState(); //TODO hace falta recuperar el idSociety de LS?
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <Routes>
         {loggedUser ? (
           <>
-            <Route path='/' element={<Navigate to={`${idSociety.name}`} />} />
+            <Route path="/" element={<Navigate to={`${idSociety.name}`} />} />
             <Route
-              path=':societyName'
-              element={<DashboardLayout setLoggedUser={setLoggedUser} idSociety={idSociety} />}>
-              <Route path='dolar' element={<Dolar idSociety={idSociety} />} />
-              <Route path='cac' element={<Cac idSociety={idSociety} />} />
-              <Route path='proveedores' element={<Proveedores idSociety={idSociety} />} />
-              <Route path='usuarios' element={<Usuarios idSociety={idSociety} />} />
-              <Route path='rubros' element={<Rubros idSociety={idSociety} />} />
-              <Route path='fideicomiso'>
-                <Route path='' element={<Fideicomiso idSociety={idSociety} />} />
+              path=":societyName"
+              element={<DashboardLayout setLoggedUser={setLoggedUser} idSociety={idSociety} />}
+            >
+              <Route path="dolar" element={<Dolar idSociety={idSociety} />} />
+              <Route path="cac" element={<Cac idSociety={idSociety} />} />
+              <Route path="proveedores" element={<Proveedores idSociety={idSociety} />} />
+              <Route path="usuarios" element={<Usuarios idSociety={idSociety} />} />
+              <Route path="rubros" element={<Rubros idSociety={idSociety} />} />
+              <Route path="fideicomiso">
+                <Route path="" element={<Fideicomiso idSociety={idSociety} />} />
                 <Route
-                  path=':nombreFideicomiso'
+                  path=":nombreFideicomiso"
                   element={<DetalleFideicomiso idSociety={idSociety} />}
                 />
               </Route>
-              <Route path='*' element={<NotFound />} />
+              <Route path="*" element={<NotFound />} />
             </Route>
           </>
         ) : (
           <MainLayout>
             <Route
-              path=':societyName/login'
+              path=":societyName/login"
               element={
                 <Login
                   setLoggedUser={setLoggedUser}

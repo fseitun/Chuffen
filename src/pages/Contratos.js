@@ -4,18 +4,19 @@ import { Box, Container } from '@mui/material';
 // import { ManipularFideicomiso } from 'src/components/fideicomiso/ManipularFideicomiso';
 // import { GrillaFideicomiso } from 'src/components/fideicomiso/GrillaFideicomiso';
 
-export function Contratos({ idSociedad }) {
+export function Contratos({ idSociety }) {
   return (
     <>
       <Helmet>
-        <title>Cuotas | TSF Desarrollos</title>
+        <title>Cuotas | {idSociety?.nombre ?? ''}</title>
       </Helmet>
       <Box
         sx={{
           backgroundColor: 'background.default',
           minHeight: '100%',
           py: 3,
-        }}>
+        }}
+      >
         <Container maxWidth={false}></Container>
       </Box>
     </>

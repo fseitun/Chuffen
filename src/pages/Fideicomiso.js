@@ -7,14 +7,15 @@ export function Fideicomiso({ idSociety }) {
   return (
     <>
       <Helmet>
-        <title>Fideicomisos | TSF Desarrollos</title>
+        <title>Fideicomisos | {idSociety?.nombre ?? ''}</title>
       </Helmet>
       <Box
         sx={{
           backgroundColor: 'background.default',
           minHeight: '100%',
           py: 3,
-        }}>
+        }}
+      >
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
             <ManipularFideicomiso idSociety={idSociety} />

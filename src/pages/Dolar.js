@@ -8,14 +8,15 @@ export function Dolar({ idSociety }) {
   return (
     <>
       <Helmet>
-        <title>Dólar | TSF Desarrollos</title>
+        <title>Dólar | {idSociety?.nombre ?? ''}</title>
       </Helmet>
       <Box
         sx={{
           backgroundColor: 'background.default',
           minHeight: '100%',
           py: 3,
-        }}>
+        }}
+      >
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
             <ManipularDolar idSociety={idSociety} />

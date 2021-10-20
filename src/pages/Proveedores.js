@@ -8,14 +8,15 @@ export function Proveedores({ idSociety }) {
   return (
     <>
       <Helmet>
-        <title>Proveedores | TSF Desarrollos</title>
+        <title>Proveedores | {idSociety?.nombre ?? ''}</title>
       </Helmet>
       <Box
         sx={{
           backgroundColor: 'background.default',
           minHeight: '100%',
           py: 3,
-        }}>
+        }}
+      >
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
             <ManipularProveedores idSociety={idSociety} />

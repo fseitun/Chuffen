@@ -5,10 +5,10 @@ import { TextField, Button } from '@mui/material';
 
 import { getMethod, postMethod } from 'src/utils/api';
 
-export function ManipularEmpresa({ idSociedad }) {
+export function ManipularEmpresa({ idSociety }) {
   const queryClient = useQueryClient();
-  const { mutate } = useMutation(newData => postMethod(`empresa/agregar/${idSociedad}`, newData), {
-    onSuccess: () => queryClient.refetchQueries(['empresas', idSociedad]),
+  const { mutate } = useMutation((newData) => postMethod(`empresa/agregar/${idSociety}`, newData), {
+    onSuccess: () => queryClient.refetchQueries(['empresas', idSociety]),
   });
 
   return (
@@ -19,26 +19,27 @@ export function ManipularEmpresa({ idSociedad }) {
         telefono: '',
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        !(await checkCuit(idSociedad, values.CUIT)) ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
+        !(await checkCuit(idSociety, values.CUIT)) ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
 
         resetForm();
         setSubmitting(false);
-      }}>
+      }}
+    >
       {({ isSubmitting, setFieldValue }) => (
         <Form>
-          <Field as={TextField} label='Razón Social' type='string' name='razonSocial' />
-          <Field as={TextField} label='Email' type='string' name='mail' />
+          <Field as={TextField} label="Razón Social" type="string" name="razonSocial" />
+          <Field as={TextField} label="Email" type="string" name="mail" />
 
           <Field
             as={TextField}
-            label='Teléfono'
-            type='string'
+            label="Teléfono"
+            type="string"
             maxLength={11}
-            name='telefono'
-            onChange={event => onlyNumbers(event, setFieldValue, 'telefono')}
+            name="telefono"
+            onChange={(event) => onlyNumbers(event, setFieldValue, 'telefono')}
           />
 
-          <Button type='submit' disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting}>
             Agregar
           </Button>
         </Form>
@@ -47,8 +48,8 @@ export function ManipularEmpresa({ idSociedad }) {
   );
 }
 
-async function checkCuit(idSociedad, cuit) {
-  let url = `empresa/mostrar/${idSociedad}/${cuit}`;
+async function checkCuit(idSociety, cuit) {
+  let url = `empresa/mostrar/${idSociety}/${cuit}`;
   return Boolean(await getMethod(url));
 }
 

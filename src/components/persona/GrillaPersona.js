@@ -70,20 +70,20 @@ const columns = [
   },
 ];
 
-export function GrillaPersona({ idSociedad }) {
+export function GrillaPersona({ idSociety }) {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation(
-    async id => {
-      await deleteMethod(`persona/eliminar/${idSociedad}`, id);
+    async (id) => {
+      await deleteMethod(`persona/eliminar/${idSociety}`, id);
     },
     {
-      onSuccess: async () => await queryClient.refetchQueries(['persona', idSociedad]),
+      onSuccess: async () => await queryClient.refetchQueries(['persona', idSociety]),
     }
   );
 
-  const { data, isLoading, error } = useQuery(['persona', idSociedad], () =>
-    getMethod(`persona/listar/${idSociedad}`)
+  const { data, isLoading, error } = useQuery(['persona', idSociety], () =>
+    getMethod(`persona/listar/${idSociety}`)
   );
 
   if (isLoading) return 'Cargando...';
@@ -94,14 +94,14 @@ export function GrillaPersona({ idSociedad }) {
       id: e.id,
       [e.field]: e.props.value,
     };
-    postMethod(`persona/modificar/${idSociedad}`, newData);
+    postMethod(`persona/modificar/${idSociety}`, newData);
   }
 
   return (
     <div style={{ width: '100%' }}>
       <ToastContainer />
       <DataGrid
-        rows={data.map(el => ({
+        rows={data.map((el) => ({
           id: el.id,
           nombre: el.nombre,
           mail: el.mail,
@@ -140,21 +140,23 @@ function DeleteRow(params) {
       <Box>
         <Button
           sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={closeToast}>
+          variant="contained"
+          color="secondary"
+          size="small"
+          onClick={closeToast}
+        >
           No quiero borrar
         </Button>
         <Button
           sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
+          variant="contained"
+          color="secondary"
+          size="small"
           onClick={() => {
             deleteRow();
             closeToast();
-          }}>
+          }}
+        >
           Sí quiero borrar
         </Button>
       </Box>

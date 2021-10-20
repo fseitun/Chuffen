@@ -14,19 +14,22 @@ export function DetalleFideicomiso({ idSociety }) {
     getMethod(`fideicomiso/listar/${idSociety.id}`)
   );
 
-  const selectedFideicomisoData = data?.find(el => el.nombre === nombreFideicomiso);
+  const selectedFideicomisoData = data?.find((el) => el.nombre === nombreFideicomiso);
 
   return (
     <>
       <Helmet>
-        <title>{nombreFideicomiso} | TSF Desarrollos</title>
+        <title>
+          {nombreFideicomiso} | {idSociety?.nombre}
+        </title>
       </Helmet>
       <Box
         sx={{
           backgroundColor: 'background.default',
           minHeight: '100%',
           py: 3,
-        }}>
+        }}
+      >
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
             <DatosPrincipalesFideicomiso
@@ -35,7 +38,7 @@ export function DetalleFideicomiso({ idSociety }) {
             />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <Typography align='left' color='textPrimary' variant='h5'>
+            <Typography align="left" color="textPrimary" variant="h5">
               Grilla de Productos
             </Typography>
           </Box>
