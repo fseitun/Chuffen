@@ -23,7 +23,6 @@ export function Login({ setLoggedUser, idSociety, setIdSociety }) {
   return (
     <>
       <Helmet onChangeClientState={() => console.log(idSociety?.nombre)}>
-        (newState, addedTags, removedTags)}
         <title>Login | {idSociety?.nombreComercial ?? ''}</title>
       </Helmet>
       <Box
