@@ -61,7 +61,7 @@ export default function App() {
       <Routes>
         {loggedUser ? (
           <>
-            <Route path="/" element={<Navigate to={`${idSociety.name}`} />} />
+            <Route path="/" element={<Navigate to={`${idSociety?.name}`} />} />
             <Route
               path=":societyName"
               element={<DashboardLayout setLoggedUser={setLoggedUser} idSociety={idSociety} />}
