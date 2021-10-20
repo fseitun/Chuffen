@@ -24,7 +24,7 @@ export function Login({ setLoggedUser, idSociety, setIdSociety }) {
     <>
       <Helmet onChangeClientState={() => console.log(idSociety?.nombre)}>
         (newState, addedTags, removedTags)}
-        <title>Login | {idSociety?.nombre ?? ''}</title>
+        <title>Login | {idSociety?.nombreComercial ?? ''}</title>
       </Helmet>
       <Box
         sx={{
