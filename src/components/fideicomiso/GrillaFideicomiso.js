@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { getMethod, deleteMethod, postMethod } from 'src/utils/api';
+import { Uploader } from 'src/components/auxiliares/Uploader';
 
 const columns = function columns(color, setColor) {
   return [
@@ -47,25 +48,35 @@ const columns = function columns(color, setColor) {
         }),
     },
     {
-      field: 'deleteIcon',
-      headerName: '',
-      width: 50,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: DeleteRow,
+      field: 'logo',
+      headerName: 'Logo',
+      width: 150,
+      renderCell: ({ row }) => {
+        // console.log('row:', row);
+        return <Uploader />;
+      },
     },
     {
       field: 'colorElegido',
       headerName: 'Color',
       width: 150,
       editable: true,
-      renderCell: ({ row: { colorElegido } }) =>
-        true ? <div style={{ width: '100%', height: '100%', background: colorElegido }}></div> : 1,
+      renderCell: ({ row: { colorElegido } }) => (
+        <div style={{ width: '100%', height: '100%', background: colorElegido }}></div>
+      ),
       renderEditCell: (a, b, c) => {
         const commit = a.api.events.cellEditCommit;
         // console.log(a, b, a.api.events.cellEditCommit);
         return <ColorPicker color={color} setColor={setColor} colorOptions={colors} />;
       },
+    },
+    {
+      field: 'deleteIcon',
+      headerName: '',
+      width: 50,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: DeleteRow,
     },
   ];
 };
@@ -93,7 +104,7 @@ export function GrillaFideicomiso({ idSociety }) {
   const { data, isLoading, error } = useQuery(['fideicomiso', idSociety?.id], () =>
     getMethod(`fideicomiso/listar/${idSociety?.id}`)
   );
-  console.log('data:', data);
+  // console.log('data:', data);
 
   const { mutate: changeDataToFideicomiso } = useMutation(
     async newData => await postMethod(`fideicomiso/modificar/${idSociety?.id}`, newData),
