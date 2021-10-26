@@ -73,6 +73,7 @@ const columns = function columns(color, setColor) {
 const colors = [
   { label: 'Rojo', css: 'red' },
   { label: 'Verde', css: 'green' },
+  { label: 'Azul', css: 'blue' },
 ];
 
 export function GrillaFideicomiso({ idSociety }) {
@@ -221,7 +222,6 @@ function ColorPicker({ color, setColor, colorOptions }) {
       onChange={(event, newValue) => {
         setColor(newValue);
       }}
-      disablePortal
       options={colorOptions}
       sx={{ width: 300 }}
       isOptionEqualToValue={(option, value) => option.label === value.label}
