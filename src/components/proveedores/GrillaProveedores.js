@@ -3,8 +3,8 @@ import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-g
 import { Box, Button } from '@mui/material';
 import { Delete } from '@mui/icons-material';import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
+import { mostrarCUIT } from 'src/utils/utils';
 
 const columns = [
   // { field: 'id', headerName: 'ID', width: 100 , headerAlign: 'center',},
@@ -18,22 +18,15 @@ const columns = [
   {
     field: 'CUIT',
     headerName: 'CUIT',
-    width: 150,
+    width: 130,
     // editable: true,
     headerAlign: 'center',
-    valueFormatter: ({ value }) => {
-      value = value.split('');
-      value.splice(2, 0, '-');
-      value.splice(5, 0, '.');
-      value.splice(9, 0, '.');
-      value.splice(13, 0, '-');
-      return value.join('');
-    },
+    valueFormatter: ({ value }) => mostrarCUIT(value),
   },
   {
     field: 'telefono',
     headerName: 'Teléfono',
-    width: 150,
+    width: 140,
     editable: true,
     headerAlign: 'center',
     valueFormatter: ({ value }) => {
@@ -49,6 +42,27 @@ const columns = [
     field: 'mail',
     headerName: 'Mail',
     width: 150,
+    editable: true,
+    headerAlign: 'center',
+  },
+  {
+    field: 'CBU',
+    headerName: 'CBU',
+    width: 110,
+    editable: true,
+    headerAlign: 'center',
+  },
+  {
+    field: 'banco',
+    headerName: 'Banco',
+    width: 120,
+    editable: true,
+    headerAlign: 'center',
+  },
+  {
+    field: 'nroCuenta',
+    headerName: '# Cuenta',
+    width: 140,
     editable: true,
     headerAlign: 'center',
   },
@@ -99,7 +113,9 @@ export function GrillaProveedores({ idSociety }) {
           CUIT: el.CUIT,
           mail: el.mail,
           telefono: el.telefono,
-          cuentaBancariaId: el.cuentaBancariaId,
+          CBU: el.CBU,
+          banco: el.banco,
+          nroCuenta: el.nroCuenta,
           onDelete: () => {
             mutate(el.id);
           },

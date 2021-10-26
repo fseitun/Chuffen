@@ -1,14 +1,14 @@
-import React from 'react';
+import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
-import { Box, Container } from '@mui/material';
-// import { ManipularFideicomiso } from 'src/components/fideicomiso/ManipularFideicomiso';
-// import { GrillaFideicomiso } from 'src/components/fideicomiso/GrillaFideicomiso';
+
+import { ManipularFactura } from 'src/components/factura/ManipularFactura';
+import { GrillaFactura } from 'src/components/factura/GrillaFactura';
 
 export function Factura({ idSociety }) {
   return (
     <>
       <Helmet>
-        <title>Cuotas | {idSociety?.nombre ?? ''}</title>
+        <title>Facturas | {idSociety?.nombre ?? ''}</title>
       </Helmet>
       <Box
         sx={{
@@ -17,7 +17,14 @@ export function Factura({ idSociety }) {
           py: 3,
         }}
       >
-        <Container maxWidth={false}></Container>
+        <Container maxWidth={false}>
+          <Box sx={{ pt: 3 }}>
+            <ManipularFactura idSociety={idSociety} />
+          </Box>
+          <Box sx={{ pt: 3 }}>
+          <GrillaFactura idSociety={idSociety} />
+          </Box>
+        </Container>
       </Box>
     </>
   );

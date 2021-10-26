@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { getMethod, deleteMethod } from 'src/utils/api';
 
 const columns = [
+  
   {
     field: 'nombre',
     headerName: 'Nombre',

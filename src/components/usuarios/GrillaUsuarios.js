@@ -31,6 +31,14 @@ const columns = [
     // renderCell: '*****',
   },
   {
+    field: 'rol_descripcion',
+    headerName: 'Rol',
+    width: 150,
+    editable: true,
+    headerAlign: 'center',
+    // renderCell: '*****',
+  },
+  {
     field: 'deleteIcon',
     headerName: ' ',
     width: 50,
@@ -76,6 +84,7 @@ export function GrillaUsuarios({ idSociety }) {
           user: el.user,
           mail: el.mail,
           pass: el.pass,
+          rol_descripcion: el.pass,
           onDelete: () => {
             mutate(el.id);
           },

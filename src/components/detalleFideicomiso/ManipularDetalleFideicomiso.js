@@ -141,6 +141,7 @@ export function ManipularDetalleFideicomiso({ idSociety, selectedFideicomisoData
           <Button type='submit' disabled={isSubmitting}>
             Agregar
           </Button>
+          
         </Form>
       )}
     </Formik>

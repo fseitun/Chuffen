@@ -25,8 +25,8 @@ import { Rubros } from 'src/pages/Rubros';
 import { Usuarios } from 'src/pages/Usuarios';
 
 import { Proveedores } from 'src/pages/Proveedores';
-//import { Persona } from 'src/pages/Persona';
-//import { Empresa } from 'src/pages/Empresa';
+import { Persona } from 'src/pages/Persona';
+import { Empresa } from 'src/pages/Empresa';
 
 // *** Fide *********************************
 import { Fideicomiso } from 'src/pages/Fideicomiso';
@@ -41,9 +41,9 @@ import { DetalleFideicomiso } from 'src/pages/DetalleFideicomiso';
 //import { ContratoVista } from 'src/pages/ContratoVista';
 
 // *** Pagos *********************************
-//import { OP } from 'src/pages/OP';
+import { OP } from 'src/pages/OP';
 //import { DetalleOP } from 'src/pages/DetalleOP';
-//import { Factura } from 'src/pages/Factura';
+import { Factura } from 'src/pages/Factura';
 
 // *** Orden de Trabajo **********************
 //import { OT } from 'src/pages/OT';
@@ -66,8 +66,12 @@ export default function App() {
               path=":societyName"
               element={<DashboardLayout setLoggedUser={setLoggedUser} idSociety={idSociety} />}
             >
-              <Route path="dolar" element={<Dolar idSociety={idSociety} />} />
+              <Route path="dolar" element={<Dolar idSociety={idSociety} />} />              
               <Route path="cac" element={<Cac idSociety={idSociety} />} />
+              <Route path="empresa" element={<Empresa idSociety={idSociety} />} />
+              <Route path="persona" element={<Persona idSociety={idSociety} />} />
+              <Route path="OP" element={<OP idSociety={idSociety} />} />
+              <Route path="factura" element={<Factura idSociety={idSociety} />} />
               <Route path="proveedores" element={<Proveedores idSociety={idSociety} />} />
               <Route path="usuarios" element={<Usuarios idSociety={idSociety} />} />
               <Route path="rubros" element={<Rubros idSociety={idSociety} />} />

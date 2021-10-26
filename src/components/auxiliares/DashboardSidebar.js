@@ -20,42 +20,46 @@ import { NavItem } from './NavItem';
 
 export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, idSociety }) {
   const items = [
-    {
-      href: `/${idSociety?.name}/contratos`,
-      icon: Assignment,
-      title: 'Ver contratos ',
-    },
-    {
-      href: `/${idSociety?.name}/contratoalta`,
-      icon: Assignment,
-      title: 'Crear contrato',
-    },
-    {
-      href: `/${idSociety?.name}/cobros`,
-      icon: MonetizationOn,
-      title: 'Cobros',
-    },
 
     {
       href: `/${idSociety?.name}/op`,
       icon: CreditCard,
       title: 'OPs',
     },
+
+    {
+      href: `/${idSociety?.name}/op`,
+      icon: CreditCard,
+      title: 'OPs Auth ADM',
+    },
+
+    {
+      href: `/${idSociety?.name}/op`,
+      icon: CreditCard,
+      title: 'OPs Auth Obra',
+    },
+
     {
       href: `/${idSociety?.name}/factura`,
       icon: ListAlt,
       title: 'Facturas',
     },
     {
-      href: `/${idSociety?.name}/cobros`,
-      icon: Construction,
-      title: 'OTs',
+      href: `/${idSociety?.name}/proveedores`,
+      icon: LocalShipping,
+      title: 'Proveedores',
     },
     {
-      href: `/${idSociety?.name}/certificado`,
-      icon: AssignmentTurnedIn,
-      title: 'Certificados',
+      href: `/${idSociety?.name}/fideicomiso`,
+      icon: LocalShipping,
+      title: 'Fideicomisos',
     },
+    {
+      href: `/${idSociety?.name}/rubros`,
+      icon: MenuBook,
+      title: 'Rubros',
+    },
+
     {
       href: `/${idSociety?.name}/empresa`,
       icon: Business,
@@ -66,42 +70,27 @@ export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, 
       icon: PeopleAlt,
       title: 'Personas',
     },
-    {
-      href: `/${idSociety?.name}/proveedores`,
-      icon: LocalShipping,
-      title: 'Proveedores',
-    },
-    {
-      href: `/${idSociety?.name}/rubro`,
-      icon: Schema,
-      title: 'Rubros & Sub',
-    },
 
     {
       href: `/${idSociety?.name}/cac`,
       icon: TrendingUp,
       title: 'CAC',
     },
-    {
-      href: `/${idSociety?.name}/usuarios`,
-      icon: People,
-      title: 'Usuarios',
-    },
-    {
-      href: `/${idSociety?.name}/fideicomiso`,
-      icon: LocalShipping,
-      title: 'Fideicomisos',
-    },
+
     {
       href: `/${idSociety?.name}/dolar`,
       icon: AttachMoney,
       title: 'Dólar',
     },
+
     {
-      href: `/${idSociety?.name}/rubros`,
-      icon: MenuBook,
-      title: 'Rubros',
+      href: `/${idSociety?.name}/usuarios`,
+      icon: People,
+      title: 'Usuarios',
     },
+ 
+  
+  
   ];
 
   const content = (
