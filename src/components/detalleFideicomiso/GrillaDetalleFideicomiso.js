@@ -82,7 +82,7 @@ export function GrillaDetalleFideicomiso({ idSociety, selectedFideicomisoData })
       idFideicomiso: selectedFideicomisoData?.id,
       [e.field]: e.value,
     };
-    console.log('newData:', newData);
+    // console.log('newData:', newData);
     postMethod(`producto/modificar/${idSociety?.id}`, newData);
   }
 
@@ -132,21 +132,23 @@ function DeleteRow(params) {
       <Box>
         <Button
           sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={closeToast}>
+          variant="contained"
+          color="secondary"
+          size="small"
+          onClick={closeToast}
+        >
           No quiero borrar
         </Button>
         <Button
           sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
+          variant="contained"
+          color="secondary"
+          size="small"
           onClick={() => {
             deleteRow();
             closeToast();
-          }}>
+          }}
+        >
           Sí quiero borrar
         </Button>
       </Box>

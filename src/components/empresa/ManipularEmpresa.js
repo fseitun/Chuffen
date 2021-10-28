@@ -7,7 +7,7 @@ import { getMethod, postMethod } from 'src/utils/api';
 
 export function ManipularEmpresa({ idSociety }) {
   const queryClient = useQueryClient();
-  const { mutate } = useMutation((newData) => postMethod(`empresa/agregar/${idSociety}`, newData), {
+  const { mutate } = useMutation(newData => postMethod(`empresa/agregar/${idSociety}`, newData), {
     onSuccess: () => queryClient.refetchQueries(['empresas', idSociety]),
   });
 
@@ -19,9 +19,9 @@ export function ManipularEmpresa({ idSociety }) {
         telefono: '',
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        !(await checkCuit(idSociety, values.CUIT)) ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
-
-        resetForm();
+        !(await checkCuit(idSociety, values.CUIT))
+          ? mutate(values) // console.log('ya lo tenés'); //cambiar por un pop up
+          : resetForm();
         setSubmitting(false);
       }}
     >
@@ -36,7 +36,7 @@ export function ManipularEmpresa({ idSociety }) {
             type="string"
             maxLength={11}
             name="telefono"
-            onChange={(event) => onlyNumbers(event, setFieldValue, 'telefono')}
+            onChange={event => onlyNumbers(event, setFieldValue, 'telefono')}
           />
 
           <Button type="submit" disabled={isSubmitting}>

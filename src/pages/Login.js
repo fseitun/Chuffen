@@ -9,7 +9,7 @@ import { postMethod } from 'src/utils/api';
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
 export function Login({ setLoggedUser, idSociety, setIdSociety }) {
-  console.log('idSociety:', idSociety);
+  // console.log('idSociety:', idSociety);
   let { societyName } = useParams();
   const navigate = useNavigate();
 
@@ -18,11 +18,15 @@ export function Login({ setLoggedUser, idSociety, setIdSociety }) {
   useEffect(() => {
     societyStateObjectSetter(societyName, setIdSociety);
   }, [setIdSociety, societyName]);
-  console.log('societyName:', societyName);
-  console.log(`${apiServerUrl}public/${idSociety?.nombre}.png`);
+  // console.log('societyName:', societyName);
+  // console.log(`${apiServerUrl}public/${idSociety?.nombre}.png`);
   return (
     <>
+<<<<<<< HEAD
       <Helmet onChangeClientState={() => console.log(idSociety?.nombre)}>
+=======
+      <Helmet onChangeClientState={() => {}}>
+>>>>>>> color-y-logo-en-fide
         <title>Login | {idSociety?.nombreComercial ?? ''}</title>
       </Helmet>
       <Box

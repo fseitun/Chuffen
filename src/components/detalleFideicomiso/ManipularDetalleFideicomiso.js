@@ -90,7 +90,7 @@ export function ManipularDetalleFideicomiso({ idSociety, selectedFideicomisoData
         description: '',
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        console.log('values:', values);
+        // console.log('values:', values);
         addProduct({
           fideicomisoId: selectedFideicomisoData.id,
           codigo: values.code,
@@ -100,22 +100,23 @@ export function ManipularDetalleFideicomiso({ idSociety, selectedFideicomisoData
         resetForm();
         setTypeInForm(null);
         setSubmitting(false);
-      }}>
+      }}
+    >
       {({ isSubmitting, setFieldValue }) => (
         <Form>
           <Field
             as={TextField}
-            label='Código'
-            type='string'
+            label="Código"
+            type="string"
             maxLength={40}
             size={'small'}
-            name='code'
+            name="code"
           />
 
           <Field
             as={Autocomplete}
             size={'small'}
-            label='Tipo'
+            label="Tipo"
             disablePortal
             style={{ width: '230px', display: 'inline-flex' }}
             onChange={(event, newValue) => {
@@ -126,19 +127,19 @@ export function ManipularDetalleFideicomiso({ idSociety, selectedFideicomisoData
             getOptionLabel={option => option.descripcion}
             isOptionEqualToValue={(option, value) => option.descripcion === value.descripcion}
             options={typesOfProducts}
-            renderInput={params => <TextField {...params} label='Tipo' />}
+            renderInput={params => <TextField {...params} label="Tipo" />}
           />
 
           <Field
             as={TextField}
             size={'small'}
-            label='Descripcion'
-            type='string'
+            label="Descripcion"
+            type="string"
             maxLength={100}
-            name='description'
+            name="description"
           />
 
-          <Button type='submit' disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting}>
             Agregar
           </Button>
         </Form>

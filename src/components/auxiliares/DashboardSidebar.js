@@ -19,86 +19,87 @@ import {
 import { NavItem } from './NavItem';
 
 export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, idSociety }) {
+  // console.log('idSociety:', idSociety);
   const items = [
     {
-      href: `/${idSociety?.name}/contratos`,
+      href: `/${idSociety?.nombre}/contratos`,
       icon: Assignment,
       title: 'Ver contratos ',
     },
     {
-      href: `/${idSociety?.name}/contratoalta`,
+      href: `/${idSociety?.nombre}/contratoalta`,
       icon: Assignment,
       title: 'Crear contrato',
     },
     {
-      href: `/${idSociety?.name}/cobros`,
+      href: `/${idSociety?.nombre}/cobros`,
       icon: MonetizationOn,
       title: 'Cobros',
     },
 
     {
-      href: `/${idSociety?.name}/op`,
+      href: `/${idSociety?.nombre}/op`,
       icon: CreditCard,
       title: 'OPs',
     },
     {
-      href: `/${idSociety?.name}/factura`,
+      href: `/${idSociety?.nombre}/factura`,
       icon: ListAlt,
       title: 'Facturas',
     },
     {
-      href: `/${idSociety?.name}/cobros`,
+      href: `/${idSociety?.nombre}/cobros`,
       icon: Construction,
       title: 'OTs',
     },
     {
-      href: `/${idSociety?.name}/certificado`,
+      href: `/${idSociety?.nombre}/certificado`,
       icon: AssignmentTurnedIn,
       title: 'Certificados',
     },
     {
-      href: `/${idSociety?.name}/empresa`,
+      href: `/${idSociety?.nombre}/empresa`,
       icon: Business,
       title: 'Empresa',
     },
     {
-      href: `/${idSociety?.name}/persona`,
+      href: `/${idSociety?.nombre}/persona`,
       icon: PeopleAlt,
       title: 'Personas',
     },
     {
-      href: `/${idSociety?.name}/proveedores`,
+      href: `/${idSociety?.nombre}/proveedores`,
       icon: LocalShipping,
       title: 'Proveedores',
     },
     {
-      href: `/${idSociety?.name}/rubro`,
+      href: `/${idSociety?.nombre}/rubro`,
       icon: Schema,
       title: 'Rubros & Sub',
     },
 
     {
-      href: `/${idSociety?.name}/cac`,
+      href: `/${idSociety?.nombre}/cac`,
       icon: TrendingUp,
       title: 'CAC',
     },
     {
-      href: `/${idSociety?.name}/usuarios`,
+      href: `/${idSociety?.nombre}/usuarios`,
       icon: People,
       title: 'Usuarios',
     },
     {
-      href: `/${idSociety?.name}/fideicomiso`,
+      href: `/${idSociety?.nombre}/fideicomiso`,
       icon: LocalShipping,
       title: 'Fideicomisos',
     },
     {
-      href: `/${idSociety?.name}/dolar`,
+      href: `/${idSociety?.nombre}/dolar`,
       icon: AttachMoney,
       title: 'Dólar',
     },
     {
-      href: `/${idSociety?.name}/rubros`,
+      href: `/${idSociety?.nombre}/rubros`,
       icon: MenuBook,
       title: 'Rubros',
     },
@@ -111,7 +112,8 @@ export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, 
         flexDirection: 'column',
         height: '100%',
         p: 2,
-      }}>
+      }}
+    >
       <List>
         {items.map(item => (
           <NavItem href={item.href} key={item.title} title={item.title} icon={item.icon} />
@@ -123,30 +125,32 @@ export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, 
   return (
     <>
       <Drawer
-        variant='temporary'
+        variant="temporary"
         sx={{ display: { xs: 'block', lg: 'none' } }}
-        anchor='left'
+        anchor="left"
         onClose={setisMobileNavOpen}
         open={isMobileNavOpen}
         PaperProps={{
           sx: {
             width: 256,
           },
-        }}>
+        }}
+      >
         {content}
       </Drawer>
       <Drawer
-        variant='persistent'
+        variant="persistent"
         open
         sx={{ display: { xs: 'none', lg: 'block' } }}
-        anchor='left'
+        anchor="left"
         PaperProps={{
           sx: {
             width: 256,
             top: 64,
             height: 'calc(100% - 64px)',
           },
-        }}>
+        }}
+      >
         {content}
       </Drawer>
     </>
