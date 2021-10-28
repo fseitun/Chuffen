@@ -35,7 +35,7 @@ const DashboardLayoutContent = styled('div')({
   overflow: 'auto',
 });
 
-export default function DashboardLayout({ setLoggedUser, idSociety }) {
+export default function DashboardLayout({ setLoggedUser, idSociety, loggedUser }) {
   // console.log('idSociety', idSociety);
   const [isMobileNavOpen, setisMobileNavOpen] = useState(false);
 
@@ -45,6 +45,7 @@ export default function DashboardLayout({ setLoggedUser, idSociety }) {
         setisMobileNavOpen={() => setisMobileNavOpen(!isMobileNavOpen)}
         setLoggedUser={setLoggedUser}
         idSociety={idSociety}
+        loggedUser={loggedUser}
       />
       <DashboardSidebar
         idSociety={idSociety}

@@ -69,7 +69,13 @@ export default function App() {
             <Route path="/" element={<Navigate to={`${idSociety?.nombre}`} />} />
             <Route
               path=":societyName"
-              element={<DashboardLayout setLoggedUser={setLoggedUser} idSociety={idSociety} />}
+              element={
+                <DashboardLayout
+                  setLoggedUser={setLoggedUser}
+                  idSociety={idSociety}
+                  loggedUser={loggedUser}
+                />
+              }
             >
               <Route path="dolar" element={<Dolar idSociety={idSociety} />} />
               <Route path="cac" element={<Cac idSociety={idSociety} />} />

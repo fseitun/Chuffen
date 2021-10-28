@@ -9,7 +9,13 @@ const user = {
   avatar: '/static/images/avatars/ingeniero.png',
 };
 
-export default function DashboardNavbar({ setisMobileNavOpen, setLoggedUser, idSociety, ...rest }) {
+export default function DashboardNavbar({
+  setisMobileNavOpen,
+  setLoggedUser,
+  idSociety,
+  loggedUser,
+}) {
+  console.log(loggedUser);
   const { pathname } = useLocation();
   const lastPartOfPath = pathname.split('/').at(-1);
   const nameOfPage = sideBarOptions.find(option => option.path === lastPartOfPath).title;
@@ -20,7 +26,7 @@ export default function DashboardNavbar({ setisMobileNavOpen, setLoggedUser, idS
     setLoggedUser(null);
   }
   return (
-    <AppBar elevation={0} {...rest}>
+    <AppBar elevation={0}>
       <Toolbar>
         <Link to="/">
           <Logo idSociety={idSociety} />
@@ -40,6 +46,8 @@ export default function DashboardNavbar({ setisMobileNavOpen, setLoggedUser, idS
         >
           <Menu />
         </IconButton>
+        <div style={{ fontSize: 24 }}>{loggedUser?.user}</div>
+
         <IconButton color="inherit">
           <Avatar
             component={Link}
