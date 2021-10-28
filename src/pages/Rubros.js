@@ -8,7 +8,7 @@ export function Rubros({ idSociety }) {
   return (
     <>
       <Helmet>
-        <title>Rubros | {idSociety?.name ?? ''}</title>
+        <title>Rubros | {idSociety?.nombre ?? ''}</title>
       </Helmet>
       <Box
         sx={{

@@ -7,7 +7,7 @@ export function Cac({ idSociety }) {
   return (
     <>
       <Helmet>
-        <title>CAC | {idSociety?.name ?? ''}</title>
+        <title>CAC | {idSociety?.nombre ?? ''}</title>
       </Helmet>
       <Box
         sx={{

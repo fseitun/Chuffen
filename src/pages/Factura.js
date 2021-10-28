@@ -8,7 +8,7 @@ export function Factura({ idSociety }) {
   return (
     <>
       <Helmet>
-        <title>Facturas | {idSociety?.name ?? ''}</title>
+        <title>Facturas | {idSociety?.nombre ?? ''}</title>
       </Helmet>
       <Box
         sx={{

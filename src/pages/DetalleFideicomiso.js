@@ -20,7 +20,7 @@ export function DetalleFideicomiso({ idSociety }) {
     <>
       <Helmet>
         <title>
-          {nombreFideicomiso} | {idSociety?.name}
+          {nombreFideicomiso} | {idSociety?.nombre}
         </title>
       </Helmet>
       <Box

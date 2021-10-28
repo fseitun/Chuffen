@@ -9,7 +9,7 @@ export function Empresa({ idSociety }) {
   return (
     <>
       <Helmet>
-        <title>Empresas | {idSociety?.name ?? ''}</title>
+        <title>Empresas | {idSociety?.nombre ?? ''}</title>
       </Helmet>
       <Box
         sx={{

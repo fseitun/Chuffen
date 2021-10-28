@@ -10,6 +10,7 @@ const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
 export function Login({ setLoggedUser, idSociety, setIdSociety }) {
   // console.log('idSociety:', idSociety);
+  // console.log(`${apiServerUrl}public/${idSociety?.id}/${idSociety?.logo}`);
   let { societyName } = useParams();
   const navigate = useNavigate();
 
@@ -19,11 +20,11 @@ export function Login({ setLoggedUser, idSociety, setIdSociety }) {
     societyStateObjectSetter(societyName, setIdSociety);
   }, [setIdSociety, societyName]);
   // console.log('societyName:', societyName);
-  // console.log(`${apiServerUrl}public/${idSociety?.name}.png`);
+  // console.log(`${apiServerUrl}public/${idSociety?.nombre}.png`);
   return (
     <>
       <Helmet onChangeClientState={() => {}}>
-        <title>Login | {idSociety?.nameComercial ?? ''}</title>
+        <title>Login | {idSociety?.nombreComercial ?? ''}</title>
       </Helmet>
       <Box
         sx={{
@@ -38,7 +39,7 @@ export function Login({ setLoggedUser, idSociety, setIdSociety }) {
           <div style={{ width: '100%' }}>
             <img
               style={{ display: 'block', margin: 'auto', width: '30%' }}
-              src={`${apiServerUrl}public/${idSociety?.name}.png`}
+              src={`${apiServerUrl}public/${idSociety?.logo}`}
               alt="logo"
             />
           </div>

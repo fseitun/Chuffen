@@ -21,7 +21,8 @@ export function NavItem({ href, icon: Icon, title, ...rest }) {
         display: 'flex',
         py: 0,
       }}
-      {...rest}>
+      {...rest}
+    >
       <Button
         component={RouterLink}
         sx={{
@@ -39,8 +40,9 @@ export function NavItem({ href, icon: Icon, title, ...rest }) {
             mr: 1,
           },
         }}
-        to={href}>
-        {Icon && <Icon size='20' />}
+        to={href}
+      >
+        {Icon && <Icon size="20" />}
         <span>{title}</span>
       </Button>
     </ListItem>

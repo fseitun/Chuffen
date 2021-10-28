@@ -66,12 +66,12 @@ export default function App() {
       <Routes>
         {loggedUser ? (
           <>
-            <Route path="/" element={<Navigate to={`${idSociety?.name}`} />} />
+            <Route path="/" element={<Navigate to={`${idSociety?.nombre}`} />} />
             <Route
               path=":societyName"
               element={<DashboardLayout setLoggedUser={setLoggedUser} idSociety={idSociety} />}
             >
-              <Route path="dolar" element={<Dolar idSociety={idSociety} />} />              
+              <Route path="dolar" element={<Dolar idSociety={idSociety} />} />
               <Route path="cac" element={<Cac idSociety={idSociety} />} />
               <Route path="empresa" element={<Empresa idSociety={idSociety} />} />
               <Route path="persona" element={<Persona idSociety={idSociety} />} />
