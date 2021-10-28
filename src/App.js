@@ -66,11 +66,7 @@ export default function App() {
       <Routes>
         {loggedUser ? (
           <>
-<<<<<<< HEAD
             <Route path="/" element={<Navigate to={`${idSociety?.name}`} />} />
-=======
-            <Route path="/" element={<Navigate to={`${idSociety?.nombre}`} />} />
->>>>>>> color-y-logo-en-fide
             <Route
               path=":societyName"
               element={<DashboardLayout setLoggedUser={setLoggedUser} idSociety={idSociety} />}
