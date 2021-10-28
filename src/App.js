@@ -58,15 +58,14 @@ export default function App() {
     const localStorageIdSociety = localStorage.getItem('idSociety');
     return localStorageIdSociety ? JSON.parse(localStorageIdSociety) : null;
   });
-  console.log('loggedUser:', loggedUser);
-  console.log('idSociety:', idSociety);
+  // console.log('loggedUser:', loggedUser);
+  // console.log('idSociety:', idSociety);
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <Routes>
         {loggedUser ? (
           <>
-            {console.log('estoy logueado')}
             <Route path="/" element={<Navigate to={`${idSociety?.nombre}`} />} />
             <Route
               path=":societyName"
@@ -89,7 +88,6 @@ export default function App() {
           </>
         ) : (
           <MainLayout>
-            {console.log('no estoy logueado')}
             <Route
               path=":societyName/login"
               element={

@@ -17,7 +17,7 @@ const filter = createFilterOptions();
 export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety }) {
   // console.log('params:', params);
   // console.log('selectedFideicomisoData:', selectedFideicomisoData);
-  //console.log('selectedFideicomisoData.personaId:', selectedFideicomisoData.personaId);
+  // console.log('selectedFideicomisoData.personaId:', selectedFideicomisoData.personaId);
   // console.log('idSociety:', idSociety);
   const [managerId, setManagerId] = useState();
   useEffect(() => setManagerId(selectedFideicomisoData?.personaId), [selectedFideicomisoData]);
@@ -38,14 +38,14 @@ export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety
     getMethod(`persona/listar/${idSociety.id}`)
   );
 
-  const { mutate: setManagerInFideicomiso } = useMutation((newData) =>
+  const { mutate: setManagerInFideicomiso } = useMutation(newData =>
     postMethod(`fideicomiso/modificar/${idSociety.id}`, newData)
   );
 
   const { mutate: addNewPerson } = useMutation(
-    (newData) => postMethod(`persona/agregar/${idSociety.id}`, newData),
+    newData => postMethod(`persona/agregar/${idSociety.id}`, newData),
     {
-      onSuccess: (data) => {
+      onSuccess: data => {
         setManagerId(data.id);
         setManagerInFideicomiso({
           id: selectedFideicomisoData.id,
@@ -129,7 +129,7 @@ export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety
             hideFooter
             autoHeight={'false'}
             pageSize={1}
-            onCellDoubleClick={(e) => {
+            onCellDoubleClick={e => {
               if (e.field === 'contacto') {
                 setIsDialogOpen(true);
                 // console.log('isDialogOpen:', isDialogOpen);
@@ -187,7 +187,7 @@ export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety
           // console.log('options:', options);
           const filtered = filter(options, params);
           const { inputValue } = params;
-          const isExisting = options.some((option) => inputValue === option.nombre);
+          const isExisting = options.some(option => inputValue === option.nombre);
           if (inputValue !== '' && !isExisting) {
             filtered.push({
               inputValue,
@@ -201,7 +201,7 @@ export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety
         clearOnBlur
         handleHomeEndKeys
         options={peopleInfo}
-        getOptionLabel={(option) => {
+        getOptionLabel={option => {
           if (typeof option === 'string') {
             return option;
           }
@@ -212,7 +212,7 @@ export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety
         }}
         renderOption={(props, option) => <li {...props}>{option.nombre}</li>}
         freeSolo
-        renderInput={(params) => <TextField {...params} />}
+        renderInput={params => <TextField {...params} />}
       />
     );
   }

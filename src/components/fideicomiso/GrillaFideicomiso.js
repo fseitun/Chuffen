@@ -9,8 +9,9 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { getMethod, deleteMethod, postMethod } from 'src/utils/api';
 import { Uploader } from 'src/components/auxiliares/Uploader';
+const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
-const columns = function columns(color, setColor) {
+const columns = function columns(color, setColor, id, setNewLogoFlag) {
   return [
     {
       field: 'nombre',
@@ -51,9 +52,17 @@ const columns = function columns(color, setColor) {
       field: 'logo',
       headerName: 'Logo',
       width: 150,
-      renderCell: ({ row }) => {
-        // console.log('row:', row);
-        return <Uploader />;
+      renderCell: passedData => {
+        // console.log('passedData:', passedData);
+        return passedData.row.logo ? (
+          <img
+            style={{ display: 'block', margin: 'auto', width: '30%' }}
+            src={`${apiServerUrl}sociedades/${id}/${passedData.row.logo}`}
+            alt="logo"
+          />
+        ) : (
+          <Uploader fideId={passedData.id} setNewLogoFlag={setNewLogoFlag} />
+        );
       },
     },
     {
@@ -67,7 +76,14 @@ const columns = function columns(color, setColor) {
       renderEditCell: (a, b, c) => {
         const commit = a.api.events.cellEditCommit;
         // console.log(a, b, a.api.events.cellEditCommit);
-        return <ColorPicker color={color} setColor={setColor} colorOptions={colors} />;
+        return (
+          <ColorPicker
+            color={color}
+            setColor={setColor}
+            colorOptions={colors}
+            setNewLogoFlag={setNewLogoFlag}
+          />
+        );
       },
     },
     {
@@ -92,6 +108,9 @@ export function GrillaFideicomiso({ idSociety }) {
   const queryClient = useQueryClient();
   const [color, setColor] = useState({ label: 'Rojo', css: 'red' });
   // console.log('color:', color);
+  const [newLogoFlag, setNewLogoFlag] = useState(false);
+  // console.log('newLogoFlag:', newLogoFlag);
+
   const { mutate } = useMutation(
     async id => {
       await deleteMethod(`fideicomiso/eliminar/${idSociety.id}`, id);
@@ -101,10 +120,14 @@ export function GrillaFideicomiso({ idSociety }) {
     }
   );
 
-  const { data, isLoading, error } = useQuery(['fideicomiso', idSociety?.id], () =>
+  const {
+    data: dataFromFideicomisos,
+    isLoading,
+    error,
+  } = useQuery(['fideicomiso', idSociety?.id, newLogoFlag], () =>
     getMethod(`fideicomiso/listar/${idSociety?.id}`)
   );
-  // console.log('data:', data);
+  // console.log('dataFromFideicomisos:', dataFromFideicomisos);
 
   const { mutate: changeDataToFideicomiso } = useMutation(
     async newData => await postMethod(`fideicomiso/modificar/${idSociety?.id}`, newData),
@@ -114,17 +137,17 @@ export function GrillaFideicomiso({ idSociety }) {
         const previousData = queryClient.getQueryData(['fideicomiso', idSociety?.id]);
         queryClient.setQueryData(['fideicomiso', idSociety?.id], oldData => {
           const copyOfOldData = [...oldData];
-          console.log('copyOfOldData:', copyOfOldData);
+          // console.log('copyOfOldData:', copyOfOldData);
           const changedFideicomiso = copyOfOldData.find(e => newData.id === e.id);
-          console.log('changedFideicomiso:', changedFideicomiso);
-          console.log('newData:', newData);
+          // console.log('changedFideicomiso:', changedFideicomiso);
+          // console.log('newData:', newData);
           changedFideicomiso.color = newData.color;
-          console.log('changedFideicomiso:', changedFideicomiso);
+          // console.log('changedFideicomiso:', changedFideicomiso);
           const newListOfFideicomisos = [
             ...copyOfOldData.filter(e => e.id !== newData.id),
             changedFideicomiso,
           ];
-          console.log('newListOfFideicomisos:', newListOfFideicomisos);
+          // console.log('newListOfFideicomisos:', newListOfFideicomisos);
           return newListOfFideicomisos;
         });
         return { previousData };
@@ -145,15 +168,16 @@ export function GrillaFideicomiso({ idSociety }) {
     <div style={{ width: '100%' }}>
       <ToastContainer />
       <DataGrid
-        rows={data?.map(el => ({
+        rows={dataFromFideicomisos?.map(el => ({
           id: el.id,
           nombre: el.nombre,
           fechaInicio: el.fechaInicio,
           fechaFin: el.fechaFin,
           colorElegido: el.color,
+          logo: el.logo,
           onDelete: () => mutate(el.id),
         }))}
-        columns={columns(color, setColor)}
+        columns={columns(color, setColor, idSociety?.id, setNewLogoFlag)}
         pageSize={25}
         disableSelectionOnClick
         autoHeight
@@ -165,14 +189,14 @@ export function GrillaFideicomiso({ idSociety }) {
         ]}
         scrollbarSize
         onCellEditCommit={({ id }) => {
-          console.log(idSociety?.id, color.css);
+          // console.log(idSociety?.id, color.css);
           changeDataToFideicomiso({
             id: id,
             color: color.css,
           });
         }}
         // onRowDoubleClick={a => {
-        //   console.log(a);
+        // console.log(a);
         //   return IrAFideicomiso(a);
         // }}
         components={{

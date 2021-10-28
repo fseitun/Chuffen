@@ -19,7 +19,7 @@ import {
 import { NavItem } from './NavItem';
 
 export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, idSociety }) {
-  console.log('idSociety:', idSociety);
+  // console.log('idSociety:', idSociety);
   const items = [
     {
       href: `/${idSociety?.nombre}/contratos`,
@@ -115,7 +115,7 @@ export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, 
       }}
     >
       <List>
-        {items.map((item) => (
+        {items.map(item => (
           <NavItem href={item.href} key={item.title} title={item.title} icon={item.icon} />
         ))}
       </List>

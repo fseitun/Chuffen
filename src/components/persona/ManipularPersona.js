@@ -15,7 +15,7 @@ import { getMethod, postMethod } from 'src/utils/api';
 export function ManipularPersona({ idSociety }) {
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation((newData) => postMethod(`persona/agregar/${idSociety}`, newData), {
+  const { mutate } = useMutation(newData => postMethod(`persona/agregar/${idSociety}`, newData), {
     onSuccess: () => {
       queryClient.refetchQueries(['persona', idSociety]);
     },
@@ -30,9 +30,9 @@ export function ManipularPersona({ idSociety }) {
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         let bool = await checkName(idSociety, values.nombre);
-        !bool ? mutate(values) : console.log('ya lo tenés'); //cambiar por un pop up
-
-        resetForm();
+        !bool
+          ? mutate(values) // console.log('ya lo tenés'); //cambiar por un pop up
+          : resetForm();
         setSubmitting(false);
       }}
     >

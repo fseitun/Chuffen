@@ -26,12 +26,15 @@ const Dropzone = styled.div`
   }
 `;
 
-export function Uploader() {
+export function Uploader({ fideId, setNewLogoFlag }) {
   let formData = new FormData();
   const onDrop = useCallback(acceptedFiles => {
+    // console.log('fideId', fideId);
     formData.append('logo', acceptedFiles[0]);
-    console.log([...formData.entries()], acceptedFiles[0], acceptedFiles[0].name);
+    formData.append('id', fideId);
+    // console.log([...formData.entries()], acceptedFiles[0], acceptedFiles[0].name);
     postMethod('fideicomiso/modificar/1', formData);
+    setNewLogoFlag(true);
   }, []);
 
   const { acceptedFiles, fileRejections, getRootProps, getInputProps } = useDropzone({
@@ -56,8 +59,8 @@ export function Uploader() {
     </li>
   ));
 
-  //   console.log('acceptedFileItems', acceptedFileItems);
-  //   console.log('fileRejectionItems', fileRejectionItems);
+  // console.log('acceptedFileItems', acceptedFileItems);
+  // console.log('fileRejectionItems', fileRejectionItems);
   return (
     <Container>
       <Dropzone {...getRootProps()}>
