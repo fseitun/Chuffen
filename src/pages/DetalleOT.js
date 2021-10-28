@@ -8,7 +8,7 @@ export function DetalleOT({ idSociety }) {
   return (
     <>
       <Helmet>
-        <title>Cuotas | {idSociety?.nombre ?? ''}</title>
+        <title>Cuotas | {idSociety?.name ?? ''}</title>
       </Helmet>
       <Box
         sx={{

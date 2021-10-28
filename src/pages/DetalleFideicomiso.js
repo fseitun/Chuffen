@@ -14,13 +14,13 @@ export function DetalleFideicomiso({ idSociety }) {
     getMethod(`fideicomiso/listar/${idSociety.id}`)
   );
 
-  const selectedFideicomisoData = data?.find((el) => el.nombre === nombreFideicomiso);
+  const selectedFideicomisoData = data?.find(el => el.nombre === nombreFideicomiso);
 
   return (
     <>
       <Helmet>
         <title>
-          {nombreFideicomiso} | {idSociety?.nombre}
+          {nombreFideicomiso} | {idSociety?.name}
         </title>
       </Helmet>
       <Box

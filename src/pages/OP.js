@@ -1,7 +1,7 @@
 import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
-import { ManipularOP } from 'src/components/fideicomiso/ManipularOP';
-import { GrillaOP } from 'src/components/fideicomiso/GrillaOP';
+import { ManipularOP } from 'src/components/OP/ManipularOP';
+import { GrillaOP } from 'src/components/OP/GrillaOP';
 
 export function OP({ idSociety }) {
   return (

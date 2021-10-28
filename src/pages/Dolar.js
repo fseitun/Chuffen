@@ -8,7 +8,7 @@ export function Dolar({ idSociety }) {
   return (
     <>
       <Helmet>
-        <title>Dólar | {idSociety?.nombre ?? ''}</title>
+        <title>Dólar | {idSociety?.name ?? ''}</title>
       </Helmet>
       <Box
         sx={{

@@ -4,14 +4,41 @@ import { Box, Button } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { mostrarFecha } from 'src/utils/utils';
+
+
+
 const columns = [
-  // { field: 'id', headerName: 'ID', width: 100 , headerAlign: 'center',},
   {
-    field: 'fecha',
-    headerName: 'Fecha',
+    field: 'empresa',
+    headerName: 'Razon Social',
+    width: 170,
+    editable: true,
+    headerAlign: 'center',
+  },
+
+  {
+    field: 'numero',
+    headerName: 'Número',
+    width: 170,
+    editable: true,
+    headerAlign: 'center',
+  },
+  {
+    field: 'montoTotal',
+    headerName: 'Monto',
+    width: 130,
+    editable: true,
+    headerAlign: 'center',
+    align: 'right',
+
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
+    field: 'fechaIngreso',
+    headerName: 'Ingreso',
     width: 150,
     type: 'date',
     headerAlign: 'center',
@@ -19,29 +46,17 @@ const columns = [
     valueFormatter: ({ value }) => mostrarFecha(value),
   },
   {
-    field: 'BCRA',
-    headerName: 'BCRA',
-    width: 130,
-    editable: true,
+    field: 'fechaVTO',
+    headerName: 'FechaVTO',
+    width: 150,
+    type: 'date',
     headerAlign: 'center',
-    align: 'right',
-
-    valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
-  },
-  {
-    field: 'mep',
-    headerName: 'MEP',
-    width: 130,
-    editable: true,
-    headerAlign: 'center',
-    align: 'right',
-    valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+    align: 'center',
+    valueFormatter: ({ value }) => mostrarFecha(value),
   },
   {
     field: 'deleteIcon',
-    headerName: ' ',
+    headerName: '',
     width: 50,
     headerAlign: 'center',
     align: 'center',
@@ -49,45 +64,58 @@ const columns = [
   },
 ];
 
-export function GrillaDolar({ idSociety }) {
-  const queryClient = useQueryClient();
-
-  const { mutate } = useMutation(
-    async id => {
-      await deleteMethod(`dolar/eliminar/${idSociety.id}`, id);
-    },
-    {
-      onSuccess: async () => await queryClient.refetchQueries(['dolar', idSociety.id]),
-    }
+export function GrillaFactura({ idSociety, selectedFacturaData }) {
+  // console.log('idSociety:', idSociety);
+  // console.log('selectedFideicomisoData:', selectedFideicomisoData);
+  const {
+    data: products,
+    isLoading,
+    error,
+  } = useQuery(['facturas', idSociety, selectedFacturaData], () =>
+    getMethod(`factura/listar/${idSociety?.id}`)
   );
 
-  const { data, isLoading, error } = useQuery(['dolar', idSociety.id], () =>
-    getMethod(`dolar/listar/${idSociety.id}`)
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteProduct } = useMutation(
+    async id =>
+      await deleteMethod(`factura/eliminar/${idSociety?.id}`, {
+        fideicomisoId: selectedFacturaData?.id,
+        id: id,
+      }),
+    {
+      onSuccess: async () =>
+        await queryClient.refetchQueries(['facturas', idSociety, selectedFacturaData]),
+    }
   );
 
   if (isLoading) return 'Cargando...';
   if (error) return `Hubo un error: ${error.message}`;
 
   function handleCellModification(e) {
+    // console.log('e:', e);
     let newData = {
       id: e.id,
-      [e.field]: e.props.value,
+      // idFideicomiso: selectedFacturaData?.id,
+      [e.field]: e.value,
     };
-    postMethod(`dolar/modificar/${idSociety.id}`, newData);
+    console.log('newData:', newData);
+    postMethod(`factura/modificar/${idSociety?.id}`, newData);
   }
 
   return (
     <div style={{ width: '100%' }}>
       <ToastContainer />
       <DataGrid
-        rows={data.map(el => ({
+        rows={products.map(el => ({
           id: el.id,
-          fecha: el.fecha,
-          BCRA: el.BCRA,
-          blue: el.blue,
-          descripcion: el.descripcion,
-          mep: el.mep,
-          onDelete: () => mutate(el.id),
+          empresaId: el.empresaId,
+          empresa: el.empresas[0].razonSocial,
+          numero: el.numero,
+          montoTotal: el.montoTotal,
+          fechaIngreso: el.fechaIngreso,
+          fechaVTO: el.fechaVTO,          
+          onDelete: () => deleteProduct(el.id),
         }))}
         columns={columns}
         pageSize={25}
@@ -95,7 +123,7 @@ export function GrillaDolar({ idSociety }) {
         autoHeight
         sortModel={[
           {
-            field: 'fecha',
+            field: 'fechaIngreso',
             sort: 'asc',
           },
         ]}

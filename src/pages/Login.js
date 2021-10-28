@@ -19,11 +19,11 @@ export function Login({ setLoggedUser, idSociety, setIdSociety }) {
     societyStateObjectSetter(societyName, setIdSociety);
   }, [setIdSociety, societyName]);
   // console.log('societyName:', societyName);
-  // console.log(`${apiServerUrl}public/${idSociety?.nombre}.png`);
+  // console.log(`${apiServerUrl}public/${idSociety?.name}.png`);
   return (
     <>
       <Helmet onChangeClientState={() => {}}>
-        <title>Login | {idSociety?.nombreComercial ?? ''}</title>
+        <title>Login | {idSociety?.nameComercial ?? ''}</title>
       </Helmet>
       <Box
         sx={{
@@ -38,7 +38,7 @@ export function Login({ setLoggedUser, idSociety, setIdSociety }) {
           <div style={{ width: '100%' }}>
             <img
               style={{ display: 'block', margin: 'auto', width: '30%' }}
-              src={`${apiServerUrl}public/${idSociety?.nombre}.png`}
+              src={`${apiServerUrl}public/${idSociety?.name}.png`}
               alt="logo"
             />
           </div>

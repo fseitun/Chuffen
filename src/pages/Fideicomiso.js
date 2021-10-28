@@ -7,7 +7,7 @@ export function Fideicomiso({ idSociety }) {
   return (
     <>
       <Helmet>
-        <title>Fideicomisos | {idSociety?.nombre ?? ''}</title>
+        <title>Fideicomisos | {idSociety?.name ?? ''}</title>
       </Helmet>
       <Box
         sx={{

@@ -9,51 +9,138 @@ import 'react-toastify/dist/ReactToastify.css';
 import { getMethod, deleteMethod } from 'src/utils/api';
 
 const columns = [
-  {
-    field: 'nombre',
-    headerName: 'Nombre',
-    width: 200,
-    headerAlign: 'center',
-    align: 'left',
-  },
 
   {
-    field: 'fechaInicio',
-    headerName: 'Inicio',
-    width: 170,
+    field: 'createdAt',
+    headerName: 'Fecha',
+    width: 120,
     type: 'date',
     headerAlign: 'center',
     align: 'center',
-    valueFormatter: ({ value }) =>
-      new Date(value).toLocaleDateString('es-AR', {
-        year: 'numeric',
-        month: 'short',
-        timeZone: 'UTC',
-      }),
+    valueFormatter: ({ value }) => new Date(value).toLocaleDateString('es-AR', { timeZone: 'UTC' }),
   },
 
   {
-    field: 'fechaFin',
-    headerName: 'Finalización',
-    width: 170,
-    type: 'date',
+    field: 'fideicomiso',
+    headerName: 'Fideicomiso',
+    width: 160,
     headerAlign: 'center',
     align: 'center',
-    valueFormatter: ({ value }) =>
-      new Date(value).toLocaleDateString('es-AR', {
-        year: 'numeric',
-        month: 'short',
-        timeZone: 'UTC',
-      }),
   },
-  //TODO: trabajar concepto desarrollado en https://codesandbox.io/s/ecstatic-ganguly-zi67p?file=/src/App.js
+
   {
-    field: 'color',
-    headerName: 'Color',
-    width: 150,
+    field: 'numero',
+    headerName: 'Numero',
+    width: 130,
     headerAlign: 'center',
-    renderCell: ({ value }) => <div style={{ width: '100%', height: '100%', background: value }} />,
+    align: 'right',
   },
+
+  {
+    field: 'empresa',
+    headerName: 'Razón Social',
+    width: 160,
+    headerAlign: 'center',
+    align: 'center',
+  },  
+  {
+    field: 'montoTotal',
+    headerName: 'Monto',
+    width: 130,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
+    field: 'moneda',
+    headerName: '',
+    width: 70,
+    headerAlign: 'center',
+    align: 'left',    
+  },
+
+  {
+    field: 'RET_SUSS',
+    headerName: 'SUSS',
+    width: 120,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),    
+  },
+  {
+    field: 'RET_GAN',
+    headerName: 'SUSS',
+    width: 120,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),    
+  },
+  {
+    field: 'RET_IVA',
+    headerName: 'IVA',
+    width: 120,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),    
+  },
+  {
+    field: 'estadoRET',
+    headerName: 'Retenciones',
+    width: 160,
+    headerAlign: 'center',
+    align: 'right',    
+  },
+
+
+  {
+    field: 'apr_obra',
+    headerName: 'Ap. Obra',
+    width: 140,
+    headerAlign: 'center',
+    align: 'center',    
+  },
+  {
+    field: 'apr_adm',
+    headerName: 'Ap. ADM',
+    width: 140,
+    headerAlign: 'center',
+    align: 'center',    
+  },  
+  {
+    field: 'estadoOP',
+    headerName: 'Estado',
+    width: 140,
+    headerAlign: 'center',
+    align: 'center',    
+  },
+  {
+    field: 'fondos',
+    headerName: 'Fondos',
+    width: 140,
+    headerAlign: 'center',
+    align: 'center',    
+  },
+  {
+    field: 'archivada',
+    headerName: 'Archivada',
+    width: 140,
+    headerAlign: 'center',
+    align: 'center',    
+  },
+  {
+    field: 'descripcion',
+    headerName: 'Obs.',
+    width: 140,
+    headerAlign: 'center',
+    align: 'center',    
+  },
+  
+
+  /*
   {
     field: 'deleteIcon',
     headerName: '',
@@ -61,7 +148,7 @@ const columns = [
     headerAlign: 'center',
     align: 'center',
     renderCell: DeleteRow,
-  },
+  },*/
 ];
 export function GrillaOP({ idSociety }) {
   const navigate = useNavigate();
@@ -77,7 +164,7 @@ export function GrillaOP({ idSociety }) {
   );
 
   const { data, isLoading, error } = useQuery(['OP', idSociety.id], () =>
-    getMethod(`OP/listar/${idSociety.id}`)
+    getMethod(`OP/listar/${idSociety.id}/todas/nulo`)
   );
   // console.log(data);
 
@@ -90,11 +177,28 @@ export function GrillaOP({ idSociety }) {
       <DataGrid
         rows={data.map((el) => ({
           id: el.id,
-          nombre: el.nombre,
-          fechaInicio: el.fechaInicio,
-          fechaFin: el.fechaFin,
-          color: el.color,
-          onDelete: () => mutate(el.id),
+          // fechaGenArchivo: el.fechaGenArchivo,          
+          numero: el.numero,
+          /*empresaId: el.empresaId,*/
+          empresa: el.empresas[0].razonSocial,
+          montoTotal: el.montoTotal,
+          moneda: el.moneda,
+          RET_SUSS: el.RET_SUSS,
+          RET_GAN: el.RET_GAN,
+          RET_IVA: el.RET_IVA,
+          estadoRET: el.estadoRET,
+          /*fideicomisoId: el.fideicomisoId,*/
+          fideicomiso: el.fideicomisos[0].nombre,
+          // certificadoId: certificadoId, // falta
+          // estado: estado,   
+          estadoOP: el.estadoOP,
+          fondos: el.fondos,
+          archivada: el.archivada,
+          descripcion: el.descripcion,
+          createdAt: el.createdAt,          
+          apr_obra: (el.auth_obra[0]?el.auth_obra[0].usuarios[0].user:''),
+          apr_adm: (el.auth_adm[0]?el.auth_adm[0].usuarios[0].user:''),
+          /*onDelete: () => mutate(el.id),*/
         }))}
         columns={columns}
         pageSize={25}
@@ -102,7 +206,7 @@ export function GrillaOP({ idSociety }) {
         autoHeight
         sortModel={[
           {
-            field: 'nombre',
+            field: 'numero',
             sort: 'asc',
           },
         ]}

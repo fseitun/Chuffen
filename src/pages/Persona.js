@@ -8,7 +8,7 @@ export function Persona({ idSociety }) {
   return (
     <>
       <Helmet>
-        <title>Fiduciante | {idSociety?.nombre ?? ''}</title>
+        <title>Fiduciante | {idSociety?.name ?? ''}</title>
       </Helmet>
       <Box
         sx={{

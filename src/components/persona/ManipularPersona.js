@@ -10,7 +10,6 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 /// import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { getMethod, postMethod } from 'src/utils/api';
-// import { yearMonthDayString } from 'src/utils/dateToString';
 
 export function ManipularPersona({ idSociety }) {
   const queryClient = useQueryClient();
