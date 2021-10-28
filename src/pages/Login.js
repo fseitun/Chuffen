@@ -22,11 +22,7 @@ export function Login({ setLoggedUser, idSociety, setIdSociety }) {
   // console.log(`${apiServerUrl}public/${idSociety?.nombre}.png`);
   return (
     <>
-<<<<<<< HEAD
-      <Helmet onChangeClientState={() => console.log(idSociety?.nombre)}>
-=======
       <Helmet onChangeClientState={() => {}}>
->>>>>>> color-y-logo-en-fide
         <title>Login | {idSociety?.nombreComercial ?? ''}</title>
       </Helmet>
       <Box
