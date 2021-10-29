@@ -17,7 +17,7 @@ export default function DashboardNavbar({
 }) {
   console.log(loggedUser);
   const { pathname } = useLocation();
-  const lastPartOfPath = pathname.split('/').at(-1);
+  const lastPartOfPath = pathname.split('/')[pathname.split('/').length - 1];
   console.log('lastPartOfPath', lastPartOfPath);
   console.log(sideBarOptions);
   const nameOfPage =
