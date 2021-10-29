@@ -18,7 +18,10 @@ export default function DashboardNavbar({
   console.log(loggedUser);
   const { pathname } = useLocation();
   const lastPartOfPath = pathname.split('/').at(-1);
-  const nameOfPage = sideBarOptions.find(option => option.path === lastPartOfPath).title;
+  console.log('lastPartOfPath', lastPartOfPath);
+  console.log(sideBarOptions);
+  const nameOfPage =
+    sideBarOptions.find(option => option.path === lastPartOfPath)?.title || lastPartOfPath;
 
   console.log('idSociety', idSociety);
   const [notifications] = useState([]);
