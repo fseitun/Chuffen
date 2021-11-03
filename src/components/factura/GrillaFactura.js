@@ -1,8 +1,6 @@
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
-import { Box, Button } from '@mui/material';
-import { ConstructionOutlined, Delete } from '@mui/icons-material';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { mostrarFecha } from 'src/utils/utils';
@@ -89,18 +87,6 @@ export function GrillaFactura({ idSociety }) {
 
   if (isLoading) return 'Cargando...';
   if (error) return `Hubo un error: ${error.message}`;
-
-  function handleCellModification(e) {
-    // console.log('e:', e);
-    let newData = {
-      id: e.id,
-      // idFideicomiso: selectedFacturaData?.id,
-      [e.field]: e.value,
-    };
-    console.log('newData:', newData);
-    postMethod(`factura/modificar/${idSociety?.id}`, newData);
-  }
-
   return (
     <div style={{ width: '100%' }}>
       <ToastContainer />
@@ -133,6 +119,16 @@ export function GrillaFactura({ idSociety }) {
       />
     </div>
   );
+
+  function handleCellModification(e) {
+    // console.log('e:', e);
+    let newData = {
+      id: e.id,
+      [e.field]: e.value,
+    };
+    console.log('newData:', newData);
+    postMethod(`factura/modificar/${idSociety?.id}`, newData);
+  }
 }
 
 function CustomToolbar() {

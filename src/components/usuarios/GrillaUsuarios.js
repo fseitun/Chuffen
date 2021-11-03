@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
-import { Box, Button } from '@mui/material';
-import { Delete } from '@mui/icons-material';import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
+import { DeleteRow } from 'src/components/auxiliares/DeleteRow';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
@@ -31,7 +31,7 @@ const columns = [
     // renderCell: '*****',
   },
   {
-    field: 'rol_descripcion',
+    field: 'rolDescripcion',
     headerName: 'Rol',
     width: 150,
     editable: true,
@@ -49,23 +49,47 @@ const columns = [
 ];
 
 export function GrillaUsuarios({ idSociety }) {
+  const {
+    data: users,
+    isLoading,
+    error,
+  } = useQuery(['usuarios', idSociety], () => getMethod(`usuario/listar/${idSociety.id}`));
+
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation(
-    async id => {
-      await deleteMethod(`usuario/eliminar/${idSociety.id}`, id);
-    },
+  const { mutate: eliminate } = useMutation(
+    async idUser => await deleteMethod(`usuario/eliminar/${idSociety.id}`, { id: idUser }),
     {
       onSuccess: async () => await queryClient.refetchQueries(['usuarios', idSociety.id]),
     }
   );
 
-  const { data, isLoading, error } = useQuery(['usuarios', idSociety.id], () =>
-    getMethod(`usuario/listar/${idSociety.id}`)
-  );
-
   if (isLoading) return 'Cargando...';
   if (error) return `Hubo un error: ${error.message}`;
+  return (
+    <div style={{ width: '100%' }}>
+      <ToastContainer />
+      <DataGrid
+        rows={users.map(el => ({
+          id: el.id,
+          user: el.user,
+          mail: el.mail,
+          pass: el.pass,
+          rolDescripcion: el.pass,
+          onDelete: () => eliminate(el.id),
+        }))}
+        onCellEditCommit={handleCellModification}
+        columns={columns}
+        pageSize={25}
+        disableSelectionOnClick
+        autoHeight
+        scrollbarSize
+        components={{
+          Toolbar: CustomToolbar,
+        }}
+      />
+    </div>
+  );
 
   function handleCellModification(e) {
     let newData = {
@@ -75,67 +99,11 @@ export function GrillaUsuarios({ idSociety }) {
     postMethod(`usuario/modificar/${idSociety.id}`, newData);
   }
 
-  return (
-    <div style={{ width: '100%' }}>
-      <ToastContainer />
-      <DataGrid
-        rows={data.map(el => ({
-          id: el.id,
-          user: el.user,
-          mail: el.mail,
-          pass: el.pass,
-          rol_descripcion: el.pass,
-          onDelete: () => {
-            mutate(el.id);
-          },
-        }))}
-        columns={columns}
-        pageSize={25}
-        disableSelectionOnClick
-        autoHeight
-        scrollbarSize
-        onCellEditCommit={handleCellModification}
-        components={{
-          Toolbar: CustomToolbar,
-        }}
-      />
-    </div>
-  );
-}
-
-function CustomToolbar() {
-  return (
-    <GridToolbarContainer>
-      <GridToolbarExport />
-    </GridToolbarContainer>
-  );
-}
-
-function DeleteRow(params) {
-  const deleteRow = params.row.onDelete;
-  const notify = () =>
-    toast(({ closeToast }) => (
-      <Box>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={closeToast}>
-          No quiero borrar
-        </Button>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={() => {
-            deleteRow();
-            closeToast();
-          }}>
-          Sí quiero borrar
-        </Button>
-      </Box>
-    ));
-  return <Delete onClick={notify} />;
+  function CustomToolbar() {
+    return (
+      <GridToolbarContainer>
+        <GridToolbarExport />
+      </GridToolbarContainer>
+    );
+  }
 }
