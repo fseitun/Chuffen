@@ -1,13 +1,12 @@
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, Button } from '@mui/material';
-import { Delete } from '@mui/icons-material';
+import { ConstructionOutlined, Delete } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { mostrarFecha } from 'src/utils/utils';
-
-
+import { DeleteRow } from 'src/components/auxiliares/DeleteRow';
 
 const columns = [
   {
@@ -64,28 +63,27 @@ const columns = [
   },
 ];
 
-export function GrillaFactura({ idSociety, selectedFacturaData }) {
+export function GrillaFactura({ idSociety }) {
   // console.log('idSociety:', idSociety);
   // console.log('selectedFideicomisoData:', selectedFideicomisoData);
   const {
     data: products,
     isLoading,
     error,
-  } = useQuery(['facturas', idSociety, selectedFacturaData], () =>
-    getMethod(`factura/listar/${idSociety?.id}`)
-  );
+  } = useQuery(['facturas', idSociety], () => getMethod(`factura/listar/${idSociety?.id}`));
 
   const queryClient = useQueryClient();
 
-  const { mutate: deleteProduct } = useMutation(
-    async id =>
-      await deleteMethod(`factura/eliminar/${idSociety?.id}`, {
-        fideicomisoId: selectedFacturaData?.id,
-        id: id,
-      }),
+  const { mutate: eliminate } = useMutation(
+    async idFactura => {
+      console.log('mutanting from reactQuery', 'id:', idFactura);
+      return await deleteMethod(`factura/eliminar/${idSociety?.id}`, {
+        fideicomisoId: idSociety?.id,
+        id: idFactura,
+      }); //TODO corregir método de eliminación
+    },
     {
-      onSuccess: async () =>
-        await queryClient.refetchQueries(['facturas', idSociety, selectedFacturaData]),
+      onSuccess: async () => await queryClient.refetchQueries(['facturas', idSociety]),
     }
   );
 
@@ -114,8 +112,8 @@ export function GrillaFactura({ idSociety, selectedFacturaData }) {
           numero: el.numero,
           montoTotal: el.montoTotal,
           fechaIngreso: el.fechaIngreso,
-          fechaVTO: el.fechaVTO,          
-          onDelete: () => deleteProduct(el.id),
+          fechaVTO: el.fechaVTO,
+          onDelete: () => eliminate(el.id),
         }))}
         columns={columns}
         pageSize={25}
@@ -143,33 +141,4 @@ function CustomToolbar() {
       <GridToolbarExport />
     </GridToolbarContainer>
   );
-}
-
-function DeleteRow(params) {
-  const deleteRow = params.row.onDelete;
-  const notify = () =>
-    toast(({ closeToast }) => (
-      <Box>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={closeToast}>
-          No quiero borrar
-        </Button>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={() => {
-            deleteRow();
-            closeToast();
-          }}>
-          Sí quiero borrar
-        </Button>
-      </Box>
-    ));
-  return <Delete onClick={notify} />;
 }

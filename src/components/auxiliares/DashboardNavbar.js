@@ -15,15 +15,15 @@ export default function DashboardNavbar({
   idSociety,
   loggedUser,
 }) {
-  console.log(loggedUser);
+  // console.log(loggedUser);
   const { pathname } = useLocation();
   const lastPartOfPath = pathname.split('/')[pathname.split('/').length - 1];
-  console.log('lastPartOfPath', lastPartOfPath);
-  console.log(sideBarOptions);
+  // console.log('lastPartOfPath', lastPartOfPath);
+  // console.log(sideBarOptions);
   const nameOfPage =
     sideBarOptions.find(option => option.path === lastPartOfPath)?.title || lastPartOfPath;
 
-  console.log('idSociety', idSociety);
+  // console.log('idSociety', idSociety);
   const [notifications] = useState([]);
   function logOut() {
     setLoggedUser(null);
