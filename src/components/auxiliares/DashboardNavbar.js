@@ -16,10 +16,14 @@ export default function DashboardNavbar({
   loggedUser,
 }) {
   console.log(loggedUser);
+  
   const { pathname } = useLocation();
-  const lastPartOfPath = pathname.split('/').at(-1);
+  console.log("algo1:" + pathname);
+  // const lastPartOfPath = pathname.split('/').at(-1);
+  const lastPartOfPath = pathname.split('/')[pathname.split('/').length - 1];
   console.log('lastPartOfPath', lastPartOfPath);
   console.log(sideBarOptions);
+  console.log("algo:" + pathname);
   const nameOfPage =
     sideBarOptions.find(option => option.path === lastPartOfPath)?.title || lastPartOfPath;
 

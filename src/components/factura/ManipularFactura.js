@@ -1,14 +1,16 @@
 import { useState } from 'react';
-import { TextField, Button, Autocomplete } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+
+import { IconButton, Collapse, Box, TextField, Button, Autocomplete, Alert } from '@mui/material';
 
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 
-
 import { getMethod, postMethod } from 'src/utils/api';
-import { mostrarFecha, yearMonthDayString, yearMonthOneString } from 'src/utils/utils';
+import { yearMonthDayString } from 'src/utils/utils';
+
 
 function Picker({ field, form }) {
 
@@ -32,89 +34,40 @@ export function ManipularFactura({ idSociety }) {
 
   const { data: proveedores } = useQuery(
     ['proveedores'],
-    () => getMethod(`proveedor/listar/${idSociety.id}`) /*,
-    {
-      initialData: [
-          {
-        "id": 1,
-        "razonSocial": "Aceitera del Plata",
-        "CUIT": "10123456781",
-        "mail": "dsfd@dsadaf",
-        "telefono": "133333",
-        "cuentaBancariaId": null,
-        "rubroId": 1,
-        "subrubroId": 1,
-        "esProveedor": 1
-    },
-    {
-        "id": 2,
-        "razonSocial": "Chancho Ricki",
-        "CUIT": null,
-        "mail": null,
-        "telefono": null,
-        "cuentaBancariaId": null,
-        "rubroId": null,
-        "subrubroId": null,
-        "esProveedor": 1
-    },     
-      ],
-    }*/
-  );
-/*
-  const { data: fideicomiso } = useQuery(
-    ['fideicomiso'],
-    () => getMethod(`fideicomiso/listar/${idSociety.id}`),
-    {
-      initialData: [
-        {
-          "id": 1,
-          "nombre": "Barlovento",
-          "fechaInicio": "2021-01-03T00:00:00.000Z",
-          "fechaFin": "2021-01-04T00:00:00.000Z",
-          "localizacionId": 3,
-          "personaId": 2,
-          "empresaId": null,
-          "logo": "logo_fide_1.jpeg",
-          "color": "white"
-      },
-      {
-          "id": 3,
-          "nombre": "Las Heras",
-          "fechaInicio": "2021-01-03T00:00:00.000Z",
-          "fechaFin": "2021-01-04T00:00:00.000Z",
-          "localizacionId": null,
-          "personaId": 1,
-          "empresaId": null,
-          "logo": null,
-          "color": null
-      }      
-      ],
-    }
-  );*/
+    () => getMethod(`proveedor/listar/${idSociety.id}`));
 
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation(newData => postMethod(`factura/agregar/${idSociety.id}`, newData), {
-    onSuccess: () => {
+  const { mutate } = useMutation(newData => 
+    /*console.log('AAAAA:')*/
+    console.log(newData)
+    /*postMethod(`factura/agregar/${idSociety.id}`, newData)*/, {
+    onSuccess: () => {      
       queryClient.refetchQueries(['factura', idSociety.id]);
     },
   });
 
-
   const [typeInForm, setTypeInForm] = useState(null);
-
+  
+  const [open, setOpen] = useState(false);
+  
+  // setOpen(true);
   return (
     <Formik
       initialValues={{
-        fecha: new Date(),
-        mep: '',
-        BCRA: '',
+        /*numero: '',*/
+        numero: '',
+        montoTotal: '',
+        fechaIngreso: new Date(),
+
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
+        //Button.bagregar.label = 'aaaa';
         let bool = await checkDate(idSociety.id, values.fecha);
         !bool && mutate(values); //cambiar por un pop up
 
         resetForm();
+        setOpen(true);
         setSubmitting(false);
       }}>
       {({ isSubmitting, setFieldValue }) => (
@@ -133,7 +86,7 @@ export function ManipularFactura({ idSociety }) {
             }}
             value={typeInForm}
             getOptionLabel={option => option.razonSocial}
-            isOptionEqualToValue={(option, value) => option.razonSocial === value.razonSocial}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
             options={proveedores}
             renderInput={params => <TextField {...params} label='Razon Social' />}
           />
@@ -142,7 +95,7 @@ export function ManipularFactura({ idSociety }) {
             as={TextField}
             label='Numero'
             type='float'
-            maxLength={4}
+            maxLength={8}
             name='numero'
             onChange={event => onlyNumbers(event, setFieldValue, 'numero')}
           />
@@ -155,11 +108,34 @@ export function ManipularFactura({ idSociety }) {
             onChange={event => onlyNumbers(event, setFieldValue, 'montoTotal')}
           />
 
+      
 
-
-          <Button type='submit' disabled={isSubmitting}>
+          <Button id='bagregar' variant="text" type='submit' disabled={isSubmitting}>
             Agregar
           </Button>
+
+          <Box sx={{ width: '100%' }}>
+            <Collapse in={open}>
+              <Alert
+                action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setOpen(false);
+                    }}
+                  >
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
+                }
+                sx={{ mb: 2 }}
+              >
+                Acción realizada!
+              </Alert>
+            </Collapse>         
+          </Box>
+
         </Form>
       )}
     </Formik>
@@ -174,7 +150,7 @@ async function checkDate(idSociety, date) {
 function onlyNumbers(event, setFieldValue, typeOfData) {
   event.preventDefault();
   const { value } = event.target;
-  const regex = /^\d{0,3}(\.\d{0,2})?$/;
+  const regex = /^\d{0,9}(\.\d{0,2})?$/;
   if (regex.test(value.toString())) {
     setFieldValue(typeOfData, value.toString());
   }

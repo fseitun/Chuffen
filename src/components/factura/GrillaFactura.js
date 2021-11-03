@@ -7,24 +7,23 @@ import 'react-toastify/dist/ReactToastify.css';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { mostrarFecha } from 'src/utils/utils';
 
-
-
 const columns = [
   {
     field: 'empresa',
     headerName: 'Razon Social',
     width: 170,
-    editable: true,
+    editable: false,
     headerAlign: 'center',
   },
 
   {
     field: 'numero',
     headerName: 'Número',
-    width: 170,
+    width: 155,
     editable: true,
     headerAlign: 'center',
   },
+
   {
     field: 'montoTotal',
     headerName: 'Monto',
@@ -36,24 +35,49 @@ const columns = [
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
+
+  {
+    field: 'link',
+    headerName: 'Link',
+    width: 155,
+    editable: true,
+    headerAlign: 'center',
+    renderCell:  ({ row: { link } }) => (
+      <a href={ link }  target="_blank" >{ link }</a>)
+  },
+
   {
     field: 'fechaIngreso',
     headerName: 'Ingreso',
-    width: 150,
+    width: 145,
     type: 'date',
+    editable: false,
     headerAlign: 'center',
     align: 'center',
     valueFormatter: ({ value }) => mostrarFecha(value),
   },
   {
     field: 'fechaVTO',
-    headerName: 'FechaVTO',
-    width: 150,
+    headerName: 'VTO',
+    width: 155,
     type: 'date',
+    editable: true,
     headerAlign: 'center',
     align: 'center',
-    valueFormatter: ({ value }) => mostrarFecha(value),
+    renderCell: fFecha,
+    
   },
+
+  /*
+  {
+    field: 'montoTotal',
+    headerName: 'otra',
+    width: 150,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: fmartin,
+  },*/
+
   {
     field: 'deleteIcon',
     headerName: '',
@@ -65,8 +89,7 @@ const columns = [
 ];
 
 export function GrillaFactura({ idSociety, selectedFacturaData }) {
-  // console.log('idSociety:', idSociety);
-  // console.log('selectedFideicomisoData:', selectedFideicomisoData);
+
   const {
     data: products,
     isLoading,
@@ -80,7 +103,7 @@ export function GrillaFactura({ idSociety, selectedFacturaData }) {
   const { mutate: deleteProduct } = useMutation(
     async id =>
       await deleteMethod(`factura/eliminar/${idSociety?.id}`, {
-        fideicomisoId: selectedFacturaData?.id,
+        //fideicomisoId: selectedFacturaData?.id,
         id: id,
       }),
     {
@@ -88,6 +111,8 @@ export function GrillaFactura({ idSociety, selectedFacturaData }) {
         await queryClient.refetchQueries(['facturas', idSociety, selectedFacturaData]),
     }
   );
+
+
 
   if (isLoading) return 'Cargando...';
   if (error) return `Hubo un error: ${error.message}`;
@@ -99,7 +124,7 @@ export function GrillaFactura({ idSociety, selectedFacturaData }) {
       // idFideicomiso: selectedFacturaData?.id,
       [e.field]: e.value,
     };
-    console.log('newData:', newData);
+    // console.log('newData:', newData);
     postMethod(`factura/modificar/${idSociety?.id}`, newData);
   }
 
@@ -107,16 +132,21 @@ export function GrillaFactura({ idSociety, selectedFacturaData }) {
     <div style={{ width: '100%' }}>
       <ToastContainer />
       <DataGrid
+        
+        
         rows={products.map(el => ({
           id: el.id,
-          empresaId: el.empresaId,
-          empresa: el.empresas[0].razonSocial,
+          // empresaId: el.empresaId,
+          empresa:(el.empresas[0]?el.empresas[0].razonSocial:''),
           numero: el.numero,
+          link: el.link,
           montoTotal: el.montoTotal,
           fechaIngreso: el.fechaIngreso,
-          fechaVTO: el.fechaVTO,          
+          fechaVTO: el.fechaVTO,  
           onDelete: () => deleteProduct(el.id),
         }))}
+
+
         columns={columns}
         pageSize={25}
         disableSelectionOnClick
@@ -144,6 +174,7 @@ function CustomToolbar() {
     </GridToolbarContainer>
   );
 }
+
 
 function DeleteRow(params) {
   const deleteRow = params.row.onDelete;
@@ -173,3 +204,20 @@ function DeleteRow(params) {
     ));
   return <Delete onClick={notify} />;
 }
+
+function fFecha(params) {
+  let fechaVTO = null; 
+  if(params.row.fechaVTO){
+    fechaVTO = mostrarFecha(params.row.fechaVTO);
+  }else{
+    fechaVTO = '';
+  }
+
+  return fechaVTO;
+}
+
+/*
+function fmartin() {
+  console.log(3333);
+  return 2222;
+}*/
