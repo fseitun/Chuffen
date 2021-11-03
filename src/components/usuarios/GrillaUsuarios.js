@@ -1,12 +1,11 @@
+import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
-import { ToastContainer } from 'react-toastify';
-import { DeleteRow } from 'src/components/auxiliares/DeleteRow';
-import 'react-toastify/dist/ReactToastify.css';
+import { PromptUser, DeleteRow } from 'src/components/auxiliares/DeleteRow';
 
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 
-const columns = [
+const columns = (isPromptOpen, setIsPromptOpen) => [
   // { field: 'id', headerName: 'ID', width: 100 , headerAlign: 'center',},
   {
     field: 'user',
@@ -44,23 +43,63 @@ const columns = [
     width: 50,
     headerAlign: 'center',
     align: 'center',
-    renderCell: DeleteRow,
+    renderCell: rowData => (
+      <DeleteRow isPromptOpen={isPromptOpen} setIsPromptOpen={setIsPromptOpen} rowData={rowData} />
+    ),
   },
 ];
 
 export function GrillaUsuarios({ idSociety }) {
+  // console.log('idSociety', idSociety);
+  const [isPromptOpen, setIsPromptOpen] = useState(false);
+
   const {
     data: users,
     isLoading,
     error,
   } = useQuery(['usuarios', idSociety], () => getMethod(`usuario/listar/${idSociety.id}`));
+  // console.log('users', users);
 
   const queryClient = useQueryClient();
 
   const { mutate: eliminate } = useMutation(
     async idUser => await deleteMethod(`usuario/eliminar/${idSociety.id}`, { id: idUser }),
     {
-      onSuccess: async () => await queryClient.refetchQueries(['usuarios', idSociety.id]),
+      onMutate: async id => {
+        // console.log('eliminando usuario', idUser);
+        await queryClient.cancelQueries(['usuarios', idSociety]);
+        const prevData = queryClient.getQueryData(['usuarios', idSociety]);
+        // console.log('prevData', prevData);
+        const newData = prevData.filter(user => user.id !== id);
+        queryClient.setQueryData(['usuarios', idSociety], newData);
+        return prevData;
+      },
+      onError: (err, id, context) => queryClient.setQueryData(['usuarios', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['usuarios', idSociety]),
+    }
+  );
+
+  const { mutate: modifyData } = useMutation(
+    async ({ field, id, value }) =>
+      await postMethod(`usuario/modificar/${idSociety.id}`, {
+        id,
+        [field]: value,
+      }),
+    {
+      onMutate: async ({ field, id, value }) => {
+        await queryClient.cancelQueries(['usuarios', idSociety]);
+        const prevData = queryClient.getQueryData(['usuarios', idSociety]);
+        // console.log('prevData', prevData);
+        const newData = [
+          ...prevData.filter(user => user.id !== id),
+          { ...prevData.find(user => user.id === id), [field]: value },
+        ];
+        // console.log('newData', newData);
+        queryClient.setQueryData(['usuarios', idSociety], newData);
+        return prevData;
+      },
+      onError: (err, id, context) => queryClient.setQueryData(['usuarios', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['usuarios', idSociety]),
     }
   );
 
@@ -68,7 +107,6 @@ export function GrillaUsuarios({ idSociety }) {
   if (error) return `Hubo un error: ${error.message}`;
   return (
     <div style={{ width: '100%' }}>
-      <ToastContainer />
       <DataGrid
         rows={users.map(el => ({
           id: el.id,
@@ -78,8 +116,8 @@ export function GrillaUsuarios({ idSociety }) {
           rolDescripcion: el.pass,
           onDelete: () => eliminate(el.id),
         }))}
-        onCellEditCommit={handleCellModification}
-        columns={columns}
+        onCellEditCommit={modifyData}
+        columns={columns(isPromptOpen, setIsPromptOpen)}
         pageSize={25}
         disableSelectionOnClick
         autoHeight
@@ -90,14 +128,6 @@ export function GrillaUsuarios({ idSociety }) {
       />
     </div>
   );
-
-  function handleCellModification(e) {
-    let newData = {
-      id: e.id,
-      [e.field]: e.props.value,
-    };
-    postMethod(`usuario/modificar/${idSociety.id}`, newData);
-  }
 
   function CustomToolbar() {
     return (

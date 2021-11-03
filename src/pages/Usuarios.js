@@ -1,7 +1,7 @@
 import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
 
-import { ManipularUsuarios } from 'src/components/usuarios/ManipularUsuarios';
+import { FormUsuarios } from 'src/components/usuarios/FormUsuarios';
 import { GrillaUsuarios } from 'src/components/usuarios/GrillaUsuarios';
 
 export function Usuarios({ idSociety }) {
@@ -19,7 +19,7 @@ export function Usuarios({ idSociety }) {
       >
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <ManipularUsuarios idSociety={idSociety} />
+            <FormUsuarios idSociety={idSociety} />
           </Box>
           <Box sx={{ pt: 3 }}>
             <GrillaUsuarios idSociety={idSociety} />
