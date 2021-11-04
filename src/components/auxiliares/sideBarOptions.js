@@ -23,13 +23,13 @@ export const sideBarOptions = [
   },
 
   {
-    path: 'op',
+    path: 'AuthAdmOP',
     icon: CreditCard,
     title: 'OPs Auth ADM',
   },
 
   {
-    path: 'op',
+    path: 'AuthObraOP',
     icon: CreditCard,
     title: 'OPs Auth Obra',
   },

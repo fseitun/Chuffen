@@ -42,6 +42,9 @@ import { DetalleFideicomiso } from 'src/pages/DetalleFideicomiso';
 
 // *** Pagos *********************************
 import { OP } from 'src/pages/OP';
+import { AuthAdmOP } from 'src/pages/AuthAdmOP';
+import { AuthObraOP } from 'src/pages/AuthObraOP';
+
 //import { DetalleOP } from 'src/pages/DetalleOP';
 import { Factura } from 'src/pages/Factura';
 
@@ -82,6 +85,9 @@ export default function App() {
               <Route path="empresa" element={<Empresa idSociety={idSociety} />} />
               <Route path="persona" element={<Persona idSociety={idSociety} />} />
               <Route path="OP" element={<OP idSociety={idSociety} />} />
+              <Route path="AuthAdmOP" element={<AuthAdmOP idSociety={idSociety} />} />
+              <Route path="AuthObraOP" element={<AuthObraOP idSociety={idSociety} />} />
+              
               <Route path="factura" element={<Factura idSociety={idSociety} />} />
               <Route path="proveedores" element={<Proveedores idSociety={idSociety} />} />
               <Route path="usuarios" element={<Usuarios idSociety={idSociety} />} />

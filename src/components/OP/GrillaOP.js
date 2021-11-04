@@ -176,10 +176,8 @@ export function GrillaOP({ idSociety }) {
       <ToastContainer />
       <DataGrid
         rows={data.map((el) => ({
-          id: el.id,
-          // fechaGenArchivo: el.fechaGenArchivo,          
+          id: el.id,      
           numero: el.numero,
-          /*empresaId: el.empresaId,*/
           empresa: el.empresas[0].razonSocial,
           montoTotal: el.montoTotal,
           moneda: el.moneda,
@@ -187,10 +185,7 @@ export function GrillaOP({ idSociety }) {
           RET_GAN: el.RET_GAN,
           RET_IVA: el.RET_IVA,
           estadoRET: el.estadoRET,
-          /*fideicomisoId: el.fideicomisoId,*/
           fideicomiso: el.fideicomisos[0].nombre,
-          // certificadoId: certificadoId, // falta
-          // estado: estado,   
           estadoOP: el.estadoOP,
           fondos: el.fondos,
           archivada: el.archivada,

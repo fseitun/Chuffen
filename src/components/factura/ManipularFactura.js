@@ -31,21 +31,32 @@ function Picker({ field, form }) {
 }
 
 export function ManipularFactura({ idSociety }) {
-
+  
+  const {
+    data: facturas,
+    isLoading,
+    error,
+  } = useQuery(['facturas', idSociety], () =>
+    getMethod(`factura/listar/${idSociety?.id}/todas/nada`)
+  );
+  
   const { data: proveedores } = useQuery(
     ['proveedores'],
     () => getMethod(`proveedor/listar/${idSociety.id}`));
 
+
+
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation(newData => 
-    /*console.log('AAAAA:')*/
-    console.log(newData)
-    /*postMethod(`factura/agregar/${idSociety.id}`, newData)*/, {
-    onSuccess: () => {      
-      queryClient.refetchQueries(['factura', idSociety.id]);
-    },
-  });
+  const { mutate: addFactura } = useMutation(
+    newData => postMethod(`factura/agregar/${idSociety.id}`, newData),
+    {
+      onSuccess: async () =>
+        await queryClient.refetchQueries(['facturas', idSociety]),
+        /*await queryClient.refetchQueries(['facturas', idSociety, selectedFacturaData]),*/
+    }
+  );
+
 
   const [typeInForm, setTypeInForm] = useState(null);
   
@@ -62,9 +73,14 @@ export function ManipularFactura({ idSociety }) {
 
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        //Button.bagregar.label = 'aaaa';
-        let bool = await checkDate(idSociety.id, values.fecha);
-        !bool && mutate(values); //cambiar por un pop up
+        // console.log('values:', values);
+        addFactura({
+          /*fideicomisoId: selectedFideicomisoData.id,*/
+          numero: values.numero,
+          montoTotal: values.montoTotal,
+          fechaIngreso: values.fechaIngreso,
+          empresaId: values.empresa.id
+        });
 
         resetForm();
         setOpen(true);
@@ -82,7 +98,7 @@ export function ManipularFactura({ idSociety }) {
             style={{ width: '230px', display: 'inline-flex' }}
             onChange={(event, newValue) => {
               setTypeInForm(newValue);
-              setFieldValue('type', newValue);
+              setFieldValue('empresa', newValue);
             }}
             value={typeInForm}
             getOptionLabel={option => option.razonSocial}

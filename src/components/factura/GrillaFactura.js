@@ -15,7 +15,6 @@ const columns = [
     editable: false,
     headerAlign: 'center',
   },
-
   {
     field: 'numero',
     headerName: 'Número',
@@ -23,7 +22,6 @@ const columns = [
     editable: true,
     headerAlign: 'center',
   },
-
   {
     field: 'montoTotal',
     headerName: 'Monto',
@@ -35,7 +33,6 @@ const columns = [
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
-
   {
     field: 'link',
     headerName: 'Link',
@@ -45,7 +42,6 @@ const columns = [
     renderCell:  ({ row: { link } }) => (
       <a href={ link }  target="_blank" >{ link }</a>)
   },
-
   {
     field: 'fechaIngreso',
     headerName: 'Ingreso',
@@ -67,17 +63,6 @@ const columns = [
     renderCell: fFecha,
     
   },
-
-  /*
-  {
-    field: 'montoTotal',
-    headerName: 'otra',
-    width: 150,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: fmartin,
-  },*/
-
   {
     field: 'deleteIcon',
     headerName: '',
@@ -95,7 +80,7 @@ export function GrillaFactura({ idSociety, selectedFacturaData }) {
     isLoading,
     error,
   } = useQuery(['facturas', idSociety, selectedFacturaData], () =>
-    getMethod(`factura/listar/${idSociety?.id}`)
+    getMethod(`factura/listar/${idSociety?.id}/todas/nada`)
   );
 
   const queryClient = useQueryClient();
@@ -136,7 +121,6 @@ export function GrillaFactura({ idSociety, selectedFacturaData }) {
         
         rows={products.map(el => ({
           id: el.id,
-          // empresaId: el.empresaId,
           empresa:(el.empresas[0]?el.empresas[0].razonSocial:''),
           numero: el.numero,
           link: el.link,
