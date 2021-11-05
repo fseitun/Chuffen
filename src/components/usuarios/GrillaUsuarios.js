@@ -103,31 +103,34 @@ export function GrillaUsuarios({ idSociety }) {
     }
   );
 
-  if (isLoading) return 'Cargando...';
-  if (error) return `Hubo un error: ${error.message}`;
-  return (
-    <div style={{ width: '100%' }}>
-      <DataGrid
-        rows={users.map(el => ({
-          id: el.id,
-          user: el.user,
-          mail: el.mail,
-          pass: el.pass,
-          rolDescripcion: el.pass,
-          onDelete: () => eliminate(el.id),
-        }))}
-        onCellEditCommit={modifyData}
-        columns={columns(isPromptOpen, setIsPromptOpen)}
-        pageSize={25}
-        disableSelectionOnClick
-        autoHeight
-        scrollbarSize
-        components={{
-          Toolbar: CustomToolbar,
-        }}
-      />
-    </div>
-  );
+  if (isLoading) {
+    return 'Cargando...';
+  } else if (error) {
+    return `Hubo un error: ${error.message}`;
+  } else
+    return (
+      <div style={{ width: '100%' }}>
+        <DataGrid
+          rows={users.map(el => ({
+            id: el.id,
+            user: el.user,
+            mail: el.mail,
+            pass: el.pass,
+            rolDescripcion: el.pass,
+            onDelete: () => eliminate(el.id),
+          }))}
+          onCellEditCommit={modifyData}
+          columns={columns(isPromptOpen, setIsPromptOpen)}
+          pageSize={25}
+          disableSelectionOnClick
+          autoHeight
+          scrollbarSize
+          components={{
+            Toolbar: CustomToolbar,
+          }}
+        />
+      </div>
+    );
 
   function CustomToolbar() {
     return (

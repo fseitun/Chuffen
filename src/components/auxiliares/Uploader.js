@@ -33,7 +33,7 @@ export function Uploader({ fideId, setNewLogoFlag }) {
     formData.append('logo', acceptedFiles[0]);
     formData.append('id', fideId);
     // console.log([...formData.entries()], acceptedFiles[0], acceptedFiles[0].name);
-    postMethod('fideicomiso/modificar/1', formData);
+    postMethod('fideicomiso/modificar/1', formData); //TODO: cambiar por el id del fideicomiso
     setNewLogoFlag(true);
   }, []);
 

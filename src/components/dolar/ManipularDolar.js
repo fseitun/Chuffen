@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 
 import { getMethod, postMethod } from 'src/utils/api';
-import { mostrarFecha, yearMonthDayString, yearMonthOneString } from 'src/utils/utils';
+import { mostrarFecha, yearMonthDayString, dateToStringWithDayEqualToOne } from 'src/utils/utils';
 
 function Picker({ field, form }) {
   const { name, value } = field;
@@ -14,8 +14,8 @@ function Picker({ field, form }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DesktopDatePicker
-        label='Fecha'
-        inputFormat='dd/MM/yyyy'
+        label="Fecha"
+        inputFormat="dd/MM/yyyy"
         value={value}
         onChange={value => setFieldValue(name, value)}
         renderInput={params => <TextField {...params} />}
@@ -46,26 +46,27 @@ export function ManipularDolar({ idSociety }) {
 
         resetForm();
         setSubmitting(false);
-      }}>
+      }}
+    >
       {({ isSubmitting, setFieldValue }) => (
         <Form>
-          <Field component={Picker} label='Fecha' type='date' name='fecha' />
+          <Field component={Picker} label="Fecha" type="date" name="fecha" />
           <Field
             as={TextField}
-            label='BCRA'
-            type='float'
+            label="BCRA"
+            type="float"
             maxLength={4}
-            name='BCRA'
+            name="BCRA"
             onChange={event => onlyNumbers(event, setFieldValue, 'BCRA')}
           />
           <Field
             as={TextField}
-            label='MEP'
-            type='float'
-            name='mep'
+            label="MEP"
+            type="float"
+            name="mep"
             onChange={event => onlyNumbers(event, setFieldValue, 'mep')}
           />
-          <Button type='submit' disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting}>
             Agregar
           </Button>
         </Form>
