@@ -51,7 +51,7 @@ const columns = [
     align: 'center',
   },  
   {
-    field: 'montoTotal',
+    field: 'monto',
     headerName: 'Monto',
     editable: false,
     width: 125,
@@ -118,7 +118,7 @@ export function GrillaOPObra({ idSociety }) {
           id: el.id,        
           numero: el.numero,
           empresa: el.empresas[0].razonSocial,
-          montoTotal: el.montoTotal,
+          monto: el.monto,
           moneda: el.moneda,         
           fideicomiso: el.fideicomisos[0].nombre,          
           apr_obra: (el.auth_obra[0]?el.auth_obra[0].usuarios[0].user:''),

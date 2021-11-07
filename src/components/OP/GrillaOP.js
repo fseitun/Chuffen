@@ -44,7 +44,7 @@ const columns = [
     align: 'center',
   },  
   {
-    field: 'montoTotal',
+    field: 'monto',
     headerName: 'Monto',
     width: 130,
     headerAlign: 'center',
@@ -179,7 +179,7 @@ export function GrillaOP({ idSociety }) {
           id: el.id,      
           numero: el.numero,
           empresa: el.empresas[0].razonSocial,
-          montoTotal: el.montoTotal,
+          monto: el.monto,
           moneda: el.moneda,
           RET_SUSS: el.RET_SUSS,
           RET_GAN: el.RET_GAN,

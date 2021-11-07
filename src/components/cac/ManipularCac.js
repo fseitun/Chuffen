@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 
 import { getMethod, postMethod } from 'src/utils/api';
-import { mostrarFecha, yearMonthDayString, yearMonthOneString } from 'src/utils/utils';
+import { yearMonthOneString } from 'src/utils/utils';
 
 function Picker({ field, form }) {
   const { name, value } = field;

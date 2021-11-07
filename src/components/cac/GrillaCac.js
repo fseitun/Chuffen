@@ -101,7 +101,7 @@ export function GrillaCac({ idSociety }) {
         sortModel={[
           {
             field: 'fecha',
-            sort: 'asc',
+            sort: 'desc',
           },
         ]}
         scrollbarSize
