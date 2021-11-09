@@ -2,9 +2,10 @@ import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, Button } from '@mui/material';
-import { Delete } from '@mui/icons-material';
+// import { Delete } from '@mui/icons-material';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 // import { AssignmentTurnedIn } from '@mui/icons-material';
+import { mostrarFecha } from 'src/utils/utils';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,11 +18,11 @@ const columns = [
     field: 'createdAt',
     headerName: 'Fecha',
     editable: false,
-    width: 115,
+    width: 120,
     type: 'date',
     headerAlign: 'center',
     align: 'center',
-    valueFormatter: ({ value }) => new Date(value).toLocaleDateString('es-AR', { timeZone: 'UTC' }),
+    valueFormatter: ({ value }) => mostrarFecha(value),
   },
 
   {
@@ -122,6 +123,7 @@ export function GrillaOPAdm({ idSociety }) {
           fideicomiso: el.fideicomisos[0].nombre,          
           apr_obra: (el.auth_obra[0]?el.auth_obra[0].usuarios[0].user:''),
           apr_adm: (el.auth_adm[0]?el.auth_adm[0].usuarios[0].user:''),
+          createdAt: el.createdAt,
           onAuth: () => authProduct(el.id),
           /*onDelete: () => mutate(el.id),*/
         }))}

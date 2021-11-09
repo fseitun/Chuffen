@@ -1,44 +1,11 @@
 import { useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
-
 import { IconButton, Collapse, Box, TextField, Button, Autocomplete, Alert } from '@mui/material';
-
-import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
-
 import { getMethod, postMethod } from 'src/utils/api';
-import { yearMonthDayString } from 'src/utils/utils';
-
-
-function Picker({ field, form }) {
-
-  const { name, value } = field;
-  const { setFieldValue } = form;
-
-  return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <DesktopDatePicker
-        label='Fecha'
-        inputFormat='dd/MM/yyyy'
-        value={value}
-        onChange={value => setFieldValue(name, value)}
-        renderInput={params => <TextField {...params} />}
-      />
-    </LocalizationProvider>
-  );
-}
 
 export function ManipularFactura({ idSociety }) {
-  
-  const {
-    data: facturas,
-    isLoading,
-    error,
-  } = useQuery(['facturas', idSociety], () =>
-    getMethod(`factura/listar/${idSociety?.id}/todas/nada`)
-  );
   
   const { data: proveedores } = useQuery(
     ['proveedores'],
@@ -156,11 +123,6 @@ export function ManipularFactura({ idSociety }) {
       )}
     </Formik>
   );
-}
-
-async function checkDate(idSociety, date) {
-  let url = `factura/mostrar/${idSociety}/${yearMonthDayString(date)}`;
-  return Boolean(await getMethod(url));
 }
 
 function onlyNumbers(event, setFieldValue, typeOfData) {

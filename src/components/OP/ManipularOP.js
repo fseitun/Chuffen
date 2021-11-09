@@ -85,11 +85,13 @@ export function ManipularOP({ idSociety }) {
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         // console.log('values:', values);
         addOP({
-          /*fideicomisoId: selectedFideicomisoData.id,*/
-          numero: values.numero,
-          montoTotal: values.montoTotal,
-          fechaIngreso: values.fechaIngreso,
-          empresaId: values.empresa.id
+          fideicomisoId: values.fideicomiso.id,
+          empresaId: values.empresa.id,
+          rubroId: values.empresa.rubroId,
+          subRubroId: values.empresa.subrubroId,
+          facturaId: values.factura.id,
+          creador: 1,
+                    
         });
 
         resetForm();
@@ -150,10 +152,6 @@ export function ManipularOP({ idSociety }) {
             options={facturas}
             renderInput={params => <TextField {...params} label='Factura N॰' />}
           />
-
-       
-
-      
 
           <Button id='bagregar' variant="text" type='submit' disabled={isSubmitting}>
             Agregar

@@ -93,6 +93,7 @@ export function GrillaProveedores({ idSociety }) {
   );
 
   if (isLoading) return 'Cargando...';
+  
   if (error) return `Hubo un error: ${error.message}`;
 
   function handleCellModification(e) {

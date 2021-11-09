@@ -4,6 +4,7 @@ import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-g
 import { Box, Button } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
+import { mostrarFecha } from 'src/utils/utils';
 // import { AssignmentTurnedIn } from '@mui/icons-material';
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -17,11 +18,11 @@ const columns = [
     field: 'createdAt',
     headerName: 'Fecha',
     editable: false,
-    width: 115,
+    width: 120,
     type: 'date',
     headerAlign: 'center',
     align: 'center',
-    valueFormatter: ({ value }) => new Date(value).toLocaleDateString('es-AR', { timeZone: 'UTC' }),
+    valueFormatter: ({ value }) => mostrarFecha(value),
   },
 
   {
@@ -123,6 +124,7 @@ export function GrillaOPObra({ idSociety }) {
           fideicomiso: el.fideicomisos[0].nombre,          
           apr_obra: (el.auth_obra[0]?el.auth_obra[0].usuarios[0].user:''),
           apr_adm: (el.auth_adm[0]?el.auth_adm[0].usuarios[0].user:''),
+          createdAt: el.createdAt,
           onAuth: () => authProduct(el.id),
           /*onDelete: () => mutate(el.id),*/
         }))}
