@@ -36,22 +36,23 @@ export function ManipularOP({ idSociety }) {
     data: OPs,
     isLoading,
     error,
-  } = useQuery(['OPs', idSociety], () =>
+  } = useQuery(['OP', idSociety], () =>
     getMethod(`OP/listar/${idSociety?.id}`)
   );
-  
-  const { data: proveedores } = useQuery(
-    ['proveedores'],
-    () => getMethod(`proveedor/listar/${idSociety.id}`));
-    
+     
 
   const { data: fideicomisos } = useQuery(
     ['fideicomisos'],
     () => getMethod(`fideicomiso/listar/${idSociety.id}`));
 
 
-  const { data: facturas } = useQuery(
-    ['facturas'],
+  const { data: proveedores } = useQuery(
+    ['proveedores'],
+    () => getMethod(`proveedor/listar/${idSociety.id}`));
+
+
+  const { data: ddfacturas } = useQuery(
+    ['ddfacturas'],
     () => getMethod(`factura/listar/${idSociety.id}/opid/0`));
 
   const queryClient = useQueryClient();
@@ -60,30 +61,27 @@ export function ManipularOP({ idSociety }) {
     newData => postMethod(`OP/agregar/${idSociety.id}`, newData),
     {
       onSuccess: async () =>
-        await queryClient.refetchQueries(['OPs', idSociety]),
-        /*await queryClient.refetchQueries(['OPs', idSociety, selectedOPData]),*/
+        await queryClient.refetchQueries(['OP', idSociety.id])
     }
   );
 
 
   const [fideInForm, setFideInForm] = useState(null);
   const [rsInForm, setRsInForm] = useState(null);
-  const [factInForm, setFactInForm] = useState(null);
-  
+  const [factInForm, setFactInForm] = useState(null);  
   const [open, setOpen] = useState(false);
   
-  // setOpen(true);
   return (
     <Formik
       initialValues={{
-        /*numero: '',*/
+        
         numero: '',
         montoTotal: '',
         fechaIngreso: new Date(),
 
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        // console.log('values:', values);
+        
         addOP({
           fideicomisoId: values.fideicomiso.id,
           empresaId: values.empresa.id,
@@ -149,7 +147,7 @@ export function ManipularOP({ idSociety }) {
             value={factInForm}
             getOptionLabel={option => option.numero}
             isOptionEqualToValue={(option, value) => option.id === value.id}
-            options={facturas}
+            options={ddfacturas?.filter(factura => factura?.empresaId == rsInForm?.id)}
             renderInput={params => <TextField {...params} label='Factura N॰' />}
           />
 

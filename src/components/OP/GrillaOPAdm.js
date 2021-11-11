@@ -2,14 +2,10 @@ import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, Button } from '@mui/material';
-// import { Delete } from '@mui/icons-material';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
-// import { AssignmentTurnedIn } from '@mui/icons-material';
 import { mostrarFecha } from 'src/utils/utils';
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import { getMethod, postMethod } from 'src/utils/api';
 
 const columns = [
@@ -80,7 +76,7 @@ const columns = [
   },
   
 ];              
-export function GrillaOPAdm({ idSociety }) {
+export function GrillaOPAdm({ idSociety,  loggedUser }) {
 
   const { data, isLoading, error } = useQuery(['OP', idSociety.id], () =>
     getMethod(`OP/listar/${idSociety.id}/authADM/nulo`)
@@ -90,18 +86,19 @@ export function GrillaOPAdm({ idSociety }) {
   const queryClient = useQueryClient();
 
   const { mutate: authProduct } = useMutation(
+    
     async id =>
       await postMethod(`autorizacion/agregar/${idSociety?.id}`, {
 
         opid : id,
         documento: 'op',
         tipoAutorizacion: 'adm',
-        creador: 1
+        creador: loggedUser.id
 
       }),
     {
       onSuccess: async () =>
-        await queryClient.refetchQueries(['OP', idSociety]),
+        await queryClient.refetchQueries(['OP', idSociety?.id]),
     }
   );
 
@@ -124,8 +121,7 @@ export function GrillaOPAdm({ idSociety }) {
           apr_obra: (el.auth_obra[0]?el.auth_obra[0].usuarios[0].user:''),
           apr_adm: (el.auth_adm[0]?el.auth_adm[0].usuarios[0].user:''),
           createdAt: el.createdAt,
-          onAuth: () => authProduct(el.id),
-          /*onDelete: () => mutate(el.id),*/
+          onAuth: () => authProduct(el.id)
         }))}
         columns={columns}
         pageSize={25}

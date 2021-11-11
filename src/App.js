@@ -84,11 +84,13 @@ export default function App() {
               <Route path="cac" element={<Cac idSociety={idSociety} />} />
               <Route path="empresa" element={<Empresa idSociety={idSociety} />} />
               <Route path="persona" element={<Persona idSociety={idSociety} />} />
-              <Route path="OP" element={<OP idSociety={idSociety} />} />
-              <Route path="AuthAdmOP" element={<AuthAdmOP idSociety={idSociety} />} />
-              <Route path="AuthObraOP" element={<AuthObraOP idSociety={idSociety} />} />
+
+              <Route path="factura" element={<Factura idSociety={idSociety} loggedUser={loggedUser} />} />
+              <Route path="OP" element={<OP idSociety={idSociety}  loggedUser={loggedUser} />} />
+              <Route path="AuthAdmOP" element={<AuthAdmOP idSociety={idSociety}  loggedUser={loggedUser} />} />
+              <Route path="AuthObraOP" element={<AuthObraOP idSociety={idSociety}  loggedUser={loggedUser} />} />
               
-              <Route path="factura" element={<Factura idSociety={idSociety} />} />
+              
               <Route path="proveedores" element={<Proveedores idSociety={idSociety} />} />
               <Route path="usuarios" element={<Usuarios idSociety={idSociety} />} />
               <Route path="rubros" element={<Rubros idSociety={idSociety} />} />

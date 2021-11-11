@@ -73,7 +73,7 @@ const columns = [
   },
 ];
 
-export function GrillaFactura({ idSociety, selectedFacturaData }) {
+export function GrillaFactura({ idSociety, loggedUser, selectedFacturaData }) {
 
   const {
     data: products,
@@ -103,13 +103,12 @@ export function GrillaFactura({ idSociety, selectedFacturaData }) {
   if (error) return `Hubo un error: ${error.message}`;
 
   function handleCellModification(e) {
-    // console.log('e:', e);
+    
     let newData = {
       id: e.id,
-      // idFideicomiso: selectedFacturaData?.id,
-      [e.field]: e.value,
+     [e.field]: e.value,
     };
-    // console.log('newData:', newData);
+    
     postMethod(`factura/modificar/${idSociety?.id}`, newData);
   }
 
@@ -199,9 +198,3 @@ function fFecha(params) {
 
   return fechaVTO;
 }
-
-/*
-function fmartin() {
-  console.log(3333);
-  return 2222;
-}*/

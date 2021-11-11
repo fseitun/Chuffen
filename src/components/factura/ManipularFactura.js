@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { getMethod, postMethod } from 'src/utils/api';
 
-export function ManipularFactura({ idSociety }) {
+export function ManipularFactura({ idSociety, loggedUser }) {
   
   const { data: proveedores } = useQuery(
     ['proveedores'],
@@ -19,34 +19,32 @@ export function ManipularFactura({ idSociety }) {
     newData => postMethod(`factura/agregar/${idSociety.id}`, newData),
     {
       onSuccess: async () =>
-        await queryClient.refetchQueries(['facturas', idSociety]),
-        /*await queryClient.refetchQueries(['facturas', idSociety, selectedFacturaData]),*/
+        await queryClient.refetchQueries(['facturas', idSociety])
     }
   );
 
 
   const [typeInForm, setTypeInForm] = useState(null);
-  
   const [open, setOpen] = useState(false);
-  
-  // setOpen(true);
+
   return (
     <Formik
       initialValues={{
-        /*numero: '',*/
+ 
         numero: '',
         montoTotal: '',
         fechaIngreso: new Date(),
 
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        // console.log('values:', values);
+
         addFactura({
-          /*fideicomisoId: selectedFideicomisoData.id,*/
+
           numero: values.numero,
           montoTotal: values.montoTotal,
           fechaIngreso: values.fechaIngreso,
-          empresaId: values.empresa.id
+          empresaId: values.empresa.id,
+          creador: loggedUser.id
         });
 
         resetForm();

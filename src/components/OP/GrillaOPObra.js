@@ -80,7 +80,7 @@ const columns = [
   },
   
 ];              
-export function GrillaOPObra({ idSociety }) {
+export function GrillaOPObra({ idSociety, loggedUser }) {
 
 
   const { data, isLoading, error } = useQuery(['OP', idSociety.id], () =>
@@ -91,24 +91,27 @@ export function GrillaOPObra({ idSociety }) {
   const queryClient = useQueryClient();
 
   const { mutate: authProduct } = useMutation(
+    
     async id =>
       await postMethod(`autorizacion/agregar/${idSociety?.id}`, {
 
         opid : id,
         documento: 'op',
         tipoAutorizacion: 'en obra',
-        creador: 1
+        creador: loggedUser.id
 
       }),
     {
       onSuccess: async () =>
-        await queryClient.refetchQueries(['OP', idSociety]),
+        await queryClient.refetchQueries(['OP', idSociety?.id]),
     }
   );
 
 
 
+
   if (isLoading) return 'Cargando...';
+
   if (error) return `Hubo un error: ${error.message}`;
 
   return (

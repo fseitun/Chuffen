@@ -2,7 +2,7 @@ import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
 import { GrillaOPObra } from 'src/components/OP/GrillaOPObra';
 
-export function AuthObraOP({ idSociety }) {
+export function AuthObraOP({ idSociety,  loggedUser }) {
   return (
     <>
       <Helmet>
@@ -17,7 +17,7 @@ export function AuthObraOP({ idSociety }) {
         <Container maxWidth={false}>
 
           <Box sx={{ pt: 3 }}>
-            <GrillaOPObra idSociety={idSociety} />
+            <GrillaOPObra idSociety={idSociety}  loggedUser={loggedUser} />
           </Box>
         </Container>
       </Box>

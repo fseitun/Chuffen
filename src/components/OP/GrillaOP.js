@@ -10,15 +10,16 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { getMethod, deleteMethod, postMethod } from 'src/utils/api';
 
-/* const columns = function columns(rubro, setRubro) {
-  return [*/
+const columns = function columns(rubro, setRubro) {
+  return [
 
-const columns = [
+/*const columns = [*/
     {
       field: 'createdAt',
       headerName: 'Fecha',
       width: 120,
       type: 'date',
+      editable: false,
       headerAlign: 'center',
       align: 'center',
       valueFormatter: ({ value }) => new Date(value).toLocaleDateString('es-AR', { timeZone: 'UTC' }),
@@ -28,6 +29,7 @@ const columns = [
       field: 'fideicomiso',
       headerName: 'Fideicomiso',
       width: 160,
+      editable: false,
       headerAlign: 'center',
       align: 'center',
     },
@@ -36,6 +38,7 @@ const columns = [
       field: 'numero',
       headerName: 'Numero',
       width: 130,
+      editable: false,
       headerAlign: 'center',
       align: 'right',
     },
@@ -44,6 +47,7 @@ const columns = [
       field: 'empresa',
       headerName: 'Razón Social',
       width: 160,
+      editable: false,
       headerAlign: 'center',
       align: 'center',
     },  
@@ -147,29 +151,24 @@ const columns = [
       align: 'center',    
     },
 
-    /*
-
+    
     {
       field: 'rubroId',
       headerName: 'Rubro',
       width: 150,
       editable: true,
-      //renderCell: ({ row: { colorElegido } }) => (
-      //  <div style={{ width: '100%', height: '100%', background: colorElegido }}></div>
-      //),
       renderEditCell: (a, b, c) => {
         const commit = a.api.events.cellEditCommit;
         // console.log(a, b, a.api.events.cellEditCommit);
         return (
           <RubroPicker
-            //rubro={rubro}
-            //setColor={setColor}
+            rubro={rubro}
+            setRubro={setRubro}
             rubroOptions={rubros}
-            //setNewLogoFlag={setNewLogoFlag}
           />
         );
       },
-    },*/
+    },
 
     {
       field: 'archivada3',
@@ -186,26 +185,36 @@ const columns = [
       headerAlign: 'center',
       align: 'center',    
     }, 
-  /*];*/
-/*};*/
-];
+  ];
+};
+//];
 
 const rubros = [
-  { label: 1, cass: 'red' },
-  { label: 2, cass: 'green' },
-  { label: 3, cass: 'blue' },
+  { id: 1, rubro: 'Obra' },
+  { id: 3, rubro: 'Tierra y gastos' },
+  { id: 4, rubro: 'eqwweq' },
 ];
 
 export function GrillaOP({ idSociety }) {
-  const navigate = useNavigate();
+  /* const navigate = useNavigate();*/
   const queryClient = useQueryClient();
 
-  const [rubro, setRubro] = useState({ label: 2, cass: 'red' });
+  const [rubro, setRubro] = useState({});
   //const [color, setColor] = useState({ label: 'Rojo', css: 'red' });
 
-  const { data: facturas } = useQuery(
-    ['facturas'],
-    () => getMethod(`factura/listar/${idSociety.id}/todas/0`));
+ /// const [flagFactura, setFlagFactura] = useState([]);
+
+    const { data: grfacturas } = useQuery(['grfacturas', idSociety.id], async() =>
+    await getMethod(`factura/listar/${idSociety.id}/todas/25`));
+
+    /*
+    const { data: grfacturas } = useQuery(['OP', idSociety.id], () =>
+    getMethod(`factura/listar/${idSociety.id}/todas/25`)
+  );*/
+
+
+  console.log("AAA:" + grfacturas);
+  // console.log(grfacturas);
 
   const { mutate: nonAuthObra } = useMutation(
     async el =>
@@ -250,10 +259,19 @@ export function GrillaOP({ idSociety }) {
   const { data, isLoading, error } = useQuery(['OP', idSociety.id], () =>
     getMethod(`OP/listar/${idSociety.id}/todas/nulo`)
   );
-  // console.log(data);
 
   if (isLoading) return 'Cargando...';
   if (error) return `Hubo un error: ${error.message}`;
+
+  function handleCellModification(e) {
+    
+    let newData = {
+      id: e.id,
+     [e.field]: e.value,
+    };
+    
+    postMethod(`OP/modificar/${idSociety?.id}`, newData);
+  }
 
   return (
     <div style={{ width: '100%' }}>
@@ -276,16 +294,16 @@ export function GrillaOP({ idSociety }) {
           archivada: el.archivada,
           descripcion: el.descripcion,
           createdAt: el.createdAt,   
-         //  auth_obra_id: (el.auth_obra[0]?el.auth_obra[0].id:''),        
           apr_obra: (el.auth_obra[0]?el.auth_obra[0].usuarios[0].user:''),
-          // auth_adm_id: (el.auth_adm[0]?el.auth_adm[0].id:''),   
           apr_adm: (el.auth_adm[0]?el.auth_adm[0].usuarios[0].user:''),
-          facturas: () => arrFacturas(el, facturas),
+
+          misfacturas: () => arrFacturas(el, grfacturas),
           onAuthAdm: () => nonAuthAdm(el),
-          onAuthObra: () => nonAuthObra(el),
-          /*onDelete: () => mutate(el.id),*/
+          onAuthObra: () => nonAuthObra(el)
+
         }))}
-        columns={columns}
+        
+        columns={columns(rubro, setRubro, idSociety?.id)}
         pageSize={25}
         disableSelectionOnClick
         autoHeight
@@ -296,16 +314,18 @@ export function GrillaOP({ idSociety }) {
           },
         ]}
         scrollbarSize
-        onRowDoubleClick={(a) => IrAOP(a)}
+        onCellEditCommit={handleCellModification}
+        /*onRowDoubleClick={(a) => IrAOP(a)}*/
         components={{
           Toolbar: CustomToolbar,
         }}
       />
     </div>
   );
+  /*
   function IrAOP(params) {
     navigate(`./${params.row.nombre}`);
-  }
+  }*/
 }
 
 function CustomToolbar() {
@@ -319,8 +339,8 @@ function CustomToolbar() {
 
 
 function NonObraAuthRow(params) {
+
   const authRow = params.row.onAuthObra;
-  //apr_adm: (el.auth_adm[0]?el.auth_adm[0].usuarios[0].user:''),
   const apr_obra = params.row.apr_obra;
   const notify = () =>
     toast(({ closeToast }) => (
@@ -345,7 +365,7 @@ function NonObraAuthRow(params) {
         </Button>
       </Box>
     ));
-  //return <CancelIcon onClick={notify} />;
+  
   if(apr_obra != ""){
     return <Button onClick={notify} >{apr_obra}  </Button>;
   }else{
@@ -354,8 +374,8 @@ function NonObraAuthRow(params) {
 } 
 
 function NonAdmAuthRow(params) {
-  const authRow = params.row.onAuthAdm;
-  //apr_adm: (el.auth_adm[0]?el.auth_adm[0].usuarios[0].user:''),
+
+  const authRow = params.row.onAuthAdm;  
   const apr_adm = params.row.apr_adm;
   const notify = () =>
     toast(({ closeToast }) => (
@@ -380,24 +400,41 @@ function NonAdmAuthRow(params) {
         </Button>
       </Box>
     ));
-  //return <CancelIcon onClick={notify} />;
+  
   if(apr_adm != ""){
     return <Button onClick={notify} >{apr_adm}  </Button>;
   }else{
     return ""
   }
+
 } 
 
-function arrFacturas(params, facturas) {
-  const id = params.row.id;
+function arrFacturas (params) {
 
-    let aa = facturas;
-    return 'numero';//this.facturas[0].numero;
-  //}
+  getMethod(`factura/listar/1/todas/25`).then((data)=> { 
+    /*this.setFlagFactura(data);*/
+    let rta = data?.filter(factura => factura?.OPId == params.row?.id);
+    let comma_seprated = "";
+
+    for(var i=0; i< rta.length; i ++){
+      if(i>0){
+        comma_seprated += ", " + rta[0]?.numero;
+      }else{
+        comma_seprated = "" + rta[0]?.numero;
+      }
+    }  
+    console.log("XX:" + comma_seprated);
+    console.log("YY:" + rta[0].numero);
+   
+    
+      return comma_seprated;
+
+  })
+  
 } 
 
 function RubroPicker({ rubro, setRubro, rubroOptions }) {
-  // console.log('colorOptions', colorOptions);
+  
   return (
     <Autocomplete
       value={rubro}
@@ -406,13 +443,14 @@ function RubroPicker({ rubro, setRubro, rubroOptions }) {
       }}
       options={rubroOptions}
       sx={{ width: 300 }}
-      isOptionEqualToValue={(option, value) => option.label === value.label}
+      getOptionLabel={option => option.rubro}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
       renderInput={params => <TextField {...params} />}
       renderOption={(props, option, c) => {
-        // console.log(props, option, c);
+        
         return (
           <div {...props} >
-            {option.label}
+            {option.rubro}
           </div>
         );
       }}
