@@ -1,11 +1,11 @@
-import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
-import { DeleteRow } from 'src/components/auxiliares/DeleteRow';
+import { Delete as DeleteIcon } from '@mui/icons-material';
 
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
+import { usePrompt } from 'src/utils/usePrompt';
 
-const columns = (isPromptOpen, setIsPromptOpen) => [
+const columns = (setIsPromptOpen, Prompt) => [
   {
     field: 'fecha',
     headerName: 'Fecha',
@@ -47,14 +47,21 @@ const columns = (isPromptOpen, setIsPromptOpen) => [
     width: 50,
     headerAlign: 'center',
     align: 'center',
-    renderCell: rowData => (
-      <DeleteRow isPromptOpen={isPromptOpen} setIsPromptOpen={setIsPromptOpen} rowData={rowData} />
+    renderCell: ({ row: { onDelete } }) => (
+      <>
+        <DeleteIcon
+          onClick={() => {
+            setIsPromptOpen(true);
+          }}
+        />
+        <Prompt message="¿Eliminar fila?" action={onDelete} />
+      </>
     ),
   },
 ];
 
 export function GrillaCac({ idSociety }) {
-  const [isPromptOpen, setIsPromptOpen] = useState(false);
+  const { Prompt, setIsPromptOpen } = usePrompt();
 
   const {
     data: cacInformation,
@@ -119,7 +126,7 @@ export function GrillaCac({ idSociety }) {
             onDelete: () => eliminate(el.id),
           }))}
           onCellEditCommit={modifyData}
-          columns={columns(isPromptOpen, setIsPromptOpen)}
+          columns={columns(setIsPromptOpen, Prompt)}
           pageSize={25}
           disableSelectionOnClick
           autoHeight
