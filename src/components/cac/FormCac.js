@@ -4,11 +4,12 @@ import { Formik, Form, Field } from 'formik';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
-import { getMethod, postMethod } from 'src/utils/api';
-import { dateToStringWithDayEqualToOne } from 'src/utils/utils';
+import { postMethod } from 'src/utils/api';
+import { dateToStringWithDayEqualToOne, isDateUsed } from 'src/utils/utils';
 
 export function FormCac({ idSociety }) {
   const queryClient = useQueryClient();
+
   const { mutate: addCac } = useMutation(
     newCac => postMethod(`cac/agregar/${idSociety.id}`, newCac),
     {
@@ -33,7 +34,7 @@ export function FormCac({ idSociety }) {
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         values.fecha = dateToStringWithDayEqualToOne(values.fecha);
-        (await isDateUsed(idSociety.id, values.fecha)) || addCac(values);
+        (await isDateUsed('cac', idSociety.id, values.fecha)) || addCac(values);
         resetForm();
         setSubmitting(false);
       }}
@@ -63,11 +64,6 @@ export function FormCac({ idSociety }) {
       )}
     </Formik>
   );
-
-  async function isDateUsed(idSociety, date) {
-    let url = `cac/mostrar/${idSociety}/${date}`;
-    return !!(await getMethod(url));
-  }
 
   function onlyNumbers(event, setFieldValue, typeOfData) {
     event.preventDefault();

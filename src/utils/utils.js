@@ -1,3 +1,5 @@
+import { getMethod } from './api';
+
 // Devuelve CUIT con formato 20-44.123.225-8
 export function mostrarCUIT(value) {
   try {
@@ -29,4 +31,10 @@ export function yearMonthDayString(date) {
 // Devuelve una fecha con dia 1
 export function dateToStringWithDayEqualToOne(date) {
   return `${date.getFullYear(date)}-${(1 + date.getMonth(date)).toString().padStart(2, '0')}-01`;
+}
+
+export async function isDateUsed(endpoint, idSociety, date) {
+  let url = `${endpoint}/mostrar/${idSociety}/${date}`;
+  let data = await getMethod(url);
+  return !!data;
 }

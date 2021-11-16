@@ -1,7 +1,7 @@
 import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
 
-import { ManipularDolar } from 'src/components/dolar/ManipularDolar';
+import { FormDolar } from 'src/components/dolar/FormDolar';
 import { GrillaDolar } from 'src/components/dolar/GrillaDolar';
 
 export function Dolar({ idSociety }) {
@@ -19,7 +19,7 @@ export function Dolar({ idSociety }) {
       >
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <ManipularDolar idSociety={idSociety} />
+            <FormDolar idSociety={idSociety} />
           </Box>
           <Box sx={{ pt: 3 }}>
             <GrillaDolar idSociety={idSociety} />

@@ -130,33 +130,49 @@ export function GrillaFideicomiso({ idSociety }) {
   // console.log('dataFromFideicomisos:', dataFromFideicomisos);
 
   const { mutate: changeDataToFideicomiso } = useMutation(
-    async newData => await postMethod(`fideicomiso/modificar/${idSociety?.id}`, newData),
+    async newData => {
+      console.log('newData', newData);
+      return await postMethod(`fideicomiso/modificar/${idSociety?.id}`, newData);
+    },
     {
-      onMutate: async newData => {
+      onMutate: async newColor => {
+        // console.log('newColor', newColor);
         await queryClient.cancelQueries(['fideicomiso', idSociety?.id]);
-        const previousData = queryClient.getQueryData(['fideicomiso', idSociety?.id]);
-        queryClient.setQueryData(['fideicomiso', idSociety?.id], oldData => {
+
+        const previousFideicomisoData = queryClient.getQueryData([
+          'fideicomiso',
+          idSociety?.id,
+          newLogoFlag,
+        ]);
+        // console.log('previousFideicomisoData', previousFideicomisoData);
+
+        queryClient.setQueryData(['fideicomiso', idSociety?.id, newLogoFlag], oldData => {
+          console.log('oldData:', oldData);
           const copyOfOldData = [...oldData];
           // console.log('copyOfOldData:', copyOfOldData);
-          const changedFideicomiso = copyOfOldData.find(e => newData.id === e.id);
+          const changedFideicomiso = copyOfOldData.find(e => newColor.id === e.id);
           // console.log('changedFideicomiso:', changedFideicomiso);
           // console.log('newData:', newData);
-          changedFideicomiso.color = newData.color;
+          changedFideicomiso.color = newColor.color;
           // console.log('changedFideicomiso:', changedFideicomiso);
           const newListOfFideicomisos = [
-            ...copyOfOldData.filter(e => e.id !== newData.id),
+            ...copyOfOldData.filter(e => e.id !== newColor.id),
             changedFideicomiso,
           ];
           // console.log('newListOfFideicomisos:', newListOfFideicomisos);
           return newListOfFideicomisos;
         });
-        return { previousData };
+
+        return { previousFideicomisoData };
       },
       onError: (err, newData, context) => {
-        queryClient.setQueryData(['fideicomiso', idSociety?.id], context.previousData);
+        queryClient.setQueryData(
+          ['fideicomiso', idSociety?.id, newLogoFlag],
+          context.previousFideicomisoData
+        );
       },
       onSettled: () => {
-        queryClient.invalidateQueries(['fideicomiso', idSociety?.id]);
+        queryClient.invalidateQueries(['fideicomiso', idSociety?.id, newLogoFlag]);
       },
     }
   );

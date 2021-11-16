@@ -6,7 +6,6 @@ import { DeleteRow } from 'src/components/auxiliares/DeleteRow';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 
 const columns = (isPromptOpen, setIsPromptOpen) => [
-  // { field: 'id', headerName: 'ID', width: 100 , headerAlign: 'center',},
   {
     field: 'fecha',
     headerName: 'Fecha',
