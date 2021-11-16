@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, Button, TextField, Autocomplete } from '@mui/material';
 import { Delete } from '@mui/icons-material';
@@ -52,9 +51,8 @@ const columns = function columns(color, setColor, id, setNewLogoFlag) {
       field: 'logo',
       headerName: 'Logo',
       width: 150,
-      renderCell: passedData => {
-        // console.log('passedData:', passedData);
-        return passedData.row.logo ? (
+      renderCell: passedData =>
+        passedData.row.logo ? (
           <img
             style={{ display: 'block', margin: 'auto', width: '30%' }}
             src={`${apiServerUrl}sociedades/${id}/${passedData.row.logo}`}
@@ -62,8 +60,7 @@ const columns = function columns(color, setColor, id, setNewLogoFlag) {
           />
         ) : (
           <Uploader fideId={passedData.id} setNewLogoFlag={setNewLogoFlag} />
-        );
-      },
+        ),
     },
     {
       field: 'colorElegido',
@@ -73,18 +70,15 @@ const columns = function columns(color, setColor, id, setNewLogoFlag) {
       renderCell: ({ row: { colorElegido } }) => (
         <div style={{ width: '100%', height: '100%', background: colorElegido }}></div>
       ),
-      renderEditCell: (a, b, c) => {
-        const commit = a.api.events.cellEditCommit;
-        // console.log(a, b, a.api.events.cellEditCommit);
-        return (
-          <ColorPicker
-            color={color}
-            setColor={setColor}
-            colorOptions={colors}
-            setNewLogoFlag={setNewLogoFlag}
-          />
-        );
-      },
+      renderEditCell: ({ row: { colorElegido } }) => (
+        <ColorPicker
+          originalColor={colors.filter(color => color.css === colorElegido)[0]}
+          color={color}
+          setColor={setColor}
+          colorOptions={colors}
+          setNewLogoFlag={setNewLogoFlag}
+        />
+      ),
     },
     {
       field: 'deleteIcon',
@@ -104,9 +98,8 @@ const colors = [
 ];
 
 export function GrillaFideicomiso({ idSociety }) {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [color, setColor] = useState({ label: 'Rojo', css: 'red' });
+  const [color, setColor] = useState(null);
   // console.log('color:', color);
   const [newLogoFlag, setNewLogoFlag] = useState(false);
   // console.log('newLogoFlag:', newLogoFlag);
@@ -131,7 +124,7 @@ export function GrillaFideicomiso({ idSociety }) {
 
   const { mutate: changeDataToFideicomiso } = useMutation(
     async newData => {
-      console.log('newData', newData);
+      // console.log('newData', newData);
       return await postMethod(`fideicomiso/modificar/${idSociety?.id}`, newData);
     },
     {
@@ -147,7 +140,7 @@ export function GrillaFideicomiso({ idSociety }) {
         // console.log('previousFideicomisoData', previousFideicomisoData);
 
         queryClient.setQueryData(['fideicomiso', idSociety?.id, newLogoFlag], oldData => {
-          console.log('oldData:', oldData);
+          // console.log('oldData:', oldData);
           const copyOfOldData = [...oldData];
           // console.log('copyOfOldData:', copyOfOldData);
           const changedFideicomiso = copyOfOldData.find(e => newColor.id === e.id);
@@ -221,9 +214,6 @@ export function GrillaFideicomiso({ idSociety }) {
       />
     </div>
   );
-  function IrAFideicomiso(params) {
-    navigate(`./${params.row.nombre}`);
-  }
 }
 
 function CustomToolbar() {
@@ -265,8 +255,14 @@ function DeleteRow(params) {
   return <Delete onClick={notify} />;
 }
 
-function ColorPicker({ color, setColor, colorOptions }) {
-  // console.log('colorOptions', colorOptions);
+function ColorPicker({ color, setColor, colorOptions, originalColor }) {
+  useEffect(
+    () =>
+      setColor(previousStateColor =>
+        originalColor?.css !== previousStateColor?.css ? originalColor : previousStateColor
+      ),
+    [originalColor, setColor]
+  );
   return (
     <Autocomplete
       value={color}
