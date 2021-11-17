@@ -20,6 +20,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   },
   {
     field: 'BCRA',
+    preProcessEditCellProps: onlyNumbers,
     headerName: 'BCRA',
     width: 130,
     editable: true,
@@ -31,6 +32,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   },
   {
     field: 'mep',
+    preProcessEditCellProps: onlyNumbers,
     headerName: 'MEP',
     width: 130,
     editable: true,
@@ -46,16 +48,14 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     headerAlign: 'center',
     align: 'center',
     renderCell: ({ row: { deleteId } }) => (
-      <>
-        <DeleteIcon
-          onClick={e => {
-            // console.log('e', e);
-            // console.log('deleteId', deleteId);
-            setRowIdToDelete(deleteId);
-            setIsPromptOpen(true);
-          }}
-        />
-      </>
+      <DeleteIcon
+        onClick={e => {
+          // console.log('e', e);
+          // console.log('deleteId', deleteId);
+          setRowIdToDelete(deleteId);
+          setIsPromptOpen(true);
+        }}
+      />
     ),
   },
 ];
@@ -157,4 +157,12 @@ function CustomToolbar() {
       <GridToolbarExport />
     </GridToolbarContainer>
   );
+}
+
+function onlyNumbers(data) {
+  console.log('data', data);
+  const regex = /^\d{0,3}(\.\d{0,2})?$/;
+  const isValid = regex.test(data.props.value.toString());
+  const error = !isValid;
+  return { ...data.props, error };
 }

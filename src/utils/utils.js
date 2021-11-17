@@ -38,3 +38,12 @@ export async function isDateUsed(endpoint, idSociety, date) {
   let data = await getMethod(url);
   return !!data;
 }
+
+export function onlyNumbers(event, setFieldValue, typeOfData) {
+  event.preventDefault();
+  const { value } = event.target;
+  const regex = /^\d{0,3}(\.\d{0,2})?$/;
+  if (regex.test(value.toString())) {
+    setFieldValue(typeOfData, value.toString());
+  }
+}

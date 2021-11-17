@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
@@ -5,7 +6,7 @@ import { Delete as DeleteIcon } from '@mui/icons-material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 
-const columns = (setIsPromptOpen, Prompt) => [
+const columns = (setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'fecha',
     headerName: 'Fecha',
@@ -27,7 +28,7 @@ const columns = (setIsPromptOpen, Prompt) => [
     editable: true,
     headerAlign: 'center',
     align: 'right',
-
+    preProcessEditCellProps: onlyNumbers,
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
@@ -38,6 +39,7 @@ const columns = (setIsPromptOpen, Prompt) => [
     editable: true,
     headerAlign: 'center',
     align: 'right',
+    preProcessEditCellProps: onlyNumbers,
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
@@ -47,21 +49,22 @@ const columns = (setIsPromptOpen, Prompt) => [
     width: 50,
     headerAlign: 'center',
     align: 'center',
-    renderCell: ({ row: { onDelete } }) => (
-      <>
-        <DeleteIcon
-          onClick={() => {
-            setIsPromptOpen(true);
-          }}
-        />
-        <Prompt message="¿Eliminar fila?" action={onDelete} />
-      </>
+    renderCell: ({ row: { deleteId } }) => (
+      <DeleteIcon
+        onClick={e => {
+          // console.log('e', e);
+          // console.log('deleteId', deleteId);
+          setRowIdToDelete(deleteId);
+          setIsPromptOpen(true);
+        }}
+      />
     ),
   },
 ];
 
 export function GrillaCac({ idSociety }) {
   const { Prompt, setIsPromptOpen } = usePrompt();
+  const [rowIdToDelete, setRowIdToDelete] = useState();
 
   const {
     data: cacInformation,
@@ -74,14 +77,14 @@ export function GrillaCac({ idSociety }) {
   const { mutate: eliminate } = useMutation(
     async idCac => await deleteMethod(`cac/eliminar/${idSociety.id}`, { id: idCac }),
     {
-      onMutate: async id => {
+      onMutate: async idCac => {
         await queryClient.cancelQueries(['cac', idSociety]);
         const prevData = queryClient.getQueryData(['cac', idSociety]);
-        const newData = prevData.filter(cac => cac.id !== id);
+        const newData = prevData.filter(cac => cac.id !== idCac);
         queryClient.setQueryData(['cac', idSociety], newData);
         return prevData;
       },
-      onError: (err, id, context) => queryClient.setQueryData(['cac', idSociety], context),
+      onError: (err, idCac, context) => queryClient.setQueryData(['cac', idSociety], context),
       onSettled: () => queryClient.invalidateQueries(['cac', idSociety]),
     }
   );
@@ -117,16 +120,17 @@ export function GrillaCac({ idSociety }) {
   } else
     return (
       <div style={{ width: '100%' }}>
+        <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
         <DataGrid
-          rows={cacInformation.map(el => ({
-            id: el.id,
-            fecha: el.fecha,
-            estimado: el.estimado,
-            definitivo: el.definitivo,
-            onDelete: () => console.log(el.id),
+          rows={cacInformation.map(cac => ({
+            id: cac.id,
+            fecha: cac.fecha,
+            estimado: cac.estimado,
+            definitivo: cac.definitivo,
+            deleteId: cac.id,
           }))}
           onCellEditCommit={modifyData}
-          columns={columns(setIsPromptOpen, Prompt)}
+          columns={columns(setIsPromptOpen, setRowIdToDelete)}
           pageSize={25}
           disableSelectionOnClick
           autoHeight
@@ -151,4 +155,12 @@ export function GrillaCac({ idSociety }) {
       </GridToolbarContainer>
     );
   }
+}
+
+function onlyNumbers(data) {
+  console.log('data', data);
+  const regex = /^\d{0,4}(\.\d{0,2})?$/;
+  const isValid = regex.test(data.props.value.toString());
+  const error = !isValid;
+  return { ...data.props, error };
 }

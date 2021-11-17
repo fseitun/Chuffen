@@ -68,7 +68,10 @@ export function FormCac({ idSociety }) {
           </Form>
         )}
       </Formik>
-      <Prompt message="Ya existe una CAC con esa fecha" ok />
+      <Prompt
+        message="Ya hay un mes con información, por favor editar el mes desde la grilla."
+        ok
+      />
     </>
   );
 
