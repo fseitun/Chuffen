@@ -123,7 +123,7 @@ export function GrillaCac({ idSociety }) {
             fecha: el.fecha,
             estimado: el.estimado,
             definitivo: el.definitivo,
-            onDelete: () => eliminate(el.id),
+            onDelete: () => console.log(el.id),
           }))}
           onCellEditCommit={modifyData}
           columns={columns(setIsPromptOpen, Prompt)}

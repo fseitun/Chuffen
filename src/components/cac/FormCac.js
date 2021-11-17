@@ -5,9 +5,11 @@ import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
 import { postMethod } from 'src/utils/api';
+import { usePrompt } from 'src/utils/usePrompt';
 import { dateToStringWithDayEqualToOne, isDateUsed } from 'src/utils/utils';
 
 export function FormCac({ idSociety }) {
+  const { Prompt, setIsPromptOpen } = usePrompt();
   const queryClient = useQueryClient();
 
   const { mutate: addCac } = useMutation(
@@ -26,43 +28,48 @@ export function FormCac({ idSociety }) {
   );
 
   return (
-    <Formik
-      initialValues={{
-        fecha: new Date(),
-        estimado: '',
-        definitivo: '',
-      }}
-      onSubmit={async (values, { setSubmitting, resetForm }) => {
-        values.fecha = dateToStringWithDayEqualToOne(values.fecha);
-        (await isDateUsed('cac', idSociety.id, values.fecha)) || addCac(values);
-        resetForm();
-        setSubmitting(false);
-      }}
-    >
-      {({ isSubmitting, setFieldValue }) => (
-        <Form>
-          <Field component={Picker} label="Fecha" type="date" name="fecha" />
-          <Field
-            as={TextField}
-            label="Estimado"
-            type="float"
-            maxLength={4}
-            name="estimado"
-            onChange={event => onlyNumbers(event, setFieldValue, 'estimado')}
-          />
-          <Field
-            as={TextField}
-            label="Definitivo"
-            type="float"
-            name="definitivo"
-            onChange={event => onlyNumbers(event, setFieldValue, 'definitivo')}
-          />
-          <Button type="submit" disabled={isSubmitting}>
-            Agregar
-          </Button>
-        </Form>
-      )}
-    </Formik>
+    <>
+      <Formik
+        initialValues={{
+          fecha: new Date(),
+          estimado: '',
+          definitivo: '',
+        }}
+        onSubmit={async (values, { setSubmitting, resetForm }) => {
+          values.fecha = dateToStringWithDayEqualToOne(values.fecha);
+          if (await isDateUsed('cac', idSociety.id, values.fecha)) {
+            setIsPromptOpen(true);
+          } else addCac(values);
+          resetForm();
+          setSubmitting(false);
+        }}
+      >
+        {({ isSubmitting, setFieldValue }) => (
+          <Form>
+            <Field component={Picker} label="Fecha" type="date" name="fecha" />
+            <Field
+              as={TextField}
+              label="Estimado"
+              type="float"
+              maxLength={4}
+              name="estimado"
+              onChange={event => onlyNumbers(event, setFieldValue, 'estimado')}
+            />
+            <Field
+              as={TextField}
+              label="Definitivo"
+              type="float"
+              name="definitivo"
+              onChange={event => onlyNumbers(event, setFieldValue, 'definitivo')}
+            />
+            <Button type="submit" disabled={isSubmitting}>
+              Agregar
+            </Button>
+          </Form>
+        )}
+      </Formik>
+      <Prompt message="Ya existe una CAC con esa fecha" ok />
+    </>
   );
 
   function onlyNumbers(event, setFieldValue, typeOfData) {

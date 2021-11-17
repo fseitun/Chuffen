@@ -1,14 +1,14 @@
+import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
-import { Box, Button } from '@mui/material';
-import { Delete } from '@mui/icons-material';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Delete as DeleteIcon } from '@mui/icons-material';
 
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
+import { usePrompt } from 'src/utils/usePrompt';
+
 import { mostrarFecha } from 'src/utils/utils';
-const columns = [
-  // { field: 'id', headerName: 'ID', width: 100 , headerAlign: 'center',},
+
+const columns = (setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'fecha',
     headerName: 'Fecha',
@@ -45,68 +45,110 @@ const columns = [
     width: 50,
     headerAlign: 'center',
     align: 'center',
-    renderCell: DeleteRow,
+    renderCell: ({ row: { deleteId } }) => (
+      <>
+        <DeleteIcon
+          onClick={e => {
+            // console.log('e', e);
+            // console.log('deleteId', deleteId);
+            setRowIdToDelete(deleteId);
+            setIsPromptOpen(true);
+          }}
+        />
+      </>
+    ),
   },
 ];
 
 export function GrillaDolar({ idSociety }) {
+  const { Prompt, setIsPromptOpen } = usePrompt(() => {});
+  const [rowIdToDelete, setRowIdToDelete] = useState();
+  // console.log(rowIdToDelete);
+
+  const {
+    data: dolarInformation,
+    isLoading,
+    error,
+  } = useQuery(['dolar', idSociety], () => getMethod(`dolar/listar/${idSociety.id}`));
+
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation(
-    async id => {
-      await deleteMethod(`dolar/eliminar/${idSociety.id}`, id);
-    },
+  const { mutate: eliminate } = useMutation(
+    async idDolar => await deleteMethod(`dolar/eliminar/${idSociety.id}`, { id: idDolar }),
     {
-      onSuccess: async () => await queryClient.refetchQueries(['dolar', idSociety.id]),
+      onMutate: async idDolar => {
+        await queryClient.cancelQueries(['dolar', idSociety]);
+        const prevData = queryClient.getQueryData(['dolar', idSociety]);
+        const newData = prevData.filter(dolar => dolar.id !== idDolar);
+        queryClient.setQueryData(['dolar', idSociety], newData);
+        return prevData;
+      },
+      onError: (err, idDolar, context) => queryClient.setQueryData(['dolar', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['dolar', idSociety]),
+    }
+  );
+  // eliminate(1);
+
+  const { mutate: modifyData } = useMutation(
+    async ({ field, id, value }) =>
+      await postMethod(`dolar/modificar/${idSociety.id}`, {
+        id,
+        [field]: value,
+      }),
+    {
+      onMutate: async ({ field, id, value }) => {
+        await queryClient.cancelQueries(['dolar', idSociety]);
+        const prevData = queryClient.getQueryData(['dolar', idSociety]);
+        // console.log('prevData', prevData);
+        const newData = [
+          ...prevData.filter(dolar => dolar.id !== id),
+          { ...prevData.find(dolar => dolar.id === id), [field]: value },
+        ];
+        // console.log('newData', newData);
+        queryClient.setQueryData(['dolar', idSociety], newData);
+        return prevData;
+      },
+      onError: (err, id, context) => queryClient.setQueryData(['dolar', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['dolar', idSociety]),
     }
   );
 
-  const { data, isLoading, error } = useQuery(['dolar', idSociety.id], () =>
-    getMethod(`dolar/listar/${idSociety.id}`)
-  );
-
-  if (isLoading) return 'Cargando...';
-  if (error) return `Hubo un error: ${error.message}`;
-
-  function handleCellModification(e) {
-    let newData = {
-      id: e.id,
-      [e.field]: e.props.value,
-    };
-    postMethod(`dolar/modificar/${idSociety.id}`, newData);
-  }
-
-  return (
-    <div style={{ width: '100%' }}>
-      <ToastContainer />
-      <DataGrid
-        rows={data.map(el => ({
-          id: el.id,
-          fecha: el.fecha,
-          BCRA: el.BCRA,
-          blue: el.blue,
-          descripcion: el.descripcion,
-          mep: el.mep,
-          onDelete: () => mutate(el.id),
-        }))}
-        columns={columns}
-        pageSize={25}
-        disableSelectionOnClick
-        autoHeight
-        sortModel={[
-          {
-            field: 'fecha',
-            sort: 'asc',
-          },
-        ]}
-        scrollbarSize
-        onCellEditCommit={handleCellModification}
-        components={{
-          Toolbar: CustomToolbar,
-        }}
-      />
-    </div>
-  );
+  if (isLoading) {
+    return 'Cargando...';
+  } else if (error) {
+    return `Hubo un error: ${error.message}`;
+  } else
+    return (
+      <div style={{ width: '100%' }}>
+        <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
+        <DataGrid
+          rows={dolarInformation.map(dolar => ({
+            id: dolar.id,
+            fecha: dolar.fecha,
+            BCRA: dolar.BCRA,
+            blue: dolar.blue,
+            descripcion: dolar.descripcion,
+            mep: dolar.mep,
+            deleteId: dolar.id,
+          }))}
+          onCellEditCommit={modifyData}
+          columns={columns(setIsPromptOpen, setRowIdToDelete)}
+          pageSize={25}
+          disableSelectionOnClick
+          autoHeight
+          sortModel={[
+            {
+              field: 'fecha',
+              sort: 'asc',
+            },
+          ]}
+          scrollbarSize
+          components={{
+            Toolbar: CustomToolbar,
+          }}
+        />
+      </div>
+    );
 }
 
 function CustomToolbar() {
@@ -115,33 +157,4 @@ function CustomToolbar() {
       <GridToolbarExport />
     </GridToolbarContainer>
   );
-}
-
-function DeleteRow(params) {
-  const deleteRow = params.row.onDelete;
-  const notify = () =>
-    toast(({ closeToast }) => (
-      <Box>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={closeToast}>
-          No quiero borrar
-        </Button>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={() => {
-            deleteRow();
-            closeToast();
-          }}>
-          Sí quiero borrar
-        </Button>
-      </Box>
-    ));
-  return <Delete onClick={notify} />;
 }
