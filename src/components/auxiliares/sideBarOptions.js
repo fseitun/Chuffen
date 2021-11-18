@@ -50,21 +50,22 @@ export const sideBarOptions = [
     title: 'Fideicomisos',
   },
   {
-    path: 'rubros',
+    path: 'rubro',
     icon: MenuBook,
     title: 'Rubros',
   },
-
+/*
   {
     path: 'empresa',
     icon: Business,
     title: 'Empresa',
-  },
+  },*/
+  /*
   {
     path: 'persona',
     icon: PeopleAlt,
     title: 'Personas',
-  },
+  },*/
 
   {
     path: 'cac',

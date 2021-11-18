@@ -1,14 +1,12 @@
+import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
-import { Box, Button } from '@mui/material';
-import { Delete } from '@mui/icons-material';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Delete as DeleteIcon } from '@mui/icons-material';
 
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
+import { usePrompt } from 'src/utils/usePrompt';
 
-const columns = [
-  // { field: 'id', headerName: 'ID', width: 100 , headerAlign: 'center',},
+const columns = (setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'fecha',
     headerName: 'Fecha',
@@ -30,7 +28,7 @@ const columns = [
     editable: true,
     headerAlign: 'center',
     align: 'right',
-
+    preProcessEditCellProps: onlyNumbers,
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
@@ -41,6 +39,7 @@ const columns = [
     editable: true,
     headerAlign: 'center',
     align: 'right',
+    preProcessEditCellProps: onlyNumbers,
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
@@ -50,103 +49,118 @@ const columns = [
     width: 50,
     headerAlign: 'center',
     align: 'center',
-    renderCell: DeleteRow,
+    renderCell: ({ row: { deleteId } }) => (
+      <DeleteIcon
+        onClick={e => {
+          // console.log('e', e);
+          // console.log('deleteId', deleteId);
+          setRowIdToDelete(deleteId);
+          setIsPromptOpen(true);
+        }}
+      />
+    ),
   },
 ];
 
 export function GrillaCac({ idSociety }) {
+  const { Prompt, setIsPromptOpen } = usePrompt();
+  const [rowIdToDelete, setRowIdToDelete] = useState();
+
+  const {
+    data: cacInformation,
+    isLoading,
+    error,
+  } = useQuery(['cac', idSociety], () => getMethod(`CAC/listar/${idSociety.id}`));
+
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation(
-    async id => {
-      await deleteMethod(`cac/eliminar/${idSociety.id}`, id);
-    },
+  const { mutate: eliminate } = useMutation(
+    async idCac => await deleteMethod(`cac/eliminar/${idSociety.id}`, { id: idCac }),
     {
-      onSuccess: async () => await queryClient.refetchQueries(['cac', idSociety.id]),
+      onMutate: async idCac => {
+        await queryClient.cancelQueries(['cac', idSociety]);
+        const prevData = queryClient.getQueryData(['cac', idSociety]);
+        const newData = prevData.filter(cac => cac.id !== idCac);
+        queryClient.setQueryData(['cac', idSociety], newData);
+        return prevData;
+      },
+      onError: (err, idCac, context) => queryClient.setQueryData(['cac', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['cac', idSociety]),
     }
   );
 
-  const { data, isLoading, error } = useQuery(['cac', idSociety.id], () =>
-    getMethod(`CAC/listar/${idSociety.id}`)
+  const { mutate: modifyData } = useMutation(
+    async ({ field, id, value }) =>
+      await postMethod(`cac/modificar/${idSociety.id}`, {
+        id,
+        [field]: value,
+      }),
+    {
+      onMutate: async ({ field, id, value }) => {
+        await queryClient.cancelQueries(['cac', idSociety]);
+        const prevData = queryClient.getQueryData(['cac', idSociety]);
+        // console.log('prevData', prevData);
+        const newData = [
+          ...prevData.filter(cac => cac.id !== id),
+          { ...prevData.find(cac => cac.id === id), [field]: value },
+        ];
+        // console.log('newData', newData);
+        queryClient.setQueryData(['cac', idSociety], newData);
+        return prevData;
+      },
+      onError: (err, id, context) => queryClient.setQueryData(['cac', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['cac', idSociety]),
+    }
   );
 
-  if (isLoading) return 'Cargando...';
-  if (error) return `Hubo un error: ${error.message}`;
+  if (isLoading) {
+    return 'Cargando...';
+  } else if (error) {
+    return `Hubo un error: ${error.message}`;
+  } else
+    return (
+      <div style={{ width: '100%' }}>
+        <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
+        <DataGrid
+          rows={cacInformation.map(cac => ({
+            id: cac.id,
+            fecha: cac.fecha,
+            estimado: cac.estimado,
+            definitivo: cac.definitivo,
+            deleteId: cac.id,
+          }))}
+          onCellEditCommit={modifyData}
+          columns={columns(setIsPromptOpen, setRowIdToDelete)}
+          pageSize={25}
+          disableSelectionOnClick
+          autoHeight
+          sortModel={[
+            {
+              field: 'fecha',
+              sort: 'desc',
+            },
+          ]}
+          scrollbarSize
+          components={{
+            Toolbar: CustomToolbar,
+          }}
+        />
+      </div>
+    );
 
-  function handleCellModification(e) {
-    let newData = {
-      id: e.id,
-      [e.field]: e.props.value,
-    };
-    postMethod(`cac/modificar/${idSociety.id}`, newData);
+  function CustomToolbar() {
+    return (
+      <GridToolbarContainer>
+        <GridToolbarExport />
+      </GridToolbarContainer>
+    );
   }
-
-  return (
-    <div style={{ width: '100%' }}>
-      <ToastContainer />
-      <DataGrid
-        rows={data.map(el => ({
-          id: el.id,
-          fecha: el.fecha,
-          estimado: el.estimado,
-          definitivo: el.definitivo,
-          onDelete: () => {
-            mutate(el.id);
-          },
-        }))}
-        columns={columns}
-        pageSize={25}
-        disableSelectionOnClick
-        autoHeight
-        sortModel={[
-          {
-            field: 'fecha',
-            sort: 'desc',
-          },
-        ]}
-        scrollbarSize
-        onCellEditCommit={handleCellModification}
-        components={{
-          Toolbar: CustomToolbar,
-        }}
-      />
-    </div>
-  );
 }
 
-function CustomToolbar() {
-  return (
-    <GridToolbarContainer>
-      <GridToolbarExport />
-    </GridToolbarContainer>
-  );
-}
-
-function DeleteRow(params) {
-  const deleteRow = params.row.onDelete;
-  const notify = () =>
-    toast(({ closeToast }) => (
-      <Box>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={closeToast}>
-          No quiero borrar
-        </Button>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={() => {
-            deleteRow();
-            closeToast();
-          }}>
-          Sí quiero borrar
-        </Button>
-      </Box>
-    ));
-  return <Delete onClick={notify} />;
+function onlyNumbers(data) {
+  console.log('data', data);
+  const regex = /^\d{0,4}(\.\d{0,2})?$/;
+  const isValid = regex.test(data.props.value.toString());
+  const error = !isValid;
+  return { ...data.props, error };
 }

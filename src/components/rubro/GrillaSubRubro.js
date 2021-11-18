@@ -2,45 +2,23 @@ import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
-
+import { useNavigate } from 'react-router-dom';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 
-import { mostrarFecha } from 'src/utils/utils';
+// import { mostrarFecha } from 'src/utils/utils';
 
 const columns = (setIsPromptOpen, setRowIdToDelete) => [
+  
   {
-    field: 'fecha',
-    headerName: 'Fecha',
-    width: 150,
-    type: 'date',
+    field: 'subRubro',
+    headerName: 'SubRubro',
+    width: 170,
+    editable: true,
     headerAlign: 'center',
     align: 'center',
-    valueFormatter: ({ value }) => mostrarFecha(value),
   },
-  {
-    field: 'BCRA',
-    preProcessEditCellProps: onlyNumbers,
-    headerName: 'BCRA',
-    width: 130,
-    editable: true,
-    headerAlign: 'center',
-    align: 'right',
 
-    valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
-  },
-  {
-    field: 'mep',
-    preProcessEditCellProps: onlyNumbers,
-    headerName: 'MEP',
-    width: 130,
-    editable: true,
-    headerAlign: 'center',
-    align: 'right',
-    valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
-  },
   {
     field: 'deleteIcon',
     headerName: ' ',
@@ -60,56 +38,56 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   },
 ];
 
-export function GrillaDolar({ idSociety }) {
+export function GrillaSubRubro({ idSociety, idRubro }) {
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
   // console.log(rowIdToDelete);
 
   const {
-    data: dolarInformation,
+    data: subrubroInformation,
     isLoading,
     error,
-  } = useQuery(['dolar', idSociety], () => getMethod(`dolar/listar/${idSociety.id}`));
+  } = useQuery(['subrubro', idSociety], () => getMethod(`subrubro/listar/${idSociety.id}/${idRubro}`));
 
   const queryClient = useQueryClient();
 
   const { mutate: eliminate } = useMutation(
-    async idDolar => await deleteMethod(`dolar/eliminar/${idSociety.id}`, { id: idDolar }),
+    async idSubRubro => await deleteMethod(`subrubro/eliminar/${idSociety.id}`, { id: idSubRubro }),
     {
-      onMutate: async idDolar => {
-        await queryClient.cancelQueries(['dolar', idSociety]);
-        const prevData = queryClient.getQueryData(['dolar', idSociety]);
-        const newData = prevData.filter(dolar => dolar.id !== idDolar);
-        queryClient.setQueryData(['dolar', idSociety], newData);
+      onMutate: async idSubRubro => {
+        await queryClient.cancelQueries(['subrubro', idSociety]);
+        const prevData = queryClient.getQueryData(['subrubro', idSociety]);
+        const newData = prevData.filter(subrubro => subrubro.id !== idSubRubro);
+        queryClient.setQueryData(['subrubro', idSociety], newData);
         return prevData;
       },
-      onError: (err, idDolar, context) => queryClient.setQueryData(['dolar', idSociety], context),
-      onSettled: () => queryClient.invalidateQueries(['dolar', idSociety]),
+      onError: (err, idSubRubro, context) => queryClient.setQueryData(['subrubro', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['subrubro', idSociety]),
     }
   );
   // eliminate(1);
 
   const { mutate: modifyData } = useMutation(
     async ({ field, id, value }) =>
-      await postMethod(`dolar/modificar/${idSociety.id}`, {
+      await postMethod(`subrubro/modificar/${idSociety.id}`, {
         id,
         [field]: value,
       }),
     {
       onMutate: async ({ field, id, value }) => {
-        await queryClient.cancelQueries(['dolar', idSociety]);
-        const prevData = queryClient.getQueryData(['dolar', idSociety]);
+        await queryClient.cancelQueries(['subrubro', idSociety]);
+        const prevData = queryClient.getQueryData(['subrubro', idSociety]);
         // console.log('prevData', prevData);
         const newData = [
-          ...prevData.filter(dolar => dolar.id !== id),
-          { ...prevData.find(dolar => dolar.id === id), [field]: value },
+          ...prevData.filter(subrubro => subrubro.id !== id),
+          { ...prevData.find(subrubro => subrubro.id === id), [field]: value },
         ];
         // console.log('newData', newData);
-        queryClient.setQueryData(['dolar', idSociety], newData);
+        queryClient.setQueryData(['subrubro', idSociety], newData);
         return prevData;
       },
-      onError: (err, id, context) => queryClient.setQueryData(['dolar', idSociety], context),
-      onSettled: () => queryClient.invalidateQueries(['dolar', idSociety]),
+      onError: (err, id, context) => queryClient.setQueryData(['subrubro', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['subrubro', idSociety]),
     }
   );
 
@@ -122,26 +100,26 @@ export function GrillaDolar({ idSociety }) {
       <div style={{ width: '100%' }}>
         <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
         <DataGrid
-          rows={dolarInformation.map(dolar => ({
-            id: dolar.id,
-            fecha: dolar.fecha,
-            BCRA: dolar.BCRA,
-            blue: dolar.blue,
-            descripcion: dolar.descripcion,
-            mep: dolar.mep,
-            deleteId: dolar.id,
+          rows={subrubroInformation.map(subrubro => ({
+            id: subrubro.id,
+            subRubro: subrubro.subRubro,
+            deleteId: subrubro.id,
           }))}
           onCellEditCommit={modifyData}
+          /* onRowDoubleClick={a => {
+          console.log(a);
+           return IrASubrubro(a);
+         }}*/
+        compone
           columns={columns(setIsPromptOpen, setRowIdToDelete)}
           pageSize={25}
           disableSelectionOnClick
           autoHeight
-          sortModel={[
+          /*sortModel={[
             {
-              field: 'fecha',
-              sort: 'desc',
+              field: 'subRubro'
             },
-          ]}
+          ]}*/
           scrollbarSize
           components={{
             Toolbar: CustomToolbar,
@@ -149,6 +127,10 @@ export function GrillaDolar({ idSociety }) {
         />
       </div>
     );
+    /*
+    function IrASubrubro(params) {
+      navigate(`./${params.row.rubro}`);
+    }*/
 }
 
 function CustomToolbar() {

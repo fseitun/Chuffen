@@ -17,9 +17,9 @@ import { useAuth } from 'src/utils/useAuth';
 // *** Auxiliares *********************************
 import { Dolar } from 'src/pages/Dolar';
 import { Cac } from 'src/pages/Cac';
-import { Rubros } from 'src/pages/Rubros';
+import { Rubro } from 'src/pages/Rubro';
 //import { Rubro } from 'src/pages/Rubro';
-//import { SubRubro } from 'src/pages/SubRubro'; ..o DetalleRubro
+import { SubRubro } from 'src/pages/SubRubro';
 
 // *** Maestros *********************************
 import { Usuarios } from 'src/pages/Usuarios';
@@ -93,7 +93,16 @@ export default function App() {
               
               <Route path="proveedores" element={<Proveedores idSociety={idSociety} />} />
               <Route path="usuarios" element={<Usuarios idSociety={idSociety} />} />
-              <Route path="rubros" element={<Rubros idSociety={idSociety} />} />
+              
+              <Route path="rubro">
+                <Route path="" element={<Rubro idSociety={idSociety} loggedUser={loggedUser} />} />
+                <Route
+                  path=":idRubro/:rubro"
+                  element={<SubRubro idSociety={idSociety} loggedUser={loggedUser} />}
+                />
+              </Route>
+
+              
               <Route path="fideicomiso">
                 <Route path="" element={<Fideicomiso idSociety={idSociety} />} />
                 <Route

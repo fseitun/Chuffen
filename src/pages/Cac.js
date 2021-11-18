@@ -1,6 +1,9 @@
+
+  
 import { Box, Container } from '@mui/material';
 import { Helmet } from 'react-helmet';
-import { ManipularCac } from 'src/components/cac/ManipularCac';
+
+import { FormCac } from 'src/components/cac/FormCac';
 import { GrillaCac } from 'src/components/cac/GrillaCac';
 
 export function Cac({ idSociety }) {
@@ -18,7 +21,7 @@ export function Cac({ idSociety }) {
       >
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <ManipularCac idSociety={idSociety} />
+            <FormCac idSociety={idSociety} />
           </Box>
           <Box sx={{ pt: 3 }}>
             <GrillaCac idSociety={idSociety} />

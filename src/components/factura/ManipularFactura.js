@@ -44,6 +44,7 @@ export function ManipularFactura({ idSociety, loggedUser }) {
           montoTotal: values.montoTotal,
           fechaIngreso: values.fechaIngreso,
           empresaId: values.empresa.id,
+          moneda: 'ARS',
           creador: loggedUser.id
         });
 

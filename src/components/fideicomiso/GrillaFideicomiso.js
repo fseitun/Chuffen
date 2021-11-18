@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, Button, TextField, Autocomplete } from '@mui/material';
-import { Delete } from '@mui/icons-material';
+import { ConstructionTwoTone, Delete } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -11,7 +11,7 @@ import { getMethod, deleteMethod, postMethod } from 'src/utils/api';
 import { Uploader } from 'src/components/auxiliares/Uploader';
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
-const columns = function columns(color, setColor, id, setNewLogoFlag) {
+const columns = function columns(color, setColor, id, setFechaInicio, setNewLogoFlag) {
   return [
     {
       field: 'nombre',
@@ -23,9 +23,10 @@ const columns = function columns(color, setColor, id, setNewLogoFlag) {
     {
       field: 'fechaInicio',
       headerName: 'Inicio',
+      editable: true,
       width: 170,
       type: 'date',
-      headerAlign: 'center',
+      headerAlign: 'center',      
       align: 'center',
       valueFormatter: ({ value }) =>
         new Date(value).toLocaleDateString('es-AR', {
@@ -33,10 +34,12 @@ const columns = function columns(color, setColor, id, setNewLogoFlag) {
           month: 'short',
           timeZone: 'UTC',
         }),
+      
     },
     {
       field: 'fechaFin',
       headerName: 'Finalización',
+      editable: true,
       width: 170,
       type: 'date',
       headerAlign: 'center',
@@ -52,9 +55,8 @@ const columns = function columns(color, setColor, id, setNewLogoFlag) {
       field: 'logo',
       headerName: 'Logo',
       width: 150,
-      renderCell: passedData => {
-        // console.log('passedData:', passedData);
-        return passedData.row.logo ? (
+      renderCell: passedData =>
+        passedData.row.logo ? (
           <img
             style={{ display: 'block', margin: 'auto', width: '30%' }}
             src={`${apiServerUrl}sociedades/${id}/${passedData.row.logo}`}
@@ -62,8 +64,7 @@ const columns = function columns(color, setColor, id, setNewLogoFlag) {
           />
         ) : (
           <Uploader fideId={passedData.id} setNewLogoFlag={setNewLogoFlag} />
-        );
-      },
+        ),
     },
     {
       field: 'colorElegido',
@@ -73,18 +74,16 @@ const columns = function columns(color, setColor, id, setNewLogoFlag) {
       renderCell: ({ row: { colorElegido } }) => (
         <div style={{ width: '100%', height: '100%', background: colorElegido }}></div>
       ),
-      renderEditCell: (a, b, c) => {
-        const commit = a.api.events.cellEditCommit;
-        // console.log(a, b, a.api.events.cellEditCommit);
-        return (
-          <ColorPicker
-            color={color}
-            setColor={setColor}
-            colorOptions={colors}
-            setNewLogoFlag={setNewLogoFlag}
-          />
-        );
-      },
+      renderEditCell: ({ row: { colorElegido } }) => (
+        <ColorPicker
+          originalColor={colors.filter(color => color.css === colorElegido)[0]}
+          color={color}
+          setColor={setColor}
+          colorOptions={colors}
+          setFechaInicio={setFechaInicio}
+          setNewLogoFlag={setNewLogoFlag}
+        />
+      ),
     },
     {
       field: 'deleteIcon',
@@ -98,25 +97,42 @@ const columns = function columns(color, setColor, id, setNewLogoFlag) {
 };
 
 const colors = [
-  { label: 'Rojo', css: 'red' },
-  { label: 'Verde', css: 'green' },
-  { label: 'Azul', css: 'blue' },
+  { label: 'red', css: 'red' },
+  { label: 'DarkGreen', css: 'DarkGreen' },
+  { label: 'MidnightBlue', css: 'MidnightBlue' },
+  { label: 'black', css: 'black' },
+  { label: 'Salmon', css: 'LightSalmon' },
+  { label: 'Khaki', css: 'Khaki' },
+  { label: 'Bisque', css: 'Bisque' },
+  { label: 'Plum', css: 'Plum' },
+  { label: 'Orchid', css: 'Orchid' },
+  { label: 'Chocolate', css: 'Chocolate' },
+  { label: 'LightSteelBlue', css: 'LightSteelBlue' },  
+  { label: 'orange', css: 'orange' },
+  { label: 'green', css: 'green' }
+ 
 ];
 
 export function GrillaFideicomiso({ idSociety }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [color, setColor] = useState({ label: 'Rojo', css: 'red' });
+  const [color, setColor] = useState(null);
+
+  const [fechaInicio, setFechaInicio] = useState(null);
   // console.log('color:', color);
   const [newLogoFlag, setNewLogoFlag] = useState(false);
   // console.log('newLogoFlag:', newLogoFlag);
 
+
   const { mutate } = useMutation(
-    async id => {
-      await deleteMethod(`fideicomiso/eliminar/${idSociety.id}`, id);
-    },
+    async id =>
+      await deleteMethod(`fideicomiso/eliminar/${idSociety?.id}`, {
+        //fideicomisoId: selectedFacturaData?.id,
+        id: id,
+      }),
     {
-      onSuccess: async () => await queryClient.refetchQueries(['fideicomiso', idSociety.id]),
+      onSuccess: async () =>
+      await queryClient.refetchQueries(['fideicomiso', idSociety.id]),
     }
   );
 
@@ -124,39 +140,56 @@ export function GrillaFideicomiso({ idSociety }) {
     data: dataFromFideicomisos,
     isLoading,
     error,
-  } = useQuery(['fideicomiso', idSociety?.id, newLogoFlag], () =>
+  } = useQuery(['fideicomiso', idSociety?.id, fechaInicio, newLogoFlag], () =>
     getMethod(`fideicomiso/listar/${idSociety?.id}`)
   );
   // console.log('dataFromFideicomisos:', dataFromFideicomisos);
 
   const { mutate: changeDataToFideicomiso } = useMutation(
-    async newData => await postMethod(`fideicomiso/modificar/${idSociety?.id}`, newData),
+    async newData => {
+      console.log('newData', newData);
+      return await postMethod(`fideicomiso/modificar/${idSociety?.id}`, newData);
+    },
     {
-      onMutate: async newData => {
+      onMutate: async newColor => {
+        // console.log('newColor', newColor);
         await queryClient.cancelQueries(['fideicomiso', idSociety?.id]);
-        const previousData = queryClient.getQueryData(['fideicomiso', idSociety?.id]);
-        queryClient.setQueryData(['fideicomiso', idSociety?.id], oldData => {
+
+        const previousFideicomisoData = queryClient.getQueryData([
+          'fideicomiso',
+          idSociety?.id,
+          fechaInicio,
+          newLogoFlag,
+        ]);
+        // console.log('previousFideicomisoData', previousFideicomisoData);
+
+        queryClient.setQueryData(['fideicomiso', idSociety?.id, fechaInicio, newLogoFlag], oldData => {
+          // console.log('oldData:', oldData);
           const copyOfOldData = [...oldData];
           // console.log('copyOfOldData:', copyOfOldData);
-          const changedFideicomiso = copyOfOldData.find(e => newData.id === e.id);
+          const changedFideicomiso = copyOfOldData.find(e => newColor.id === e.id);
           // console.log('changedFideicomiso:', changedFideicomiso);
           // console.log('newData:', newData);
-          changedFideicomiso.color = newData.color;
+          changedFideicomiso.color = newColor.color;
           // console.log('changedFideicomiso:', changedFideicomiso);
           const newListOfFideicomisos = [
-            ...copyOfOldData.filter(e => e.id !== newData.id),
+            ...copyOfOldData.filter(e => e.id !== newColor.id),
             changedFideicomiso,
           ];
           // console.log('newListOfFideicomisos:', newListOfFideicomisos);
           return newListOfFideicomisos;
         });
-        return { previousData };
+
+        return { previousFideicomisoData };
       },
       onError: (err, newData, context) => {
-        queryClient.setQueryData(['fideicomiso', idSociety?.id], context.previousData);
+        queryClient.setQueryData(
+          ['fideicomiso', idSociety?.id, fechaInicio, newLogoFlag],
+          context.previousFideicomisoData
+        );
       },
       onSettled: () => {
-        queryClient.invalidateQueries(['fideicomiso', idSociety?.id]);
+        queryClient.invalidateQueries(['fideicomiso', idSociety?.id, fechaInicio, newLogoFlag]);
       },
     }
   );
@@ -177,7 +210,7 @@ export function GrillaFideicomiso({ idSociety }) {
           logo: el.logo,
           onDelete: () => mutate(el.id),
         }))}
-        columns={columns(color, setColor, idSociety?.id, setNewLogoFlag)}
+        columns={columns(color, setColor, idSociety?.id, setFechaInicio, setNewLogoFlag)}
         pageSize={25}
         disableSelectionOnClick
         autoHeight
@@ -192,7 +225,8 @@ export function GrillaFideicomiso({ idSociety }) {
           // console.log(idSociety?.id, color.css);
           changeDataToFideicomiso({
             id: id,
-            color: color.css,
+            fechaInicio: fechaInicio,
+            color: color?.css,
           });
         }}
         // onRowDoubleClick={a => {
@@ -205,9 +239,7 @@ export function GrillaFideicomiso({ idSociety }) {
       />
     </div>
   );
-  function IrAFideicomiso(params) {
-    navigate(`./${params.row.nombre}`);
-  }
+ 
 }
 
 function CustomToolbar() {
@@ -249,8 +281,14 @@ function DeleteRow(params) {
   return <Delete onClick={notify} />;
 }
 
-function ColorPicker({ color, setColor, colorOptions }) {
-  // console.log('colorOptions', colorOptions);
+function ColorPicker({ color, setColor, colorOptions, originalColor }) {
+  useEffect(
+    () =>
+      setColor(previousStateColor =>
+        originalColor?.css !== previousStateColor?.css ? originalColor : previousStateColor
+      ),
+    [originalColor, setColor]
+  );
   return (
     <Autocomplete
       value={color}
@@ -272,4 +310,3 @@ function ColorPicker({ color, setColor, colorOptions }) {
     />
   );
 }
-/*TODO diente arreglar el doble click en row*/

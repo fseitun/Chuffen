@@ -33,6 +33,15 @@ const columns = [
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
+
+  {
+    field: 'moneda',
+    headerName: '',
+    width: 120,
+    editable: true,
+    headerAlign: 'center',
+  },
+
   {
     field: 'link',
     headerName: 'Link',
@@ -124,6 +133,7 @@ export function GrillaFactura({ idSociety, loggedUser, selectedFacturaData }) {
           numero: el.numero,
           link: el.link,
           montoTotal: el.montoTotal,
+          moneda: el.moneda,
           fechaIngreso: el.fechaIngreso,
           fechaVTO: el.fechaVTO,  
           onDelete: () => deleteProduct(el.id),

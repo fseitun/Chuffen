@@ -101,7 +101,6 @@ export function GrillaEmpresa({ idSociety }) {
           CUIT: el.CUIT,
           mail: el.mail,
           telefono: el.telefono,
-          cuentaBancariaId: el.cuentaBancariaId,
           onDelete: () => {
             mutate(el.id);
           },

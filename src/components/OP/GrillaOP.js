@@ -10,10 +10,11 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { getMethod, deleteMethod, postMethod } from 'src/utils/api';
 
+
+
 const columns = function columns(rubro, setRubro) {
   return [
 
-/*const columns = [*/
     {
       field: 'createdAt',
       headerName: 'Fecha',
@@ -46,7 +47,7 @@ const columns = function columns(rubro, setRubro) {
     {
       field: 'empresa',
       headerName: 'Razón Social',
-      width: 160,
+      width: 170,
       editable: false,
       headerAlign: 'center',
       align: 'center',
@@ -55,6 +56,7 @@ const columns = function columns(rubro, setRubro) {
       field: 'monto',
       headerName: 'Monto',
       width: 130,
+      editable: false,
       headerAlign: 'center',
       align: 'right',
       valueFormatter: ({ value }) =>
@@ -64,6 +66,7 @@ const columns = function columns(rubro, setRubro) {
       field: 'moneda',
       headerName: '',
       width: 70,
+      editable: false,
       headerAlign: 'center',
       align: 'left',    
     },
@@ -72,15 +75,17 @@ const columns = function columns(rubro, setRubro) {
       field: 'facturas',
       headerName: 'Facturas',
       width: 140,
+      editable: false,
       headerAlign: 'center',
       align: 'center',
-      renderCell: arrFacturas,
+      renderCell: ({ row: { misFacturas }}) => misFacturas.map(({numero}) => numero).join(', '), 
     },
 
     {
       field: 'RET_SUSS',
       headerName: 'SUSS',
       width: 120,
+      editable: true,
       headerAlign: 'center',
       align: 'right',
       valueFormatter: ({ value }) =>
@@ -90,6 +95,7 @@ const columns = function columns(rubro, setRubro) {
       field: 'RET_GAN',
       headerName: 'SUSS',
       width: 120,
+      editable: true,
       headerAlign: 'center',
       align: 'right',
       valueFormatter: ({ value }) =>
@@ -99,6 +105,7 @@ const columns = function columns(rubro, setRubro) {
       field: 'RET_IVA',
       headerName: 'IVA',
       width: 120,
+      editable: true,
       headerAlign: 'center',
       align: 'right',
       valueFormatter: ({ value }) =>
@@ -108,12 +115,13 @@ const columns = function columns(rubro, setRubro) {
       field: 'estadoRET',
       headerName: 'Retenciones',
       width: 160,
+      editable: true,
       headerAlign: 'center',
       align: 'right',    
     },
 
     {
-      field: 'CancelIcon',
+      field: 'aprobado obra',
       headerName: 'Ap. Obra',
       width: 140,
       headerAlign: 'center',
@@ -122,36 +130,54 @@ const columns = function columns(rubro, setRubro) {
     },
 
     {
-      field: 'DeleteIcon',
+      field: 'aprobado adm',
       headerName: 'Ap. ADM',
       width: 140,
       headerAlign: 'center',
       align: 'center',
       renderCell: NonAdmAuthRow,
     },
+/*
     {
       field: 'estadoOP',
       headerName: 'Estado',
-      width: 140,
-      headerAlign: 'center',
-      align: 'center',    
+      width: 150,
+      editable: true,
+      renderCell: ({ row: { estadoOP } }) => (
+        <div style={{ width: '100%', height: '100%', background: estadoOP }}></div>
+      ),
+      renderEditCell: (a, b, c) => {
+        const commit = a.api.events.cellEditCommit;
+        // console.log(a, b, a.api.events.cellEditCommit);
+        return (
+          <EstadoOP_Picker
+            color={estadoOP}
+            setColor={setEstadoOP}
+            colorOptions={estadoOPs}
+            setNewLogoFlag={setNewLogoFlag}
+          />
+        );
+      },
     },
+*/
     {
       field: 'fondos',
       headerName: 'Fondos',
       width: 140,
-      headerAlign: 'center',
-      align: 'center',    
-    },
-    {
-      field: 'archivada',
-      headerName: 'Archivada',
-      width: 140,
+      editable: true,
       headerAlign: 'center',
       align: 'center',    
     },
 
-    
+    {
+      field: 'enviar enviada',
+      headerName: 'Archivada',
+      width: 140,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: EnviarRow,
+    },
+
     {
       field: 'rubroId',
       headerName: 'Rubro',
@@ -174,6 +200,7 @@ const columns = function columns(rubro, setRubro) {
       field: 'archivada3',
       headerName: 'Sub Rubro',
       width: 170,
+      editable: true,
       headerAlign: 'center',
       align: 'center',    
     },
@@ -182,12 +209,21 @@ const columns = function columns(rubro, setRubro) {
       field: 'descripcion',
       headerName: 'Obs.',
       width: 140,
+      editable: true,
       headerAlign: 'center',
       align: 'center',    
     }, 
+    {
+      field: 'deleteIcon',
+      headerName: '',
+      width: 50,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: DeleteRow,
+    },
   ];
 };
-//];
+
 
 const rubros = [
   { id: 1, rubro: 'Obra' },
@@ -195,26 +231,53 @@ const rubros = [
   { id: 4, rubro: 'eqwweq' },
 ];
 
+// dropdown retenciones
+const retenciones = [
+  { id: 1, descri: '' , css: ''},
+  { id: 2, descri: 'Ok', css: 'green'},
+  { id: 3, descri: 'Pendiente', css: 'pink'},
+];
+
+// dropdown estado
+const estadoOPs = [
+  { id: 1, descri: '' , css: ''},
+  { id: 2, descri: 'Para autorizar Obra', css: 'red'},
+  { id: 3, descri: 'Para autorizar AC', css: 'red'},
+  { id: 4, descri: 'Para pagar', css: ''},
+  { id: 5, descri: 'Pagado Parcial', css: ''},
+  { id: 6, descri: 'Pagada', css: 'green'},
+  /*{ id: 7, descri: 'Anulado', css: 'black'},*/
+  { id: 8, descri: 'Cargada en Banco', css: ''},
+];
+
+// dropdown fondos
+const fondos = [
+  { id: 1, descri: '' , css: ''},
+  { id: 2, descri: 'Ok cargado', css: ''},
+];
+
+
 export function GrillaOP({ idSociety }) {
   /* const navigate = useNavigate();*/
   const queryClient = useQueryClient();
 
   const [rubro, setRubro] = useState({});
-  //const [color, setColor] = useState({ label: 'Rojo', css: 'red' });
 
- /// const [flagFactura, setFlagFactura] = useState([]);
-
-    const { data: grfacturas } = useQuery(['grfacturas', idSociety.id], async() =>
-    await getMethod(`factura/listar/${idSociety.id}/todas/25`));
-
-    /*
-    const { data: grfacturas } = useQuery(['OP', idSociety.id], () =>
-    getMethod(`factura/listar/${idSociety.id}/todas/25`)
-  );*/
+  // es un array de facturas para la columna facturas asociada a una OP (OPId)
+  const { data: grfacturas } = useQuery(['grfacturas', idSociety.id], async() =>
+  await getMethod(`factura/listar/${idSociety.id}/todas/25`));
 
 
-  console.log("AAA:" + grfacturas);
-  // console.log(grfacturas);
+  const { mutate: deleteProduct } = useMutation(
+    async id =>
+      await deleteMethod(`OP/eliminar/${idSociety?.id}`, {
+        id: id,
+      }),
+    {
+      onSuccess: async () =>
+      await queryClient.refetchQueries(['OP', idSociety.id]),
+    }
+  );
 
   const { mutate: nonAuthObra } = useMutation(
     async el =>
@@ -246,6 +309,20 @@ export function GrillaOP({ idSociety }) {
     }
   );
 
+   
+  const { mutate: enviaOP } = useMutation(
+    async el =>
+      await postMethod(`OP/modificar/${idSociety?.id}`, {
+
+        id : el.id,
+        archivada: 1
+
+      }),
+    {
+      onSuccess: async () =>
+        await queryClient.refetchQueries(['OP', idSociety.id]),
+    }
+  );
 
   const { mutate } = useMutation(
     async (id) => {
@@ -281,8 +358,8 @@ export function GrillaOP({ idSociety }) {
           id: el.id,      
           numero: el.numero,
           empresa: el.empresas[0].razonSocial,
-          monto: el.monto,
-          moneda: el.moneda,
+          monto: el.monto, 
+          moneda: el.moneda, 
           RET_SUSS: el.RET_SUSS,
           RET_GAN: el.RET_GAN,
           RET_IVA: el.RET_IVA,
@@ -296,13 +373,15 @@ export function GrillaOP({ idSociety }) {
           createdAt: el.createdAt,   
           apr_obra: (el.auth_obra[0]?el.auth_obra[0].usuarios[0].user:''),
           apr_adm: (el.auth_adm[0]?el.auth_adm[0].usuarios[0].user:''),
-
-          misfacturas: () => arrFacturas(el, grfacturas),
+          misFacturas: grfacturas?.filter(factura => factura?.OPId == el.id),
+          
           onAuthAdm: () => nonAuthAdm(el),
-          onAuthObra: () => nonAuthObra(el)
+          onAuthObra: () => nonAuthObra(el),
+          onEnviar: () => enviaOP(el),
+          onDelete: () => deleteProduct(el.id),
 
         }))}
-        
+
         columns={columns(rubro, setRubro, idSociety?.id)}
         pageSize={25}
         disableSelectionOnClick
@@ -409,29 +488,76 @@ function NonAdmAuthRow(params) {
 
 } 
 
-function arrFacturas (params) {
+function EnviarRow(params) {
 
-  getMethod(`factura/listar/1/todas/25`).then((data)=> { 
-    /*this.setFlagFactura(data);*/
-    let rta = data?.filter(factura => factura?.OPId == params.row?.id);
-    let comma_seprated = "";
-
-    for(var i=0; i< rta.length; i ++){
-      if(i>0){
-        comma_seprated += ", " + rta[0]?.numero;
-      }else{
-        comma_seprated = "" + rta[0]?.numero;
-      }
-    }  
-    console.log("XX:" + comma_seprated);
-    console.log("YY:" + rta[0].numero);
-   
-    
-      return comma_seprated;
-
-  })
+  const sendRow = params.row.onEnviar;  
+  const archivada = params.row.archivada;
+  const notify = () =>
+    toast(({ closeToast }) => (
+      <Box>
+        <Button
+          sx={{ p: 1, m: 1 }}
+          variant='contained'
+          color='secondary'
+          size='small'
+          onClick={closeToast}>
+          Cancelar
+        </Button>
+        <Button
+          sx={{ p: 1, m: 1 }}
+          variant='contained'
+          color='secondary'
+          size='small'
+          onClick={() => {
+            sendRow();
+            closeToast();
+          }}>Enviar
+        </Button>
+      </Box>
+    ));
   
+  if(archivada == 0){
+    return <Button onClick={notify} >Para Enviar  </Button>;
+  }else{
+    return "Enviada"
+  }
 } 
+
+function DeleteRow(params) {
+  const deleteRow = params.row.onDelete;
+  const archivada = params.row.archivada;
+  const notify = () =>
+    toast(({ closeToast }) => (
+      <Box>
+        <Button
+          sx={{ p: 1, m: 1 }}
+          variant='contained'
+          color='secondary'
+          size='small'
+          onClick={closeToast}>
+          No quiero borrar
+        </Button>
+        <Button
+          sx={{ p: 1, m: 1 }}
+          variant='contained'
+          color='secondary'
+          size='small'
+          onClick={() => {
+            deleteRow();
+            closeToast();
+          }}>
+          Sí quiero borrar
+        </Button>
+      </Box>
+    ));
+  
+  if(archivada == 0){
+    return <Delete onClick={notify} />;
+  }else{
+    return ""
+  }
+
+}
 
 function RubroPicker({ rubro, setRubro, rubroOptions }) {
   
