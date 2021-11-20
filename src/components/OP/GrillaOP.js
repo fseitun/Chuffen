@@ -77,7 +77,7 @@ const columns = function columns(estadoRET, setEstadoRET, rubro, setRubro) {
       editable: false,
       headerAlign: 'center',
       align: 'center',
-      renderCell: ({ row: { misFacturas }}) => misFacturas.map(({numero}) => numero).join(', '), 
+      renderCell: ({ row: { misFacturas }}) => misFacturas?.map(({numero}) => numero)?.join(', '), 
     },
 
     {

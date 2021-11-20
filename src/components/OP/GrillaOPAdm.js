@@ -134,16 +134,16 @@ export function GrillaOPAdm({ idSociety,  loggedUser }) {
           },
         ]}
         scrollbarSize
-        onRowDoubleClick={(a) => IrAOP(a)}
+        /*onRowDoubleClick={(a) => IrAOP(a)}*/
         components={{
           Toolbar: CustomToolbar,
         }}
       />
     </div>
   );
-  function IrAOP(params) {
+  /*function IrAOP(params) {
     navigate(`./${params.row.nombre}`);
-  }
+  }*/
 }
 
 function CustomToolbar() {
