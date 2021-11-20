@@ -4,15 +4,16 @@ import {
   LocalShipping,
   People,
   MenuBook,
-  Assignment,
+  /*Assignment,*/
   ListAlt,
   CreditCard,
+  /*
   Construction,
   MonetizationOn,
   Business,
   PeopleAlt,
   Schema,
-  AssignmentTurnedIn,
+  AssignmentTurnedIn,*/
 } from '@mui/icons-material';
 
 export const sideBarOptions = [

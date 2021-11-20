@@ -30,7 +30,7 @@ export function DetalleFideicomiso({ idSociety }) {
           py: 3,
         }}
       >
-        <Container maxWidth={false}>
+        <Container >
           <Box sx={{ pt: 3 }}>
             <DatosPrincipalesFideicomiso
               idSociety={idSociety}

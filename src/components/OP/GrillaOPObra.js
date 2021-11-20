@@ -2,7 +2,7 @@ import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, Button } from '@mui/material';
-import { Delete } from '@mui/icons-material';
+// import { Delete } from '@mui/icons-material';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import { mostrarFecha } from 'src/utils/utils';
 // import { AssignmentTurnedIn } from '@mui/icons-material';

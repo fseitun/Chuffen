@@ -109,7 +109,7 @@ export function GrillaRubro({ idSociety }) {
           }))}
           onCellEditCommit={modifyData}
           onRowDoubleClick={a => {
-          console.log(a);
+          // console.log(a);
            return IrASubrubro(a);
          }}
         compone
@@ -141,12 +141,4 @@ function CustomToolbar() {
       <GridToolbarExport />
     </GridToolbarContainer>
   );
-}
-
-function onlyNumbers(data) {
-  console.log('data', data);
-  const regex = /^\d{0,3}(\.\d{0,2})?$/;
-  const isValid = regex.test(data.props.value.toString());
-  const error = !isValid;
-  return { ...data.props, error };
 }

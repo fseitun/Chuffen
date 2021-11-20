@@ -45,7 +45,7 @@ import { OP } from 'src/pages/OP';
 import { AuthAdmOP } from 'src/pages/AuthAdmOP';
 import { AuthObraOP } from 'src/pages/AuthObraOP';
 
-//import { DetalleOP } from 'src/pages/DetalleOP';
+import { DetalleOP } from 'src/pages/DetalleOP';
 import { Factura } from 'src/pages/Factura';
 
 // *** Orden de Trabajo **********************
@@ -86,7 +86,15 @@ export default function App() {
               <Route path="persona" element={<Persona idSociety={idSociety} />} />
 
               <Route path="factura" element={<Factura idSociety={idSociety} loggedUser={loggedUser} />} />
-              <Route path="OP" element={<OP idSociety={idSociety}  loggedUser={loggedUser} />} />
+             
+              <Route path="OP">
+                <Route path="" element={<OP idSociety={idSociety} loggedUser={loggedUser} />} />
+                <Route
+                  path=":idOP/:fecha/:empresaId/:numero"
+                  element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
+                />
+              </Route>
+
               <Route path="AuthAdmOP" element={<AuthAdmOP idSociety={idSociety}  loggedUser={loggedUser} />} />
               <Route path="AuthObraOP" element={<AuthObraOP idSociety={idSociety}  loggedUser={loggedUser} />} />
               

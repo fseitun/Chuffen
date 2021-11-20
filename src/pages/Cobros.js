@@ -17,7 +17,7 @@ export function Cobros({ idSociety }) {
           py: 3,
         }}
       >
-        <Container maxWidth={false}></Container>
+        <Container></Container>
       </Box>
     </>
   );

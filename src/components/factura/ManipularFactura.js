@@ -67,9 +67,9 @@ export function ManipularFactura({ idSociety, loggedUser }) {
               setFieldValue('empresa', newValue);
             }}
             value={typeInForm}
-            getOptionLabel={option => option.razonSocial}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            options={proveedores}
+            getOptionLabel={option => option?.razonSocial}
+            isOptionEqualToValue={(option, value) => option?.id === value.id}
+            options={(proveedores? proveedores:[])}
             renderInput={params => <TextField {...params} label='Razon Social' />}
           />
 

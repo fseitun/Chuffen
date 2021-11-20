@@ -1,42 +1,53 @@
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { Box, Button } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
+import { getMethod, postMethod } from 'src/utils/api';
 
 const columns = [
   {
-    field: 'codigo',
-    headerName: 'Código',
-    width: 140,
+    field: 'empresa',
+    headerName: 'Proveedor',
+    width: 170,
+    editable: false,
+    headerAlign: 'center',
+  },
+  {
+    field: 'detalle',
+    headerName: 'Detalle',
+    width: 175,
+    editable: true,
+    headerAlign: 'center',
+  },
+  {
+    field: 'numero',
+    headerName: 'Nro Factura',
+    width: 185,
     editable: false,
     headerAlign: 'center',
     align: 'center',
   },
-
   {
-    field: 'metros',
-    headerName: 'Metros',
-    type: 'number',
+    field: 'txtOC',
+    headerName: 'Nro OC',
     width: 130,
     editable: true,
     headerAlign: 'center',
-    align: 'right',
+    align: 'center',
   },
-
   {
-    field: 'precioULT',
-    type: 'number',
-    headerName: 'Precio',
-    width: 150,
-    editable: true,
+    field: 'montoTotal',
+    headerName: 'Importe',
+    width: 130,
+    editable: false,
     headerAlign: 'center',
     align: 'right',
-  },
 
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
   {
     field: 'deleteIcon',
     headerName: '',
@@ -45,85 +56,100 @@ const columns = [
     align: 'center',
     renderCell: DeleteRow,
   },
+
 ];
 
-export function GrillaDetalleOP({ idSociety, selectedOPData }) {
-  // console.log('idSociety:', idSociety);
-  // console.log('selectedOPData:', selectedOPData);
+export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaData }) {
+  
   const {
-    data: products,
+    data: facturas,    
+    /*rowLength: filas,*/
     isLoading,
     error,
-  } = useQuery(['productos', idSociety, selectedOPData], () =>
-    getMethod(`producto/listar/${idSociety?.id}/${selectedOPData?.id}`)
+  } = useQuery(['facturas', idSociety, selectedFacturaData], () =>
+    getMethod(`factura/listar/${idSociety?.id}/opid/7`)
   );
 
   const queryClient = useQueryClient();
 
   const { mutate: deleteProduct } = useMutation(
     async id =>
-      await deleteMethod(`producto/eliminar/${idSociety?.id}`, {
-        OPId: selectedOPData?.id,
+      await postMethod(`factura/modificar/${idSociety?.id}`, {
+        //libera la factura con OPId= null
         id: id,
+        OPId: null,
       }),
     {
       onSuccess: async () =>
-        await queryClient.refetchQueries(['productos', idSociety, selectedOPData]),
+        await queryClient.refetchQueries(['facturas', idSociety, selectedFacturaData]),
     }
   );
+
+
 
   if (isLoading) return 'Cargando...';
   if (error) return `Hubo un error: ${error.message}`;
 
   function handleCellModification(e) {
-    // console.log('e:', e);
+    
     let newData = {
       id: e.id,
-      idOP: selectedOPData?.id,
-      [e.field]: e.value,
+     [e.field]: e.value,
     };
-    console.log('newData:', newData);
-    postMethod(`producto/modificar/${idSociety?.id}`, newData);
+    
+    postMethod(`factura/modificar/${idSociety?.id}`, newData);
   }
 
   return (
     <div style={{ width: '100%' }}>
       <ToastContainer />
       <DataGrid
-        rows={products.map(el => ({
+        
+        
+        rows={facturas.map(el => ({
           id: el.id,
-          codigo: el.codigo,
-          metros: el.metros,
-          precioULT: el.precioULT,
+          empresa:(el.empresas[0]?el.empresas[0].razonSocial:''),
+          numero: el.numero,
+          link: el.link,
+          montoTotal: el.montoTotal,
+          moneda: el.moneda,
+          detalle: el.detalle,
+          txtOC: el.txtOC,
+          fechaIngreso: el.fechaIngreso,
+          fechaVTO: el.fechaVTO,  
           onDelete: () => deleteProduct(el.id),
         }))}
+
+
         columns={columns}
-        pageSize={25}
+        /*pageSize={25}*/
+        /*autoPageSize= {false}*/
+        /*Pagination = {false}*/
+        /*pagination = {false}*/
+        /*checkboxSelection*/
         disableSelectionOnClick
+        /*pageSize={500}*/
+        rowsPerPageOptions={[100]}
+        
         autoHeight
         sortModel={[
           {
-            field: 'codigo',
+            field: 'numero',
             sort: 'asc',
           },
         ]}
-        scrollbarSize
+        /*scrollbarSize*/
         onCellEditCommit={handleCellModification}
-        components={{
+        /*components={{
           Toolbar: CustomToolbar,
-        }}
+        }}*/
       />
     </div>
   );
 }
 
-function CustomToolbar() {
-  return (
-    <GridToolbarContainer>
-      <GridToolbarExport />
-    </GridToolbarContainer>
-  );
-}
+
+
 
 function DeleteRow(params) {
   const deleteRow = params.row.onDelete;

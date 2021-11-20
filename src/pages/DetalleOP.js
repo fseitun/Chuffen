@@ -1,56 +1,84 @@
 import { useParams } from 'react-router-dom';
-import { useQuery } from 'react-query';
-import { getMethod } from 'src/utils/api';
-import { Container, Box, Typography } from '@mui/material';
+import { Container, Box, Typography, Grid } from '@mui/material';
 import { Helmet } from 'react-helmet';
-import { DatosPrincipalesOP } from 'src/components/OP/DatosPrincipalesOP';
-import { ManipularDetalleOP } from 'src/components/detalleOP/ManipularDetalleOP';
+import { AgregarFactura } from 'src/components/detalleOP/AgregarFactura';
+import { FormDetalleOP } from 'src/components/detalleOP/FormDetalleOP';
 import { GrillaDetalleOP } from 'src/components/detalleOP/GrillaDetalleOP';
 
-export function DetalleOP({ idSociety }) {
-  const { nombreOP } = useParams();
+export function DetalleOP({ idSociety, loggedUser }) {
 
-  const { data } = useQuery(['OP', idSociety.id], () =>
-    getMethod(`OP/listar/${idSociety.id}`)
-  );
-
-  const selectedOPData = data?.find(el => el.nombre === nombreOP);
+  const { idOP } = useParams();
+  const { fecha } = useParams();  
+  const { empresaId } = useParams();  
+  const { numero } = useParams();
 
   return (
     <>
       <Helmet>
-        <title>{nombreOP} | TSF Desarrollos</title>
+        <title>
+        op:{numero} | {idSociety?.nombre}
+        </title>
       </Helmet>
       <Box
         sx={{
           backgroundColor: 'background.default',
           minHeight: '100%',
           py: 3,
-        }}>
-        <Container maxWidth={false}>
+        }}
+      >
+        <Container >
+
           <Box sx={{ pt: 3 }}>
-            <DatosPrincipalesOP
+            <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >
+
+                             
+                  <Grid item md={7}>
+                  <Typography align="left" color="textPrimary" variant="h4">
+                  Sumatoria Facturas: {numero}
+                        </Typography>
+                  </Grid>
+                  <Grid item md={5}>
+                        <Typography align="right" color="textPrimary" variant="h5">
+                        12 ago 2021
+                        </Typography>
+                  </Grid>
+
+             
+
+            </Grid>
+          </Box>
+
+          <Box sx={{ pt: 3 }}>
+            <AgregarFactura
+              OPId={idOP}
+              fecha={fecha}
+              empresaId={empresaId}
               idSociety={idSociety}
-              selectedOPData={selectedOPData}
+              loggedUser={loggedUser}
             />
           </Box>
-          <Box sx={{ pt: 3 }}>
-            <Typography align='left' color='textPrimary' variant='h5'>
-              Grilla de Productos
-            </Typography>
-          </Box>
-          <Box sx={{ pt: 3 }}>
-            <ManipularDetalleOP
-              idSociety={idSociety}
-              selectedOPData={selectedOPData}
-            />
-          </Box>
+
           <Box sx={{ pt: 3 }}>
             <GrillaDetalleOP
+              OPId={idOP}
+              fecha={fecha}
+              empresaId={empresaId}
               idSociety={idSociety}
-              selectedOPData={selectedOPData}
+              loggedUser={loggedUser}
             />
           </Box>
+         
+          <Box sx={{ pt: 3 }}>
+            <FormDetalleOP
+              OPId={idOP}
+              fecha={fecha}
+              empresaId={empresaId}
+              idSociety={idSociety}
+              loggedUser={loggedUser}
+            />
+          </Box>
+    
+       
         </Container>
       </Box>
     </>

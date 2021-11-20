@@ -5,7 +5,7 @@ import { postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 
 export function FormSubRubro({ idSociety, idRubro }) {
-  const { setIsPromptOpen, Prompt } = usePrompt();
+  const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
 
   const { mutate: addSubRubro } = useMutation(

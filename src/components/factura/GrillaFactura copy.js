@@ -49,7 +49,7 @@ const columns = [
     editable: true,
     headerAlign: 'center',
     renderCell:  ({ row: { link } }) => (
-      <a href={ link }  rel="noreferrer" target="_blank" >{ link }</a>)
+      <a href={ link }  target="_blank" >{ link }</a>)
   },
   {
     field: 'fechaIngreso',

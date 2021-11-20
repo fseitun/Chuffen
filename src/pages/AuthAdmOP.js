@@ -14,7 +14,7 @@ export function AuthAdmOP({ idSociety, loggedUser }) {
           minHeight: '100%',
           py: 3,
         }}>
-        <Container maxWidth={false}>
+        <Container >
 
           <Box sx={{ pt: 3 }}>
             <GrillaOPAdm idSociety={idSociety}  loggedUser={loggedUser} />

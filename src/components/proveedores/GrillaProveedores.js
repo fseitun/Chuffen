@@ -122,7 +122,7 @@ export function GrillaProveedores({ idSociety }) {
           },
         }))}
         columns={columns}
-        pageSize={25}
+        pageSize={100}
         disableSelectionOnClick
         autoHeight
         scrollbarSize

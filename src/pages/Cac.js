@@ -19,7 +19,7 @@ export function Cac({ idSociety }) {
           py: 3,
         }}
       >
-        <Container maxWidth={false}>
+        <Container >
           <Box sx={{ pt: 3 }}>
             <FormCac idSociety={idSociety} />
           </Box>

@@ -15,7 +15,7 @@ const NotFound = () => (
         justifyContent: 'center',
       }}
     >
-      <Container maxWidth="md">
+      <Container >
         <Typography align="center" color="textPrimary" variant="h1">
           404: La página no existe
         </Typography>
@@ -26,7 +26,6 @@ const NotFound = () => (
             style={{
               marginTop: 50,
               display: 'inline-block',
-              maxWidth: '100%',
               width: 560,
             }}
           />

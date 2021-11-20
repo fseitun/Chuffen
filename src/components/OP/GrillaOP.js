@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, Button, TextField, Autocomplete} from '@mui/material';
-import CancelIcon from '@mui/icons-material/Cancel';
 import { Delete } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,7 +11,7 @@ import { getMethod, deleteMethod, postMethod } from 'src/utils/api';
 
 
 
-const columns = function columns(rubro, setRubro) {
+const columns = function columns(estadoRET, setEstadoRET, rubro, setRubro) {
   return [
 
     {
@@ -111,14 +110,27 @@ const columns = function columns(rubro, setRubro) {
       valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),    
     },
+
     {
-      field: 'estadoRET',
+      field: 'estadoRET_Elegido',
       headerName: 'Retenciones',
-      width: 160,
+      width: 150,
       editable: true,
-      headerAlign: 'center',
-      align: 'right',    
+      renderCell: ({ row: { estadoRET_Elegido } }) => (
+        <div style={{ width: '100%', height: '100%', background: estadoRET_Elegido }}></div>
+      ),
+      renderEditCell: ({ row: { estadoRET_Elegido } }) => (
+        <EstadoRETPicker
+          originalEstadoRET={retenciones.filter(estadoRET => estadoRET.id === estadoRET_Elegido)[0]}
+          estadoRET={estadoRET}
+          setEstadoRET={setEstadoRET}
+          estadoRETOptions={retenciones}
+          /*setFechaInicio={setFechaInicio}
+          setNewLogoFlag={setNewLogoFlag}*/
+        />
+      ),
     },
+
 
     {
       field: 'aprobado obra',
@@ -184,7 +196,7 @@ const columns = function columns(rubro, setRubro) {
       width: 150,
       editable: true,
       renderEditCell: (a, b, c) => {
-        const commit = a.api.events.cellEditCommit;
+        // const commit = a.api.events.cellEditCommit;
         // console.log(a, b, a.api.events.cellEditCommit);
         return (
           <RubroPicker
@@ -233,12 +245,13 @@ const rubros = [
 
 // dropdown retenciones
 const retenciones = [
-  { id: 1, descri: '' , css: ''},
-  { id: 2, descri: 'Ok', css: 'green'},
-  { id: 3, descri: 'Pendiente', css: 'pink'},
+  { id: 0, descri: '' , css: 'white'},
+  { id: 1, descri: 'Ok', css: 'DarkGreen'},
+  { id: 2, descri: 'Pendiente', css: 'pink'},
 ];
 
 // dropdown estado
+/*
 const estadoOPs = [
   { id: 1, descri: '' , css: ''},
   { id: 2, descri: 'Para autorizar Obra', css: 'red'},
@@ -246,22 +259,24 @@ const estadoOPs = [
   { id: 4, descri: 'Para pagar', css: ''},
   { id: 5, descri: 'Pagado Parcial', css: ''},
   { id: 6, descri: 'Pagada', css: 'green'},
-  /*{ id: 7, descri: 'Anulado', css: 'black'},*/
+  //{ id: 7, descri: 'Anulado', css: 'black'},
   { id: 8, descri: 'Cargada en Banco', css: ''},
-];
+];*/
 
 // dropdown fondos
+/*
 const fondos = [
   { id: 1, descri: '' , css: ''},
   { id: 2, descri: 'Ok cargado', css: ''},
-];
+];*/
 
 
 export function GrillaOP({ idSociety }) {
-  /* const navigate = useNavigate();*/
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const [rubro, setRubro] = useState({});
+  const [estadoRET, setEstadoRET] = useState(null);
 
   // es un array de facturas para la columna facturas asociada a una OP (OPId)
   const { data: grfacturas } = useQuery(['grfacturas', idSociety.id], async() =>
@@ -308,7 +323,6 @@ export function GrillaOP({ idSociety }) {
         await queryClient.refetchQueries(['OP', idSociety]),
     }
   );
-
    
   const { mutate: enviaOP } = useMutation(
     async el =>
@@ -324,14 +338,7 @@ export function GrillaOP({ idSociety }) {
     }
   );
 
-  const { mutate } = useMutation(
-    async (id) => {
-      await deleteMethod(`OP/eliminar/${idSociety.id}`, id);
-    },
-    {
-      onSuccess: async () => await queryClient.refetchQueries(['OP', idSociety.id]),
-    }
-  );
+
 
   const { data, isLoading, error } = useQuery(['OP', idSociety.id], () =>
     getMethod(`OP/listar/${idSociety.id}/todas/nulo`)
@@ -358,13 +365,14 @@ export function GrillaOP({ idSociety }) {
           id: el.id,      
           numero: el.numero,
           empresa: el.empresas[0].razonSocial,
+          empresaId: el.empresaId,
           monto: el.monto, 
           moneda: el.moneda, 
           RET_SUSS: el.RET_SUSS,
           RET_GAN: el.RET_GAN,
           RET_IVA: el.RET_IVA,
           rubroId: el.rubroId,
-          estadoRET: el.estadoRET,
+          estadoRET_Elegido: el.estadoRET,
           fideicomiso: el.fideicomisos[0].nombre,
           estadoOP: el.estadoOP,
           fondos: el.fondos,
@@ -373,7 +381,7 @@ export function GrillaOP({ idSociety }) {
           createdAt: el.createdAt,   
           apr_obra: (el.auth_obra[0]?el.auth_obra[0].usuarios[0].user:''),
           apr_adm: (el.auth_adm[0]?el.auth_adm[0].usuarios[0].user:''),
-          misFacturas: grfacturas?.filter(factura => factura?.OPId == el.id),
+          misFacturas: grfacturas?.filter(factura => factura?.OPId === el.id),
           
           onAuthAdm: () => nonAuthAdm(el),
           onAuthObra: () => nonAuthObra(el),
@@ -382,7 +390,7 @@ export function GrillaOP({ idSociety }) {
 
         }))}
 
-        columns={columns(rubro, setRubro, idSociety?.id)}
+        columns={columns(rubro, setEstadoRET, setRubro, idSociety?.id)}
         pageSize={25}
         disableSelectionOnClick
         autoHeight
@@ -394,17 +402,24 @@ export function GrillaOP({ idSociety }) {
         ]}
         scrollbarSize
         onCellEditCommit={handleCellModification}
-        /*onRowDoubleClick={(a) => IrAOP(a)}*/
+    
+        onRowDoubleClick={a => {
+          // console.log(a);
+           return IrADetalleOP(a);
+         }}
+
         components={{
           Toolbar: CustomToolbar,
         }}
       />
     </div>
   );
-  /*
-  function IrAOP(params) {
-    navigate(`./${params.row.nombre}`);
-  }*/
+  
+  function IrADetalleOP(params) {
+    if(1===2){
+      navigate(`./${params.row.id}/${params.row.createdAt}/${params.row.empresaId}/${params.row.numero}`);
+    }
+  }
 }
 
 function CustomToolbar() {
@@ -445,7 +460,7 @@ function NonObraAuthRow(params) {
       </Box>
     ));
   
-  if(apr_obra != ""){
+  if(apr_obra !== ""){
     return <Button onClick={notify} >{apr_obra}  </Button>;
   }else{
     return ""
@@ -480,7 +495,7 @@ function NonAdmAuthRow(params) {
       </Box>
     ));
   
-  if(apr_adm != ""){
+  if(apr_adm !== ""){
     return <Button onClick={notify} >{apr_adm}  </Button>;
   }else{
     return ""
@@ -516,7 +531,7 @@ function EnviarRow(params) {
       </Box>
     ));
   
-  if(archivada == 0){
+  if(archivada === 0){
     return <Button onClick={notify} >Para Enviar  </Button>;
   }else{
     return "Enviada"
@@ -551,7 +566,7 @@ function DeleteRow(params) {
       </Box>
     ));
   
-  if(archivada == 0){
+  if(archivada === 0){
     return <Delete onClick={notify} />;
   }else{
     return ""
@@ -577,6 +592,37 @@ function RubroPicker({ rubro, setRubro, rubroOptions }) {
         return (
           <div {...props} >
             {option.rubro}
+          </div>
+        );
+      }}
+    />
+  );
+}
+
+
+function EstadoRETPicker({ estadoRET, setEstadoRET, estadoRETOptions, originalEstadoRET }) {
+  useEffect(
+    () =>
+    setEstadoRET(previousState =>
+        originalEstadoRET?.id !== previousState?.id ? originalEstadoRET : previousState
+      ),
+    [originalEstadoRET, setEstadoRET]
+  );
+  return (
+    <Autocomplete
+      value={estadoRET}
+      onChange={(event, newValue) => {
+        setEstadoRET(newValue);
+      }}
+      options={estadoRETOptions}
+      sx={{ width: 300 }}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
+      renderInput={params => <TextField style={{ background: estadoRET?.css }} {...params} />}
+      renderOption={(props, option, c) => {
+        // console.log(props, option, c);
+        return (
+          <div {...props} style={{ background: option?.css }}>
+            {option.descri}
           </div>
         );
       }}

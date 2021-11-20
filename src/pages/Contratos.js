@@ -17,7 +17,7 @@ export function Contratos({ idSociety }) {
           py: 3,
         }}
       >
-        <Container maxWidth={false}></Container>
+        <Container ></Container>
       </Box>
     </>
   );

@@ -37,6 +37,12 @@ export function Uploader({ fideId, setNewLogoFlag }) {
     setNewLogoFlag(true);
   }, []);
 
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: 'image/jpeg, image/png',
+  });
+
+  /*
   const { acceptedFiles, fileRejections, getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: 'image/jpeg, image/png',
@@ -57,7 +63,7 @@ export function Uploader({ fideId, setNewLogoFlag }) {
         ))}
       </ul>
     </li>
-  ));
+  ));*/
 
   // console.log('acceptedFileItems', acceptedFileItems);
   // console.log('fileRejectionItems', fileRejectionItems);

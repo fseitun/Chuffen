@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, Button, TextField, Autocomplete } from '@mui/material';
-import { ConstructionTwoTone, Delete } from '@mui/icons-material';
+import { Delete } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -66,6 +66,7 @@ const columns = function columns(color, setColor, id, setFechaInicio, setNewLogo
           <Uploader fideId={passedData.id} setNewLogoFlag={setNewLogoFlag} />
         ),
     },
+
     {
       field: 'colorElegido',
       headerName: 'Color',
@@ -85,6 +86,7 @@ const columns = function columns(color, setColor, id, setFechaInicio, setNewLogo
         />
       ),
     },
+    
     {
       field: 'deleteIcon',
       headerName: '',
@@ -114,7 +116,7 @@ const colors = [
 ];
 
 export function GrillaFideicomiso({ idSociety }) {
-  const navigate = useNavigate();
+  /*const navigate = useNavigate();*/
   const queryClient = useQueryClient();
   const [color, setColor] = useState(null);
 

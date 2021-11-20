@@ -2,8 +2,7 @@ import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { TextField, Button } from '@mui/material';
-import { LocalizationProvider, DesktopDatePicker } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
+
 
 // import Radio from '@mui/material/Radio';
 // import RadioGroup from '@mui/material/RadioGroup';
@@ -51,9 +50,9 @@ export function ManipularPersona({ idSociety }) {
 }
 
 async function checkName(idSociety, nombre) {
-  let n = new String(nombre);
+  let n = "" + nombre ;
   // controla blanco y espacios
-  if (n.trim() == '') {
+  if (n.trim() === '') {
     return true;
   }
   // controla si ya existe el nombre

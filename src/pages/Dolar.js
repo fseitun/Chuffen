@@ -16,7 +16,7 @@ export function Dolar({ idSociety }) {
           py: 3,
         }}
       >
-        <Container maxWidth={false}>
+        <Container >
           <Box sx={{ pt: 3 }}>
             <FormDolar idSociety={idSociety} />
           </Box>

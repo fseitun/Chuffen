@@ -1,45 +1,12 @@
 import { useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
-
 import { IconButton, Collapse, Box, TextField, Button, Autocomplete, Alert } from '@mui/material';
-
-import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
-
 import { getMethod, postMethod } from 'src/utils/api';
-import { yearMonthDayString } from 'src/utils/utils';
 
-
-function Picker({ field, form }) {
-
-  const { name, value } = field;
-  const { setFieldValue } = form;
-
-  return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <DesktopDatePicker
-        label='Fecha'
-        inputFormat='dd/MM/yyyy'
-        value={value}
-        onChange={value => setFieldValue(name, value)}
-        renderInput={params => <TextField {...params} />}
-      />
-    </LocalizationProvider>
-  );
-}
 
 export function ManipularOP({ idSociety }) {
-  
-  const {
-    data: OPs,
-    isLoading,
-    error,
-  } = useQuery(['OP', idSociety], () =>
-    getMethod(`OP/listar/${idSociety?.id}`)
-  );
-     
 
   const { data: fideicomisos } = useQuery(
     ['fideicomisos'],
@@ -112,7 +79,7 @@ export function ManipularOP({ idSociety }) {
             value={fideInForm}
             getOptionLabel={option => option.nombre}
             isOptionEqualToValue={(option, value) => option.id === value.id}
-            options={fideicomisos}
+            options={(fideicomisos? fideicomisos:[])}
             renderInput={params => <TextField {...params} label='Fideicomiso' />}
           />
           
@@ -130,7 +97,7 @@ export function ManipularOP({ idSociety }) {
             value={rsInForm}
             getOptionLabel={option => option.razonSocial}
             isOptionEqualToValue={(option, value) => option.id === value.id}
-            options={proveedores}
+            options={(proveedores? proveedores:[])}
             renderInput={params => <TextField {...params} label='Razon Social' />}
           />
 
@@ -147,7 +114,7 @@ export function ManipularOP({ idSociety }) {
             value={factInForm}
             getOptionLabel={option => option.numero}
             isOptionEqualToValue={(option, value) => option.id === value.id}
-            options={ddfacturas?.filter(factura => factura?.empresaId == rsInForm?.id)}
+            options={ddfacturas? ddfacturas?.filter(factura => factura?.empresaId === rsInForm?.id):[]}
             renderInput={params => <TextField {...params} label='Factura N॰' />}
           />
 
@@ -181,18 +148,4 @@ export function ManipularOP({ idSociety }) {
       )}
     </Formik>
   );
-}
-
-async function checkDate(idSociety, date) {
-  let url = `OP/mostrar/${idSociety}/${yearMonthDayString(date)}`;
-  return Boolean(await getMethod(url));
-}
-
-function onlyNumbers(event, setFieldValue, typeOfData) {
-  event.preventDefault();
-  const { value } = event.target;
-  const regex = /^\d{0,9}(\.\d{0,2})?$/;
-  if (regex.test(value.toString())) {
-    setFieldValue(typeOfData, value.toString());
-  }
 }

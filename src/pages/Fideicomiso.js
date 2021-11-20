@@ -16,7 +16,7 @@ export function Fideicomiso({ idSociety }) {
           py: 3,
         }}
       >
-        <Container maxWidth={false}>
+        <Container >
           <Box sx={{ pt: 3 }}>
             <ManipularFideicomiso idSociety={idSociety} />
           </Box>

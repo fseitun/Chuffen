@@ -2,11 +2,9 @@ import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 
-// import { mostrarFecha } from 'src/utils/utils';
 
 const columns = (setIsPromptOpen, setRowIdToDelete) => [
   
@@ -139,12 +137,4 @@ function CustomToolbar() {
       <GridToolbarExport />
     </GridToolbarContainer>
   );
-}
-
-function onlyNumbers(data) {
-  console.log('data', data);
-  const regex = /^\d{0,3}(\.\d{0,2})?$/;
-  const isValid = regex.test(data.props.value.toString());
-  const error = !isValid;
-  return { ...data.props, error };
 }
