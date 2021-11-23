@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-//import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, Button, TextField, Autocomplete } from '@mui/material';
 import { Delete } from '@mui/icons-material';
@@ -116,7 +116,7 @@ const colors = [
 ];
 
 export function GrillaFideicomiso({ idSociety }) {
-  /*const navigate = useNavigate();*/
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [color, setColor] = useState(null);
 
@@ -231,16 +231,22 @@ export function GrillaFideicomiso({ idSociety }) {
             color: color?.css,
           });
         }}
-        // onRowDoubleClick={a => {
-        // console.log(a);
-        //   return IrAFideicomiso(a);
-        // }}
+        onRowDoubleClick={a => {
+         // console.log(a);
+          return IrAFideicomiso(a);
+        }}
         components={{
           Toolbar: CustomToolbar,
         }}
       />
     </div>
   );
+
+  function IrAFideicomiso(params) {
+    if(1===2){ // que no navegue, por ahora no usamos detalle fideicomiso
+      navigate(`./${params.row.nombre}`);
+    }
+  }
  
 }
 

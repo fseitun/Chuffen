@@ -25,20 +25,33 @@ export function AgregarFactura({ idSociety, empresaId }) {
     OPId: null,
   }*/
 
+
   const { mutate: addFactura } = useMutation(
-    newFactura => postMethod(`factura/modificar/${idSociety.id}/todas/nada`, newFactura),
+    
+    async ({ id, value }) =>
+       console.log('newDataddddd', id, value)/*
+      await postMethod(`factura/modificar/${idSociety.id}`, {
+        id,
+        opid: value,
+      }),/*
     {
-      onMutate: async newFactura => {
-        await queryClient.invalidateQueries(['factura', idSociety]);
-        const prevData = await queryClient.getQueryData(['factura', idSociety]);
-        const newData = [...prevData, { ...newFactura, id: new Date().getTime() }];
-        queryClient.setQueryData(['factura', idSociety], newData);
+      onMutate: async ({ id, value }) => {
+        await queryClient.cancelQueries(['facturas', idSociety]);
+        const prevData = queryClient.getQueryData(['facturas', idSociety]);
+        // console.log('prevData', prevData);
+        const newData = [
+          ...prevData.filter(facturas => facturas.id !== id),
+          { ...prevData.find(facturas => facturas.id === id), opid: 7 },
+        ];
+        // console.log('newData', newData);
+        queryClient.setQueryData(['facturas', idSociety], newData);
         return prevData;
       },
-      onError: (err, id, context) => queryClient.setQueryData(['factura', idSociety], context),
-      onSettled: () => queryClient.invalidateQueries(['factura', idSociety]),
-    }
+      onError: (err, id, context) => queryClient.setQueryData(['facturas', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['facturas', idSociety]),
+    }*/
   );
+
 
   const [typeInForm, setTypeInForm] = useState(null);
 

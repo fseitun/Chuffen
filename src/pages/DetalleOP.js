@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet';
 import { AgregarFactura } from 'src/components/detalleOP/AgregarFactura';
 import { FormDetalleOP } from 'src/components/detalleOP/FormDetalleOP';
 import { GrillaDetalleOP } from 'src/components/detalleOP/GrillaDetalleOP';
+import { mostrarFechaMesTXT } from 'src/utils/utils';
 
 export function DetalleOP({ idSociety, loggedUser }) {
 
@@ -34,12 +35,12 @@ export function DetalleOP({ idSociety, loggedUser }) {
                              
                   <Grid item md={7}>
                   <Typography align="left" color="textPrimary" variant="h4">
-                  Sumatoria Facturas: {numero}
+                          Solicitud de Pago: {numero}
                         </Typography>
                   </Grid>
                   <Grid item md={5}>
                         <Typography align="right" color="textPrimary" variant="h5">
-                        12 ago 2021
+                          {mostrarFechaMesTXT(fecha)}
                         </Typography>
                   </Grid>
 

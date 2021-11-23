@@ -9,8 +9,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { getMethod, deleteMethod, postMethod } from 'src/utils/api';
 
-
-
 const columns = function columns(estadoRET, setEstadoRET, rubro, setRubro) {
   return [
 
@@ -32,6 +30,7 @@ const columns = function columns(estadoRET, setEstadoRET, rubro, setRubro) {
       editable: false,
       headerAlign: 'center',
       align: 'center',
+      renderCell: IrDetalleOP_1,
     },
 
     {
@@ -41,6 +40,9 @@ const columns = function columns(estadoRET, setEstadoRET, rubro, setRubro) {
       editable: false,
       headerAlign: 'center',
       align: 'right',
+      //renderCell: <Button onClick={irDetalle} >{numero}  </Button>
+      renderCell: IrDetalleOP_2,
+      
     },
 
     {
@@ -50,6 +52,7 @@ const columns = function columns(estadoRET, setEstadoRET, rubro, setRubro) {
       editable: false,
       headerAlign: 'center',
       align: 'center',
+      renderCell: IrDetalleOP_3,
     },  
     {
       field: 'monto',
@@ -219,7 +222,7 @@ const columns = function columns(estadoRET, setEstadoRET, rubro, setRubro) {
     
     {
       field: 'descripcion',
-      headerName: 'Obs.',
+      headerName: 'Detalle',
       width: 140,
       editable: true,
       headerAlign: 'center',
@@ -338,6 +341,24 @@ export function GrillaOP({ idSociety }) {
     }
   );
 
+  const { mutate: irDetalle } = useMutation(
+    async el =>
+
+    
+      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}`)
+    /*
+      await postMethod(`OP/modificar/${idSociety?.id}`, {
+
+        id : el.id,
+        archivada: 1
+
+      }),*/
+    /*{
+      onSuccess: async () =>
+        await queryClient.refetchQueries(['OP', idSociety.id]),
+    }*/
+  );
+
 
 
   const { data, isLoading, error } = useQuery(['OP', idSociety.id], () =>
@@ -364,7 +385,7 @@ export function GrillaOP({ idSociety }) {
         rows={data.map((el) => ({
           id: el.id,      
           numero: el.numero,
-          empresa: el.empresas[0].razonSocial,
+          empresa: el.empresas[0]?.razonSocial,
           empresaId: el.empresaId,
           monto: el.monto, 
           moneda: el.moneda, 
@@ -373,7 +394,7 @@ export function GrillaOP({ idSociety }) {
           RET_IVA: el.RET_IVA,
           rubroId: el.rubroId,
           estadoRET_Elegido: el.estadoRET,
-          fideicomiso: el.fideicomisos[0].nombre,
+          fideicomiso: el.fideicomisos[0]?.nombre,
           estadoOP: el.estadoOP,
           fondos: el.fondos,
           archivada: el.archivada,
@@ -386,6 +407,7 @@ export function GrillaOP({ idSociety }) {
           onAuthAdm: () => nonAuthAdm(el),
           onAuthObra: () => nonAuthObra(el),
           onEnviar: () => enviaOP(el),
+          onIrDetalle: () => irDetalle(el),          
           onDelete: () => deleteProduct(el.id),
 
         }))}
@@ -538,6 +560,21 @@ function EnviarRow(params) {
   }
 } 
 
+function IrDetalleOP_1(params) {
+  const sendRow = params.row.onIrDetalle;  
+  const fideicomiso = params.row.fideicomiso;
+  return <Button onClick={sendRow} >{fideicomiso}  </Button>;
+} 
+function IrDetalleOP_2(params) {
+  const sendRow = params.row.onIrDetalle;  
+  const numero = params.row.numero;
+  return <Button onClick={sendRow} >{numero}  </Button>;
+} 
+function IrDetalleOP_3(params) {
+  const sendRow = params.row.onIrDetalle;  
+  const empresa = params.row.empresa;
+  return <Button onClick={sendRow} >{empresa}  </Button>;
+} 
 function DeleteRow(params) {
   const deleteRow = params.row.onDelete;
   const archivada = params.row.archivada;
@@ -619,7 +656,7 @@ function EstadoRETPicker({ estadoRET, setEstadoRET, estadoRETOptions, originalEs
       isOptionEqualToValue={(option, value) => option.id === value.id}
       renderInput={params => <TextField style={{ background: estadoRET?.css }} {...params} />}
       renderOption={(props, option, c) => {
-        // console.log(props, option, c);
+
         return (
           <div {...props} style={{ background: option?.css }}>
             {option.descri}

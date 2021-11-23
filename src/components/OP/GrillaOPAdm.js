@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Box, Button } from '@mui/material';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
@@ -82,7 +82,7 @@ export function GrillaOPAdm({ idSociety,  loggedUser }) {
     getMethod(`OP/listar/${idSociety.id}/authADM/nulo`)
   );
   
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { mutate: authProduct } = useMutation(

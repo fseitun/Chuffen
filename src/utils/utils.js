@@ -20,6 +20,15 @@ export function mostrarFecha(fecha) {
   return new Date(fecha).toLocaleDateString('es-AR', { timeZone: 'UTC' });
 }
 
+// Devuelve un Date con formato 1-5-2021
+export function mostrarFechaMesTXT(fecha) {
+  let dd = new Date(fecha).getDay();
+  let mm = new Date(fecha).toLocaleDateString('es-AR', { timeZone: 'UTC',  month: 'short' });
+  let yyyy = new Date(fecha).getFullYear();
+  return dd + ' ' + mm + ' '  + yyyy;
+ 
+}
+
 // Devuelve un string con formato YYYY-MM-DD
 export function yearMonthDayString(date) {
   return `${date.getFullYear(date)}-${(1 + date.getMonth(date)).toString().padStart(2, '0')}-${date

@@ -10,6 +10,11 @@ import { yearMonthDayString, isDateUsed } from 'src/utils/utils';
 import { usePrompt } from 'src/utils/usePrompt';
 
 export function FormDetalleOP({ idSociety }) {
+
+ //     const { data } = useQuery(['fideicomiso', idSociety.id], () =>
+ //     getMethod(`fideicomiso/listar/${idSociety.id}`)
+ //   );
+      
   const { setIsPromptOpen, Prompt } = usePrompt();
   const queryClient = useQueryClient();
 
@@ -119,13 +124,13 @@ export function FormDetalleOP({ idSociety }) {
                   </Grid> 
 
                   <Grid item md={2}>
-                  <Field as={TextField} sx={{ width: '20ch' }} label="RET IIBB" type="float"  name="detalle" />
+                  <Field as={TextField} sx={{ width: '20ch' }} label="RET IIBB" type="float"  name="iibb" />
                   </Grid>                 
                   <Grid item md={2}>
-                  <Field as={TextField} sx={{ width: '20ch' }} label="RET GAN" type="float"  name="detalle" />
+                  <Field as={TextField} sx={{ width: '20ch' }} label="RET GAN" type="float"  name="gan" />
                   </Grid>
                   <Grid item md={2}>
-                  <Field as={TextField} sx={{ width: '20ch' }} label="RET SUSS" type="float"  name="detalle" />
+                  <Field as={TextField} sx={{ width: '20ch' }} label="RET SUSS" type="float"  name="suss" />
                   </Grid>
                   <Grid item md={6}>
                   &nbsp;
@@ -143,6 +148,100 @@ export function FormDetalleOP({ idSociety }) {
                     </Grid>                 
                   </Grid>
 
+                  <Grid item md={12}>
+                  &nbsp;
+                  </Grid>
+
+                  <Grid item md={2}>
+                        <Typography align="center" color="textPrimary" variant="h5">
+                          Banco
+                        </Typography>
+                  </Grid>
+                  <Grid item md={2}>
+                        <Typography align="center" color="textPrimary" variant="h5">
+                          NRO Cuenta
+                        </Typography>                
+                  </Grid>  
+                  <Grid item md={4}>
+                        <Typography align="center" color="textPrimary" variant="h5">
+                          Descripción
+                        </Typography>              
+                  </Grid>  
+                  <Grid item md={2}>
+                        <Typography align="center" color="textPrimary" variant="h5">
+                          Fecha
+                        </Typography>                      
+                  </Grid>  
+                  <Grid item md={2}>
+                        <Typography align="center" color="textPrimary" variant="h5">
+                          Monto
+                        </Typography>                
+                  </Grid>  
+
+
+                  <Grid item md={2}>
+                        <Field as={TextField} sx={{ width: '20ch' }} label="Banco" type="float"  name="banco1" />                  
+                  </Grid>
+                  <Grid item md={2}>
+                        <Field as={TextField} sx={{ width: '20ch' }} label="NRO" type="float"  name="nro1" />                  
+                  </Grid>  
+                  <Grid item md={4}>
+                        <Field as={TextField} sx={{ width: '40ch' }} label="Descripción" type="float"  name="descro1" />                  
+                  </Grid>  
+                  <Grid item md={2}>
+                        <Field as={TextField} sx={{ width: '20ch' }} label="Fecha" type="float"  name="fecha1" />                  
+                  </Grid>  
+                  <Grid item md={2}>
+                        <Field as={TextField} sx={{ width: '20ch' }} label="Monto" type="float"  name="monto1" />                  
+                  </Grid>
+
+                  <Grid item md={2}>
+                        <Field as={TextField} sx={{ width: '20ch' }} label="Banco" type="float"  name="banco2" />                  
+                  </Grid>
+                  <Grid item md={2}>
+                        <Field as={TextField} sx={{ width: '20ch' }} label="NRO" type="float"  name="nro2" />                  
+                  </Grid>  
+                  <Grid item md={4}>
+                        <Field as={TextField} sx={{ width: '40ch' }} label="Descripción" type="float"  name="descro2" />                  
+                  </Grid>  
+                  <Grid item md={2}>
+                        <Field as={TextField} sx={{ width: '20ch' }} label="Fecha" type="float"  name="fecha2" />                  
+                  </Grid>  
+                  <Grid item md={2}>
+                        <Field as={TextField} sx={{ width: '20ch' }} label="Monto" type="float"  name="monto2" />                  
+                  </Grid>     
+
+                  <Grid item md={2}>
+                        <Field as={TextField} sx={{ width: '20ch' }} label="Banco" type="float"  name="banco3" />                  
+                  </Grid>
+                  <Grid item md={2}>
+                        <Field as={TextField} sx={{ width: '20ch' }} label="NRO" type="float"  name="nro3" />                  
+                  </Grid>  
+                  <Grid item md={4}>
+                        <Field as={TextField} sx={{ width: '40ch' }} label="Descripción" type="float"  name="descro3" />                  
+                  </Grid>  
+                  <Grid item md={2}>
+                        <Field as={TextField} sx={{ width: '20ch' }} label="Fecha" type="float"  name="fecha3" />                  
+                  </Grid>  
+                  <Grid item md={2}>
+                        <Field as={TextField} sx={{ width: '20ch' }} label="Monto" type="float"  name="monto3" />                  
+                  </Grid>                
+                
+                  <Grid item md={2}>
+                        <Field as={TextField} sx={{ width: '20ch' }} label="Banco" type="float"  name="banco4" />                  
+                  </Grid>
+                  <Grid item md={2}>
+                        <Field as={TextField} sx={{ width: '20ch' }} label="NRO" type="float"  name="nro4" />                  
+                  </Grid>  
+                  <Grid item md={4}>
+                        <Field as={TextField} sx={{ width: '40ch' }} label="Descripción" type="float"  name="descro4" />                  
+                  </Grid>  
+                  <Grid item md={2}>
+                        <Field as={TextField} sx={{ width: '20ch' }} label="Fecha" type="float"  name="fecha4" />                  
+                  </Grid>  
+                  <Grid item md={2}>
+                        <Field as={TextField} sx={{ width: '20ch' }} label="Monto" type="float"  name="monto4" />                  
+                  </Grid>  
               
                 </Grid>
 
