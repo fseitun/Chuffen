@@ -342,21 +342,9 @@ export function GrillaOP({ idSociety }) {
   );
 
   const { mutate: irDetalle } = useMutation(
-    async el =>
+    async el =>    
+      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/OP_${el.numero}`)
 
-    
-      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}`)
-    /*
-      await postMethod(`OP/modificar/${idSociety?.id}`, {
-
-        id : el.id,
-        archivada: 1
-
-      }),*/
-    /*{
-      onSuccess: async () =>
-        await queryClient.refetchQueries(['OP', idSociety.id]),
-    }*/
   );
 
 
@@ -439,7 +427,7 @@ export function GrillaOP({ idSociety }) {
   
   function IrADetalleOP(params) {
     if(1===2){
-      navigate(`./${params.row.id}/${params.row.createdAt}/${params.row.empresaId}/${params.row.numero}`);
+      navigate(`./${params.row.id}/${params.row.createdAt}/${params.row.empresaId}/OP_${params.row.numero}`);
     }
   }
 }

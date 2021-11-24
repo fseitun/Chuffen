@@ -74,6 +74,7 @@ export default function App() {
               path=":societyName"
               element={
                 <DashboardLayout
+                
                   setLoggedUser={setLoggedUser}
                   idSociety={idSociety}
                   loggedUser={loggedUser}

@@ -131,7 +131,7 @@ export function GrillaRubro({ idSociety }) {
       </div>
     );
     function IrASubrubro(params) {
-      navigate(`./${params.row.id}/${params.row.rubro}`);
+      navigate(`./${params.row.id}/Subrubros-${params.row.rubro}`);
     }
 }
 

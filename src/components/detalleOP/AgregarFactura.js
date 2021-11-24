@@ -1,16 +1,11 @@
 import { useState } from 'react';
 import { TextField, Button, Autocomplete } from '@mui/material';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-// import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
-// import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
-// import AdapterDateFns from '@mui/lab/AdapterDateFns';
-
 import { getMethod, postMethod } from 'src/utils/api';
-// import { yearMonthDayString, isDateUsed } from 'src/utils/utils';
 import { usePrompt } from 'src/utils/usePrompt';
 
-export function AgregarFactura({ idSociety, empresaId }) {
+export function AgregarFactura({ idSociety, empresaId, OPId }) {
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
   
@@ -25,7 +20,19 @@ export function AgregarFactura({ idSociety, empresaId }) {
     OPId: null,
   }*/
 
+  const { mutate: addFactura } = useMutation(
+    async factura =>
+      await postMethod(`factura/modificar/${idSociety.id}`, 
+      {id: factura?.factura?.id,
+      OPId: OPId
+      }),
+    {
+      onSuccess: async () =>
+        await queryClient.refetchQueries(['facturas', idSociety]),
+    }
+  );
 
+/*
   const { mutate: addFactura } = useMutation(
     
     async ({ id, value }) =>
@@ -33,7 +40,7 @@ export function AgregarFactura({ idSociety, empresaId }) {
       await postMethod(`factura/modificar/${idSociety.id}`, {
         id,
         opid: value,
-      }),/*
+      }),
     {
       onMutate: async ({ id, value }) => {
         await queryClient.cancelQueries(['facturas', idSociety]);
@@ -49,8 +56,8 @@ export function AgregarFactura({ idSociety, empresaId }) {
       },
       onError: (err, id, context) => queryClient.setQueryData(['facturas', idSociety], context),
       onSettled: () => queryClient.invalidateQueries(['facturas', idSociety]),
-    }*/
-  );
+    }
+  );*/
 
 
   const [typeInForm, setTypeInForm] = useState(null);
@@ -59,13 +66,10 @@ export function AgregarFactura({ idSociety, empresaId }) {
     <>
       <Formik
         initialValues={{
-          numero: '',
+          factura: '',
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
-          // values.fecha = yearMonthDayString(values.fecha);
-          //if (await isDateUsed('factura', idSociety.id)) {
-          //  setIsPromptOpen(true);
-          //} else 
+       
           addFactura(values);
           resetForm();
           setSubmitting(false);

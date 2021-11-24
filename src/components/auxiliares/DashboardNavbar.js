@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { AppBar, Toolbar, Box, IconButton, Badge, Avatar } from '@mui/material';
-import { Notifications, Menu, ExitToApp } from '@mui/icons-material';
+import { Typography, AppBar, Toolbar, Box, IconButton, Badge, Avatar } from '@mui/material';
+import { ExitToApp } from '@mui/icons-material';
 import { Link, useLocation } from 'react-router-dom';
 import Logo from 'src/components/auxiliares/Logo.js';
 import { sideBarOptions } from 'src/components/auxiliares/sideBarOptions.js';
+import { useNavigate } from 'react-router-dom';
 
 const user = {
   avatar: '/static/images/avatars/ingeniero.png',
@@ -16,6 +17,7 @@ export default function DashboardNavbar({
   loggedUser,
 }) {
 
+  const navigate = useNavigate();
   
   const { pathname } = useLocation();
 
@@ -29,6 +31,8 @@ export default function DashboardNavbar({
   const [notifications] = useState([]);
   function logOut() {
     setLoggedUser(null);
+    navigate(`../${idSociety?.nombre}`)
+
   }
   return (
     <AppBar elevation={0}>
@@ -36,22 +40,20 @@ export default function DashboardNavbar({
         <Link to="/">
           <Logo idSociety={idSociety} />
         </Link>
-        <div style={{ marginLeft: 50, fontSize: 24 }}>{nameOfPage}</div>
-        <Box sx={{ flexGrow: 1 }} />
+            <div style={{ marginLeft: 50, fontSize: 24 }}>
+              
+              <Typography align="left" color="white" variant="h4">
+              {nameOfPage.replace("-"," de ").replace("%20"," ").replace("%20"," ").replace("%20"," ").replace("_",": ")}
+              </Typography> 
 
-        <IconButton color="inherit">
-          <Badge badgeContent={notifications.length} color="primary" variant="dot">
-            <Notifications />
-          </Badge>
-        </IconButton>
-        <IconButton
-          color="inherit"
-          sx={{ display: { md: 'block', lg: 'none' } }}
-          onClick={setisMobileNavOpen}
-        >
-          <Menu />
-        </IconButton>
-        <div style={{ fontSize: 24 }}>{loggedUser?.user}</div>
+            </div>
+        <Box sx={{ flexGrow: 1 }} />
+               
+        <div>
+            <Typography align="left" color="white" variant="h4">
+                {loggedUser?.user}
+            </Typography>        
+        </div>
 
         <IconButton color="inherit">
           <Avatar

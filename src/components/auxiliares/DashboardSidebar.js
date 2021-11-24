@@ -3,8 +3,10 @@ import { Box, List, Drawer } from '@mui/material';
 import { NavItem } from './NavItem';
 import { sideBarOptions } from './sideBarOptions';
 
-export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, idSociety }) {
+export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, idSociety, loggedUser }) {
   // console.log('idSociety:', idSociety);
+
+
 
   const content = (
     <Box
@@ -16,7 +18,7 @@ export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, 
       }}
     >
       <List>
-        {sideBarOptions.map(item => (
+        {arrMenu(sideBarOptions, loggedUser?.['rol.accesoTXT']).map(item => (
           <NavItem
             href={`/${idSociety?.nombre}/${item.path}`}
             key={item.title}
@@ -61,4 +63,19 @@ export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, 
       </Drawer>
     </>
   );
+}
+
+// segun acceso en el accessTXT del rol
+function arrMenu(sideBarOptions, acceso){
+  
+  let arr =[{}]; 
+
+  sideBarOptions.forEach(obj => {
+    if(acceso.indexOf(obj.acceso) !== -1 && obj.acceso.trim()!=="" && obj.acceso!==null && obj.acceso!==undefined){
+      arr.push(obj);
+    }  
+  })
+  arr.splice(0, 1);
+
+  return arr;
 }

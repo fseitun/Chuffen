@@ -21,39 +21,46 @@ export const sideBarOptions = [
     path: 'op',
     icon: CreditCard,
     title: 'OPs',
+    acceso: 'oppago',
   },
 
   {
     path: 'AuthAdmOP',
     icon: CreditCard,
     title: 'OPs Auth ADM',
+    acceso: 'AuthAdmOP',
   },
 
   {
     path: 'AuthObraOP',
     icon: CreditCard,
     title: 'OPs Auth Obra',
+    acceso: 'AuthObraOP',
   },
 
   {
     path: 'factura',
     icon: ListAlt,
     title: 'Facturas',
+    acceso: 'factura',
   },
   {
     path: 'proveedores',
     icon: LocalShipping,
     title: 'Proveedores',
+    acceso: 'proveedores',
   },
   {
     path: 'fideicomiso',
     icon: LocalShipping,
     title: 'Fideicomisos',
+    acceso: 'fideicomiso',
   },
   {
     path: 'rubro',
     icon: MenuBook,
     title: 'Rubros',
+    acceso: 'rubro',
   },
 /*
   {
@@ -72,16 +79,19 @@ export const sideBarOptions = [
     path: 'cac',
     icon: TrendingUp,
     title: 'CAC',
+    acceso: 'cac',
   },
   {
     path: 'dolar',
     icon: AttachMoney,
     title: 'Dólar',
+    acceso: 'dolar',
   },
 
   {
     path: 'usuarios',
     icon: People,
     title: 'Usuarios',
+    acceso: 'usuarios',
   },
 ];

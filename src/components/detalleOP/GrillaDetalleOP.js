@@ -67,7 +67,7 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
     isLoading,
     error,
   } = useQuery(['facturas', idSociety, selectedFacturaData], () =>
-    getMethod(`factura/listar/${idSociety?.id}/opid/7`)
+    getMethod(`factura/listar/${idSociety?.id}/opid/${OPId}`)
   );
 
   const queryClient = useQueryClient();

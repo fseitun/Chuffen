@@ -49,6 +49,7 @@ export default function DashboardLayout({ setLoggedUser, idSociety, loggedUser }
       />
       <DashboardSidebar
         idSociety={idSociety}
+        loggedUser={loggedUser}
         setisMobileNavOpen={() => setisMobileNavOpen(!isMobileNavOpen)}
         isMobileNavOpen={isMobileNavOpen}
       />
