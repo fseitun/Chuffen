@@ -6,6 +6,7 @@ import { Formik, Form, Field } from 'formik';
 import { getMethod, postMethod } from 'src/utils/api';
 
 
+
 export function ManipularOP({ idSociety }) {
 
   const { data: fideicomisos } = useQuery(
@@ -122,6 +123,8 @@ export function ManipularOP({ idSociety }) {
             Agregar
           </Button>
 
+        
+
           <Box sx={{ width: '100%' }}>
             <Collapse in={open}>
               <Alert
@@ -149,3 +152,5 @@ export function ManipularOP({ idSociety }) {
     </Formik>
   );
 }
+
+

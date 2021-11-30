@@ -74,7 +74,12 @@ export const sideBarOptions = [
     icon: PeopleAlt,
     title: 'Personas',
   },*/
-
+  {
+    path: 'OT',
+    icon: TrendingUp,
+    title: 'test pdf',
+    acceso: 'OT',
+  },
   {
     path: 'cac',
     icon: TrendingUp,

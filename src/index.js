@@ -6,6 +6,7 @@ import App from './App';
 const queryClient = new QueryClient();
 
 ReactDOM.render(
+  
   <BrowserRouter>
     <QueryClientProvider client={queryClient}>
       <App />

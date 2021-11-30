@@ -1,4 +1,4 @@
-import { TextField, Button, Typography, Grid} from '@mui/material';
+import { TextField, Typography, Grid} from '@mui/material';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 // import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
@@ -45,24 +45,15 @@ export function FormDetalleOP({ idSociety, OPId}) {
           
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
-          // values.fecha = yearMonthDayString(values.fecha);
-          // if (await isDateUsed('opForm', idSociety.id, values.fecha)) {
-          //   setIsPromptOpen(true);
-          // } else 
-          // console.log('HHHHHHHHHHH');
-          // console.log(values);
           updateOP(values);
           resetForm();
-
           setSubmitting(false);
         }}
       >
         {({ isSubmitting, setFieldValue }) => (
           <Form>
 
-                <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >
-
-                  
+                <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >                  
 
                   <Grid item md={12}>                  
                     <Grid item md={12}>                  
@@ -293,8 +284,6 @@ function handleModification(event, setFieldValue, typeOfData, idSociety, OPId, f
       }    
       console.log(newData);    
       postMethod(`op/modificar/${idSociety}`, newData);
-
-
 }
 
 function onlyNumbers(event, setFieldValue, typeOfData, idSociety, OPId, flagPago) {

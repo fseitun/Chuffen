@@ -99,7 +99,7 @@ export function GrillaProveedores({ idSociety }) {
   function handleCellModification(e) {
     let newData = {
       id: e.id,
-      [e.field]: e.props.value,
+      [e.field]: e.value,
     };
     postMethod(`proveedor/modificar/${idSociety.id}`, newData);
   }
