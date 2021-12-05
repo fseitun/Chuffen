@@ -86,7 +86,7 @@ const columns = function columns(color, setColor, id, setFechaInicio, setNewLogo
         />
       ),
     },
-    
+    /*
     {
       field: 'deleteIcon',
       headerName: '',
@@ -94,7 +94,7 @@ const columns = function columns(color, setColor, id, setFechaInicio, setNewLogo
       headerAlign: 'center',
       align: 'center',
       renderCell: DeleteRow,
-    },
+    },*/
   ];
 };
 
@@ -216,12 +216,6 @@ export function GrillaFideicomiso({ idSociety }) {
         pageSize={25}
         disableSelectionOnClick
         autoHeight
-        sortModel={[
-          {
-            field: 'nombre',
-            sort: 'asc',
-          },
-        ]}
         scrollbarSize
         onCellEditCommit={({ id }) => {
           // console.log(idSociety?.id, color.css);

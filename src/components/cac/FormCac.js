@@ -8,7 +8,7 @@ import { postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { dateToStringWithDayEqualToOne, isDateUsed } from 'src/utils/utils';
 
-export function FormCac({ idSociety }) {
+export function FormCac({ idSociety, loggedUser }) {
   const { Prompt, setIsPromptOpen } = usePrompt();
   const queryClient = useQueryClient();
 
@@ -16,6 +16,7 @@ export function FormCac({ idSociety }) {
     newCac => postMethod(`cac/agregar/${idSociety.id}`, newCac),
     {
       onMutate: async newCac => {
+        newCac.creador = loggedUser.id;
         await queryClient.cancelQueries(['cac', idSociety]);
         const prevData = await queryClient.getQueryData(['cac', idSociety]);
         const newData = [...prevData, { ...newCac, id: new Date().getTime() }];

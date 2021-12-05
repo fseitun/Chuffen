@@ -4,9 +4,10 @@ import { Formik, Form, Field } from 'formik';
 
 import { getMethod, postMethod } from 'src/utils/api';
 
-export function ManipularUsuarios({ idSociety }) {
+export function ManipularUsuarios({ idSociety, loggedUser }) {
   const queryClient = useQueryClient();
   const { mutate } = useMutation(
+    newData.creador = loggedUser.id ;
     newData => postMethod(`usuario/agregar/${idSociety.id}`, newData),
     {
       onSuccess: () => queryClient.refetchQueries(['usuarios', idSociety.id]),

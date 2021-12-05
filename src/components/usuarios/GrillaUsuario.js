@@ -11,36 +11,33 @@ import { mostrarFecha } from 'src/utils/utils';
 
 const columns = (setIsPromptOpen, setRowIdToDelete) => [
   {
-    field: 'fecha',
-    headerName: 'Fecha',
+    field: 'user',
+    headerName: 'Usuario',
+    width: 170,
+    editable: true,
+    headerAlign: 'center',
+  },
+  {
+    field: 'mail',
+    headerName: 'Mail',
+    width: 220,
+    // editable: true,
+    headerAlign: 'center',
+  },
+  {
+    field: 'pass',
+    headerName: 'Clave',
     width: 150,
-    type: 'date',
-    headerAlign: 'center',
-    align: 'center',
-    valueFormatter: ({ value }) => mostrarFecha(value),
-  },
-  {
-    field: 'BCRA',
-    preProcessEditCellProps: onlyNumbers,
-    headerName: 'BCRA',
-    width: 130,
     editable: true,
     headerAlign: 'center',
-    align: 'right',
-
-    valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+    //renderCell: Passformat,
   },
   {
-    field: 'mep',
-    preProcessEditCellProps: onlyNumbers,
-    headerName: 'MEP',
-    width: 130,
+    field: 'rol_descripcion',
+    headerName: 'Rol',
+    width: 150,
     editable: true,
     headerAlign: 'center',
-    align: 'right',
-    valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
   {
     field: 'deleteIcon',
@@ -61,57 +58,57 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   },
 ];
 
-export function GrillaDolar({ idSociety }) {
+export function GrillaUsuario({ idSociety }) {
   
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
   // console.log(rowIdToDelete);
 
   const {
-    data: dolarInformation,
+    data: usuarioInformation,
     isLoading,
     error,
-  } = useQuery(['dolar', idSociety], () => getMethod(`dolar/listar/${idSociety.id}`));
+  } = useQuery(['usuario', idSociety], () => getMethod(`usuario/listar/${idSociety.id}`));
 
   const queryClient = useQueryClient();
 
   const { mutate: eliminate } = useMutation(
-    async idDolar => await deleteMethod(`dolar/eliminar/${idSociety.id}`, { id: idDolar }),
+    async idUsuario => await deleteMethod(`usuario/eliminar/${idSociety.id}`, { id: idUsuario }),
     {
-      onMutate: async idDolar => {
-        await queryClient.cancelQueries(['dolar', idSociety]);
-        const prevData = queryClient.getQueryData(['dolar', idSociety]);
-        const newData = prevData.filter(dolar => dolar.id !== idDolar);
-        queryClient.setQueryData(['dolar', idSociety], newData);
+      onMutate: async idUsuario => {
+        await queryClient.cancelQueries(['usuario', idSociety]);
+        const prevData = queryClient.getQueryData(['usuario', idSociety]);
+        const newData = prevData.filter(usuario => usuario.id !== idUsuario);
+        queryClient.setQueryData(['usuario', idSociety], newData);
         return prevData;
       },
-      onError: (err, idDolar, context) => queryClient.setQueryData(['dolar', idSociety], context),
-      onSettled: () => queryClient.invalidateQueries(['dolar', idSociety]),
+      onError: (err, idUsuario, context) => queryClient.setQueryData(['usuario', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['usuario', idSociety]),
     }
   );
   // eliminate(1);
 
   const { mutate: modifyData } = useMutation(
     async ({ field, id, value }) =>
-      await postMethod(`dolar/modificar/${idSociety.id}`, {
+      await postMethod(`usuario/modificar/${idSociety.id}`, {
         id,
         [field]: value,
       }),
     {
       onMutate: async ({ field, id, value }) => {
-        await queryClient.cancelQueries(['dolar', idSociety]);
-        const prevData = queryClient.getQueryData(['dolar', idSociety]);
+        await queryClient.cancelQueries(['usuario', idSociety]);
+        const prevData = queryClient.getQueryData(['usuario', idSociety]);
         // console.log('prevData', prevData);
         const newData = [
-          ...prevData.filter(dolar => dolar.id !== id),
-          { ...prevData.find(dolar => dolar.id === id), [field]: value },
+          ...prevData.filter(usuario => usuario.id !== id),
+          { ...prevData.find(usuario => usuario.id === id), [field]: value },
         ];
         // console.log('newData', newData);
-        queryClient.setQueryData(['dolar', idSociety], newData);
+        queryClient.setQueryData(['usuario', idSociety], newData);
         return prevData;
       },
-      onError: (err, id, context) => queryClient.setQueryData(['dolar', idSociety], context),
-      onSettled: () => queryClient.invalidateQueries(['dolar', idSociety]),
+      onError: (err, id, context) => queryClient.setQueryData(['usuario', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['usuario', idSociety]),
     }
   );
 
@@ -125,14 +122,13 @@ export function GrillaDolar({ idSociety }) {
       <div style={{ width: '100%' }}>
         <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
         <DataGrid
-          rows={dolarInformation.map(dolar => ({
-            id: dolar.id,
-            fecha: dolar.fecha,
-            BCRA: dolar.BCRA,
-            blue: dolar.blue,
-            descripcion: dolar.descripcion,
-            mep: dolar.mep,
-            deleteId: dolar.id,
+          rows={usuarioInformation.map(usuario => ({
+            id: usuario.id,
+            user: usuario.user,
+            mail: usuario.mail,
+            pass: usuario.pass,
+            rol_descripcion: usuario.rol_descripcion,
+            deleteId: usuario.id,
           }))}
           onCellEditCommit={modifyData}
           columns={columns(setIsPromptOpen, setRowIdToDelete)}
@@ -163,3 +159,9 @@ function onlyNumbers(data) {
   const error = !isValid;
   return { ...data.props, error };
 }
+
+function Passformat(params) {
+  //const sendRow = params.row.onIrDetalle;  
+  //const empresa = params.row.empresa;
+  return '***********';
+} 

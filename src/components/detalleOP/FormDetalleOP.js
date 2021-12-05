@@ -79,7 +79,7 @@ export function FormDetalleOP({ idSociety, OPId}) {
                   </Grid>
                   <Grid item md={4}>
                         <Typography align="left" color="textPrimary" variant="h5">                        
-                        {miOP?.auth_obra?miOP.auth_obra[0].usuarios[0].user:''}
+                        {miOP?.auth_obra?miOP.auth_obra[0]?.usuarios[0]?.user:''}
                         </Typography>
                   </Grid>
 
@@ -116,7 +116,7 @@ export function FormDetalleOP({ idSociety, OPId}) {
                   </Grid>
                   <Grid item md={4}>
                         <Typography align="left" color="textPrimary" variant="h5">
-                        {miOP?.auth_adm?miOP.auth_adm[0].usuarios[0].user:''}
+                        {miOP?.auth_adm?miOP.auth_adm[0]?.usuarios[0]?.user:''}
                         </Typography>
                   </Grid>
 

@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { FormDolar } from 'src/components/dolar/FormDolar';
 import { GrillaDolar } from 'src/components/dolar/GrillaDolar';
 
-export function Dolar({ idSociety }) {
+export function Dolar({ idSociety, loggedUser }) {
   return (
     <>
       <Helmet>
@@ -18,10 +18,10 @@ export function Dolar({ idSociety }) {
       >
         <Container >
           <Box sx={{ pt: 3 }}>
-            <FormDolar idSociety={idSociety} />
+            <FormDolar idSociety={idSociety} loggedUser={loggedUser} />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <GrillaDolar idSociety={idSociety} />
+            <GrillaDolar idSociety={idSociety} loggedUser={loggedUser} />
           </Box>
         </Container>
       </Box>

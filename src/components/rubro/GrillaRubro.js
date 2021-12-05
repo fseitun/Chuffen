@@ -6,8 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 
-// import { mostrarFecha } from 'src/utils/utils';
-
 const columns = (setIsPromptOpen, setRowIdToDelete) => [
   
   {
@@ -117,12 +115,6 @@ export function GrillaRubro({ idSociety }) {
           pageSize={25}
           disableSelectionOnClick
           autoHeight
-          sortModel={[
-            {
-              field: 'rubro',
-              sort: 'desc',
-            },
-          ]}
           scrollbarSize
           components={{
             Toolbar: CustomToolbar,

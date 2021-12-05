@@ -4,7 +4,7 @@ import { Formik, Form, Field } from 'formik';
 import { postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 
-export function FormSubRubro({ idSociety, idRubro }) {
+export function FormSubRubro({ idSociety, idRubro, loggedUser }) {
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
 
@@ -12,6 +12,7 @@ export function FormSubRubro({ idSociety, idRubro }) {
     newSubRubro => postMethod(`subrubro/agregar/${idSociety.id}/${idRubro}`, newSubRubro),
     {
       onMutate: async newSubRubro => {
+        newSubRubro.creador = loggedUser.id;
         await queryClient.invalidateQueries(['subrubro', idSociety]);
         const prevData = await queryClient.getQueryData(['subrubro', idSociety]);
         const newData = [...prevData, { ...newSubRubro, id: new Date().getTime() }];

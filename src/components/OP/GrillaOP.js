@@ -404,12 +404,6 @@ export function GrillaOP({ idSociety }) {
         pageSize={25}
         disableSelectionOnClick
         autoHeight
-        sortModel={[
-          {
-            field: 'numero',
-            sort: 'asc',
-          },
-        ]}
         scrollbarSize
         onCellEditCommit={handleCellModification}
     

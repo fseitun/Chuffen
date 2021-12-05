@@ -81,11 +81,11 @@ export default function App() {
                 />
               }
             >
-              <Route path="dolar" element={<Dolar idSociety={idSociety} />} />
-              <Route path="cac" element={<Cac idSociety={idSociety} />} />
-              <Route path="OT" element={<OT idSociety={idSociety} />} />
-              <Route path="empresa" element={<Empresa idSociety={idSociety} />} />
-              <Route path="persona" element={<Persona idSociety={idSociety} />} />
+              <Route path="dolar" element={<Dolar idSociety={idSociety} loggedUser={loggedUser}  />} />
+              <Route path="cac" element={<Cac idSociety={idSociety}  loggedUser={loggedUser}  />} />
+              <Route path="OT" element={<OT idSociety={idSociety}  loggedUser={loggedUser}  />} />
+              <Route path="empresa" element={<Empresa idSociety={idSociety}  loggedUser={loggedUser}  />} />
+              <Route path="persona" element={<Persona idSociety={idSociety}  loggedUser={loggedUser}  />} />
 
               <Route path="factura" element={<Factura idSociety={idSociety} loggedUser={loggedUser} />} />
              
@@ -101,10 +101,10 @@ export default function App() {
               <Route path="AuthObraOP" element={<AuthObraOP idSociety={idSociety}  loggedUser={loggedUser} />} />
               
               
-              <Route path="proveedores" element={<Proveedores idSociety={idSociety} />} />
-              <Route path="usuarios" element={<Usuarios idSociety={idSociety} />} />
+              <Route path="proveedores" element={<Proveedores idSociety={idSociety}   loggedUser={loggedUser} />} />
+              <Route path="usuarios" element={<Usuarios idSociety={idSociety}  loggedUser={loggedUser}  />} />
               
-              <Route path="rubro">
+              <Route path="rubro"> 
                 <Route path="" element={<Rubro idSociety={idSociety} loggedUser={loggedUser} />} />
                 <Route
                   path=":idRubro/:rubro"
@@ -114,10 +114,10 @@ export default function App() {
 
               
               <Route path="fideicomiso">
-                <Route path="" element={<Fideicomiso idSociety={idSociety} />} />
+                <Route path="" element={<Fideicomiso idSociety={idSociety}  loggedUser={loggedUser}  />} />
                 <Route
                   path=":nombreFideicomiso"
-                  element={<DetalleFideicomiso idSociety={idSociety} />}
+                  element={<DetalleFideicomiso idSociety={idSociety}   loggedUser={loggedUser}  />}
                 />
               </Route>
               <Route path="*" element={<NotFound />} />

@@ -28,7 +28,7 @@ const columns = [
     width: 150,
     editable: true,
     headerAlign: 'center',
-    // renderCell: '*****',
+    //renderCell: Passformat,
   },
   {
     field: 'rol_descripcion',
@@ -36,7 +36,6 @@ const columns = [
     width: 150,
     editable: true,
     headerAlign: 'center',
-    // renderCell: '*****',
   },
   {
     field: 'deleteIcon',
@@ -139,3 +138,9 @@ function DeleteRow(params) {
     ));
   return <Delete onClick={notify} />;
 }
+
+function Passformat(params) {
+  //const sendRow = params.row.onIrDetalle;  
+  //const empresa = params.row.empresa;
+  return '***********';
+} 

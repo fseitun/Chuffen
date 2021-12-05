@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet';
 import { FormCac } from 'src/components/cac/FormCac';
 import { GrillaCac } from 'src/components/cac/GrillaCac';
 
-export function Cac({ idSociety }) {
+export function Cac({ idSociety, loggedUser }) {
   return (
     <>
       <Helmet>
@@ -21,10 +21,10 @@ export function Cac({ idSociety }) {
       >
         <Container >
           <Box sx={{ pt: 3 }}>
-            <FormCac idSociety={idSociety} />
+            <FormCac idSociety={idSociety} loggedUser={loggedUser} />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <GrillaCac idSociety={idSociety} />
+            <GrillaCac idSociety={idSociety} loggedUser={loggedUser} />
           </Box>
         </Container>
       </Box>

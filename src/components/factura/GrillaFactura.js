@@ -144,12 +144,12 @@ export function GrillaFactura({ idSociety, loggedUser, selectedFacturaData }) {
         pageSize={25}
         disableSelectionOnClick
         autoHeight
-        sortModel={[
+        /*sortModel={[
           {
             field: 'fechaIngreso',
             sort: 'asc',
           },
-        ]}
+        ]}*/
         scrollbarSize
         onCellEditCommit={handleCellModification}
         components={{

@@ -8,7 +8,7 @@ import { postMethod } from 'src/utils/api';
 import { yearMonthDayString, isDateUsed } from 'src/utils/utils';
 import { usePrompt } from 'src/utils/usePrompt';
 
-export function FormDolar({ idSociety }) {
+export function FormDolar({ idSociety, loggedUser}) {
   const { setIsPromptOpen, Prompt } = usePrompt();
   const queryClient = useQueryClient();
 
@@ -16,6 +16,7 @@ export function FormDolar({ idSociety }) {
     newDolar => postMethod(`dolar/agregar/${idSociety.id}`, newDolar),
     {
       onMutate: async newDolar => {
+        newDolar.creador = loggedUser.id;
         await queryClient.invalidateQueries(['dolar', idSociety]);
         const prevData = await queryClient.getQueryData(['dolar', idSociety]);
         const newData = [...prevData, { ...newDolar, id: new Date().getTime() }];

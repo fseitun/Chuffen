@@ -3,8 +3,9 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
+// import { Hidden } from '@material-ui/core';
 
-export function FormRubro({ idSociety }) {
+export function FormRubro({ idSociety, loggedUser }) {
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
 
@@ -12,9 +13,10 @@ export function FormRubro({ idSociety }) {
     newRubro => postMethod(`rubro/agregar/${idSociety.id}`, newRubro),
     {
       onMutate: async newRubro => {
+        newRubro.creador = loggedUser.id;
         await queryClient.invalidateQueries(['rubro', idSociety]);
         const prevData = await queryClient.getQueryData(['rubro', idSociety]);
-        const newData = [...prevData, { ...newRubro, id: new Date().getTime() }];
+        const newData = [...prevData, { ...newRubro, id: new Date().getTime()}];
         queryClient.setQueryData(['rubro', idSociety], newData);
         return prevData;
       },
@@ -46,7 +48,7 @@ export function FormRubro({ idSociety }) {
               type="float"              
               name="rubro"
             />
-         
+
             <Button type="submit" disabled={isSubmitting}>
               Agregar
             </Button>

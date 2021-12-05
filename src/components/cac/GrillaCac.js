@@ -52,8 +52,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     renderCell: ({ row: { deleteId } }) => (
       <DeleteIcon
         onClick={e => {
-          // console.log('e', e);
-          // console.log('deleteId', deleteId);
+       
           setRowIdToDelete(deleteId);
           setIsPromptOpen(true);
         }}
@@ -134,12 +133,6 @@ export function GrillaCac({ idSociety }) {
           pageSize={25}
           disableSelectionOnClick
           autoHeight
-          sortModel={[
-            {
-              field: 'fecha',
-              sort: 'desc',
-            },
-          ]}
           scrollbarSize
           components={{
             Toolbar: CustomToolbar,

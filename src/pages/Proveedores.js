@@ -1,10 +1,10 @@
 import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
 
-import { ManipularProveedores } from 'src/components/proveedores/ManipularProveedores';
-import { GrillaProveedores } from 'src/components/proveedores/GrillaProveedores';
+import { FormProveedor } from 'src/components/proveedores/FormProveedor';
+import { GrillaProveedor } from 'src/components/proveedores/GrillaProveedor';
 
-export function Proveedores({ idSociety }) {
+export function Proveedores({ idSociety, loggedUser }) {
   return (
     <>
       <Helmet>
@@ -19,10 +19,10 @@ export function Proveedores({ idSociety }) {
       >
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <ManipularProveedores idSociety={idSociety} />
+            <FormProveedor idSociety={idSociety} loggedUser={loggedUser} />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <GrillaProveedores idSociety={idSociety} />
+            <GrillaProveedor idSociety={idSociety} loggedUser={loggedUser}/>
           </Box>
         </Container>
       </Box>

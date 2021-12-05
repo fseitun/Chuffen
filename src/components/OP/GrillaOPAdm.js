@@ -127,12 +127,6 @@ export function GrillaOPAdm({ idSociety,  loggedUser }) {
         pageSize={25}
         disableSelectionOnClick
         autoHeight
-        sortModel={[
-          {
-            field: 'numero',
-            sort: 'asc',
-          },
-        ]}
         scrollbarSize
         /*onRowDoubleClick={(a) => IrAOP(a)}*/
         components={{
