@@ -1,13 +1,15 @@
+import * as React from 'react';
+import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
-import { Box, Button } from '@mui/material';
-import { Delete } from '@mui/icons-material';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Delete as DeleteIcon } from '@mui/icons-material';
+
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
+import { usePrompt } from 'src/utils/usePrompt';
+
 import { mostrarFecha } from 'src/utils/utils';
 
-const columns = [
+const columns = (setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'empresa',
     headerName: 'Razon Social',
@@ -74,90 +76,118 @@ const columns = [
   },
   {
     field: 'deleteIcon',
-    headerName: '',
+    headerName: ' ',
     width: 50,
     headerAlign: 'center',
     align: 'center',
-    renderCell: DeleteRow,
+    renderCell: ({ row: { deleteId } }) => (
+      <DeleteIcon
+        onClick={e => {
+          // console.log('e', e);
+          // console.log('deleteId', deleteId);
+          setRowIdToDelete(deleteId);
+          setIsPromptOpen(true);
+        }}
+      />
+    ),
   },
 ];
 
-export function GrillaFactura({ idSociety, loggedUser, selectedFacturaData }) {
+export function GrillaFactura({ idSociety }) {
+  
+  const { Prompt, setIsPromptOpen } = usePrompt(() => {});
+  const [rowIdToDelete, setRowIdToDelete] = useState();
+  // console.log(rowIdToDelete);
 
   const {
-    data: products,
+    data: facturaInformation,
     isLoading,
     error,
-  } = useQuery(['facturas', idSociety, selectedFacturaData], () =>
-    getMethod(`factura/listar/${idSociety?.id}/todas/nada`)
-  );
+  } = useQuery(['factura', idSociety], () => getMethod(`factura/listar/${idSociety.id}/todas/nada`));
 
   const queryClient = useQueryClient();
 
-  const { mutate: deleteProduct } = useMutation(
-    async id =>
-      await deleteMethod(`factura/eliminar/${idSociety?.id}`, {
-        //fideicomisoId: selectedFacturaData?.id,
-        id: id,
+  const { mutate: eliminate } = useMutation(
+    async idFactura => await deleteMethod(`factura/eliminar/${idSociety.id}`, { id: idFactura }),
+    {
+      onMutate: async idFactura => {
+        await queryClient.cancelQueries(['factura', idSociety]);
+        const prevData = queryClient.getQueryData(['factura', idSociety]);
+        const newData = prevData.filter(factura => factura.id !== idFactura);
+        queryClient.setQueryData(['factura', idSociety], newData);
+        return prevData;
+      },
+      onError: (err, idFactura, context) => queryClient.setQueryData(['factura', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['factura', idSociety]),
+    }
+  );
+  // eliminate(1);
+
+  const { mutate: modifyData } = useMutation(
+    async ({ field, id, value }) =>
+      await postMethod(`factura/modificar/${idSociety.id}`, {
+        id,
+        [field]: value,
       }),
     {
-      onSuccess: async () =>
-        await queryClient.refetchQueries(['facturas', idSociety, selectedFacturaData]),
+      onMutate: async ({ field, id, value }) => {
+        await queryClient.cancelQueries(['factura', idSociety]);
+        const prevData = queryClient.getQueryData(['factura', idSociety]);
+        // console.log('prevData', prevData);
+        const newData = [
+          ...prevData.filter(factura => factura.id !== id),
+          { ...prevData.find(factura => factura.id === id), [field]: value },
+        ];
+        // console.log('newData', newData);
+        queryClient.setQueryData(['factura', idSociety], newData);
+        return prevData;
+      },
+      onError: (err, id, context) => queryClient.setQueryData(['factura', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['factura', idSociety]),
     }
   );
 
+  
+  if (isLoading) {
+    return 'Cargando...';
+  } else if (error) {
+    return `Hubo un error: ${error.message}`;
+  } else
+    return (
+      <div style={{ width: '100%' }}>
+        <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
+        <DataGrid
+          rows={facturaInformation.map(factura => ({
+            id: factura.id,
 
-
-  if (isLoading) return 'Cargando...';
-  if (error) return `Hubo un error: ${error.message}`;
-
-  function handleCellModification(e) {
-    
-    let newData = {
-      id: e.id,
-     [e.field]: e.value,
-    };
-    
-    postMethod(`factura/modificar/${idSociety?.id}`, newData);
-  }
-
-  return (
-    <div style={{ width: '100%' }}>
-      <ToastContainer />
-      <DataGrid
-        
-        
-        rows={products.map(el => ({
-          id: el.id,
-          empresa:(el.empresas[0]?el.empresas[0].razonSocial:''),
-          numero: el.numero,
-          link: el.link,
-          montoTotal: el.montoTotal,
-          moneda: el.moneda,
-          fechaIngreso: el.fechaIngreso,
-          fechaVTO: el.fechaVTO,  
-          onDelete: () => deleteProduct(el.id),
-        }))}
-
-
-        columns={columns}
-        pageSize={25}
-        disableSelectionOnClick
-        autoHeight
-        /*sortModel={[
-          {
-            field: 'fechaIngreso',
-            sort: 'asc',
-          },
-        ]}*/
-        scrollbarSize
-        onCellEditCommit={handleCellModification}
-        components={{
-          Toolbar: CustomToolbar,
-        }}
-      />
-    </div>
-  );
+            empresa:(factura.empresas[0]?factura.empresas[0].razonSocial:''),
+            numero: factura.numero,
+            link: factura.link,
+            montoTotal: factura.montoTotal,
+            moneda: factura.moneda,
+            fechaIngreso: factura.fechaIngreso,
+            fechaVTO: factura.fechaVTO, 
+            /*
+            fecha: factura.fecha,
+            BCRA: factura.BCRA,
+            blue: factura.blue,
+            descripcion: factura.descripcion,
+            mep: factura.mep,
+            */
+            deleteId: factura.id,
+          }))}
+          onCellEditCommit={modifyData}
+          columns={columns(setIsPromptOpen, setRowIdToDelete)}
+          pageSize={25}
+          disableSelectionOnClick
+          autoHeight
+          scrollbarSize
+          components={{
+            Toolbar: CustomToolbar,
+          }}
+        />
+      </div>
+    );
 }
 
 function CustomToolbar() {
@@ -168,34 +198,12 @@ function CustomToolbar() {
   );
 }
 
-
-function DeleteRow(params) {
-  const deleteRow = params.row.onDelete;
-  const notify = () =>
-    toast(({ closeToast }) => (
-      <Box>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={closeToast}>
-          No quiero borrar
-        </Button>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={() => {
-            deleteRow();
-            closeToast();
-          }}>
-          Sí quiero borrar
-        </Button>
-      </Box>
-    ));
-  return <Delete onClick={notify} />;
+function onlyNumbers(data) {
+  console.log('data', data);
+  const regex = /^\d{0,3}(\.\d{0,2})?$/;
+  const isValid = regex.test(data.props.value.toString());
+  const error = !isValid;
+  return { ...data.props, error };
 }
 
 function fFecha(params) {

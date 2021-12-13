@@ -13,7 +13,7 @@ export function ManipularFideicomiso({ idSociety }) {
     newData => postMethod(`fideicomiso/agregar/${idSociety.id}`, newData),
     {
       onSuccess: () => {
-        queryClient.refetchQueries(['fideicomiso', idSociety.id]);
+        queryClient.refetchQueries(['fideicomiso', idSociety]);
       },
     }
   );

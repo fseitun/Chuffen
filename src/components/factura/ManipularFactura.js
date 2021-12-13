@@ -19,7 +19,7 @@ export function ManipularFactura({ idSociety, loggedUser }) {
     newData => postMethod(`factura/agregar/${idSociety.id}`, newData),
     {
       onSuccess: async () =>
-        await queryClient.refetchQueries(['facturas', idSociety])
+        await queryClient.refetchQueries(['factura', idSociety])
     }
   );
 

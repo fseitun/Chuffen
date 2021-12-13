@@ -1,216 +1,215 @@
+import * as React from 'react';
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import {
-  DataGrid,
-  GridToolbarContainer,
-  GridToolbarExport,
-} from '@mui/x-data-grid';
-import { Box, Button, Autocomplete, TextField } from '@mui/material';
-import { Delete } from '@mui/icons-material';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { Delete as DeleteIcon } from '@mui/icons-material';
+import { Autocomplete, TextField } from '@mui/material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
+import { usePrompt } from 'src/utils/usePrompt';
 import { mostrarCUIT } from 'src/utils/utils';
 
-function columns(rubros, subRubros, changeProveedor) {
-  return [
-    // { field: 'id', headerName: 'ID', width: 100 , headerAlign: 'center',},
-    {
-      field: 'razonSocial',
-      headerName: 'Razón Social',
-      width: 170,
-      editable: true,
-      headerAlign: 'center',
+const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
+  {
+    field: 'razonSocial',
+    headerName: 'Razón Social',
+    width: 170,
+    editable: true,
+    headerAlign: 'center',
+  },
+  {
+    field: 'CUIT',
+    headerName: 'CUIT',
+    width: 130,
+    // editable: true,
+    headerAlign: 'center',
+    valueFormatter: ({ value }) => mostrarCUIT(value),
+  },
+  {
+    field: 'telefono',
+    headerName: 'Teléfono',
+    width: 140,
+    editable: true,
+    headerAlign: 'center',
+    valueFormatter: ({ value }) => {
+      if (value) {
+        value = value.split('');
+        value.splice(2, 0, '-');
+        value.splice(7, 0, '-');
+        return value.join('');
+      }
     },
-    
+  },
+  {
+    field: 'mail',
+    headerName: 'Mail',
+    width: 150,
+    editable: true,
+    headerAlign: 'center',
+  },
+  {
+    field: 'CBU',
+    headerName: 'CBU',
+    width: 110,
+    editable: true,
+    headerAlign: 'center',
+  },
+  {
+    field: 'banco',
+    headerName: 'Banco',
+    width: 120,
+    editable: true,
+    headerAlign: 'center',
+  },
+  {
+    field: 'nroCuenta',
+    headerName: '# Cuenta',
+    width: 140,
+    editable: true,
+    headerAlign: 'center',
+  },
 
-    {
-      field: 'CUIT',
-      headerName: 'CUIT',
-      width: 130,
-      // editable: true,
-      headerAlign: 'center',
-      valueFormatter: ({ value }) => mostrarCUIT(value),
-    },
-    {
-      field: 'telefono',
-      headerName: 'Teléfono',
-      width: 140,
-      editable: true,
-      headerAlign: 'center',
-      valueFormatter: ({ value }) => {
-        if (value) {
-          value = value.split('');
-          value.splice(2, 0, '-');
-          value.splice(7, 0, '-');
-          return value.join('');
-        }
-      },
-    },
-    {
-      field: 'mail',
-      headerName: 'Mail',
-      width: 150,
-      editable: true,
-      headerAlign: 'center',
-    },
-    {
-      field: 'CBU',
-      headerName: 'CBU',
-      width: 110,
-      editable: true,
-      headerAlign: 'center',
-    },
-    {
-      field: 'banco',
-      headerName: 'Banco',
-      width: 120,
-      editable: true,
-      headerAlign: 'center',
-    },
-    {
-      field: 'nroCuenta',
-      headerName: '# Cuenta',
-      width: 140,
-      editable: true,
-      headerAlign: 'center',
-    },
+  {
+    field: 'rubroID',
+    headerName: 'Rubro',
+    width: 140,
+    editable: true,
+    renderCell: ({ value }) => value.nombre,
+    renderEditCell: props => <ComboBox rubros={rubros} props={props} />,
+    headerAlign: 'center',
+  },
 
-    {
-      field: 'rubroID',
-      headerName: 'Rubro',
-      width: 140,
-      editable: true,
-      renderCell: ({ value }) => value.nombre,
-      renderEditCell: props => <ComboBox rubros={rubros} props={props} />,
-      headerAlign: 'center',
-    },
-
-    {
-      field: 'subrubroID',
-      headerName: 'Sub Rubro',
-      width: 140,
-      editable: true,
-      renderCell: ({ value }) => value.nombre,
-      renderEditCell: props => <ComboBoxSub subRubros={subRubros} props={props} />,
-      headerAlign: 'center',
-    },
-    {
-      field: 'deleteIcon',
-      headerName: ' ',
-      width: 50,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: DeleteRow,
-    },
-  ];
-}
+  {
+    field: 'subrubroID',
+    headerName: 'Sub Rubro',
+    width: 140,
+    editable: true,
+    renderCell: ({ value }) => value.nombre,
+    renderEditCell: props => <ComboBoxSub subRubros={subRubros} props={props} />,
+    headerAlign: 'center',
+  },
+  {
+    field: 'deleteIcon',
+    headerName: ' ',
+    width: 50,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: ({ row: { deleteId } }) => (
+      <DeleteIcon
+        onClick={e => {
+          // console.log('e', e);
+          // console.log('deleteId', deleteId);
+          setRowIdToDelete(deleteId);
+          setIsPromptOpen(true);
+        }}
+      />
+    ),
+  },
+];
 
 export function GrillaProveedor({ idSociety }) {
-  const queryClient = useQueryClient();
-
-  const { mutate } = useMutation(
-    async id => {
-      await deleteMethod(`proveedor/eliminar/${idSociety.id}`, id);
-    },
-    {
-      onSuccess: async () =>
-        await queryClient.refetchQueries(['empresas', idSociety.id]),
-    }
-  );
+  
+  const { Prompt, setIsPromptOpen } = usePrompt(() => {});
+  const [rowIdToDelete, setRowIdToDelete] = useState();
+  // console.log(rowIdToDelete);
 
   const {
-    data: infoProveedores,
+    data: proveedorInformation,
     isLoading,
     error,
-  } = useQuery(['proveedores', idSociety], () =>
-    getMethod(`proveedor/listar/${idSociety.id}`)
-  );
+  } = useQuery(['proveedor', idSociety], () => getMethod(`proveedor/listar/${idSociety.id}`));
 
+  const queryClient = useQueryClient();
 
   const { data: rubros } = useQuery(['rubros', idSociety], () =>
     getMethod(`rubro/listar/${idSociety.id}`)
   );
 
 
-    const { data: subRubros } = useQuery(['subrubros', idSociety], () =>
+  const { data: subRubros } = useQuery(['subrubros', idSociety], () =>
     getMethod(`subrubro/listar/${idSociety.id}/0`)
   );
 
-  const { mutate: changeProveedor } = useMutation(
-    async ({ field, value, id }) => {
-      const payload = {
-        id,
-        [field]: value,
-      };
-      await postMethod(`proveedor/modificar/${idSociety.id}`, payload);
-    },
+  const { mutate: eliminate } = useMutation(
+    async idProveedor => await deleteMethod(`proveedor/eliminar/${idSociety.id}`, { id: idProveedor }),
     {
-      onMutate: async ({ field, value, id }) => {
-       
-        await queryClient.cancelQueries(['proveedores', idSociety]);
-        const prevData = queryClient.getQueryData(['proveedores', idSociety]);
-        
-        const newData = [
-          ...prevData.filter(proveedor => proveedor.id !== id),
-          {
-            ...prevData.find(proveedor => proveedor.id === id),
-            [field]: value,
-          },
-        ];
-
-        await queryClient.setQueryData(['proveedores', idSociety], newData);
+      onMutate: async idProveedor => {
+        await queryClient.cancelQueries(['proveedor', idSociety]);
+        const prevData = queryClient.getQueryData(['proveedor', idSociety]);
+        const newData = prevData.filter(proveedor => proveedor.id !== idProveedor);
+        queryClient.setQueryData(['proveedor', idSociety], newData);
         return prevData;
       },
-      onError: (err, id, context) =>
-        queryClient.setQueryData(['proveedores', idSociety], context),
-      onSettled: () =>
-        queryClient.invalidateQueries(['proveedores', idSociety]),
+      onError: (err, idProveedor, context) => queryClient.setQueryData(['proveedor', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['proveedor', idSociety]),
+    }
+  );
+  // eliminate(1);
+
+  const { mutate: modifyData } = useMutation(
+    async ({ field, id, value }) =>
+      await postMethod(`proveedor/modificar/${idSociety.id}`, {
+        id,
+        [field]: value,
+      }),
+    {
+      onMutate: async ({ field, id, value }) => {
+        await queryClient.cancelQueries(['proveedor', idSociety]);
+        const prevData = queryClient.getQueryData(['proveedor', idSociety]);
+        // console.log('prevData', prevData);
+        const newData = [
+          ...prevData.filter(proveedor => proveedor.id !== id),
+          { ...prevData.find(proveedor => proveedor.id === id), [field]: value },
+        ];
+        // console.log('newData', newData);
+        queryClient.setQueryData(['proveedor', idSociety], newData);
+        return prevData;
+      },
+      onError: (err, id, context) => queryClient.setQueryData(['proveedor', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['proveedor', idSociety]),
     }
   );
 
-
-
-  if (isLoading) return 'Cargando...';
-  if (error) return `Hubo un error: ${error.message}`;
-  return (
-    <div style={{ width: '100%' }}>
-      <ToastContainer />
-      <DataGrid
-        rows={infoProveedores.map(el => ({
-          id: el.id,
-          rubroID: {
-            id: el.rubroId,
-            nombre: rubros?.find(rubro => rubro.id === el.rubroId)?.rubro,
-          },
-          subrubroID: {
-            id: el.subrubroId,
-            nombre: subRubros?.find(subRubro => subRubro.id === el.subrubroId)?.subRubro,
-          },
-          // subRubro: subRubros.find(subRubro => subRubro.id === el.subRubroId)?.subRubro,
-          razonSocial: el.razonSocial,
-          CUIT: el.CUIT,
-          mail: el.mail,
-          telefono: el.telefono,
-          CBU: el.CBU,
-          banco: el.banco,
-          nroCuenta: el.nroCuenta,
-          onDelete: () => {
-            mutate(el.id);
-          },
-        }))}
-        columns={columns(rubros, subRubros, changeProveedor)}
-        pageSize={100}
-        disableSelectionOnClick
-        autoHeight
-        scrollbarSize
-        onCellEditCommit={data => changeProveedor(data)}
-        components={{
-          Toolbar: CustomToolbar,
-        }}
-      />
-    </div>
-  );
+  
+  if (isLoading) {
+    return 'Cargando...';
+  } else if (error) {
+    return `Hubo un error: ${error.message}`;
+  } else
+    return (
+      <div style={{ width: '100%' }}>
+        <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
+        <DataGrid
+          rows={proveedorInformation.map(proveedor => ({
+            id: proveedor.id,
+            rubroID: {
+              id: proveedor.rubroId,
+              nombre: rubros?.find(rubro => rubro.id === proveedor.rubroId)?.rubro,
+            },
+            subrubroID: {
+              id: proveedor.subrubroId,
+              nombre: subRubros?.find(subRubro => subRubro.id === proveedor.subrubroId)?.subRubro,
+            },          
+            razonSocial: proveedor.razonSocial,
+            CUIT: proveedor.CUIT,
+            mail: proveedor.mail,
+            telefono: proveedor.telefono,
+            CBU: proveedor.CBU,
+            banco: proveedor.banco,
+            nroCuenta: proveedor.nroCuenta,
+            deleteId: proveedor.id,
+          }))}
+          onCellEditCommit={modifyData}
+          columns={columns(rubros, subRubros, setIsPromptOpen, setRowIdToDelete)}
+          pageSize={25}
+          disableSelectionOnClick
+          autoHeight
+          scrollbarSize
+          components={{
+            Toolbar: CustomToolbar,
+          }}
+        />
+      </div>
+    );
 }
 
 function CustomToolbar() {
@@ -221,35 +220,12 @@ function CustomToolbar() {
   );
 }
 
-function DeleteRow(params) {
-  const deleteRow = params.row.onDelete;
-  const notify = () =>
-    toast(({ closeToast }) => (
-      <Box>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant="contained"
-          color="secondary"
-          size="small"
-          onClick={closeToast}
-        >
-          No quiero borrar
-        </Button>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant="contained"
-          color="secondary"
-          size="small"
-          onClick={() => {
-            deleteRow();
-            closeToast();
-          }}
-        >
-          Sí quiero borrar
-        </Button>
-      </Box>
-    ));
-  return <Delete onClick={notify} />;
+function onlyNumbers(data) {
+  console.log('data', data);
+  const regex = /^\d{0,3}(\.\d{0,2})?$/;
+  const isValid = regex.test(data.props.value.toString());
+  const error = !isValid;
+  return { ...data.props, error };
 }
 
 function ComboBox({ rubros, props }) {
@@ -272,10 +248,11 @@ function ComboBox({ rubros, props }) {
         
         setSelectedRubro(newValue);
      
-
-        api.setEditCellValue({ id, field, value: newValue.id }, event);
-        await props.api.commitCellChange({ id, field });
-        api.setCellMode(id, field, 'view');
+        if(newValue?.id){
+          api.setEditCellValue({ id, field, value: newValue.id }, event);
+          await props.api.commitCellChange({ id, field });
+          api.setCellMode(id, field, 'view');
+        }
       }}
       disablePortal
       id="combo-box-demo"
@@ -298,7 +275,7 @@ function ComboBoxSub({ subRubros, props }, params) {
       subRubro: '',
     },
   ];
-  // console.log('AAAAA',subRubros);
+
   const [selectedsubRubro, setSelectedsubRubro] = useState({
     subRubro: '',
   });
@@ -325,3 +302,4 @@ function ComboBoxSub({ subRubros, props }, params) {
     />
   );
 }
+

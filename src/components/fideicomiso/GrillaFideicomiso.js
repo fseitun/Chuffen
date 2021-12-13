@@ -1,102 +1,130 @@
+import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
-import { Box, Button, TextField, Autocomplete } from '@mui/material';
-import { Delete } from '@mui/icons-material';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-import { getMethod, deleteMethod, postMethod } from 'src/utils/api';
+// import { Delete as DeleteIcon } from '@mui/icons-material';
+import { TextField, Autocomplete } from '@mui/material';
+import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
+import { usePrompt } from 'src/utils/usePrompt';
+// import { mostrarFecha } from 'src/utils/utils';
 import { Uploader } from 'src/components/auxiliares/Uploader';
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
-const columns = function columns(color, setColor, id, setFechaInicio, setNewLogoFlag) {
-  return [
-    {
-      field: 'nombre',
-      headerName: 'Nombre',
-      width: 200,
-      headerAlign: 'center',
-      align: 'left',
-    },
-    {
-      field: 'fechaInicio',
-      headerName: 'Inicio',
-      editable: true,
-      width: 170,
-      type: 'date',
-      headerAlign: 'center',      
-      align: 'center',
-      valueFormatter: ({ value }) =>
-        new Date(value).toLocaleDateString('es-AR', {
-          year: 'numeric',
-          month: 'short',
-          timeZone: 'UTC',
-        }),
-      
-    },
-    {
-      field: 'fechaFin',
-      headerName: 'Finalización',
-      editable: true,
-      width: 170,
-      type: 'date',
-      headerAlign: 'center',
-      align: 'center',
-      valueFormatter: ({ value }) =>
-        new Date(value).toLocaleDateString('es-AR', {
-          year: 'numeric',
-          month: 'short',
-          timeZone: 'UTC',
-        }),
-    },
-    {
-      field: 'logo',
-      headerName: 'Logo',
-      width: 150,
-      renderCell: passedData =>
-        passedData.row.logo ? (
-          <img
-            style={{ display: 'block', margin: 'auto', width: '30%' }}
-            src={`${apiServerUrl}sociedades/${id}/${passedData.row.logo}`}
-            alt="logo"
-          />
-        ) : (
-          <Uploader fideId={passedData.id} setNewLogoFlag={setNewLogoFlag} />
-        ),
-    },
+const columns = (color, setColor, id,  setNewLogoFlag, setIsPromptOpen, setRowIdToDelete) => [
+  {
+    field: 'nombre',
+    headerName: 'Nombre',
+    width: 200,
+    headerAlign: 'center',
+    align: 'left',
+  },
+  {
+    field: 'fechaInicio',
+    headerName: 'Inicio',
+    editable: true,
+    width: 170,
+    type: 'date',
+    headerAlign: 'center',      
+    align: 'center',
+    valueFormatter: ({ value }) =>
+      new Date(value).toLocaleDateString('es-AR', {
+        year: 'numeric',
+        month: 'short',
+        timeZone: 'UTC',
+      }),
+    
+  },
+  {
+    field: 'fechaFin',
+    headerName: 'Finalización',
+    editable: true,
+    width: 170,
+    type: 'date',
+    headerAlign: 'center',
+    align: 'center',
+    valueFormatter: ({ value }) =>
+      new Date(value).toLocaleDateString('es-AR', {
+        year: 'numeric',
+        month: 'short',
+        timeZone: 'UTC',
+      }),
+  },
+  {
+    field: 'cloud',
+    headerName: 'Cloud',
+    editable: true,
+    width: 200,
+    headerAlign: 'center',
+    align: 'left',
+  },
 
-    {
-      field: 'colorElegido',
-      headerName: 'Color',
-      width: 150,
-      editable: true,
-      renderCell: ({ row: { colorElegido } }) => (
-        <div style={{ width: '100%', height: '100%', background: colorElegido }}></div>
-      ),
-      renderEditCell: ({ row: { colorElegido } }) => (
-        <ColorPicker
-          originalColor={colors.filter(color => color.css === colorElegido)[0]}
-          color={color}
-          setColor={setColor}
-          colorOptions={colors}
-          setFechaInicio={setFechaInicio}
-          setNewLogoFlag={setNewLogoFlag}
+  {
+    field: 'logo',
+    headerName: 'Logo',
+    width: 150,
+    renderCell: passedData =>
+      passedData.row.logo ? (
+        <img
+          style={{ display: 'block', margin: 'auto', width: '30%' }}
+          src={`${apiServerUrl}sociedades/${id}/${passedData.row.logo}`}
+          alt="logo"
         />
+      ): (""), 
+  },
+
+  /*
+  {
+    field: 'logo',
+    headerName: 'Logo',
+    width: 150,
+    renderCell: passedData =>
+      passedData.row.logo ? (
+        <img
+          style={{ display: 'block', margin: 'auto', width: '30%' }}
+          src={`${apiServerUrl}sociedades/${id}/${passedData.row.logo}`}
+          alt="logo"
+        />
+      ) : (
+        <Uploader fideId={passedData.id} setNewLogoFlag={setNewLogoFlag} />
       ),
-    },
-    /*
-    {
-      field: 'deleteIcon',
-      headerName: '',
-      width: 50,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: DeleteRow,
-    },*/
-  ];
-};
+  },*/
+  {
+    field: 'colorElegido',
+    headerName: 'Color',
+    width: 150,
+    editable: false,
+    renderCell: ({ row: { colorElegido } }) => (
+      <div style={{ width: '100%', height: '100%', background: colorElegido }}></div>
+    ),
+    renderEditCell: ({ row: { colorElegido } }) => (
+      <ColorPicker
+        originalColor={colors.filter(color => color.css === colorElegido)[0]}
+        color={color}
+        setColor={setColor}
+        colorOptions={colors}
+        setNewLogoFlag={setNewLogoFlag}
+      />
+    ),
+  },
+  /*
+  {
+    field: 'deleteIcon',
+    headerName: ' ',
+    width: 50,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: ({ row: { deleteId } }) => (
+      <DeleteIcon
+        onClick={e => {
+          // console.log('e', e);
+          // console.log('deleteId', deleteId);
+          setRowIdToDelete(deleteId);
+          setIsPromptOpen(true);
+        }}
+      />
+    ),
+  },*/
+];
 
 const colors = [
   { label: 'red', css: 'red' },
@@ -116,132 +144,95 @@ const colors = [
 ];
 
 export function GrillaFideicomiso({ idSociety }) {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
+
   const [color, setColor] = useState(null);
-
-  const [fechaInicio, setFechaInicio] = useState(null);
-  // console.log('color:', color);
+  //const [fechaInicio, setFechaInicio] = useState(null);
   const [newLogoFlag, setNewLogoFlag] = useState(false);
-  // console.log('newLogoFlag:', newLogoFlag);
-
-
-  const { mutate } = useMutation(
-    async id =>
-      await deleteMethod(`fideicomiso/eliminar/${idSociety?.id}`, {
-        //fideicomisoId: selectedFacturaData?.id,
-        id: id,
-      }),
-    {
-      onSuccess: async () =>
-      await queryClient.refetchQueries(['fideicomiso', idSociety.id]),
-    }
-  );
+  
+  const { Prompt, setIsPromptOpen } = usePrompt(() => {});
+  const [rowIdToDelete, setRowIdToDelete] = useState();
+  // console.log(rowIdToDelete);
 
   const {
-    data: dataFromFideicomisos,
+    data: fideicomisoInformation,
     isLoading,
     error,
-  } = useQuery(['fideicomiso', idSociety?.id, fechaInicio, newLogoFlag], () =>
-    getMethod(`fideicomiso/listar/${idSociety?.id}`)
-  );
-  // console.log('dataFromFideicomisos:', dataFromFideicomisos);
+  } = useQuery(['fideicomiso', idSociety], () => getMethod(`fideicomiso/listar/${idSociety.id}`));
 
-  const { mutate: changeDataToFideicomiso } = useMutation(
-    async newData => {
-      console.log('newData', newData);
-      return await postMethod(`fideicomiso/modificar/${idSociety?.id}`, newData);
-    },
+  const queryClient = useQueryClient();
+
+  const { mutate: eliminate } = useMutation(
+    async idFideicomiso => await deleteMethod(`fideicomiso/eliminar/${idSociety.id}`, { id: idFideicomiso }),
     {
-      onMutate: async newColor => {
-        // console.log('newColor', newColor);
-        await queryClient.cancelQueries(['fideicomiso', idSociety?.id]);
-
-        const previousFideicomisoData = queryClient.getQueryData([
-          'fideicomiso',
-          idSociety?.id,
-          fechaInicio,
-          newLogoFlag,
-        ]);
-        // console.log('previousFideicomisoData', previousFideicomisoData);
-
-        queryClient.setQueryData(['fideicomiso', idSociety?.id, fechaInicio, newLogoFlag], oldData => {
-          // console.log('oldData:', oldData);
-          const copyOfOldData = [...oldData];
-          // console.log('copyOfOldData:', copyOfOldData);
-          const changedFideicomiso = copyOfOldData.find(e => newColor.id === e.id);
-          // console.log('changedFideicomiso:', changedFideicomiso);
-          // console.log('newData:', newData);
-          changedFideicomiso.color = newColor.color;
-          // console.log('changedFideicomiso:', changedFideicomiso);
-          const newListOfFideicomisos = [
-            ...copyOfOldData.filter(e => e.id !== newColor.id),
-            changedFideicomiso,
-          ];
-          // console.log('newListOfFideicomisos:', newListOfFideicomisos);
-          return newListOfFideicomisos;
-        });
-
-        return { previousFideicomisoData };
+      onMutate: async idFideicomiso => {
+        await queryClient.cancelQueries(['fideicomiso', idSociety]);
+        const prevData = queryClient.getQueryData(['fideicomiso', idSociety]);
+        const newData = prevData.filter(fideicomiso => fideicomiso.id !== idFideicomiso);
+        queryClient.setQueryData(['fideicomiso', idSociety], newData);
+        return prevData;
       },
-      onError: (err, newData, context) => {
-        queryClient.setQueryData(
-          ['fideicomiso', idSociety?.id, fechaInicio, newLogoFlag],
-          context.previousFideicomisoData
-        );
+      onError: (err, idFideicomiso, context) => queryClient.setQueryData(['fideicomiso', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['fideicomiso', idSociety]),
+    }
+  );
+  // eliminate(1);
+
+  const { mutate: modifyData } = useMutation(
+    async ({ field, id, value }) =>
+      await postMethod(`fideicomiso/modificar/${idSociety.id}`, {
+        id,
+        [field]: value,
+      }),
+    {
+      onMutate: async ({ field, id, value }) => {
+        await queryClient.cancelQueries(['fideicomiso', idSociety]);
+        const prevData = queryClient.getQueryData(['fideicomiso', idSociety]);
+        // console.log('prevData', prevData);
+        const newData = [
+          ...prevData.filter(fideicomiso => fideicomiso.id !== id),
+          { ...prevData.find(fideicomiso => fideicomiso.id === id), [field]: value },
+        ];
+        // console.log('newData', newData);
+        queryClient.setQueryData(['fideicomiso', idSociety], newData);
+        return prevData;
       },
-      onSettled: () => {
-        queryClient.invalidateQueries(['fideicomiso', idSociety?.id, fechaInicio, newLogoFlag]);
-      },
+      onError: (err, id, context) => queryClient.setQueryData(['fideicomiso', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['fideicomiso', idSociety]),
     }
   );
 
-  if (isLoading) return 'Cargando...';
-  if (error) return `Hubo un error: ${error.message}`;
-
-  return (
-    <div style={{ width: '100%' }}>
-      <ToastContainer />
-      <DataGrid
-        rows={dataFromFideicomisos?.map(el => ({
-          id: el.id,
-          nombre: el.nombre,
-          fechaInicio: el.fechaInicio,
-          fechaFin: el.fechaFin,
-          colorElegido: el.color,
-          logo: el.logo,
-          onDelete: () => mutate(el.id),
-        }))}
-        columns={columns(color, setColor, idSociety?.id, setFechaInicio, setNewLogoFlag)}
-        pageSize={25}
-        disableSelectionOnClick
-        autoHeight
-        scrollbarSize
-        onCellEditCommit={({ id }) => {
-          // console.log(idSociety?.id, color.css);
-          changeDataToFideicomiso({
-            id: id,
-            fechaInicio: fechaInicio,
-            color: color?.css,
-          });
-        }}
-        onRowDoubleClick={a => {
-         // console.log(a);
-          return IrAFideicomiso(a);
-        }}
-        components={{
-          Toolbar: CustomToolbar,
-        }}
-      />
-    </div>
-  );
-
-  function IrAFideicomiso(params) {
-    if(1===2){ // que no navegue, por ahora no usamos detalle fideicomiso
-      navigate(`./${params.row.nombre}`);
-    }
-  }
- 
+  
+  if (isLoading) {
+    return 'Cargando...';
+  } else if (error) {
+    return `Hubo un error: ${error.message}`;
+  } else
+    return (
+      <div style={{ width: '100%' }}>
+        <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
+        <DataGrid
+          rows={fideicomisoInformation.map(fideicomiso => ({
+            id: fideicomiso.id,
+            nombre: fideicomiso.nombre,
+            fechaInicio: fideicomiso.fechaInicio,
+            fechaFin: fideicomiso.fechaFin,
+            colorElegido: fideicomiso.color,
+            logo: fideicomiso.logo,
+            cloud: fideicomiso.cloud,
+            deleteId: fideicomiso.id,
+          }))}
+          onCellEditCommit={modifyData}
+          columns={columns(color, setColor, idSociety?.id, setNewLogoFlag, setIsPromptOpen, setRowIdToDelete)}
+          pageSize={25}
+          disableSelectionOnClick
+          autoHeight
+          scrollbarSize
+          components={{
+            Toolbar: CustomToolbar,
+          }}
+        />
+      </div>
+    );
 }
 
 function CustomToolbar() {
@@ -252,36 +243,6 @@ function CustomToolbar() {
   );
 }
 
-function DeleteRow(params) {
-  const deleteRow = params.row.onDelete;
-  const notify = () =>
-    toast(({ closeToast }) => (
-      <Box>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant="contained"
-          color="secondary"
-          size="small"
-          onClick={closeToast}
-        >
-          No quiero borrar
-        </Button>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant="contained"
-          color="secondary"
-          size="small"
-          onClick={() => {
-            deleteRow();
-            closeToast();
-          }}
-        >
-          Sí quiero borrar
-        </Button>
-      </Box>
-    ));
-  return <Delete onClick={notify} />;
-}
 
 function ColorPicker({ color, setColor, colorOptions, originalColor }) {
   useEffect(

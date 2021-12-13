@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
+import { Autocomplete, TextField } from '@mui/material';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 
@@ -30,15 +31,19 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     width: 150,
     editable: true,
     headerAlign: 'center',
-    //renderCell: Passformat,
+    renderCell: Passformat,
   },
+
   {
-    field: 'rol_descripcion',
+    field: 'rolId', // campo en grilla
     headerName: 'Rol',
     width: 150,
     editable: true,
+    renderCell: ({ value }) => value.rol_descripcion, // a visualizar
+    renderEditCell: props => <ComboBox roles={roles} props={props} />,
     headerAlign: 'center',
   },
+
   {
     field: 'deleteIcon',
     headerName: ' ',
@@ -56,6 +61,13 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
       />
     ),
   },
+];
+
+
+const roles = [  
+  { id: 1, rol_descripcion: 'administrativo' },
+  { id: 2, rol_descripcion: 'obra' },
+  { id: 3, rol_descripcion: 'manager' },
 ];
 
 export function GrillaUsuario({ idSociety }) {
@@ -127,7 +139,11 @@ export function GrillaUsuario({ idSociety }) {
             user: usuario.user,
             mail: usuario.mail,
             pass: usuario.pass,
-            rol_descripcion: usuario.rol_descripcion,
+            rolId: { // es lo que manda por post a la api
+              id: usuario['rol.id'],
+              rol_descripcion: roles?.find(rol => rol.id === usuario['rol.id'])?.rol_descripcion,
+            }, 
+            
             deleteId: usuario.id,
           }))}
           onCellEditCommit={modifyData}
@@ -142,6 +158,43 @@ export function GrillaUsuario({ idSociety }) {
         />
       </div>
     );
+}
+
+function ComboBox({ roles, props }) {
+  const { id, api, field } = props;
+
+  roles = [
+    ...roles,
+    {
+      rol_descripcion: '',
+    },
+  ];
+  const [selectedRol, setSelectedRol] = useState({
+    rol_descripcion: '',
+  });
+
+  return (
+    <Autocomplete
+      value={selectedRol}
+      onChange={async (event, newValue) => {        
+        setSelectedRol(newValue); 
+        
+        console.log(555555555, id, newValue?.id);     
+        if(newValue?.id){
+          api.setEditCellValue({ id, field, value: newValue.id }, event);
+          await props.api.commitCellChange({ id, field });
+          api.setCellMode(id, field, 'view');
+        }
+      }}
+      disablePortal
+      id="combo-box-demo"
+      options={roles}
+      isOptionEqualToValue={(op, val) => op.rol_descripcion === val.rol_descripcion}
+      getOptionLabel={option => option.rol_descripcion}
+      sx={{ width: 300 }}
+      renderInput={params => <TextField {...params} label="Rol" />}
+    />
+  );
 }
 
 function CustomToolbar() {

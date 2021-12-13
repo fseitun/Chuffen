@@ -1,19 +1,15 @@
+import * as React from 'react';
+import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-// import { useNavigate } from 'react-router-dom';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
-import { Box, Button } from '@mui/material';
-// import { Delete } from '@mui/icons-material';
+import { Delete as DeleteIcon } from '@mui/icons-material';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
+import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
+import { usePrompt } from 'src/utils/usePrompt';
+
 import { mostrarFecha } from 'src/utils/utils';
-// import { AssignmentTurnedIn } from '@mui/icons-material';
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-import { getMethod, postMethod } from 'src/utils/api';
-
-const columns = [
-
+const columns = (setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'createdAt',
     headerName: 'Fecha',
@@ -69,84 +65,116 @@ const columns = [
     headerAlign: 'center',
     align: 'left',    
   },
-
   {
     field: 'PriceCheckIcon',
-    headerName: 'Autoriza en Obra',
-    width: 195,
+    headerName: ' ',
+    width: 50,
     headerAlign: 'center',
     align: 'center',
-    renderCell: AuthRow,
+    renderCell: ({ row: { authId } }) => (
+      <PriceCheckIcon
+        onClick={e => {
+
+          setRowIdToDelete(authId);
+          setIsPromptOpen(true);
+        }}
+      />
+    ),
   },
+
+];
+
+export function GrillaOPObra({ idSociety,  loggedUser }) {
   
-];              
-export function GrillaOPObra({ idSociety, loggedUser }) {
+  const { Prompt, setIsPromptOpen } = usePrompt(() => {});
+  const [rowIdToDelete, setRowIdToDelete] = useState();
+  // console.log(rowIdToDelete);
+
+  const {
+    data: opObraInformation,
+    isLoading,
+    error,
+  } = useQuery(['OPobra', idSociety], () => getMethod(`OP/listar/${idSociety.id}/authObra/nulo`));
 
 
-  const { data, isLoading, error } = useQuery(['OP', idSociety.id], () =>
-    getMethod(`OP/listar/${idSociety.id}/authObra/nulo`)
-  );
-
-  // const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { mutate: authProduct } = useMutation(
-    
+  const { mutate: authFila } = useMutation(
     async id =>
       await postMethod(`autorizacion/agregar/${idSociety?.id}`, {
 
         opid : id,
         documento: 'op',
-        tipoAutorizacion: 'en obra',
+        tipoAutorizacion: 'obra',
         creador: loggedUser.id
 
       }),
     {
       onSuccess: async () =>
-        await queryClient.refetchQueries(['OP', idSociety?.id]),
+        await queryClient.refetchQueries(['OPobra', idSociety]),
+    }
+
+  );
+  
+
+  const { mutate: modifyData } = useMutation(
+    async ({ field, id, value }) =>
+      await postMethod(`OP/modificar/${idSociety.id}`, {
+        id,
+        [field]: value,
+      }),
+    {
+      onMutate: async ({ field, id, value }) => {
+        await queryClient.cancelQueries(['OPobra', idSociety]);
+        const prevData = queryClient.getQueryData(['OPobra', idSociety]);
+        // console.log('prevData', prevData);
+        const newData = [
+          ...prevData.filter(OP => OP.id !== id),
+          { ...prevData.find(OP => OP.id === id), [field]: value },
+        ];
+        // console.log('newData', newData);
+        queryClient.setQueryData(['OPobra', idSociety], newData);
+        return prevData;
+      },
+      onError: (err, id, context) => queryClient.setQueryData(['OPobra', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['OPobra', idSociety]),
     }
   );
 
-
-
-
-  if (isLoading) return 'Cargando...';
-
-  if (error) return `Hubo un error: ${error.message}`;
-
-  return (
-    <div style={{ width: '100%' }}>
-      <ToastContainer />
-      <DataGrid
-        rows={data.map((el) => ({
-          id: el.id,        
-          numero: el.numero,
-          empresa: el.empresas[0].razonSocial,
-          monto: el.monto,
-          moneda: el.moneda,         
-          fideicomiso: el.fideicomisos[0].nombre,          
-          apr_obra: (el.auth_obra[0]?el.auth_obra[0].usuarios[0].user:''),
-          apr_adm: (el.auth_adm[0]?el.auth_adm[0].usuarios[0].user:''),
-          createdAt: el.createdAt,
-          onAuth: () => authProduct(el.id),
-          /*onDelete: () => mutate(el.id),*/
-        }))}
-        columns={columns}
-        pageSize={25}
-        disableSelectionOnClick
-        autoHeight
-        scrollbarSize
-        /*onRowDoubleClick={(a) => IrAOP(a)}*/
-        components={{
-          Toolbar: CustomToolbar,
-        }}
-      />
-    </div>
-  );
-  /*
-  function IrAOP(params) {
-    navigate(`./${params.row.nombre}`);
-  }*/
+  
+  if (isLoading) {
+    return 'Cargando...';
+  } else if (error) {
+    return `Hubo un error: ${error.message}`;
+  } else
+    return (
+      <div style={{ width: '100%' }}>
+        <Prompt message="¿Autorizar fila?" action={() => authFila(rowIdToDelete)} />
+        <DataGrid
+          rows={opObraInformation.map(OP => ({
+            id: OP.id,        
+            numero: OP.numero,
+            empresa: OP.empresas[0].razonSocial,
+            monto: OP.monto,
+            moneda: OP.moneda,         
+            fideicomiso: OP.fideicomisos[0].nombre,          
+            apr_obra: (OP.auth_obra[0]?OP.auth_obra[0].usuarios[0].user:''),
+            apr_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
+            createdAt: OP.createdAt,
+            authId: OP.id,
+          }))}
+          onCellEditCommit={modifyData}
+          columns={columns(setIsPromptOpen, setRowIdToDelete)}
+          pageSize={25}
+          disableSelectionOnClick
+          autoHeight
+          scrollbarSize
+          components={{
+            Toolbar: CustomToolbar,
+          }}
+        />
+      </div>
+    );
 }
 
 function CustomToolbar() {
@@ -155,32 +183,4 @@ function CustomToolbar() {
       <GridToolbarExport />
     </GridToolbarContainer>
   );
-}
-
-function AuthRow(params) {
-  const authRow = params.row.onAuth;
-  const notify = () =>
-    toast(({ closeToast }) => (
-      <Box>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={closeToast}>
-          Cancelar
-        </Button>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={() => {
-            authRow();
-            closeToast();
-          }}>Aprobar
-        </Button>
-      </Box>
-    ));
-  return <PriceCheckIcon onClick={notify} />;
 }
