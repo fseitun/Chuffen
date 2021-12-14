@@ -7,10 +7,11 @@ import { TextField, Autocomplete } from '@mui/material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 // import { mostrarFecha } from 'src/utils/utils';
-import { Uploader } from 'src/components/auxiliares/Uploader';
+// import { Uploader } from 'src/components/auxiliares/Uploader';
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
-const columns = (color, setColor, id,  setNewLogoFlag, setIsPromptOpen, setRowIdToDelete) => [
+//const columns = (color, setColor, id,  setNewLogoFlag, setIsPromptOpen, setRowIdToDelete) => [
+const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'nombre',
     headerName: 'Nombre',
@@ -102,7 +103,7 @@ const columns = (color, setColor, id,  setNewLogoFlag, setIsPromptOpen, setRowId
         color={color}
         setColor={setColor}
         colorOptions={colors}
-        setNewLogoFlag={setNewLogoFlag}
+        //setNewLogoFlag={setNewLogoFlag}
       />
     ),
   },
@@ -147,7 +148,7 @@ export function GrillaFideicomiso({ idSociety }) {
 
   const [color, setColor] = useState(null);
   //const [fechaInicio, setFechaInicio] = useState(null);
-  const [newLogoFlag, setNewLogoFlag] = useState(false);
+  // const [newLogoFlag, setNewLogoFlag] = useState(false);
   
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
@@ -222,7 +223,8 @@ export function GrillaFideicomiso({ idSociety }) {
             deleteId: fideicomiso.id,
           }))}
           onCellEditCommit={modifyData}
-          columns={columns(color, setColor, idSociety?.id, setNewLogoFlag, setIsPromptOpen, setRowIdToDelete)}
+          //columns={columns(color, setColor, idSociety?.id, setNewLogoFlag, setIsPromptOpen, setRowIdToDelete)}
+          columns={columns(color, setColor, idSociety?.id, setIsPromptOpen, setRowIdToDelete)}
           pageSize={25}
           disableSelectionOnClick
           autoHeight

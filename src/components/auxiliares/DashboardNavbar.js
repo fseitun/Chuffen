@@ -1,11 +1,10 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import {
   Typography,
   AppBar,
   Toolbar,
   Box,
   IconButton,
-  Badge,
   Avatar,
 } from '@mui/material';
 import { ExitToApp, Menu } from '@mui/icons-material';
@@ -35,7 +34,7 @@ export default function DashboardNavbar({
     sideBarOptions.find(option => option.path === lastPartOfPath)?.title ||
     lastPartOfPath;
 
-  const [notifications] = useState([]);
+  //const [notifications] = useState([]);
   function logOut() {
     setLoggedUser(null);
     navigate(`../${idSociety?.nombre}`);

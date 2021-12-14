@@ -1,31 +1,25 @@
-import React, { Component } from 'react';
-//import { render } from 'react-dom';
+import React from 'react';
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
-//import React from "react";
 import DocuPDF from "src/components/OP/DocuPDF";
-// import Button from "react-bootstrap/Button";
 import { Button } from '@mui/material';
 import VistaWeb from "src/components/OP/VistaWeb";
-import { getMethod } from 'src/utils/api';
 
-export function OT({ idSociety, loggedUser }) {
 
-  const [repOP, setRepOP] = React.useState("");
+export function OT({ idSociety }) {
+  const repOP = 'AAA';
+  //const [repOP, setRepOP] = React.useState("");
   const [verWeb, setVerWeb] = React.useState(false);
   const [verPDF, setVerPDF] = React.useState(false);
 
-  
+  /*
   function fetchOT() {
     getMethod(`OP/mostrar/${idSociety.id}/34`)
       .then((data) => {
         setRepOP(data);
         console.log(111111, data);
       });
-  }
+  }*/
 
-  React.useEffect(() => {
-    fetchOT();
-  }, []);
 
   const Menu = () => (
     <nav

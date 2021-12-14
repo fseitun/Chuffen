@@ -33,9 +33,10 @@ export function FormUsuario({ idSociety, loggedUser}) {
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           // checkear mail duplicado !!
-          if (values.mail.trim() ==='') {
-            setIsPromptOpen(true);
-          } else addUsuario(values);
+          //if (values.mail.trim() ==='') {
+          //  setIsPromptOpen(true);
+          //} else addUsuario(values);
+          addUsuario(values);
           resetForm();
           setSubmitting(false);
         }}

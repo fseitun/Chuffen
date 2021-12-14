@@ -117,7 +117,7 @@ export function ManipularDetalleFideicomiso({ idSociety, selectedFideicomisoData
             as={Autocomplete}
             size={'small'}
             label="Tipo"
-            disablePortal
+            //disablePortal
             style={{ width: '230px', display: 'inline-flex' }}
             onChange={(event, newValue) => {
               setTypeInForm(newValue);

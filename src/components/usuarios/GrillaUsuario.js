@@ -4,11 +4,8 @@ import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { Autocomplete, TextField } from '@mui/material';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
-
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
-
-import { mostrarFecha } from 'src/utils/utils';
 
 const columns = (setIsPromptOpen, setRowIdToDelete) => [
   {
@@ -22,7 +19,6 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     field: 'mail',
     headerName: 'Mail',
     width: 220,
-    // editable: true,
     headerAlign: 'center',
   },
   {
@@ -33,7 +29,6 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     headerAlign: 'center',
     renderCell: Passformat,
   },
-
   {
     field: 'rolId', // campo en grilla
     headerName: 'Rol',
@@ -43,7 +38,6 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     renderEditCell: props => <ComboBox roles={roles} props={props} />,
     headerAlign: 'center',
   },
-
   {
     field: 'deleteIcon',
     headerName: ' ',
@@ -53,8 +47,6 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     renderCell: ({ row: { deleteId } }) => (
       <DeleteIcon
         onClick={e => {
-          // console.log('e', e);
-          // console.log('deleteId', deleteId);
           setRowIdToDelete(deleteId);
           setIsPromptOpen(true);
         }}
@@ -62,7 +54,6 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     ),
   },
 ];
-
 
 const roles = [  
   { id: 1, rol_descripcion: 'administrativo' },
@@ -74,7 +65,6 @@ export function GrillaUsuario({ idSociety }) {
   
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
-  // console.log(rowIdToDelete);
 
   const {
     data: usuarioInformation,
@@ -101,27 +91,28 @@ export function GrillaUsuario({ idSociety }) {
   // eliminate(1);
 
   const { mutate: modifyData } = useMutation(
-    async ({ field, id, value }) =>
-      await postMethod(`usuario/modificar/${idSociety.id}`, {
-        id,
-        [field]: value,
-      }),
-    {
-      onMutate: async ({ field, id, value }) => {
-        await queryClient.cancelQueries(['usuario', idSociety]);
-        const prevData = queryClient.getQueryData(['usuario', idSociety]);
-        // console.log('prevData', prevData);
-        const newData = [
-          ...prevData.filter(usuario => usuario.id !== id),
-          { ...prevData.find(usuario => usuario.id === id), [field]: value },
-        ];
-        // console.log('newData', newData);
-        queryClient.setQueryData(['usuario', idSociety], newData);
-        return prevData;
-      },
-      onError: (err, id, context) => queryClient.setQueryData(['usuario', idSociety], context),
-      onSettled: () => queryClient.invalidateQueries(['usuario', idSociety]),
-    }
+      async ({ field, id, value }) => 
+          await postMethod(`usuario/modificar/${idSociety.id}`, {
+            id,
+            [field]: value,
+          }),
+          
+        {
+          onMutate: async ({ field, id, value }) => {
+            await queryClient.cancelQueries(['usuario', idSociety]);
+            const prevData = queryClient.getQueryData(['usuario', idSociety]);
+            // console.log('prevData', prevData);
+            const newData = [
+              ...prevData.filter(usuario => usuario.id !== id),
+              { ...prevData.find(usuario => usuario.id === id), [field]: value },
+            ];
+            // console.log('newData', newData);
+            queryClient.setQueryData(['usuario', idSociety], newData);
+            return prevData;
+          },
+          onError: (err, id, context) => queryClient.setQueryData(['usuario', idSociety], context),
+          onSettled: () => queryClient.invalidateQueries(['usuario', idSociety]),
+        }     
   );
 
   
@@ -131,7 +122,7 @@ export function GrillaUsuario({ idSociety }) {
     return `Hubo un error: ${error.message}`;
   } else
     return (
-      <div style={{ width: '100%' }}>
+      <div style={{height: '100%', width: '100%' }}>
         <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
         <DataGrid
           rows={usuarioInformation.map(usuario => ({
@@ -149,8 +140,9 @@ export function GrillaUsuario({ idSociety }) {
           onCellEditCommit={modifyData}
           columns={columns(setIsPromptOpen, setRowIdToDelete)}
           pageSize={25}
+          autoHeight={true}
           disableSelectionOnClick
-          autoHeight
+          density={'comfortable'}
           scrollbarSize
           components={{
             Toolbar: CustomToolbar,
@@ -177,16 +169,13 @@ function ComboBox({ roles, props }) {
     <Autocomplete
       value={selectedRol}
       onChange={async (event, newValue) => {        
-        setSelectedRol(newValue); 
-        
-        console.log(555555555, id, newValue?.id);     
+        setSelectedRol(newValue);
         if(newValue?.id){
           api.setEditCellValue({ id, field, value: newValue.id }, event);
           await props.api.commitCellChange({ id, field });
           api.setCellMode(id, field, 'view');
         }
-      }}
-      disablePortal
+      }}      
       id="combo-box-demo"
       options={roles}
       isOptionEqualToValue={(op, val) => op.rol_descripcion === val.rol_descripcion}
@@ -203,14 +192,6 @@ function CustomToolbar() {
       <GridToolbarExport />
     </GridToolbarContainer>
   );
-}
-
-function onlyNumbers(data) {
-  console.log('data', data);
-  const regex = /^\d{0,3}(\.\d{0,2})?$/;
-  const isValid = regex.test(data.props.value.toString());
-  const error = !isValid;
-  return { ...data.props, error };
 }
 
 function Passformat(params) {

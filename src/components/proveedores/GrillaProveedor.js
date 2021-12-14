@@ -96,8 +96,6 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     renderCell: ({ row: { deleteId } }) => (
       <DeleteIcon
         onClick={e => {
-          // console.log('e', e);
-          // console.log('deleteId', deleteId);
           setRowIdToDelete(deleteId);
           setIsPromptOpen(true);
         }}
@@ -110,7 +108,6 @@ export function GrillaProveedor({ idSociety }) {
   
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
-  // console.log(rowIdToDelete);
 
   const {
     data: proveedorInformation,
@@ -220,14 +217,6 @@ function CustomToolbar() {
   );
 }
 
-function onlyNumbers(data) {
-  console.log('data', data);
-  const regex = /^\d{0,3}(\.\d{0,2})?$/;
-  const isValid = regex.test(data.props.value.toString());
-  const error = !isValid;
-  return { ...data.props, error };
-}
-
 function ComboBox({ rubros, props }) {
   const { id, api, field } = props;
 
@@ -254,7 +243,7 @@ function ComboBox({ rubros, props }) {
           api.setCellMode(id, field, 'view');
         }
       }}
-      disablePortal
+      // disablePortal
       id="combo-box-demo"
       options={rubros}
       isOptionEqualToValue={(op, val) => op.rubro === val.rubro}
@@ -266,11 +255,11 @@ function ComboBox({ rubros, props }) {
 }
 
 function ComboBoxSub({ subRubros, props }, params) {
-  const { id, api, field, row } = props;
-  console.log('props que recibe el combo', props?.row?.rubroID.id);
+  const { id, api, field } = props;
+  // console.log('props que recibe el combo', props?.row?.rubroID.id);
   subRubros = [
     
-    ...subRubros.filter(subR => subR.rubroId == parseInt(props?.row?.rubroID.id)),
+    ...subRubros.filter(subR => subR.rubroId === parseInt(props?.row?.rubroID.id)),
     {
       subRubro: '',
     },
@@ -292,7 +281,7 @@ function ComboBoxSub({ subRubros, props }, params) {
         await props.api.commitCellChange({ id, field });
         api.setCellMode(id, field, 'view');
       }}
-      disablePortal
+      // disablePortal
       id="combo-box-demo"
       options={subRubros}
       isOptionEqualToValue={(op, val) => op.subRubro === val.subRubro}

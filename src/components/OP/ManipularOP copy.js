@@ -7,11 +7,11 @@ import { getMethod, postMethod } from 'src/utils/api';
 
 
 
-export function ManipularOP({ idSociety, loggedUser  }) {
+export function ManipularOP({ idSociety, loggedUser }) {
 
   const { data: fideicomisos } = useQuery(
     ['fideicomisos'],
-    () => getMethod(`fideicomiso/listar/${idSociety.id}`));
+    () => getMethod(`fideicomiso/listar/${idSociety}`));
 
 
   const { data: proveedores } = useQuery(
@@ -29,7 +29,7 @@ export function ManipularOP({ idSociety, loggedUser  }) {
     newData => postMethod(`OP/agregar/${idSociety.id}`, newData),
     {
       onSuccess: async () =>
-        await queryClient.refetchQueries(['OP', idSociety])
+        await queryClient.refetchQueries(['OP', idSociety.id])
     }
   );
 
@@ -152,6 +152,5 @@ export function ManipularOP({ idSociety, loggedUser  }) {
     </Formik>
   );
 }
-
 
 

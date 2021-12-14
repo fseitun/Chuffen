@@ -1,308 +1,304 @@
-import { useState, useEffect } from 'react';
+import * as React from 'react';
+import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { Delete as DeleteIcon } from '@mui/icons-material';
 import { Box, Button, TextField, Autocomplete} from '@mui/material';
-import { Delete } from '@mui/icons-material';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import { usePrompt } from 'src/utils/usePrompt';
 
-import { getMethod, deleteMethod, postMethod } from 'src/utils/api';
+const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete, setRowIdToObra, setRowIdToADM) => [
+  {
+    field: 'createdAt',
+    headerName: 'Fecha',
+    width: 120,
+    type: 'date',
+    editable: false,
+    headerAlign: 'center',
+    align: 'center',
+    valueFormatter: ({ value }) => new Date(value).toLocaleDateString('es-AR', { timeZone: 'UTC' }),
+  },
+  {
+    field: 'fideicomiso',
+    headerName: 'Fideicomiso',
+    width: 160,
+    editable: false,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: IrDetalleOP_1,
+  },
+  {
+    field: 'numero',
+    headerName: 'Numero',
+    width: 130,
+    editable: false,
+    headerAlign: 'center',
+    align: 'right',
+    renderCell: IrDetalleOP_2,    
+  },
+  {
+    field: 'empresa',
+    headerName: 'Razón Social',
+    width: 170,
+    editable: false,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: IrDetalleOP_3,
+  },  
+  {
+    field: 'monto',
+    headerName: 'Monto',
+    width: 130,
+    editable: false,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
+    field: 'moneda',
+    headerName: '',
+    width: 70,
+    editable: false,
+    headerAlign: 'center',
+    align: 'left',    
+  },
+  {
+    field: 'facturas',
+    headerName: 'Facturas',
+    width: 140,
+    editable: false,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: ({ row: { misFacturas }}) => misFacturas?.map(({numero}) => numero)?.join(', '), 
+  },
+  {
+    field: 'RET_SUSS',
+    headerName: 'SUSS',
+    width: 120,
+    editable: true,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),    
+  },
+  {
+    field: 'RET_GAN',
+    headerName: 'SUSS',
+    width: 120,
+    editable: true,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),    
+  },
+  {
+    field: 'RET_IVA',
+    headerName: 'IVA',
+    width: 120,
+    editable: true,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),    
+  },
 
-const columns = function columns(estadoRET, setEstadoRET, rubro, setRubro) {
-  return [
-
-    {
-      field: 'createdAt',
-      headerName: 'Fecha',
-      width: 120,
-      type: 'date',
-      editable: false,
-      headerAlign: 'center',
-      align: 'center',
-      valueFormatter: ({ value }) => new Date(value).toLocaleDateString('es-AR', { timeZone: 'UTC' }),
-    },
-
-    {
-      field: 'fideicomiso',
-      headerName: 'Fideicomiso',
-      width: 160,
-      editable: false,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: IrDetalleOP_1,
-    },
-
-    {
-      field: 'numero',
-      headerName: 'Numero',
-      width: 130,
-      editable: false,
-      headerAlign: 'center',
-      align: 'right',
-      //renderCell: <Button onClick={irDetalle} >{numero}  </Button>
-      renderCell: IrDetalleOP_2,
-      
-    },
-
-    {
-      field: 'empresa',
-      headerName: 'Razón Social',
-      width: 170,
-      editable: false,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: IrDetalleOP_3,
-    },  
-    {
-      field: 'monto',
-      headerName: 'Monto',
-      width: 130,
-      editable: false,
-      headerAlign: 'center',
-      align: 'right',
-      valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
-    },
-    {
-      field: 'moneda',
-      headerName: '',
-      width: 70,
-      editable: false,
-      headerAlign: 'center',
-      align: 'left',    
-    },
-
-    {
-      field: 'facturas',
-      headerName: 'Facturas',
-      width: 140,
-      editable: false,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: ({ row: { misFacturas }}) => misFacturas?.map(({numero}) => numero)?.join(', '), 
-    },
-
-    {
-      field: 'RET_SUSS',
-      headerName: 'SUSS',
-      width: 120,
-      editable: true,
-      headerAlign: 'center',
-      align: 'right',
-      valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),    
-    },
-    {
-      field: 'RET_GAN',
-      headerName: 'SUSS',
-      width: 120,
-      editable: true,
-      headerAlign: 'center',
-      align: 'right',
-      valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),    
-    },
-    {
-      field: 'RET_IVA',
-      headerName: 'IVA',
-      width: 120,
-      editable: true,
-      headerAlign: 'center',
-      align: 'right',
-      valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),    
-    },
-
-    {
-      field: 'estadoRET_Elegido',
-      headerName: 'Retenciones',
-      width: 150,
-      editable: true,
-      renderCell: ({ row: { estadoRET_Elegido } }) => (
-        <div style={{ width: '100%', height: '100%', background: estadoRET_Elegido }}></div>
-      ),
-      renderEditCell: ({ row: { estadoRET_Elegido } }) => (
-        <EstadoRETPicker
-          originalEstadoRET={retenciones.filter(estadoRET => estadoRET.id === estadoRET_Elegido)[0]}
-          estadoRET={estadoRET}
-          setEstadoRET={setEstadoRET}
-          estadoRETOptions={retenciones}
-          /*setFechaInicio={setFechaInicio}
-          setNewLogoFlag={setNewLogoFlag}*/
-        />
-      ),
-    },
-
-
-    {
-      field: 'aprobado obra',
-      headerName: 'Ap. Obra',
-      width: 140,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: NonObraAuthRow,
-    },
-
-    {
-      field: 'aprobado adm',
-      headerName: 'Ap. ADM',
-      width: 140,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: NonAdmAuthRow,
-    },
-/*
-    {
-      field: 'estadoOP',
-      headerName: 'Estado',
-      width: 150,
-      editable: true,
-      renderCell: ({ row: { estadoOP } }) => (
-        <div style={{ width: '100%', height: '100%', background: estadoOP }}></div>
-      ),
-      renderEditCell: (a, b, c) => {
-        const commit = a.api.events.cellEditCommit;
-        // console.log(a, b, a.api.events.cellEditCommit);
-        return (
-          <EstadoOP_Picker
-            color={estadoOP}
-            setColor={setEstadoOP}
-            colorOptions={estadoOPs}
-            setNewLogoFlag={setNewLogoFlag}
-          />
-        );
-      },
-    },
-*/
-    {
-      field: 'fondos',
-      headerName: 'Fondos',
-      width: 140,
-      editable: true,
-      headerAlign: 'center',
-      align: 'center',    
-    },
-
-    {
-      field: 'enviar enviada',
-      headerName: 'Archivada',
-      width: 140,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: EnviarRow,
-    },
-
-    {
-      field: 'rubroId',
-      headerName: 'Rubro',
-      width: 150,
-      editable: true,
-      renderEditCell: (a, b, c) => {
-        // const commit = a.api.events.cellEditCommit;
-        // console.log(a, b, a.api.events.cellEditCommit);
-        return (
-          <RubroPicker
-            rubro={rubro}
-            setRubro={setRubro}
-            rubroOptions={rubros}
-          />
-        );
-      },
-    },
-
-    {
-      field: 'archivada3',
-      headerName: 'Sub Rubro',
-      width: 170,
-      editable: true,
-      headerAlign: 'center',
-      align: 'center',    
-    },
-    
-    {
-      field: 'descripcion',
-      headerName: 'Detalle',
-      width: 140,
-      editable: true,
-      headerAlign: 'center',
-      align: 'center',    
-    }, 
-    {
-      field: 'deleteIcon',
-      headerName: '',
-      width: 50,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: DeleteRow,
-    },
-  ];
-};
-
-
-const rubros = [
-  { id: 1, rubro: 'Obra' },
-  { id: 3, rubro: 'Tierra y gastos' },
-  { id: 4, rubro: 'eqwweq' },
+  {
+    field: 'estadoRET', // campo en grilla
+    headerName: 'Retenciones',
+    width: 150,
+    editable: true,
+    renderCell: ({ value }) => value.descripcion, // a visualizar
+    renderEditCell: props => <ComboBoxRet retenciones={retenciones} props={props} />,
+    headerAlign: 'center',
+  },
+  {
+    field: 'apr_obra',
+    headerName: 'Ap. Obra',
+    width: 140,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: ({ row }) => ( 
+      <Button 
+        onClick={e => {
+          if(row.nonAuthObraId.authOBRA){
+          setRowIdToObra(row.nonAuthObraId);
+          setIsPromptOpen(true);}
+        }
+      }
+      >{ row?.apr_obra }  </Button>
+    ),
+  },
+  {
+    field: 'apr_adm',
+    headerName: 'Ap. ADM',
+    width: 140,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: ({ row }) => ( 
+      <Button 
+        onClick={e => {
+          if(row.nonAuthADMId.authADM){
+          setRowIdToADM(row.nonAuthADMId);
+          setIsPromptOpen(true);}
+        }
+      }
+      >{ row?.apr_adm }  </Button>
+    ),
+  },
+  {
+    field: 'estadoOP', // campo en grilla
+    headerName: 'Estado',
+    width: 150,
+    editable: true,
+    renderCell: ({ value }) => value.descripcion, // a visualizar
+    renderEditCell: props => <ComboBoxEst estados={estados} props={props} />,
+    headerAlign: 'center',
+  },
+  {
+    field: 'fondos', // campo en grilla
+    headerName: 'Fondos',
+    width: 150,
+    type: 'singleSelect',
+    editable: true,
+    renderCell: ({ value }) => value.descripcion, // a visualizar
+    renderEditCell: props => <ComboBoxFon fondos_s={fondos_s} props={props} />,
+    headerAlign: 'center',
+  },
+  {
+    field: 'enviar enviada',
+    headerName: 'Archivada',
+    width: 140,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: EnviarRow,
+  },  
+  {
+    field: 'rubroID',
+    headerName: 'Rubro',
+    width: 140,
+    editable: true,
+    renderCell: ({ value }) => value.nombre,
+    renderEditCell: props => <ComboBox rubros={rubros} props={props} />,
+    headerAlign: 'center',
+  },
+  {
+    field: 'subrubroID',
+    headerName: 'Sub Rubro',
+    width: 140,
+    editable: true,
+    renderCell: ({ value }) => value.nombre,
+    renderEditCell: props => <ComboBoxSub subRubros={subRubros} props={props} />,
+    headerAlign: 'center',
+  },  
+  {
+    field: 'descripcion',
+    headerName: 'Detalle',
+    width: 140,
+    editable: true,
+    headerAlign: 'center',
+    align: 'center',    
+  }, 
+  {
+    field: 'deleteIcon',
+    headerName: ' ',
+    width: 50,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: ({ row: { deleteId } }) => (
+      <DeleteIcon
+        onClick={e => {
+          // setMsg("Eliminar fila");
+          setRowIdToDelete(deleteId);
+          setIsPromptOpen(true);
+        }}
+      />
+    ),
+  },
 ];
 
-// dropdown retenciones
-const retenciones = [
-  { id: 0, descri: '' , css: 'white'},
-  { id: 1, descri: 'Ok', css: 'DarkGreen'},
-  { id: 2, descri: 'Pendiente', css: 'pink'},
+const retenciones = [  
+  { id: 0, descripcion: '-' },
+  { id: 1, descripcion: 'OK' },
+  { id: 2, descripcion: 'Pendiente' },
 ];
 
-// dropdown estado
-/*
-const estadoOPs = [
-  { id: 1, descri: '' , css: ''},
-  { id: 2, descri: 'Para autorizar Obra', css: 'red'},
-  { id: 3, descri: 'Para autorizar AC', css: 'red'},
-  { id: 4, descri: 'Para pagar', css: ''},
-  { id: 5, descri: 'Pagado Parcial', css: ''},
-  { id: 6, descri: 'Pagada', css: 'green'},
-  //{ id: 7, descri: 'Anulado', css: 'black'},
-  { id: 8, descri: 'Cargada en Banco', css: ''},
-];*/
-
-// dropdown fondos
-/*
-const fondos = [
-  { id: 1, descri: '' , css: ''},
-  { id: 2, descri: 'Ok cargado', css: ''},
-];*/
+const estados = [  
+  { id: 0, descripcion: '-' },
+  { id: 1, descripcion: 'Para autorizar Obra' },
+  { id: 2, descripcion: 'Para pagar' },
+  { id: 3, descripcion: 'Pagada' },
+  { id: 4, descripcion: 'Para autorizar AC' },
+  { id: 5, descripcion: 'Pagado Parcial' },
+  { id: 6, descripcion: 'Anulado' },
+  { id: 7, descripcion: 'Cargada en Banco' },
+];
+const fondos_s = [  
+  { id: 1, descripcion: '-' },
+  { id: 2, descripcion: 'OK cargado' },
+];
 
 
 export function GrillaOP({ idSociety }) {
   const navigate = useNavigate();
+  const { Prompt, setIsPromptOpen } = usePrompt(() => {});
+  const [rowIdToDelete, setRowIdToDelete] = useState();
+  const [rowIdToObra, setRowIdToObra] = useState();
+  const [rowIdToADM, setRowIdToADM] = useState();
+  // const [msg, setMsg] = useState();
+  // let msg = ""; 
+  const {
+    data: opInformation,
+    isLoading,
+    error,
+  } = useQuery(['OP', idSociety], () => getMethod(`OP/listar/${idSociety.id}/todas/nulo`));
+
   const queryClient = useQueryClient();
 
-  const [rubro, setRubro] = useState({});
-  const [estadoRET, setEstadoRET] = useState(null);
+
+
+  const { data: rubros } = useQuery(['rubros', idSociety], () =>
+    getMethod(`rubro/listar/${idSociety.id}`)
+  );
+
+  const { data: subRubros } = useQuery(['subrubros', idSociety], () =>
+    getMethod(`subrubro/listar/${idSociety.id}/0`)
+  );
 
   // es un array de facturas para la columna facturas asociada a una OP (OPId)
   const { data: grfacturas } = useQuery(['grfacturas', idSociety.id], async() =>
   await getMethod(`factura/listar/${idSociety.id}/todas/25`));
 
 
-  const { mutate: deleteProduct } = useMutation(
-    async id =>
-      await deleteMethod(`OP/eliminar/${idSociety?.id}`, {
-        id: id,
-      }),
-    {
-      onSuccess: async () =>
-      await queryClient.refetchQueries(['OP', idSociety.id]),
-    }
+  const { mutate: irDetalle } = useMutation(
+    async el =>    
+      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/OP_${el.numero}`)
+
   );
 
+  const { mutate: eliminate } = useMutation(
+    async idOP => await deleteMethod(`OP/eliminar/${idSociety.id}`, { id: idOP }),
+    {
+      onMutate: async idOP => {
+        await queryClient.cancelQueries(['OP', idSociety]);
+        const prevData = queryClient.getQueryData(['OP', idSociety]);
+        const newData = prevData.filter(op => op.id !== idOP);
+        queryClient.setQueryData(['OP', idSociety], newData);
+        return prevData;
+      },
+      onError: (err, idOP, context) => queryClient.setQueryData(['OP', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['OP', idSociety]),
+    }
+  );
+  
   const { mutate: nonAuthObra } = useMutation(
     async el =>
       await deleteMethod(`autorizacion/eliminar/${idSociety?.id}`, {
 
         id : el.authOBRA,
-        tipoAutorizacion: 'en obra',
+        tipoAutorizacion: 'obra',
         opid : el.id,
 
       }),
@@ -312,7 +308,7 @@ export function GrillaOP({ idSociety }) {
     }
   );
 
-  const { mutate: nonAuthAdm } = useMutation(
+  const { mutate: nonAuthADM } = useMutation(
     async el =>
       await deleteMethod(`autorizacion/eliminar/${idSociety?.id}`, {
 
@@ -326,105 +322,114 @@ export function GrillaOP({ idSociety }) {
         await queryClient.refetchQueries(['OP', idSociety]),
     }
   );
-   
-  const { mutate: enviaOP } = useMutation(
-    async el =>
-      await postMethod(`OP/modificar/${idSociety?.id}`, {
 
-        id : el.id,
-        archivada: 1
-
+  const { mutate: modifyData } = useMutation(
+    async ({ field, id, value }) =>
+      await postMethod(`OP/modificar/${idSociety.id}`, {
+        id,
+        [field]: value,
       }),
     {
-      onSuccess: async () =>
-        await queryClient.refetchQueries(['OP', idSociety.id]),
+      onMutate: async ({ field, id, value }) => {
+        await queryClient.cancelQueries(['OP', idSociety]);
+        const prevData = queryClient.getQueryData(['OP', idSociety]);
+        const newData = [
+          ...prevData.filter(op => op.id !== id),
+          { ...prevData.find(op => op.id === id), [field]: value },
+        ];
+        queryClient.setQueryData(['OP', idSociety], newData);
+        return prevData;
+      },
+      onError: (err, id, context) => queryClient.setQueryData(['OP', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['OP', idSociety]),
     }
-  );
-
-  const { mutate: irDetalle } = useMutation(
-    async el =>    
-      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/OP_${el.numero}`)
-
-  );
-
-
-
-  const { data, isLoading, error } = useQuery(['OP', idSociety.id], () =>
-    getMethod(`OP/listar/${idSociety.id}/todas/nulo`)
-  );
-
-  if (isLoading) return 'Cargando...';
-  if (error) return `Hubo un error: ${error.message}`;
-
-  function handleCellModification(e) {
-    
-    let newData = {
-      id: e.id,
-     [e.field]: e.value,
-    };
-    
-    postMethod(`OP/modificar/${idSociety?.id}`, newData);
-  }
-
-  return (
-    <div style={{ width: '100%' }}>
-      <ToastContainer />
-      <DataGrid
-        rows={data.map((el) => ({
-          id: el.id,      
-          numero: el.numero,
-          empresa: el.empresas[0]?.razonSocial,
-          empresaId: el.empresaId,
-          monto: el.monto, 
-          moneda: el.moneda, 
-          RET_SUSS: el.RET_SUSS,
-          RET_GAN: el.RET_GAN,
-          RET_IVA: el.RET_IVA,
-          rubroId: el.rubroId,
-          estadoRET_Elegido: el.estadoRET,
-          fideicomiso: el.fideicomisos[0]?.nombre,
-          estadoOP: el.estadoOP,
-          fondos: el.fondos,
-          archivada: el.archivada,
-          descripcion: el.descripcion,
-          createdAt: el.createdAt,   
-          apr_obra: (el.auth_obra[0]?el.auth_obra[0].usuarios[0].user:''),
-          apr_adm: (el.auth_adm[0]?el.auth_adm[0].usuarios[0].user:''),
-          misFacturas: grfacturas?.filter(factura => factura?.OPId === el.id),
-          
-          onAuthAdm: () => nonAuthAdm(el),
-          onAuthObra: () => nonAuthObra(el),
-          onEnviar: () => enviaOP(el),
-          onIrDetalle: () => irDetalle(el),          
-          onDelete: () => deleteProduct(el.id),
-
-        }))}
-
-        columns={columns(rubro, setEstadoRET, setRubro, idSociety?.id)}
-        pageSize={25}
-        disableSelectionOnClick
-        autoHeight
-        scrollbarSize
-        onCellEditCommit={handleCellModification}
-    
-        onRowDoubleClick={a => {
-          // console.log(a);
-           return IrADetalleOP(a);
-         }}
-
-        components={{
-          Toolbar: CustomToolbar,
-        }}
-      />
-    </div>
   );
   
-  function IrADetalleOP(params) {
-    if(1===2){
-      navigate(`./${params.row.id}/${params.row.createdAt}/${params.row.empresaId}/OP_${params.row.numero}`);
+  if (isLoading) {
+    return 'Cargando...';
+  } else if (error) {
+    return `Hubo un error: ${error.message}`;
+  } else
+    return (
+      <div style={{ width: '100%' }}>
+
+       <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
+       <Prompt message="¿Desaprobar en obra?" action={() => nonAuthObra(rowIdToObra)} />
+       <Prompt message="¿Desaprobar en ADM?" action={() => nonAuthADM(rowIdToADM)} />
+ 
+        <DataGrid 
+          rows={opInformation.map(OP => ({
+            id: OP.id,    
+            numero: OP.numero,
+            empresa: OP.empresas[0]?.razonSocial,
+            empresaId: OP.empresaId,
+            monto: OP.monto, 
+            moneda: OP.moneda, 
+            RET_SUSS: OP.RET_SUSS,
+            RET_GAN: OP.RET_GAN,
+            RET_IVA: OP.RET_IVA,
+            rubroId: OP.rubroId,
+            estadoRET: {
+              id: OP.estadoRET,
+              descripcion: retenciones?.find(retencion => retencion.id === OP.estadoRET)?.descripcion,
+            },
+            estadoOP: {
+              id: OP.estadoOP,
+              descripcion: estados?.find(estado => estado.id === OP.estadoOP)?.descripcion,
+            },
+            fondos: {
+              id: OP.fondos,
+              descripcion: fondos_s?.find(fondos => fondos.id === OP.fondos)?.descripcion,
+            },
+            fideicomiso: OP.fideicomisos[0]?.nombre,
+            archivada: OP.archivada,
+            descripcion: OP.descripcion,
+            createdAt: OP.createdAt,   
+            rubroID: {
+              id: OP.rubroId,
+              nombre: rubros?.find(rubro => rubro.id === OP.rubroId)?.rubro,
+            },
+            subrubroID: {
+              id: OP.subrubroId,
+              nombre: subRubros?.find(subRubro => subRubro.id === OP.subRubroId)?.subRubro,
+            }, 
+            apr_obra: (OP.auth_obra[0]?OP.auth_obra[0].usuarios[0].user:''),
+            apr_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
+            misFacturas: grfacturas?.filter(factura => factura?.OPId === OP.id),
+            deleteId: OP.id,
+            nonAuthADMId: OP,
+            nonAuthObraId: OP,
+            onIrDetalle: () => irDetalle(OP),    
+            
+          }))}
+          onCellEditCommit={modifyData}
+          columns={columns(rubros, subRubros, setIsPromptOpen, setRowIdToDelete, setRowIdToObra, setRowIdToADM)}
+          disableSelectionOnClick
+          autoHeight
+          density={'comfortable'}
+          scrollbarSize
+          onRowDoubleClick={a => {
+             return IrADetalleOP(a);
+           }}
+          components={{
+            Toolbar: CustomToolbar,
+          }}
+          
+        >
+        
+
+        </DataGrid>
+      </div>
+    );
+
+    function IrADetalleOP(params) {
+      if(1===2){
+        navigate(`./${params.row.id}/${params.row.createdAt}/${params.row.empresaId}/OP_${params.row.numero}`);
+      }
     }
-  }
+
 }
+
 
 function CustomToolbar() {
   return (
@@ -433,79 +438,6 @@ function CustomToolbar() {
     </GridToolbarContainer>
   );
 }
-
-
-
-function NonObraAuthRow(params) {
-
-  const authRow = params.row.onAuthObra;
-  const apr_obra = params.row.apr_obra;
-  const notify = () =>
-    toast(({ closeToast }) => (
-      <Box>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={closeToast}>
-          Cancelar
-        </Button>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={() => {
-            authRow();
-            closeToast();
-          }}>Desaprobar Obra
-        </Button>
-      </Box>
-    ));
-  
-  if(apr_obra !== ""){
-    return <Button onClick={notify} >{apr_obra}  </Button>;
-  }else{
-    return ""
-  }
-} 
-
-function NonAdmAuthRow(params) {
-
-  const authRow = params.row.onAuthAdm;  
-  const apr_adm = params.row.apr_adm;
-  const notify = () =>
-    toast(({ closeToast }) => (
-      <Box>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={closeToast}>
-          Cancelar
-        </Button>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={() => {
-            authRow();
-            closeToast();
-          }}>Desaprobar Adm
-        </Button>
-      </Box>
-    ));
-  
-  if(apr_adm !== ""){
-    return <Button onClick={notify} >{apr_adm}  </Button>;
-  }else{
-    return ""
-  }
-
-} 
 
 function EnviarRow(params) {
 
@@ -556,95 +488,192 @@ function IrDetalleOP_3(params) {
   const sendRow = params.row.onIrDetalle;  
   const empresa = params.row.empresa;
   return <Button onClick={sendRow} >{empresa}  </Button>;
-} 
-function DeleteRow(params) {
-  const deleteRow = params.row.onDelete;
-  const archivada = params.row.archivada;
-  const notify = () =>
-    toast(({ closeToast }) => (
-      <Box>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={closeToast}>
-          No quiero borrar
-        </Button>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={() => {
-            deleteRow();
-            closeToast();
-          }}>
-          Sí quiero borrar
-        </Button>
-      </Box>
-    ));
-  
-  if(archivada === 0){
-    return <Delete onClick={notify} />;
-  }else{
-    return ""
-  }
-
 }
 
-function RubroPicker({ rubro, setRubro, rubroOptions }) {
-  
+
+
+function ComboBox({ rubros, props }) {
+  const { id, api, field } = props;
+
+  rubros = [
+    ...rubros,
+    {
+      rubro: '',
+    },
+  ];
+  const [selectedRubro, setSelectedRubro] = useState({
+    rubro: '',
+  });
+
   return (
     <Autocomplete
-      value={rubro}
-      onChange={(event, newValue) => {
-        setRubro(newValue);
-      }}
-      options={rubroOptions}
-      sx={{ width: 300 }}
-      getOptionLabel={option => option.rubro}
-      isOptionEqualToValue={(option, value) => option.id === value.id}
-      renderInput={params => <TextField {...params} />}
-      renderOption={(props, option, c) => {
+      value={selectedRubro}
+      onChange={async (event, newValue) => {
         
-        return (
-          <div {...props} >
-            {option.rubro}
-          </div>
-        );
+        setSelectedRubro(newValue);
+     
+        if(newValue?.id){
+          api.setEditCellValue({ id, field, value: newValue.id }, event);
+          await props.api.commitCellChange({ id, field });
+          api.setCellMode(id, field, 'view');
+        }
       }}
+      //disablePortal
+      id="combo-box-demo"
+      options={rubros}
+      isOptionEqualToValue={(op, val) => op.rubro === val.rubro}
+      getOptionLabel={option => option.rubro}
+      sx={{ width: 300 }}
+      renderInput={params => <TextField {...params} label="Rubro" />}
     />
   );
 }
 
+function ComboBoxSub({ subRubros, props }, params) {
+  const { id, api, field } = props;
+  console.log('props que recibe el combo', props?.row?.rubroID.id);
+  subRubros = [
+    
+    ...subRubros.filter(subR => subR.rubroId === parseInt(props?.row?.rubroID.id)),
+    {
+      subRubro: '',
+    },
+  ];
 
-function EstadoRETPicker({ estadoRET, setEstadoRET, estadoRETOptions, originalEstadoRET }) {
-  useEffect(
-    () =>
-    setEstadoRET(previousState =>
-        originalEstadoRET?.id !== previousState?.id ? originalEstadoRET : previousState
-      ),
-    [originalEstadoRET, setEstadoRET]
-  );
+  const [selectedsubRubro, setSelectedsubRubro] = useState({
+    subRubro: '',
+  });
+
   return (
     <Autocomplete
-      value={estadoRET}
-      onChange={(event, newValue) => {
-        setEstadoRET(newValue);
+      value={selectedsubRubro}
+      onChange={async (event, newValue) => {
+        
+        setSelectedsubRubro(newValue);
+      
+        
+        api.setEditCellValue({ id, field, value: newValue.id }, event);
+        await props.api.commitCellChange({ id, field });
+        api.setCellMode(id, field, 'view');
       }}
-      options={estadoRETOptions}
+      //disablePortal
+      id="combo-box-demo"
+      options={subRubros}
+      isOptionEqualToValue={(op, val) => op.subRubro === val.subRubro}
+      getOptionLabel={option => option.subRubro}
       sx={{ width: 300 }}
-      isOptionEqualToValue={(option, value) => option.id === value.id}
-      renderInput={params => <TextField style={{ background: estadoRET?.css }} {...params} />}
-      renderOption={(props, option, c) => {
-
-        return (
-          <div {...props} style={{ background: option?.css }}>
-            {option.descri}
-          </div>
-        );
-      }}
+      renderInput={params => <TextField {...params} label="subRubro" />}
     />
   );
 }
+
+function ComboBoxRet({ retenciones, props }) {
+  const { id, api, field } = props;
+
+  retenciones = [
+    ...retenciones,
+    {
+      descripcion: '',
+    },
+  ];
+  const [selectedRet, setSelectedRol] = useState({
+    descripcion: '',
+  });
+
+  return (
+    <Autocomplete
+      value={selectedRet}
+      onChange={async (event, newValue) => {        
+        setSelectedRol(newValue); 
+        
+        //console.log(555555555, id, newValue?.id);     
+        if(newValue?.id){
+          api.setEditCellValue({ id, field, value: newValue.id }, event);
+          await props.api.commitCellChange({ id, field });
+          api.setCellMode(id, field, 'view');
+        }
+      }}
+      //disablePortal
+      id="combo-box-demo"
+      options={retenciones}
+      isOptionEqualToValue={(op, val) => op.descripcion === val.descripcion}
+      getOptionLabel={option => option.descripcion}
+      sx={{ width: 300 }}
+      renderInput={params => <TextField {...params} label="Retencion" />}
+    />
+  );
+}
+
+function ComboBoxEst({ estados, props }) {
+  const { id, api, field } = props;
+
+  estados = [
+    ...estados,
+    {
+      descripcion: '',
+    },
+  ];
+  const [selectedEst, setSelectedRol] = useState({
+    descripcion: '',
+  });
+
+  return (
+    <Autocomplete
+      value={selectedEst}
+      onChange={async (event, newValue) => {        
+        setSelectedRol(newValue); 
+        
+        //console.log(555555555, id, newValue?.id);     
+        if(newValue?.id){
+          api.setEditCellValue({ id, field, value: newValue.id }, event);
+          await props.api.commitCellChange({ id, field });
+          api.setCellMode(id, field, 'view');
+        }
+      }}
+      id="combo-box-demo"
+      options={estados}      
+      isOptionEqualToValue={(op, val) => op.descripcion === val.descripcion}
+      getOptionLabel={option => option.descripcion}
+      sx={{ width: 300 }}
+      renderInput={params => <TextField {...params} label="Estado" />}
+    />
+  );
+}
+
+function ComboBoxFon({ fondos_s, props }) {
+  const { id, api, field } = props;
+
+  fondos_s = [
+    ...fondos_s,
+    {
+      descripcion: '',
+    },
+  ];
+  const [selectedFon, setSelectedRol] = useState({
+    descripcion: '',
+  });
+
+  return (
+    <Autocomplete
+      value={selectedFon}
+      onChange={async (event, newValue) => {        
+        setSelectedRol(newValue); 
+        console.log(555555555, id, newValue?.id);    
+        //console.log(555555555, id, newValue?.id);     
+        if(newValue?.id > 0){
+          api.setEditCellValue({ id, field, value: newValue.id }, event);
+          await props.api.commitCellChange({ id, field });
+          api.setCellMode(id, field, 'view');
+        }
+      }}
+      //disablePortal
+      id="combo-box-demo"
+      options={fondos_s}
+      isOptionEqualToValue={(op, val) => op.descripcion === val.descripcion}
+      getOptionLabel={option => option.descripcion}
+      sx={{ width: 300 }}
+      renderInput={params => <TextField {...params} label="Fondos" />}
+    />
+  );
+}
+

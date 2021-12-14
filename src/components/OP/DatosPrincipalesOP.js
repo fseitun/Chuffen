@@ -15,14 +15,9 @@ import { getMethod, postMethod } from 'src/utils/api';
 const filter = createFilterOptions();
 
 export function DatosPrincipalesOP({ selectedOPData, idSociety }) {
-  // console.log('params:', params);
-  // console.log('selectedOPData:', selectedOPData);
-  //console.log('selectedOPData.personaId:', selectedOPData.personaId);
-  // console.log('idSociety:', idSociety);
+
   const [managerId, setManagerId] = useState();
   useEffect(() => setManagerId(selectedOPData?.personaId), [selectedOPData]);
-  // console.log('selectedOPData:', selectedOPData);
-  // console.log('managerId:', managerId);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { data: contactInfo } = useQuery(['persona', managerId], () =>
     getMethod(`persona/mostrar/${idSociety.id}/${managerId}`)
@@ -127,6 +122,7 @@ export function DatosPrincipalesOP({ selectedOPData, idSociety }) {
             rowHeight={75}
             headerHeight={35}
             hideFooter
+            hideFooterPagination={'true'}
             autoHeight={'false'}
             pageSize={1}
             onCellDoubleClick={(e) => {
