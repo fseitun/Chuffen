@@ -22,7 +22,7 @@ export function mostrarFecha(fecha) {
 
 // Devuelve un Date con formato 1-5-2021
 export function mostrarFechaMesTXT(fecha) {
-  let dd = new Date(fecha).getDay();
+  let dd = new Date(fecha).getDate();
   let mm = new Date(fecha).toLocaleDateString('es-AR', { timeZone: 'UTC',  month: 'short' });
   let yyyy = new Date(fecha).getFullYear();
   return dd + ' ' + mm + ' '  + yyyy;
