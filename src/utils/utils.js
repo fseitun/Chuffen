@@ -15,12 +15,12 @@ export function mostrarCUIT(value) {
   }
 }
 
-// Devuelve un Date con formato 1-5-2021
+// Devuelve un Date con formato 1/5/2021
 export function mostrarFecha(fecha) {
   return new Date(fecha).toLocaleDateString('es-AR', { timeZone: 'UTC' });
 }
 
-// Devuelve un Date con formato 1-5-2021
+// Devuelve un Date con formato 5 dic. 2021
 export function mostrarFechaMesTXT(fecha) {
   let dd = new Date(fecha).getDate();
   let mm = new Date(fecha).toLocaleDateString('es-AR', { timeZone: 'UTC',  month: 'short' });

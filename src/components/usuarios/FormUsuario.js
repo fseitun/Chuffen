@@ -5,7 +5,8 @@ import { postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 
 export function FormUsuario({ idSociety, loggedUser}) {
-  const { setIsPromptOpen, Prompt } = usePrompt();
+  //const { setIsPromptOpen, Prompt } = usePrompt();
+  const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
 
   const { mutate: addUsuario } = useMutation(

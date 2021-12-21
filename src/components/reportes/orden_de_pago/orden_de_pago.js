@@ -6,7 +6,8 @@ import TablaADM from './tablaADM';
 import TablaPagos from './tablaPagos';
 import TablaPie from './tablaPie';
 import {Text, View, StyleSheet } from '@react-pdf/renderer';
- 
+import { mostrarFecha } from 'src/utils/utils';
+
 const styles = StyleSheet.create({
     page: {
         fontFamily: 'Helvetica',
@@ -59,7 +60,6 @@ const styles = StyleSheet.create({
 
   });
 
-  let fide_logo = 'http://localhost:3000/sociedades/1/logo_fide_1.png';
   const orden_de_pago = ({dataOP, dataFacturas, apiServerUrl, idSociedad}) => (
             <Document >
                 <Page size="A4" style={styles.page}>       
@@ -67,18 +67,19 @@ const styles = StyleSheet.create({
                     <View style={{flexDirection: 'row',marginLeft: '0',marginRight: '0'}} >
                         <Text style={{width: '60%'}}> </Text>
                         <View style={{width: '40%'}} >
-                        <Image style={[styles.logo, {backgroundColor: dataOP?.fideicomisos[0]?.color}]} src={{ uri: `${apiServerUrl}/sociedades/${idSociedad}/${dataOP?.fideicomisos[0]?.logo}` , method: "GET", headers: { "Cache-Control": "no-cache" }, body: "" }} />                   
+                        <Image style={[styles.logo, {backgroundColor:dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff'}]} src={{ uri: `${apiServerUrl}/sociedades/${idSociedad}/${dataOP? dataOP?.fideicomisos[0]?.logo:'logo.png'}` , method: "GET", headers: { "Cache-Control": "no-cache" }, body: "" }} />                   
                         </View>
                     </View>
 
                     <View style={styles.titleContainer}>
-                        <Text style={styles.reportTitle}>SOLICITUD DE PAGO     Nº	{dataOP.numero}</Text>
+                        <Text style={styles.reportTitle}>SOLICITUD DE PAGO     Nº	{dataOP?.numero}</Text>
                         
                     </View>
                     <View style={styles.invoiceDateContainer}>
                         <Text style={styles.label}>Fecha: </Text>
-                        <Text >{dataOP?.createdAt}</Text>
+                        <Text >{mostrarFecha(dataOP?.createdAt)}</Text>
                     </View >
+                    
                     <TablaFacturas dataOP={dataOP} dataFacturas={dataFacturas} />
                     <View >
                         <Text style={styles.saltolinea}> </Text>                       
@@ -92,6 +93,8 @@ const styles = StyleSheet.create({
                     <View >
                         <Text style={styles.saltolinea}> </Text>                       
                     </View>
+
+
                     <View >
                         <Text style={styles.subreportTitle}>APROBACIÓN ADMINISTRATIVA</Text>                       
                     </View>
@@ -103,9 +106,8 @@ const styles = StyleSheet.create({
                         <Text style={styles.subreportTitle}>PAGO</Text>                       
                     </View>                   
                     <TablaPagos dataOP={dataOP} />
-                 
+
                     <TablaPie dataOP={dataOP} />
-                  
                 </Page>
             </Document>
         );

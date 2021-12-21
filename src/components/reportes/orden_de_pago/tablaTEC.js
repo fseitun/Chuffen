@@ -2,8 +2,6 @@ import React from 'react';
 import {View, Text, StyleSheet } from '@react-pdf/renderer';
 
 
-const tableRowsCount = 11;
-//const borderColor = {invoice.color};
 const styles = StyleSheet.create({
 
   espacio: { 
@@ -37,7 +35,7 @@ const styles = StyleSheet.create({
 
 
   const tablaTEC = ({dataOP}) => (
-    <View style={{ flexDirection: 'row',flexWrap: 'wrap', marginTop: 8, borderWidth: 1, borderColor: dataOP?.fideicomisos[0]?.color, }} >
+    <View style={{ flexDirection: 'row',flexWrap: 'wrap', marginTop: 8, borderWidth: 1, borderColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff', }} >
        
        <View style={styles.espacio} >
             <Text style={styles.col1}> </Text>

@@ -50,6 +50,7 @@ const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
         timeZone: 'UTC',
       }),
   },
+  /*
   {
     field: 'cloud',
     headerName: 'Cloud',
@@ -57,7 +58,7 @@ const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
     width: 200,
     headerAlign: 'center',
     align: 'left',
-  },
+  },*/
 
   {
     field: 'logo',
@@ -73,22 +74,6 @@ const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
       ): (""), 
   },
 
-  /*
-  {
-    field: 'logo',
-    headerName: 'Logo',
-    width: 150,
-    renderCell: passedData =>
-      passedData.row.logo ? (
-        <img
-          style={{ display: 'block', margin: 'auto', width: '30%' }}
-          src={`${apiServerUrl}sociedades/${id}/${passedData.row.logo}`}
-          alt="logo"
-        />
-      ) : (
-        <Uploader fideId={passedData.id} setNewLogoFlag={setNewLogoFlag} />
-      ),
-  },*/
   {
     field: 'colorElegido',
     headerName: 'Color',
@@ -103,28 +88,10 @@ const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
         color={color}
         setColor={setColor}
         colorOptions={colors}
-        //setNewLogoFlag={setNewLogoFlag}
       />
     ),
   },
-  /*
-  {
-    field: 'deleteIcon',
-    headerName: ' ',
-    width: 50,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: ({ row: { deleteId } }) => (
-      <DeleteIcon
-        onClick={e => {
-          // console.log('e', e);
-          // console.log('deleteId', deleteId);
-          setRowIdToDelete(deleteId);
-          setIsPromptOpen(true);
-        }}
-      />
-    ),
-  },*/
+
 ];
 
 const colors = [

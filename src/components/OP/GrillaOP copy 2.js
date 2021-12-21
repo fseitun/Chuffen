@@ -5,12 +5,11 @@ import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-g
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { Box, Button, TextField, Autocomplete} from '@mui/material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { usePrompt } from 'src/utils/usePrompt';
-import 'react-toastify/dist/ReactToastify.css';
 
-const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
+const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete, setRowIdToObra, setRowIdToADM) => [
   {
     field: 'createdAt',
     headerName: 'Fecha',
@@ -115,25 +114,6 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     renderEditCell: props => <ComboBoxRet retenciones={retenciones} props={props} />,
     headerAlign: 'center',
   },
-
-  {
-    field: 'aprobado obra',
-    headerName: 'Ap. Obra',
-    width: 140,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: NonObraAuthRow,
-  },
-
-  {
-    field: 'aprobado adm',
-    headerName: 'Ap. ADM',
-    width: 140,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: NonAdmAuthRow,
-  },
-  /*
   {
     field: 'apr_obra',
     headerName: 'Ap. Obra',
@@ -168,7 +148,6 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
       >{ row?.apr_adm }  </Button>
     ),
   },
-  */
   {
     field: 'estadoOP', // campo en grilla
     headerName: 'Estado',
@@ -266,8 +245,8 @@ export function GrillaOP({ idSociety }) {
   const navigate = useNavigate();
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
-  // const [rowIdToObra, setRowIdToObra] = useState();
-  // const [rowIdToADM, setRowIdToADM] = useState();
+  const [rowIdToObra, setRowIdToObra] = useState();
+  const [rowIdToADM, setRowIdToADM] = useState();
   // const [msg, setMsg] = useState();
   // let msg = ""; 
   const {
@@ -329,7 +308,7 @@ export function GrillaOP({ idSociety }) {
     }
   );
 
-  const { mutate: nonAuthAdm } = useMutation(
+  const { mutate: nonAuthADM } = useMutation(
     async el =>
       await deleteMethod(`autorizacion/eliminar/${idSociety?.id}`, {
 
@@ -372,11 +351,12 @@ export function GrillaOP({ idSociety }) {
     return `Hubo un error: ${error.message}`;
   } else
     return (
-
-
       <div style={{ width: '100%' }}>
-        <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
-        <ToastContainer /> 
+
+       <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
+       <Prompt message="¿Desaprobar en obra?" action={() => nonAuthObra(rowIdToObra)} />
+       <Prompt message="¿Desaprobar en ADM?" action={() => nonAuthADM(rowIdToADM)} />
+ 
         <DataGrid 
           rows={opInformation.map(OP => ({
             id: OP.id,    
@@ -417,15 +397,13 @@ export function GrillaOP({ idSociety }) {
             apr_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
             misFacturas: grfacturas?.filter(factura => factura?.OPId === OP.id),
             deleteId: OP.id,
-            // nonAuthADMId: OP,
-            // nonAuthObraId: OP,
-            onAuthObra: () => nonAuthObra(OP),
-            onAuthAdm: () => nonAuthAdm(OP),
+            nonAuthADMId: OP,
+            nonAuthObraId: OP,
             onIrDetalle: () => irDetalle(OP),    
             
           }))}
           onCellEditCommit={modifyData}
-          columns={columns(rubros, subRubros, setIsPromptOpen, setRowIdToDelete)}
+          columns={columns(rubros, subRubros, setIsPromptOpen, setRowIdToDelete, setRowIdToObra, setRowIdToADM)}
           disableSelectionOnClick
           autoHeight
           density={'comfortable'}
@@ -699,75 +677,3 @@ function ComboBoxFon({ fondos_s, props }) {
   );
 }
 
-
-function NonObraAuthRow(params) {
-  
-  const authRow = params.row.onAuthObra;
-  const apr_obra = params.row.apr_obra;
-  console.log(4444, apr_obra);
-  const notify = () =>
-    toast(({ closeToast }) => (
-      <Box>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={closeToast}>
-          Cancelar
-        </Button>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={() => {
-            authRow();
-            closeToast();
-          }}>Desaprobar Obra
-        </Button>
-      </Box>
-    ));
-  
-  if(apr_obra !== ""){
-    return <Button onClick={notify} >{apr_obra}  </Button>;
-  }else{
-    return ""
-  }
-} 
-
-function NonAdmAuthRow(params) {
-
-  const authRow = params.row.onAuthAdm;  
-  const apr_adm = params.row.apr_adm;
-  const notify = () =>
-    toast(({ closeToast }) => (
-      <Box>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={closeToast}>
-          Cancelar
-        </Button>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={() => {
-            authRow();
-            closeToast();
-          }}>Desaprobar Adm
-        </Button>
-      </Box>
-    ));
-  
-  if(apr_adm !== ""){
-    return <Button onClick={notify} >{apr_adm}  </Button>;
-  }else{
-    return ""
-  }
-
-} 

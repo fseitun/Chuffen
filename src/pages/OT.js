@@ -1,7 +1,7 @@
 import React from 'react';
 import { PDFDownloadLink, PDFViewer, pdf } from "@react-pdf/renderer";
 import { Button } from '@mui/material';
-import Rep_orden_de_pago from "src/components/reportes/orden_de_pago/orden_de_pago";
+import RepOp from "src/components/reportes/orden_de_pago/orden_de_pago";
 import { postMethod } from 'src/utils/api';
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
@@ -188,7 +188,7 @@ export function OT({ idSociety }) {
 
   const NewDocument = () => {
     return (
-      <Rep_orden_de_pago dataOP={dataOP} />
+      <RepOp dataOP={dataOP} />
     )
   }
 
@@ -205,8 +205,8 @@ export function OT({ idSociety }) {
 
   const guardar_en_server = () => {
 
-    const timer = setTimeout(() => {
-      const aa = getPdfBlob();
+    setTimeout(() => {
+      getPdfBlob();
     }, 300);
   }
 
@@ -239,7 +239,7 @@ export function OT({ idSociety }) {
       </Button>
 
       <PDFDownloadLink
-        document={<Rep_orden_de_pago dataOP={dataOP} />}
+        document={<RepOp dataOP={dataOP} />}
         fileName="miReporte.pdf"
       >
         <Button variant="info" onClick={guardar_en_server} >Crear y Descargar</Button>
@@ -255,7 +255,7 @@ export function OT({ idSociety }) {
         <>          
           {verPDF ? (
             <PDFViewer style={{ width: "100%", height: "90vh" }}>
-              <Rep_orden_de_pago dataOP={dataOP} dataFacturas={dataFacturas} apiServerUrl={apiServerUrl} idSociedad={id} />
+              <RepOp dataOP={dataOP} dataFacturas={dataFacturas} apiServerUrl={apiServerUrl} idSociedad={id} />
             </PDFViewer>
           ) : null}
         </>

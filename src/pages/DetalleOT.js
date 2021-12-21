@@ -1,8 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Box, Container } from '@mui/material';
-// import { ManipularFideicomiso } from 'src/components/fideicomiso/ManipularFideicomiso';
-// import { GrillaFideicomiso } from 'src/components/fideicomiso/GrillaFideicomiso';
+
 
 export function DetalleOT({ idSociety }) {
   return (

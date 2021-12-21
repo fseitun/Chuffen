@@ -2,7 +2,6 @@ import React from 'react';
 import {View, Text, StyleSheet } from '@react-pdf/renderer';
 
 
-const tableRowsCount = 11;
 const borderColor = '#90e5fc';
 const styles = StyleSheet.create({
     tableContainer: {

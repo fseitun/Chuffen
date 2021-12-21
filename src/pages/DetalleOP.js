@@ -8,14 +8,16 @@ import { GrillaDetalleOP } from 'src/components/detalleOP/GrillaDetalleOP';
 import { mostrarFechaMesTXT } from 'src/utils/utils';
 import { PDFDownloadLink, PDFViewer, pdf } from "@react-pdf/renderer";
 import { Button } from '@mui/material';
-import Rep_orden_de_pago from "src/components/reportes/orden_de_pago/orden_de_pago";
-import { postMethod } from 'src/utils/api';
+import RepOp from "src/components/reportes/orden_de_pago/orden_de_pago";
+import { useQuery } from 'react-query';
+import { getMethod, postMethod } from 'src/utils/api';
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
 export function DetalleOP({ idSociety, loggedUser }) {
 
   const [verPDF, setVerPDF] = React.useState(false);
+  
   const { idOP } = useParams();
   const { fecha } = useParams();  
   const { empresaId } = useParams();  
@@ -36,69 +38,50 @@ export function DetalleOP({ idSociety, loggedUser }) {
 
   const guardar_en_server = () => {
 
-    const timer = setTimeout(() => {
-      const aa = getPdfBlob();
+    setTimeout(() => {
+      getPdfBlob();
     }, 300);
   }
 
   const NewDocument = () => {
     return (
-      <Rep_orden_de_pago dataOP={dataOP} dataFacturas={dataFacturas} apiServerUrl={apiServerUrl} idSociedad={id} />
+      <RepOp dataOP={opCargadas(dataOP)} dataFacturas={facturasCargadas(fa)} apiServerUrl={apiServerUrl} idSociedad={id} />
     )
   }
 
-  const dataFacturas ={ 
-    item: [
-    {
-        id: 31,
-        OPId: 35,
-        numero: "333",
-        fechaIngreso: "2021-12-17T00:00:00.000Z",
-        fechaVTO: null,
-        path: null,
-        link: null,
-        empresaId: 1,
-        montoTotal: "47000",
-        moneda: "ARS",
-        detalle: null,
-        txtOC: null,
-        estadoFactura: null,
-        fideicomisoId: null,
-        rubroId: null,
-        subRubroId: null,
-        usuarioId: 1,
-        empresas: [
-            {
-                razonSocial: "Abelson s.a."
-            }
-        ]
-    },
-    {
-        id: 19,
-        OPId: 35,
-        numero: "1919",
-        fechaIngreso: "2021-11-04T00:00:00.000Z",
-        fechaVTO: null,
-        path: null,
-        link: "aaaa",
-        empresaId: 1,
-        montoTotal: "47000",
-        moneda: "ARS",
-        detalle: null,
-        txtOC: null,
-        estadoFactura: null,
-        fideicomisoId: 1,
-        rubroId: null,
-        subRubroId: null,
-        usuarioId: 1,
-        empresas: [
-            {
-                razonSocial: "Abelson s.a."
-            }
-        ]
-    }
-]};
+  const { data: fa,
+  } = useQuery(
+    ['fa'],
+    () => getMethod(`factura/listar/${idSociety.id}/opid/${idOP}`));
 
+  function facturasCargadas(fa){
+      if(fa){     
+        //console.log(22222);
+        return { item: fa};
+      }else{
+        //console.log(44444);
+        return null
+      }
+  }
+
+  
+  const {
+    data: dataOP,
+    } = useQuery(['dataOP', idSociety.id], () =>
+    getMethod(`op/mostrar/${idSociety.id}/${idOP}`)
+  );  
+
+  function opCargadas(dataOP){
+    if(dataOP){     
+      //console.log(22222);
+      return dataOP;
+    }else{
+      //console.log(44444);
+      return null
+    }
+}
+
+/*
 const dataOP = {
   id: 35,
   numero: 56,
@@ -188,39 +171,9 @@ const dataOP = {
     }
   ],
 
-  items: [
-    {
-      sno: 1,
-      desc: "ad sunt culpa occaecat qui",
-      qty: 5,
-      rate: 405.89,
-    },
-    {
-      sno: 2,
-      desc: "cillum quis sunt qui aute",
-      qty: 5,
-      rate: 373.11,
-    },
-    {
-      sno: 3,
-      desc: "ea commodo labore culpa irure",
-      qty: 5,
-      rate: 458.61,
-    },
-    {
-      sno: 4,
-      desc: "nisi consequat et adipisicing dolor",
-      qty: 10,
-      rate: 725.24,
-    },
-    {
-      sno: 5,
-      desc: "proident cillum anim elit esse",
-      qty: 4,
-      rate: 141.02,
-    },
-  ],
 };
+*/
+
 
   const Menu = () => (
     <nav
@@ -242,7 +195,7 @@ const dataOP = {
       </Button>
 
       <PDFDownloadLink
-        document={<Rep_orden_de_pago dataOP={dataOP} dataFacturas={dataFacturas} apiServerUrl={apiServerUrl} idSociedad={id} />}
+        document={<RepOp dataOP={opCargadas(dataOP)} dataFacturas={facturasCargadas(fa)} apiServerUrl={apiServerUrl} idSociedad={id} />}
         fileName={fileName}
       >
         <Button variant="info" onClick={guardar_en_server} >Descargar</Button>
@@ -262,75 +215,71 @@ const dataOP = {
               loggedUser={loggedUser} /> 
 
       <Helmet>
-    <title>
-    op:{numero.replace("OP_","")} | {idSociety?.nombre}
-    </title>
-</Helmet>  
-        <>
+          <title>
+          op:{numero.replace("OP_","")} | {idSociety?.nombre}
+          </title>
+      </Helmet>  
+      <>
                   
           {verPDF ? (
             <PDFViewer style={{ width: "100%", height: "90vh" }}>
-              <Rep_orden_de_pago dataOP={dataOP} dataFacturas={dataFacturas} apiServerUrl={apiServerUrl} idSociedad={id} />
+              <RepOp dataOP={opCargadas(dataOP)} dataFacturas={facturasCargadas(fa)} apiServerUrl={apiServerUrl} idSociedad={id} />
             </PDFViewer>
           ) : 
      
           <Box
-        sx={{
-          backgroundColor: 'background.default',
-          minHeight: '100%',
-          py: 3,
-        }}
-      >
-        <Container >
+                sx={{
+                  backgroundColor: 'background.default',
+                  minHeight: '100%',
+                  py: 3,
+                }}
+              >
+            <Container >
 
-          <Box sx={{ pt: 3 }}>
-            <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >
-                             
-                  <Grid item md={7}>
-                  <Typography align="left" color="textPrimary" variant="h4">
-                          Solicitud de Pago: {numero.replace("OP_","")}
-                        </Typography>
-                  </Grid>
-                  <Grid item md={5}>
-                        <Typography align="right" color="textPrimary" variant="h5">
-                          {mostrarFechaMesTXT(fecha)}
-                        </Typography>
-                  </Grid>             
+              <Box sx={{ pt: 3 }}>
+                <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >
+                                
+                      <Grid item md={7}>
+                      <Typography align="left" color="textPrimary" variant="h4">
+                              Solicitud de Pago: {numero.replace("OP_","")}
+                            </Typography>
+                      </Grid>
+                      <Grid item md={5}>
+                            <Typography align="right" color="textPrimary" variant="h5">
+                              {mostrarFechaMesTXT(fecha)}
+                            </Typography>
+                      </Grid>             
 
-            </Grid>
+                </Grid>
+              </Box>
+              <Box sx={{ pt: 3 }}>
+                <AgregarFactura
+                  OPId={idOP}
+                  fecha={fecha}
+                  empresaId={empresaId}
+                  idSociety={idSociety}
+                  loggedUser={loggedUser}
+                />
+              </Box>
+              <Box sx={{ pt: 3 }}>
+                <GrillaDetalleOP
+                  OPId={idOP}
+                  fecha={fecha}
+                  empresaId={empresaId}
+                  idSociety={idSociety}
+                  loggedUser={loggedUser}
+                />
+              </Box>         
+              <Box sx={{ pt: 3 }}>
+                <FormDetalleOP
+                  OPId={idOP}
+                  idSociety={idSociety}
+                  loggedUser={loggedUser}
+                />
+              </Box>      
+            </Container>
+            
           </Box>
-
-          <Box sx={{ pt: 3 }}>
-            <AgregarFactura
-              OPId={idOP}
-              fecha={fecha}
-              empresaId={empresaId}
-              idSociety={idSociety}
-              loggedUser={loggedUser}
-            />
-          </Box>
-
-          <Box sx={{ pt: 3 }}>
-            <GrillaDetalleOP
-              OPId={idOP}
-              fecha={fecha}
-              empresaId={empresaId}
-              idSociety={idSociety}
-              loggedUser={loggedUser}
-            />
-          </Box>
-         
-          <Box sx={{ pt: 3 }}>
-            <FormDetalleOP
-              OPId={idOP}
-              idSociety={idSociety}
-              loggedUser={loggedUser}
-            />
-          </Box>
-    
-       
-        </Container>
-      </Box>
           
           }
         </>

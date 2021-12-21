@@ -3,7 +3,8 @@ import { styled } from '@mui/system';
 import { Outlet } from 'react-router-dom';
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
-import { ReactQueryDevtools } from 'react-query/devtools';
+// import { ReactQueryDevtools } from 'react-query/devtools';
+// <ReactQueryDevtools initialIsOpen={false} />
 
 const DashboardLayoutRoot = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -57,7 +58,7 @@ export default function DashboardLayout({ setLoggedUser, idSociety, loggedUser }
         <DashboardLayoutContainer>
           <DashboardLayoutContent>
             <Outlet />
-            <ReactQueryDevtools initialIsOpen={false} />
+            
           </DashboardLayoutContent>
         </DashboardLayoutContainer>
       </DashboardLayoutWrapper>

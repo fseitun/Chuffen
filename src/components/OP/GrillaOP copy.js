@@ -5,12 +5,16 @@ import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-g
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { Box, Button, TextField, Autocomplete} from '@mui/material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { usePrompt } from 'src/utils/usePrompt';
+import { Delete } from '@mui/icons-material';
+
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
+// const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete, setRowIdToObra, setRowIdToADM) => [
+  const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete,) => [  
   {
     field: 'createdAt',
     headerName: 'Fecha',
@@ -122,7 +126,16 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     width: 140,
     headerAlign: 'center',
     align: 'center',
-    renderCell: NonObraAuthRow,
+    renderCell: NonAdmAuthRow,
+  },
+
+  {
+    field: 'deleteIcon',
+    headerName: '',
+    width: 50,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: DeleteRow,
   },
 
   {
@@ -133,6 +146,7 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     align: 'center',
     renderCell: NonAdmAuthRow,
   },
+
   /*
   {
     field: 'apr_obra',
@@ -266,10 +280,12 @@ export function GrillaOP({ idSociety }) {
   const navigate = useNavigate();
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
-  // const [rowIdToObra, setRowIdToObra] = useState();
-  // const [rowIdToADM, setRowIdToADM] = useState();
-  // const [msg, setMsg] = useState();
-  // let msg = ""; 
+  const [rowIdToObra, setRowIdToObra] = useState();
+  const [rowIdToADM, setRowIdToADM] = useState();
+
+  // <Prompt message="¿Desaprobar en obra?" action={() => nonAuthObra(rowIdToObra)} />
+  // <Prompt message="¿Desaprobar en ADM?" action={() => nonAuthADM(rowIdToADM)} />
+
   const {
     data: opInformation,
     isLoading,
@@ -313,13 +329,31 @@ export function GrillaOP({ idSociety }) {
       onSettled: () => queryClient.invalidateQueries(['OP', idSociety]),
     }
   );
-  
+
+
   const { mutate: nonAuthObra } = useMutation(
     async el =>
       await deleteMethod(`autorizacion/eliminar/${idSociety?.id}`, {
 
         id : el.authOBRA,
-        tipoAutorizacion: 'obra',
+        tipoAutorizacion: 'en obra',
+        opid : el.id,
+
+      }),
+    {
+      onSuccess: async () =>
+        await queryClient.refetchQueries(['OP', idSociety]),
+    }
+  );
+
+
+
+  const { mutate: deleteProduct } = useMutation(
+    async el =>
+      await deleteMethod(`autorizacion/eliminar/${idSociety?.id}`, {
+
+        id : el.authADM,
+        tipoAutorizacion: 'adm',
         opid : el.id,
 
       }),
@@ -343,6 +377,37 @@ export function GrillaOP({ idSociety }) {
         await queryClient.refetchQueries(['OP', idSociety]),
     }
   );
+
+  /*
+  const { mutate: nonAuthObra } = useMutation(
+    async el =>
+      await deleteMethod(`autorizacion/eliminar/${idSociety?.id}`, {
+
+        id : el.authOBRA,
+        tipoAutorizacion: 'obra',
+        opid : el.id,
+
+      }),
+    {
+      onSuccess: async () =>
+        await queryClient.refetchQueries(['OP', idSociety]),
+    }
+  );
+
+  const { mutate: nonAuthADM } = useMutation(
+    async el =>
+      await deleteMethod(`autorizacion/eliminar/${idSociety?.id}`, {
+
+        id : el.authADM,
+        tipoAutorizacion: 'adm',
+        opid : el.id,
+
+      }),
+    {
+      onSuccess: async () =>
+        await queryClient.refetchQueries(['OP', idSociety]),
+    }
+  );*/
 
   const { mutate: modifyData } = useMutation(
     async ({ field, id, value }) =>
@@ -372,11 +437,10 @@ export function GrillaOP({ idSociety }) {
     return `Hubo un error: ${error.message}`;
   } else
     return (
-
-
       <div style={{ width: '100%' }}>
-        <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
-        <ToastContainer /> 
+
+       
+    
         <DataGrid 
           rows={opInformation.map(OP => ({
             id: OP.id,    
@@ -419,13 +483,16 @@ export function GrillaOP({ idSociety }) {
             deleteId: OP.id,
             // nonAuthADMId: OP,
             // nonAuthObraId: OP,
-            onAuthObra: () => nonAuthObra(OP),
             onAuthAdm: () => nonAuthAdm(OP),
+            onAuthObra: () => nonAuthObra(OP),
             onIrDetalle: () => irDetalle(OP),    
+            onDelete: () => deleteProduct(OP.id),
             
           }))}
+
+
           onCellEditCommit={modifyData}
-          columns={columns(rubros, subRubros, setIsPromptOpen, setRowIdToDelete)}
+          columns={columns(rubros, subRubros, setIsPromptOpen, setRowIdToDelete,)}
           disableSelectionOnClick
           autoHeight
           density={'comfortable'}
@@ -699,12 +766,11 @@ function ComboBoxFon({ fondos_s, props }) {
   );
 }
 
-
+/*
 function NonObraAuthRow(params) {
-  
+
   const authRow = params.row.onAuthObra;
   const apr_obra = params.row.apr_obra;
-  console.log(4444, apr_obra);
   const notify = () =>
     toast(({ closeToast }) => (
       <Box>
@@ -734,12 +800,13 @@ function NonObraAuthRow(params) {
   }else{
     return ""
   }
-} 
+} */
 
 function NonAdmAuthRow(params) {
-
+  console.log(444);
   const authRow = params.row.onAuthAdm;  
   const apr_adm = params.row.apr_adm;
+  console.log(authRow);
   const notify = () =>
     toast(({ closeToast }) => (
       <Box>
@@ -771,3 +838,36 @@ function NonAdmAuthRow(params) {
   }
 
 } 
+
+
+function DeleteRow(params) {
+  console.log(222);
+  const deleteRow = params.row.onDelete;
+  const notify = () =>
+    toast(({ closeToast }) => (
+      <Box>
+        <Button
+          sx={{ p: 1, m: 1 }}
+          variant='contained'
+          color='secondary'
+          size='small'
+          onClick={closeToast}>
+          No quiero borrar
+        </Button>
+        <Button
+          sx={{ p: 1, m: 1 }}
+          variant='contained'
+          color='secondary'
+          size='small'
+          onClick={() => {
+            deleteRow();
+            closeToast();
+          }}>
+          Sí quiero borrar
+        </Button>
+      </Box>
+    ));
+  return <Delete onClick={notify} />;
+}
+
+

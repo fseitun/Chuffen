@@ -121,28 +121,11 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
         }))}
 
 
-        columns={columns}
-        /*pageSize={25}*/
-        /*autoPageSize= {false}*/
-        /*Pagination = {false}*/
-        /*pagination = {false}*/
-        /*checkboxSelection*/
-        disableSelectionOnClick
-        /*pageSize={500}*/
-        rowsPerPageOptions={[100]}
-        
-        autoHeight
-        sortModel={[
-          {
-            field: 'numero',
-            sort: 'asc',
-          },
-        ]}
-        /*scrollbarSize*/
+        columns={columns}     
+        disableSelectionOnClick           
+        autoHeight   
         onCellEditCommit={handleCellModification}
-        /*components={{
-          Toolbar: CustomToolbar,
-        }}*/
+     
       />
     </div>
   );
