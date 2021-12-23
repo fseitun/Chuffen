@@ -92,7 +92,7 @@ export default function App() {
               <Route path="OP">
                 <Route path="" element={<OP idSociety={idSociety} loggedUser={loggedUser} />} />
                 <Route
-                  path=":idOP/:fecha/:empresaId/:numero"
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso"
                   element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
                 />
               </Route>

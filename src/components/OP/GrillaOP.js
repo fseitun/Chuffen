@@ -9,6 +9,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { usePrompt } from 'src/utils/usePrompt';
 import 'react-toastify/dist/ReactToastify.css';
+import { PDFDownloadLink, pdf } from "@react-pdf/renderer";
+import RepOp from "src/components/reportes/orden_de_pago/orden_de_pago";
+
+var miOP={};
+var fa={};
+var idSociedad=0;
 
 const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
   {
@@ -105,7 +111,6 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     valueFormatter: ({ value }) =>
     new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),    
   },
-
   {
     field: 'estadoRET', // campo en grilla
     headerName: 'Retenciones',
@@ -115,7 +120,6 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     renderEditCell: props => <ComboBoxRet retenciones={retenciones} props={props} />,
     headerAlign: 'center',
   },
-
   {
     field: 'aprobado obra',
     headerName: 'Ap. Obra',
@@ -124,7 +128,6 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     align: 'center',
     renderCell: NonObraAuthRow,
   },
-
   {
     field: 'aprobado adm',
     headerName: 'Ap. ADM',
@@ -133,42 +136,6 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     align: 'center',
     renderCell: NonAdmAuthRow,
   },
-  /*
-  {
-    field: 'apr_obra',
-    headerName: 'Ap. Obra',
-    width: 140,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: ({ row }) => ( 
-      <Button 
-        onClick={e => {
-          if(row.nonAuthObraId.authOBRA){
-          setRowIdToObra(row.nonAuthObraId);
-          setIsPromptOpen(true);}
-        }
-      }
-      >{ row?.apr_obra }  </Button>
-    ),
-  },
-  {
-    field: 'apr_adm',
-    headerName: 'Ap. ADM',
-    width: 140,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: ({ row }) => ( 
-      <Button 
-        onClick={e => {
-          if(row.nonAuthADMId.authADM){
-          setRowIdToADM(row.nonAuthADMId);
-          setIsPromptOpen(true);}
-        }
-      }
-      >{ row?.apr_adm }  </Button>
-    ),
-  },
-  */
   {
     field: 'estadoOP', // campo en grilla
     headerName: 'Estado',
@@ -189,12 +156,12 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     headerAlign: 'center',
   },
   {
-    field: 'enviar enviada',
-    headerName: 'Archivada',
+    field: 'archivada',
+    headerName: 'Generar',
     width: 140,
     headerAlign: 'center',
     align: 'center',
-    renderCell: EnviarRow,
+    renderCell: DescargarPDF,
   },  
   {
     field: 'rubroID',
@@ -231,7 +198,6 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     renderCell: ({ row: { deleteId } }) => (
       <DeleteIcon
         onClick={e => {
-          // setMsg("Eliminar fila");
           setRowIdToDelete(deleteId);
           setIsPromptOpen(true);
         }}
@@ -241,9 +207,9 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
 ];
 
 const retenciones = [  
-  { id: 0, descripcion: '-' },
-  { id: 1, descripcion: 'OK' },
-  { id: 2, descripcion: 'Pendiente' },
+  { id: 1, descripcion: '-' },
+  { id: 2, descripcion: 'OK' },
+  { id: 3, descripcion: 'Pendiente' },
 ];
 
 const estados = [  
@@ -263,13 +229,16 @@ const fondos_s = [
 
 
 export function GrillaOP({ idSociety }) {
+  
+  idSociedad = idSociety.id;
+  var result = {};
+
   const navigate = useNavigate();
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
-  // const [rowIdToObra, setRowIdToObra] = useState();
-  // const [rowIdToADM, setRowIdToADM] = useState();
-  // const [msg, setMsg] = useState();
-  // let msg = ""; 
+  
+  const apiServerUrl = process.env.REACT_APP_API_SERVER
+                                                      
   const {
     data: opInformation,
     isLoading,
@@ -277,8 +246,6 @@ export function GrillaOP({ idSociety }) {
   } = useQuery(['OP', idSociety], () => getMethod(`OP/listar/${idSociety.id}/todas/nulo`));
 
   const queryClient = useQueryClient();
-
-
 
   const { data: rubros } = useQuery(['rubros', idSociety], () =>
     getMethod(`rubro/listar/${idSociety.id}`)
@@ -295,7 +262,7 @@ export function GrillaOP({ idSociety }) {
 
   const { mutate: irDetalle } = useMutation(
     async el =>    
-      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/OP_${el.numero}`)
+      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}`)
 
   );
 
@@ -313,15 +280,48 @@ export function GrillaOP({ idSociety }) {
       onSettled: () => queryClient.invalidateQueries(['OP', idSociety]),
     }
   );
-  
+
+   /***** generar y subir pdf ***********************************************************************/
+
+  const { mutate: cargar_y_subir_OP } = useMutation(
+    async el =>         
+        result = await getMethod(`op/mostrarConFacturas/${idSociety.id}/${el.id}`),
+    {
+      onSuccess: async () =>{
+         miOP = result.op;
+         fa = {item: result.item};
+         getPdfBlob(miOP?.id, miOP?.fideicomisos[0]?.nombre, miOP?.numero);
+        }        
+    }     
+  );
+
+  async function getPdfBlob(idOP, fideicomiso, numero){
+
+    let blobPdf = await pdf(NewDocument()).toBlob();
+    let formData = new FormData();
+    formData.append('logo', blobPdf);
+    formData.append('id', idOP);
+    formData.append('fideicomiso', fideicomiso);
+    formData.append('numero', numero);    
+    postMethod(`op/modificar/${idSociety.id}`, formData);
+    
+  }
+
+  const NewDocument = () => {
+    
+    return (
+      <RepOp dataOP={miOP} dataFacturas={fa} apiServerUrl={apiServerUrl} idSociedad={idSociety.id} />
+    )
+  }
+  /***** fin generar y subir pdf ***********************************************************************/
+
+ 
   const { mutate: nonAuthObra } = useMutation(
     async el =>
       await deleteMethod(`autorizacion/eliminar/${idSociety?.id}`, {
-
         id : el.authOBRA,
         tipoAutorizacion: 'obra',
         opid : el.id,
-
       }),
     {
       onSuccess: async () =>
@@ -345,26 +345,29 @@ export function GrillaOP({ idSociety }) {
   );
 
   const { mutate: modifyData } = useMutation(
-    async ({ field, id, value }) =>
-      await postMethod(`OP/modificar/${idSociety.id}`, {
-        id,
-        [field]: value,
-      }),
-    {
-      onMutate: async ({ field, id, value }) => {
-        await queryClient.cancelQueries(['OP', idSociety]);
-        const prevData = queryClient.getQueryData(['OP', idSociety]);
-        const newData = [
-          ...prevData.filter(op => op.id !== id),
-          { ...prevData.find(op => op.id === id), [field]: value },
-        ];
-        queryClient.setQueryData(['OP', idSociety], newData);
-        return prevData;
-      },
-      onError: (err, id, context) => queryClient.setQueryData(['OP', idSociety], context),
-      onSettled: () => queryClient.invalidateQueries(['OP', idSociety]),
-    }
+    async ({ field, id, value }) =>//{
+      //if(field!='fico'){
+        // console.log([field], id),
+            await postMethod(`OP/modificar/${idSociety.id}`, {id,[field]: value,}),
+            
+        {
+          onMutate: async ({ field, id, value }) => {
+            await queryClient.cancelQueries(['OP', idSociety]);
+            const prevData = queryClient.getQueryData(['OP', idSociety]);
+            const newData = [
+              ...prevData.filter(op => op.id !== id),
+              { ...prevData.find(op => op.id === id), [field]: value },
+            ];
+            queryClient.setQueryData(['OP', idSociety], newData);
+            return prevData;
+          },
+          onError: (err, id, context) => queryClient.setQueryData(['OP', idSociety], context),
+          onSettled: () => queryClient.invalidateQueries(['OP', idSociety]),
+        }
+     // }
+    //}
   );
+  
   
   if (isLoading) {
     return 'Cargando...';
@@ -372,7 +375,6 @@ export function GrillaOP({ idSociety }) {
     return `Hubo un error: ${error.message}`;
   } else
     return (
-
 
       <div style={{ width: '100%' }}>
         <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
@@ -417,10 +419,10 @@ export function GrillaOP({ idSociety }) {
             apr_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
             misFacturas: grfacturas?.filter(factura => factura?.OPId === OP.id),
             deleteId: OP.id,
-            // nonAuthADMId: OP,
-            // nonAuthObraId: OP,
+     
             onAuthObra: () => nonAuthObra(OP),
             onAuthAdm: () => nonAuthAdm(OP),
+            cargarOP: () => cargar_y_subir_OP(OP),
             onIrDetalle: () => irDetalle(OP),    
             
           }))}
@@ -430,9 +432,6 @@ export function GrillaOP({ idSociety }) {
           autoHeight
           density={'comfortable'}
           scrollbarSize
-          onRowDoubleClick={a => {
-             return IrADetalleOP(a);
-           }}
           components={{
             Toolbar: CustomToolbar,
           }}
@@ -443,12 +442,6 @@ export function GrillaOP({ idSociety }) {
         </DataGrid>
       </div>
     );
-
-    function IrADetalleOP(params) {
-      if(1===2){
-        navigate(`./${params.row.id}/${params.row.createdAt}/${params.row.empresaId}/OP_${params.row.numero}`);
-      }
-    }
 
 }
 
@@ -461,40 +454,6 @@ function CustomToolbar() {
   );
 }
 
-function EnviarRow(params) {
-
-  const sendRow = params.row.onEnviar;  
-  const archivada = params.row.archivada;
-  const notify = () =>
-    toast(({ closeToast }) => (
-      <Box>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={closeToast}>
-          Cancelar
-        </Button>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={() => {
-            sendRow();
-            closeToast();
-          }}>Enviar
-        </Button>
-      </Box>
-    ));
-  
-  if(archivada === 0){
-    return <Button onClick={notify} >Para Enviar  </Button>;
-  }else{
-    return "Enviada"
-  }
-} 
 
 function IrDetalleOP_1(params) {
   const sendRow = params.row.onIrDetalle;  
@@ -511,8 +470,6 @@ function IrDetalleOP_3(params) {
   const empresa = params.row.empresa;
   return <Button onClick={sendRow} >{empresa}  </Button>;
 }
-
-
 
 function ComboBox({ rubros, props }) {
   const { id, api, field } = props;
@@ -553,7 +510,7 @@ function ComboBox({ rubros, props }) {
 
 function ComboBoxSub({ subRubros, props }, params) {
   const { id, api, field } = props;
-  console.log('props que recibe el combo', props?.row?.rubroID.id);
+  
   subRubros = [
     
     ...subRubros.filter(subR => subR.rubroId === parseInt(props?.row?.rubroID.id)),
@@ -569,16 +526,12 @@ function ComboBoxSub({ subRubros, props }, params) {
   return (
     <Autocomplete
       value={selectedsubRubro}
-      onChange={async (event, newValue) => {
-        
-        setSelectedsubRubro(newValue);
-      
-        
+      onChange={async (event, newValue) => {        
+        setSelectedsubRubro(newValue);       
         api.setEditCellValue({ id, field, value: newValue.id }, event);
         await props.api.commitCellChange({ id, field });
         api.setCellMode(id, field, 'view');
       }}
-      //disablePortal
       id="combo-box-demo"
       options={subRubros}
       isOptionEqualToValue={(op, val) => op.subRubro === val.subRubro}
@@ -606,16 +559,13 @@ function ComboBoxRet({ retenciones, props }) {
     <Autocomplete
       value={selectedRet}
       onChange={async (event, newValue) => {        
-        setSelectedRol(newValue); 
-        
-        //console.log(555555555, id, newValue?.id);     
+        setSelectedRol(newValue);    
         if(newValue?.id){
           api.setEditCellValue({ id, field, value: newValue.id }, event);
           await props.api.commitCellChange({ id, field });
           api.setCellMode(id, field, 'view');
         }
       }}
-      //disablePortal
       id="combo-box-demo"
       options={retenciones}
       isOptionEqualToValue={(op, val) => op.descripcion === val.descripcion}
@@ -644,8 +594,7 @@ function ComboBoxEst({ estados, props }) {
       value={selectedEst}
       onChange={async (event, newValue) => {        
         setSelectedRol(newValue); 
-        
-        //console.log(555555555, id, newValue?.id);     
+   
         if(newValue?.id){
           api.setEditCellValue({ id, field, value: newValue.id }, event);
           await props.api.commitCellChange({ id, field });
@@ -678,17 +627,15 @@ function ComboBoxFon({ fondos_s, props }) {
   return (
     <Autocomplete
       value={selectedFon}
-      onChange={async (event, newValue) => {        
+      onChange={async (event, newValue) => {
         setSelectedRol(newValue); 
-        console.log(555555555, id, newValue?.id);    
-        //console.log(555555555, id, newValue?.id);     
         if(newValue?.id > 0){
           api.setEditCellValue({ id, field, value: newValue.id }, event);
           await props.api.commitCellChange({ id, field });
           api.setCellMode(id, field, 'view');
         }
       }}
-      //disablePortal
+
       id="combo-box-demo"
       options={fondos_s}
       isOptionEqualToValue={(op, val) => op.descripcion === val.descripcion}
@@ -699,12 +646,11 @@ function ComboBoxFon({ fondos_s, props }) {
   );
 }
 
-
 function NonObraAuthRow(params) {
   
   const authRow = params.row.onAuthObra;
   const apr_obra = params.row.apr_obra;
-  console.log(4444, apr_obra);
+  
   const notify = () =>
     toast(({ closeToast }) => (
       <Box>
@@ -768,6 +714,47 @@ function NonAdmAuthRow(params) {
     return <Button onClick={notify} >{apr_adm}  </Button>;
   }else{
     return ""
+  }
+
+} 
+
+function DescargarPDF(params) {  
+  
+  var cargarOP = params.row.cargarOP;
+  const fideicomiso = params.row.fideicomiso;
+  const numero = params.row.numero;
+  var nombrePDF = "OP_" +  fideicomiso + "_" + numero + ".pdf";
+  const archivada = params.row.archivada;
+  const apiServerUrl = process.env.REACT_APP_API_SERVER;
+
+  const notify = () =>(
+    cargarOP(),
+    toast(({ closeToast }) => (
+      <Box>
+        <Button
+          sx={{ p: 1, m: 1 }}
+          variant='contained'
+          color='secondary'
+          size='small'
+          onClick={closeToast}>
+          Cancelar
+        </Button>
+
+        <PDFDownloadLink document={<RepOp dataOP={miOP} dataFacturas={fa} apiServerUrl={apiServerUrl} idSociedad={idSociedad} />} fileName={nombrePDF} >
+          {({ blob, url, loading, error }) => {
+       
+            return (loading ? 'Loading document...' : 'Descargar')}
+          }
+        </PDFDownloadLink> 
+        
+      </Box>
+    ))
+    );
+  
+  if(archivada === 0){
+    return <Button onClick={notify} >Para Generar</Button>;
+  }else{
+    return <Button onClick={notify} >Generada</Button>;    
   }
 
 } 
