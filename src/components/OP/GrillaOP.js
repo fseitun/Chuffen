@@ -732,30 +732,33 @@ function DescargarPDF(params) {
     
     cargarOP();
     // return(
-    toast(({ closeToast}) => (
-      // cargarOP()
-      <Box>
-        <Button
-          sx={{ p: 1, m: 1 }}
-          variant='contained'
-          color='secondary'
-          size='small'
-          onMouseDownCapture={cargarOP()}
-          onClick={closeToast}>
+    setTimeout(() => {
+    
+        toast(({ closeToast}) => (
+          // cargarOP()
+          <Box>
+            <Button
+              sx={{ p: 1, m: 1 }}
+              variant='contained'
+              color='secondary'
+              size='small'
+              onMouseDownCapture={cargarOP()}
+              onClick={closeToast}>
+              
+              Cancelar
+            </Button>
+
+            <PDFDownloadLink document={<RepOp dataOP={miOP} dataFacturas={fa} apiServerUrl={apiServerUrl} idSociedad={idSociedad} />} fileName={nombrePDF} >
+              {({ blob, url, loading, error }) => {
           
-          Cancelar
-        </Button>
+                return (loading ? 'Loading document...' : 'Descargar')}
+              }
+            </PDFDownloadLink> 
 
-        <PDFDownloadLink document={<RepOp dataOP={miOP} dataFacturas={fa} apiServerUrl={apiServerUrl} idSociedad={idSociedad} />} fileName={nombrePDF} >
-          {({ blob, url, loading, error }) => {
-       
-            return (loading ? 'Loading document...' : 'Descargar')}
-          }
-        </PDFDownloadLink> 
-
-        
-      </Box>
-    )) // )
+            
+          </Box>
+        )) // )
+      }, 300);
     };
   
   if(archivada === 0){
