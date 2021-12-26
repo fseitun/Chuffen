@@ -727,16 +727,22 @@ function DescargarPDF(params) {
   const archivada = params.row.archivada;
   const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
-  const notify = () =>(
-    cargarOP(),
-    toast(({ closeToast }) => (
+  
+  const notify = () =>{
+    
+    cargarOP();
+    // return(
+    toast(({ closeToast}) => (
+      // cargarOP()
       <Box>
         <Button
           sx={{ p: 1, m: 1 }}
           variant='contained'
           color='secondary'
           size='small'
+          onMouseDownCapture={cargarOP()}
           onClick={closeToast}>
+          
           Cancelar
         </Button>
 
@@ -746,10 +752,11 @@ function DescargarPDF(params) {
             return (loading ? 'Loading document...' : 'Descargar')}
           }
         </PDFDownloadLink> 
+
         
       </Box>
-    ))
-    );
+    )) // )
+    };
   
   if(archivada === 0){
     return <Button onClick={notify} >Para Generar</Button>;
@@ -758,3 +765,5 @@ function DescargarPDF(params) {
   }
 
 } 
+
+
