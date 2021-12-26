@@ -758,7 +758,7 @@ function DescargarPDF(params) {
             
           </Box>
         )) // )
-      }, 300);
+      }, 800);
     };
   
   if(archivada === 0){
