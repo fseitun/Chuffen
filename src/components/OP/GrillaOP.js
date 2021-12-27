@@ -313,7 +313,7 @@ export function GrillaOP({ idSociety }) {
       <RepOp dataOP={miOP} dataFacturas={fa} apiServerUrl={apiServerUrl} idSociedad={idSociety.id} />
     )
   }
-  /***** fin generar y subir pdf ***********************************************************************/
+  /***** fin generar y subir pdf ************************************************************************/
 
  
   const { mutate: nonAuthObra } = useMutation(
