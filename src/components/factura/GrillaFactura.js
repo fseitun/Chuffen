@@ -8,6 +8,7 @@ import { usePrompt } from 'src/utils/usePrompt';
 import { mostrarFecha } from 'src/utils/utils';
 
 const columns = (setIsPromptOpen, setRowIdToDelete) => [
+
   {
     field: 'empresa',
     headerName: 'Razon Social',
@@ -81,8 +82,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     renderCell: ({ row: { deleteId } }) => (
       <DeleteIcon
         onClick={e => {
-          // console.log('e', e);
-          // console.log('deleteId', deleteId);
+
           setRowIdToDelete(deleteId);
           setIsPromptOpen(true);
         }}
@@ -131,12 +131,12 @@ export function GrillaFactura({ idSociety }) {
       onMutate: async ({ field, id, value }) => {
         await queryClient.cancelQueries(['factura', idSociety]);
         const prevData = queryClient.getQueryData(['factura', idSociety]);
-        // console.log('prevData', prevData);
+
         const newData = [
           ...prevData.filter(factura => factura.id !== id),
           { ...prevData.find(factura => factura.id === id), [field]: value },
         ];
-        // console.log('newData', newData);
+
         queryClient.setQueryData(['factura', idSociety], newData);
         return prevData;
       },
@@ -151,27 +151,23 @@ export function GrillaFactura({ idSociety }) {
   } else if (error) {
     return `Hubo un error: ${error.message}`;
   } else
+    console.log("- AAAAA -");
+    console.log(facturaInformation);
     return (
       <div style={{ width: '100%' }}>
         <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
         <DataGrid
           rows={facturaInformation.map(factura => ({
             id: factura.id,
-
-            empresa:(factura.empresas[0]?factura.empresas[0].razonSocial:''),
+            empresaId: factura.empresaId,
+            empresa:(factura?.empresas? factura?.empresas[0]?.razonSocial:''),
             numero: factura.numero,
             link: factura.link,
             montoTotal: factura.montoTotal,
             moneda: factura.moneda,
             fechaIngreso: factura.fechaIngreso,
             fechaVTO: factura.fechaVTO, 
-            /*
-            fecha: factura.fecha,
-            BCRA: factura.BCRA,
-            blue: factura.blue,
-            descripcion: factura.descripcion,
-            mep: factura.mep,
-            */
+   
             deleteId: factura.id,
           }))}
           onCellEditCommit={modifyData}

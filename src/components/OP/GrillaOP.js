@@ -257,7 +257,7 @@ export function GrillaOP({ idSociety }) {
 
   // es un array de facturas para la columna facturas asociada a una OP (OPId)
   const { data: grfacturas } = useQuery(['grfacturas', idSociety.id], async() =>
-  await getMethod(`factura/listar/${idSociety.id}/todas/25`));
+  await getMethod(`factura/listar/${idSociety.id}/todas/nada`));
 
 
   const { mutate: irDetalle } = useMutation(
@@ -302,7 +302,8 @@ export function GrillaOP({ idSociety }) {
     formData.append('logo', blobPdf);
     formData.append('id', idOP);
     formData.append('fideicomiso', fideicomiso);
-    formData.append('numero', numero);    
+    formData.append('numero', numero);
+    formData.append('archivada', 1);    
     postMethod(`op/modificar/${idSociety.id}`, formData);
     
   }
@@ -445,7 +446,6 @@ export function GrillaOP({ idSociety }) {
 
 }
 
-
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
@@ -453,7 +453,6 @@ function CustomToolbar() {
     </GridToolbarContainer>
   );
 }
-
 
 function IrDetalleOP_1(params) {
   const sendRow = params.row.onIrDetalle;  
@@ -742,7 +741,7 @@ function DescargarPDF(params) {
               variant='contained'
               color='secondary'
               size='small'
-              onMouseDownCapture={cargarOP()}
+              //onMouseDownCapture={cargarOP()}
               onClick={closeToast}>
               
               Cancelar

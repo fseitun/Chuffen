@@ -1,7 +1,7 @@
 import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
 
-import { ManipularFactura } from 'src/components/factura/ManipularFactura';
+import { FormFactura } from 'src/components/factura/FormFactura';
 import { GrillaFactura } from 'src/components/factura/GrillaFactura';
 
 export function Factura({ idSociety , loggedUser}) {
@@ -19,7 +19,7 @@ export function Factura({ idSociety , loggedUser}) {
       >
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <ManipularFactura idSociety={idSociety} loggedUser={loggedUser} />
+            <FormFactura idSociety={idSociety} loggedUser={loggedUser} />
           </Box>
           <Box sx={{ pt: 3 }}>
             <GrillaFactura idSociety={idSociety} loggedUser={loggedUser} />

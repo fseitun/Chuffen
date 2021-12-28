@@ -49,7 +49,7 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'CBU',
     headerName: 'CBU',
-    width: 110,
+    width: 200,
     editable: true,
     headerAlign: 'center',
   },

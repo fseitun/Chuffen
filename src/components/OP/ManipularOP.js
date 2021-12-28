@@ -60,7 +60,7 @@ export function ManipularOP({ idSociety, loggedUser  }) {
                     
         });
 
-        resetForm();
+        //resetForm();
         setOpen(true);
         setSubmitting(false);
       }}>

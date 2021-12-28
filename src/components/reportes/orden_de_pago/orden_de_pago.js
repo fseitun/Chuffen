@@ -30,7 +30,14 @@ const styles = StyleSheet.create({
     reportTitle:{
         color: '#101010',
         letterSpacing: 4,
-        fontSize: 25,
+        fontSize: 22,
+        textAlign: 'center',
+        textTransform: 'uppercase',
+    },
+    reportTitleFide:{
+        
+        letterSpacing: 4,
+        fontSize: 22,
         textAlign: 'center',
         textTransform: 'uppercase',
     },
@@ -62,12 +69,16 @@ const styles = StyleSheet.create({
 
   const orden_de_pago = ({dataOP, dataFacturas, apiServerUrl, idSociedad}) => (
             <Document >
-                <Page size="A4" style={styles.page}>       
+                <Page size="A4" style={styles.page}> 
+
+                    <View >
+                        <Text style={styles.saltolinea}> </Text>                       
+                    </View>   
 
                     <View style={{flexDirection: 'row',marginLeft: '0',marginRight: '0'}} >
-                        <Text style={{width: '60%'}}> </Text>
-                        <View style={{width: '40%'}} >
-                        <Image style={[styles.logo, {backgroundColor:dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff'}]} src={{ uri: `${apiServerUrl}/sociedades/${idSociedad}/${dataOP? dataOP?.fideicomisos[0]?.logo:'logo.png'}` , method: "GET", headers: { "Cache-Control": "no-cache" }, body: "" }} />                   
+                        <Text style={[styles.reportTitleFide, {width: (100 - parseInt(dataOP?.fideicomisos[0]?.ancho_logo) + '%'), color: dataOP?.fideicomisos[0]?.color}]}>{dataOP?.fideicomisos[0]?.titulo}</Text>
+                        <View style={{width: (dataOP?.fideicomisos[0]?.ancho_logo + '%') }} >
+                        <Image style={[styles.logo, {backgroundColor: dataOP?.fideicomisos[0]?.color3}]} src={{ uri: `${apiServerUrl}/sociedades/${idSociedad}/${dataOP? dataOP?.fideicomisos[0]?.logo:'logo.png'}` , method: "GET", headers: { "Cache-Control": "no-cache" }, body: "" }} />                   
                         </View>
                     </View>
 
