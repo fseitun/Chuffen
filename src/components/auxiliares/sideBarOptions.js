@@ -4,6 +4,7 @@ import {
   LocalShipping,
   People,
   MenuBook,
+  Apartment,
   /*Assignment,*/
   ListAlt,
   CreditCard,
@@ -52,7 +53,7 @@ export const sideBarOptions = [
   },
   {
     path: 'fideicomiso',
-    icon: LocalShipping,
+    icon: Apartment,
     title: 'Fideicomisos',
     acceso: 'fideicomiso',
   },

@@ -48,6 +48,16 @@ const columns = [
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
+
+  {
+    field: 'link2',
+    headerName: '',
+    width: 20,
+    editable: false,
+    headerAlign: 'center',
+    renderCell:  ({ row: { link } }) => (
+      <a href={ link }  rel="noreferrer" target="_blank" >ver</a>)
+  },
   {
     field: 'deleteIcon',
     headerName: '',
@@ -111,6 +121,7 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
           empresa:(el.empresas[0]?el.empresas[0].razonSocial:''),
           numero: el.numero,
           link: el.link,
+          link2: el.link,
           montoTotal: el.montoTotal,
           moneda: el.moneda,
           detalle: el.detalle,

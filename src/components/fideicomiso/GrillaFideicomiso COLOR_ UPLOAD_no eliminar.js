@@ -146,7 +146,7 @@ export function GrillaFideicomiso({ idSociety }) {
 
   const { mutate: changeDataToFideicomiso } = useMutation(
     async newData => {
-      console.log('newData', newData);
+
       return await postMethod(`fideicomiso/modificar/${idSociety?.id}`, newData);
     },
     {

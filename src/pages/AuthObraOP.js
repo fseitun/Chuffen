@@ -1,6 +1,6 @@
 import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
-import { GrillaOPObra } from 'src/components/OP/GrillaOPObra';
+import { GrillaOP_Auth } from 'src/components/OP/GrillaOP_Auth';
 
 export function AuthObraOP({ idSociety,  loggedUser }) {
   return (
@@ -17,7 +17,7 @@ export function AuthObraOP({ idSociety,  loggedUser }) {
         <Container >
 
           <Box sx={{ pt: 3 }}>
-            <GrillaOPObra idSociety={idSociety}  loggedUser={loggedUser} />
+            <GrillaOP_Auth idSociety={idSociety}  loggedUser={loggedUser} tipo='obra' />
           </Box>
         </Container>
       </Box>

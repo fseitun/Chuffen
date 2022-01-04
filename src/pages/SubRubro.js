@@ -6,7 +6,6 @@ import { GrillaSubRubro } from 'src/components/rubro/GrillaSubRubro';
 
 export function SubRubro({ idSociety, loggedUser}) {
   const { idRubro } = useParams();
-  console.log("idRubro: " + idRubro);
   const rubro = parseInt(idRubro);
   return (
     <>

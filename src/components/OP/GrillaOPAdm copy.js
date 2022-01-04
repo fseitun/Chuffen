@@ -2,7 +2,9 @@ import * as React from 'react';
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { Button} from '@mui/material';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
+import { useNavigate } from 'react-router-dom';
 import { getMethod, postMethod} from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 
@@ -23,19 +25,20 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'fideicomiso',
     headerName: 'Fideicomiso',
+    width: 160,
     editable: false,
-    width: 155,
     headerAlign: 'center',
     align: 'center',
+    renderCell: IrDetalleOP_1,
   },
-
   {
     field: 'numero',
     headerName: 'Numero',
-    editable: false,
     width: 130,
+    editable: false,
     headerAlign: 'center',
     align: 'right',
+    renderCell: IrDetalleOP_2,    
   },
 
   {
@@ -88,7 +91,7 @@ export function GrillaOPAdm({ idSociety,  loggedUser }) {
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
   // console.log(rowIdToDelete);
-
+  const navigate = useNavigate();
   const {
     data: opAdmInformation,
     isLoading,
@@ -112,6 +115,12 @@ export function GrillaOPAdm({ idSociety,  loggedUser }) {
       onSuccess: async () =>
         await queryClient.refetchQueries(['OPadm', idSociety]),
     }
+
+  );
+
+  const { mutate: irDetalle } = useMutation(
+    async el =>    
+      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}`)
 
   );
   
@@ -161,6 +170,7 @@ export function GrillaOPAdm({ idSociety,  loggedUser }) {
             apr_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
             createdAt: OP.createdAt,
             authId: OP.id,
+            onIrDetalle: () => irDetalle(OP),   
           }))}
           onCellEditCommit={modifyData}
           columns={columns(setIsPromptOpen, setRowIdToDelete)}
@@ -183,3 +193,15 @@ function CustomToolbar() {
     </GridToolbarContainer>
   );
 }
+
+function IrDetalleOP_1(params) {
+  const sendRow = params.row.onIrDetalle;  
+  const fideicomiso = params.row.fideicomiso;
+  return <Button onClick={sendRow} >{fideicomiso}  </Button>;
+} 
+function IrDetalleOP_2(params) {
+  const sendRow = params.row.onIrDetalle;  
+  const numero = params.row.numero;
+  return <Button onClick={sendRow} >{numero}  </Button>;
+} 
+

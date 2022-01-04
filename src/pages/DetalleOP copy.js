@@ -1,5 +1,4 @@
 import React from 'react';
-import { useRef } from 'react'
 import { useParams } from 'react-router-dom';
 import { Container, Box, Typography, Grid } from '@mui/material';
 import { Helmet } from 'react-helmet';
@@ -28,7 +27,6 @@ export function DetalleOP({ idSociety, loggedUser }) {
   const { fideicomiso } = useParams();
   const id = idSociety.id;
   const fileName="OP_" + fideicomiso + "_" + numero + ".pdf";
-  const buttonAdmRef = useRef();
 
    //guarda en server
    const getPdfBlob = async () =>   {
@@ -47,7 +45,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
 
     setTimeout(() => {
       getPdfBlob();
-    }, 300);
+    }, 500);
   }
 
   const NewDocument = () => {
@@ -118,15 +116,8 @@ export function DetalleOP({ idSociety, loggedUser }) {
     }
 }
 
-  var verAdm = verAuthBoton("adm", dataOP, "Autorizar en Obra", loggedUser?.["rol.descripcion"]);
-  var verObra = verAuthBoton("obra", dataOP, "Autorizar en Obra", loggedUser?.["rol.descripcion"]);
-  /*buttonAdmRef.disabled = true;*/
-
-  return (
-
-   
-    <div style={{ minHeight: "100vh" }}>
-      <nav
+  const Menu = () => (
+    <nav
       style={{
         display: "flex",
         borderBottom: "1px solid black",
@@ -134,9 +125,8 @@ export function DetalleOP({ idSociety, loggedUser }) {
         justifyContent: "flex-end",
       }}
     >
-      <Box display={verObra} sx={{ pt: 1 }}>
-        <Button
-        /*variant="info"*/
+      <Button
+        variant="dark"
         onClick={() => {
           toast(({ closeToast }) => (
             <Box>
@@ -166,65 +156,69 @@ export function DetalleOP({ idSociety, loggedUser }) {
         }}
       >
         Autorizar en Obra
-        </Button>
-      </Box>
-      <Box display={verAdm} sx={{ pt: 1 }}>
-        <Button
-          ref={buttonAdmRef}
-          /*variant="info"*/
-          
-          onClick={() => {
-            toast(({ closeToast }) => (
-              <Box>
-                <Button
-                  sx={{ p: 1, m: 1 }}
-                  
-                  variant="contained"
-                  color="secondary"
-                  size="small"
-                  onClick={closeToast}
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  sx={{ p: 1, m: 1 }}
-                  variant="contained"
-                  color="secondary"
-                  size="small"
-                  onClick={() => {
-                    authFilaAdm(idOP)
-                    closeToast();
-                  }}
-                >
-                  Autorizar
-                </Button>
-              </Box>
-            ));
-          }}
-        >        
-          Autorizar ADM
-        </Button>      
-      </Box>
-      <Box sx={{ pt: 1 }}>
-        <Button
-          /*variant="info"*/
-          onClick={() => {
-            setVerPDF(!verPDF);
-          }}
-        >
-          {verPDF ? "Ocultar PDF" : "Ver PDF"}
-        </Button>
+      </Button>
 
-        <PDFDownloadLink
-          document={<RepOp dataOP={opCargadas(dataOP)} dataFacturas={facturasCargadas(fa)} apiServerUrl={apiServerUrl} idSociedad={id} />}
-          fileName={fileName}
-        >
-          <Button variant="info" onClick={guardar_en_server} >Descargar</Button>
-        </PDFDownloadLink>
-      </Box>
+      <Button
+        variant="dark"
+        onClick={() => {
+          toast(({ closeToast }) => (
+            <Box>
+              <Button
+                sx={{ p: 1, m: 1 }}
+                variant="contained"
+                color="secondary"
+                size="small"
+                onClick={closeToast}
+              >
+                Cancelar
+              </Button>
+              <Button
+                sx={{ p: 1, m: 1 }}
+                variant="contained"
+                color="secondary"
+                size="small"
+                onClick={() => {
+                  /* authFilaAdm(idOP)*/
+                  closeToast();
+                }}
+              >
+                Autorizar
+              </Button>
+            </Box>
+          ));
+        }}
+      >        
+        {acceso("manager", "Autorizar ADM", loggedUser.rol)}
+      </Button>
+
+      <Button
+        variant="dark"
+        onClick={() => {
+          setVerPDF(!verPDF);
+        }}
+      >
+        {verPDF ? "Ocultar PDF" : "Ver PDF"}
+      </Button>
+
+      <PDFDownloadLink
+        document={<RepOp dataOP={opCargadas(dataOP)} dataFacturas={facturasCargadas(fa)} apiServerUrl={apiServerUrl} idSociedad={id} />}
+        fileName={fileName}
+      >
+        <Button variant="info" onClick={guardar_en_server} >Descargar</Button>
+      </PDFDownloadLink>
 
     </nav>
-     
+  );
+
+  return (
+
+   
+    <div style={{ minHeight: "100vh" }}>
+      <Menu OPId={idOP}
+              fecha={fecha}
+              empresaId={empresaId}
+              idSociety={idSociety}
+              loggedUser={loggedUser} /> 
 
       <Helmet>
           <title>
@@ -281,15 +275,14 @@ export function DetalleOP({ idSociety, loggedUser }) {
                   idSociety={idSociety}
                   loggedUser={loggedUser}
                 />
-              </Box>
+              </Box>         
               <Box sx={{ pt: 3 }}>
                 <FormDetalleOP
                   OPId={idOP}
                   idSociety={idSociety}
                   loggedUser={loggedUser}
                 />
-              </Box>            
-         
+              </Box>      
             </Container>
             
           </Box>
@@ -300,33 +293,3 @@ export function DetalleOP({ idSociety, loggedUser }) {
     </div>
   );
 }
-
-function verAuthBoton(tipo, dataOP, label, rol_usuario){
-  let rta = acceso("manager", label, rol_usuario);
-
-  if(tipo==="adm"){
-    if(dataOP?.auth_adm){
-      if(dataOP.auth_adm[0]){
-        if(dataOP.auth_adm[0].usuarios[0].user != undefined){
-          rta = "";
-        }
-      }     
-    }
-  }else{
-    if(dataOP?.auth_obra){
-      if(dataOP.auth_obra[0]){
-        if(dataOP.auth_obra[0].usuarios[0].user != undefined){
-          rta = "";
-        }
-      }     
-    }
-  }  
-
-  if(rta ===""){
-    return "none";
-  }else{  
-    return "";
-  }  
-
-}
-

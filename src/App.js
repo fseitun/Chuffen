@@ -97,9 +97,23 @@ export default function App() {
                 />
               </Route>
 
-              <Route path="AuthAdmOP" element={<AuthAdmOP idSociety={idSociety}  loggedUser={loggedUser} />} />
-              <Route path="AuthObraOP" element={<AuthObraOP idSociety={idSociety}  loggedUser={loggedUser} />} />
-              
+              <Route path="AuthAdmOP">
+                <Route path="" element={<AuthAdmOP idSociety={idSociety}  loggedUser={loggedUser} />}  />
+                <Route
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso"
+                  element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
+                />
+              </Route>
+
+              <Route path="AuthObraOP">
+                <Route path="" element={<AuthObraOP idSociety={idSociety}  loggedUser={loggedUser} />}  />
+                <Route
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso"
+                  element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
+                />
+              </Route>
+
+
               
               <Route path="proveedores" element={<Proveedores idSociety={idSociety}   loggedUser={loggedUser} />} />
               <Route path="usuarios" element={<Usuarios idSociety={idSociety}  loggedUser={loggedUser}  />} />

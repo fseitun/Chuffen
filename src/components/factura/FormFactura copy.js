@@ -11,10 +11,6 @@ export function FormFactura({ idSociety, loggedUser}) {
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
 
-  const { data: fideicomisos } = useQuery(
-    ['fideicomisos'],
-    () => getMethod(`fideicomiso/listar/${idSociety.id}`));
-
   const { data: proveedores } = useQuery(
     ['proveedores'],
     () => getMethod(`proveedor/listar/${idSociety.id}`));
@@ -35,7 +31,6 @@ export function FormFactura({ idSociety, loggedUser}) {
     }
   );
 
-  const [fideInForm, setFideInForm] = useState(null);
   const [typeInForm, setTypeInForm] = useState(null);
   const [open, setOpen] = useState(false);
 
@@ -54,7 +49,6 @@ export function FormFactura({ idSociety, loggedUser}) {
             montoTotal: values.montoTotal,
             fechaIngreso: values.fechaIngreso,
             empresaId: values.empresa.id,
-            fideicomisoId: values.fideicomiso.id,
             moneda: 'ARS',
             creador: loggedUser.id
           });
@@ -67,30 +61,12 @@ export function FormFactura({ idSociety, loggedUser}) {
         {({ isSubmitting, setFieldValue }) => (
           <Form>
 
-            <Field
-              as={Autocomplete}
-              size={'small'}
-              label='Fideicomiso'
-              disablePortal
-              required
-              style={{ width: '230px', display: 'inline-flex' }}
-              onChange={(event, newValue) => {
-                setFideInForm(newValue);
-                setFieldValue('fideicomiso', newValue);
-              }}
-              value={fideInForm}
-              getOptionLabel={option => option.nombre}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              options={(fideicomisos? fideicomisos:[])}
-              renderInput={params => <TextField {...params} label='Fideicomiso' />}
-            />
-
+            
              <Field
             as={Autocomplete}
             size={'small'}
             label='Razon Social'
             disablePortal
-            required
             style={{ width: '230px', display: 'inline-flex' }}
             onChange={(event, newValue) => {
               setTypeInForm(newValue);
@@ -107,10 +83,7 @@ export function FormFactura({ idSociety, loggedUser}) {
             as={TextField}
             label='Numero'
             type='float'
-            required
             maxLength={8}
-            size="small"
-            sx={{ width: '20ch' }}
             name='numero'
             onChange={event => onlyNumbers(event, setFieldValue, 'numero')}
           />
@@ -118,10 +91,7 @@ export function FormFactura({ idSociety, loggedUser}) {
           <Field
             as={TextField}
             label='Monto'
-            required
             type='float'
-            size="small"
-            sx={{ width: '20ch' }}
             name='montoTotal'
             onChange={event => onlyNumbers(event, setFieldValue, 'montoTotal')}
           />

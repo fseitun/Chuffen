@@ -151,7 +151,7 @@ export function GrillaCac({ idSociety }) {
 }
 
 function onlyNumbers(data) {
-  console.log('data', data);
+  
   const regex = /^\d{0,4}(\.\d{0,2})?$/;
   const isValid = regex.test(data.props.value.toString());
   const error = !isValid;

@@ -52,7 +52,7 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     editable: false,
     headerAlign: 'center',
     align: 'center',
-    renderCell: IrDetalleOP_3,
+    // renderCell: IrDetalleOP_3,
   },  
   {
     field: 'monto',
@@ -93,7 +93,7 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
   },
   {
     field: 'RET_GAN',
-    headerName: 'SUSS',
+    headerName: 'GAN',
     width: 120,
     editable: true,
     headerAlign: 'center',
@@ -464,11 +464,13 @@ function IrDetalleOP_2(params) {
   const numero = params.row.numero;
   return <Button onClick={sendRow} >{numero}  </Button>;
 } 
+
+/*
 function IrDetalleOP_3(params) {
   const sendRow = params.row.onIrDetalle;  
   const empresa = params.row.empresa;
   return <Button onClick={sendRow} >{empresa}  </Button>;
-}
+}*/
 
 function ComboBox({ rubros, props }) {
   const { id, api, field } = props;

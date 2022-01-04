@@ -8,15 +8,7 @@ import { usePrompt } from 'src/utils/usePrompt';
 import { mostrarFecha } from 'src/utils/utils';
 
 const columns = (setIsPromptOpen, setRowIdToDelete) => [
-  {
-    field: 'fideicomiso',
-    headerName: 'Fideicomiso',
-    width: 160,
-    editable: false,
-    headerAlign: 'center',
-    align: 'center',
-    /*renderCell: IrDetalleOP_1,*/
-  }, 
+
   {
     field: 'empresa',
     headerName: 'Razon Social',
@@ -46,7 +38,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'moneda',
     headerName: '',
-    width: 50,
+    width: 120,
     editable: true,
     headerAlign: 'center',
   },
@@ -54,7 +46,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'link',
     headerName: 'Link',
-    width: 110,
+    width: 155,
     editable: true,
     headerAlign: 'center',
     /*renderCell:  ({ row: { link } }) => (
@@ -69,35 +61,25 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     renderCell:  ({ row: { link } }) => (
       <a href={ link }  rel="noreferrer" target="_blank" >ver</a>)
   },
-
   {
     field: 'fechaIngreso',
-    headerName: 'Fecha',
-    width: 155,
-    type: 'date',
-    editable: true,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: fFechaIngreso,
-    
-  },
-  {
-    field: 'diasVTO',
-    headerName: 'Días VTO',
-    width: 140,
-    editable: true,
-    type: 'singleSelect',
-    valueOptions: [0,1,2,3,4,5,6,7,10,14,15,20,21,28,30,40,50,60,70,80,90,100,120,150]
-  },
-  {
-    field: 'id',
-    headerName: 'VTO',
-    width: 155,
+    headerName: 'Ingreso',
+    width: 145,
     type: 'date',
     editable: false,
     headerAlign: 'center',
     align: 'center',
-    renderCell: fFechaVTO,
+    valueFormatter: ({ value }) => mostrarFecha(value),
+  },
+  {
+    field: 'fechaVTO',
+    headerName: 'VTO',
+    width: 155,
+    type: 'date',
+    editable: true,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: fFecha,
     
   },
   {
@@ -149,17 +131,11 @@ export function GrillaFactura({ idSociety }) {
   // eliminate(1);
 
   const { mutate: modifyData } = useMutation(
-    
     async ({ field, id, value }) =>
-      ( 
-     
-
       await postMethod(`factura/modificar/${idSociety.id}`, {
         id,
         [field]: value,
-      })
-      ),
-      
+      }),
     {
       onMutate: async ({ field, id, value }) => {
         await queryClient.cancelQueries(['factura', idSociety]);
@@ -168,7 +144,8 @@ export function GrillaFactura({ idSociety }) {
         const newData = [
           ...prevData.filter(factura => factura.id !== id),
           { ...prevData.find(factura => factura.id === id), [field]: value },
-        ];  
+        ];
+
         queryClient.setQueryData(['factura', idSociety], newData);
         return prevData;
       },
@@ -190,7 +167,6 @@ export function GrillaFactura({ idSociety }) {
         <DataGrid
           rows={facturaInformation.map(factura => ({
             id: factura.id,
-            fideicomiso: (factura?.fideicomisos? factura?.fideicomisos[0]?.nombre:''),
             empresaId: factura.empresaId,
             empresa:(factura?.empresas? factura?.empresas[0]?.razonSocial:''),
             numero: factura.numero,
@@ -199,7 +175,6 @@ export function GrillaFactura({ idSociety }) {
             montoTotal: factura.montoTotal,
             moneda: factura.moneda,
             fechaIngreso: factura.fechaIngreso,
-            diasVTO: factura.diasVTO, 
             fechaVTO: factura.fechaVTO, 
    
             deleteId: factura.id,
@@ -226,28 +201,13 @@ function CustomToolbar() {
   );
 }
 
-function fFechaVTO(params) {
-  let f = new Date(params.row.fechaIngreso)
-  let d =0;
-  if(params.row.diasVTO){ 
-    if(params.row.diasVTO > 0 ){
-       d =params.row.diasVTO;
-    }
+function fFecha(params) {
+  let fechaVTO = null; 
+  if(params.row.fechaVTO){
+    fechaVTO = mostrarFecha(params.row.fechaVTO);
+  }else{
+    fechaVTO = '';
   }
-  f. setDate(f. getDate() + d);
-  let fechaVTO = mostrarFecha(f);
-
 
   return fechaVTO;
-}
-
-function fFechaIngreso(params) {
-  let fechaIngreso = null; 
-  if(params.row.fechaIngreso){
-    fechaIngreso = mostrarFecha(params.row.fechaIngreso);
-  }else{
-    fechaIngreso = '';
-  }
-
-  return fechaIngreso;
 }

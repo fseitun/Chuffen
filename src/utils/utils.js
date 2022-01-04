@@ -1,5 +1,14 @@
 import { getMethod } from './api';
 
+// Acceso
+export function acceso(acceso, str, rol) {
+  let rta = ""; 
+  if(acceso === "manager"){rta = str} 
+  if(acceso === rol){rta = str} 
+  // console.log(acceso, str, rol)
+    return rta;
+}
+
 // Devuelve CUIT con formato 20-44.123.225-8
 export function mostrarCUIT(value) {
   try {

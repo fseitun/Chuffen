@@ -157,7 +157,7 @@ function CustomToolbar() {
 }
 
 function onlyNumbers(data) {
-  console.log('data', data);
+
   const regex = /^\d{0,3}(\.\d{0,2})?$/;
   const isValid = regex.test(data.props.value.toString());
   const error = !isValid;

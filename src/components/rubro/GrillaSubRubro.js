@@ -104,20 +104,13 @@ export function GrillaSubRubro({ idSociety, idRubro }) {
             deleteId: subrubro.id,
           }))}
           onCellEditCommit={modifyData}
-          /* onRowDoubleClick={a => {
-          console.log(a);
-           return IrASubrubro(a);
-         }}*/
+        
         compone
           columns={columns(setIsPromptOpen, setRowIdToDelete)}
           pageSize={25}
           disableSelectionOnClick
           autoHeight
-          /*sortModel={[
-            {
-              field: 'subRubro'
-            },
-          ]}*/
+         
           scrollbarSize
           components={{
             Toolbar: CustomToolbar,
@@ -125,10 +118,7 @@ export function GrillaSubRubro({ idSociety, idRubro }) {
         />
       </div>
     );
-    /*
-    function IrASubrubro(params) {
-      navigate(`./${params.row.rubro}`);
-    }*/
+   
 }
 
 function CustomToolbar() {
