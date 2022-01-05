@@ -234,7 +234,7 @@ function fFechaVTO(params) {
        d =params.row.diasVTO;
     }
   }
-  f. setDate(f. getDate() + d);
+  f.setDate(f.getDate() + d);
   let fechaVTO = mostrarFecha(f);
 
 

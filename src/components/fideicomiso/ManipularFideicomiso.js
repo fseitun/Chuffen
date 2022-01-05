@@ -36,12 +36,14 @@ export function ManipularFideicomiso({ idSociety }) {
         <Form>
           <Field
             as={TextField}
+            required
             label='Nombre Fideicomiso'
+            size="small"
             type='string'
             maxLength={40}
             name='nombre'
           />
-          <Field name='fechaInicio'>
+          <Field name='fechaInicio' >
             {({ field: { value, name }, form: { setFieldValue } }) => (
               <Picker label='Inicio' value={value} setFieldValue={setFieldValue} name={name} />
             )}
@@ -72,7 +74,7 @@ export function ManipularFideicomiso({ idSociety }) {
           label={label}
           value={value}
           inputFormat='dd/MM/yyyy'
-          renderInput={params => <TextField {...params} />}
+          renderInput={params => <TextField  size="small" {...params} />}
           onChange={value => setFieldValue(name, value)}
         />
       </LocalizationProvider>

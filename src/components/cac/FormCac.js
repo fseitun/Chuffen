@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-
 import { postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { dateToStringWithDayEqualToOne, isDateUsed } from 'src/utils/utils';
@@ -51,7 +50,9 @@ export function FormCac({ idSociety, loggedUser }) {
             <Field
               as={TextField}
               label="Estimado"
+              required
               type="float"
+              size="small"
               maxLength={4}
               name="estimado"
               onChange={event => onlyNumbers(event, setFieldValue, 'estimado')}
@@ -59,7 +60,9 @@ export function FormCac({ idSociety, loggedUser }) {
             <Field
               as={TextField}
               label="Definitivo"
+              required
               type="float"
+              size="small"
               name="definitivo"
               onChange={event => onlyNumbers(event, setFieldValue, 'definitivo')}
             />
@@ -96,7 +99,7 @@ export function FormCac({ idSociety, loggedUser }) {
           inputFormat="dd/MM/yyyy"
           value={value}
           onChange={value => setFieldValue(name, value)}
-          renderInput={params => <TextField {...params} />}
+          renderInput={params => <TextField required size="small" {...params} />}
         />
       </LocalizationProvider>
     );

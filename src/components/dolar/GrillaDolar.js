@@ -3,10 +3,8 @@ import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
-
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
-
 import { mostrarFecha } from 'src/utils/utils';
 
 const columns = (setIsPromptOpen, setRowIdToDelete) => [

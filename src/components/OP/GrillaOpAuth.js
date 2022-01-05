@@ -2,8 +2,10 @@ import * as React from 'react';
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { Button} from '@mui/material';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
-import { getMethod, postMethod } from 'src/utils/api';
+import { useNavigate } from 'react-router-dom';
+import { getMethod, postMethod} from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 
 import { mostrarFecha } from 'src/utils/utils';
@@ -23,19 +25,20 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'fideicomiso',
     headerName: 'Fideicomiso',
+    width: 160,
     editable: false,
-    width: 155,
     headerAlign: 'center',
     align: 'center',
+    renderCell: IrDetalleOP_1,
   },
-
   {
     field: 'numero',
     headerName: 'Numero',
-    editable: false,
     width: 130,
+    editable: false,
     headerAlign: 'center',
     align: 'right',
+    renderCell: IrDetalleOP_2,    
   },
 
   {
@@ -83,19 +86,26 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
 
 ];
 
-export function GrillaOPObra({ idSociety,  loggedUser }) {
+export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
   
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
   // console.log(rowIdToDelete);
+  const navigate = useNavigate();
+  
+  let str = '';
+  if(tipo ==='adm'){
+    str = `OP/listar/${idSociety.id}/authADM/nulo`;
+  }else{
+    str = `OP/listar/${idSociety.id}/authObra/nulo`;
+  }
 
   const {
-    data: opObraInformation,
+    data: opInformation,
     isLoading,
     error,
-  } = useQuery(['OPobra', idSociety], () => getMethod(`OP/listar/${idSociety.id}/authObra/nulo`));
-
-
+  } = useQuery(['OP' + tipo, idSociety], () => getMethod(str));
+ 
   const queryClient = useQueryClient();
 
   const { mutate: authFila } = useMutation(
@@ -104,14 +114,20 @@ export function GrillaOPObra({ idSociety,  loggedUser }) {
 
         opid : id,
         documento: 'op',
-        tipoAutorizacion: 'obra',
+        tipoAutorizacion: tipo,
         creador: loggedUser.id
 
       }),
     {
       onSuccess: async () =>
-        await queryClient.refetchQueries(['OPobra', idSociety]),
+        await queryClient.refetchQueries(['OP' + tipo, idSociety]),
     }
+
+  );
+
+  const { mutate: irDetalle } = useMutation(
+    async el =>    
+      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}`)
 
   );
   
@@ -124,19 +140,19 @@ export function GrillaOPObra({ idSociety,  loggedUser }) {
       }),
     {
       onMutate: async ({ field, id, value }) => {
-        await queryClient.cancelQueries(['OPobra', idSociety]);
-        const prevData = queryClient.getQueryData(['OPobra', idSociety]);
+        await queryClient.cancelQueries(['OP' + tipo, idSociety]);
+        const prevData = queryClient.getQueryData(['OP' + tipo, idSociety]);
         // console.log('prevData', prevData);
         const newData = [
           ...prevData.filter(OP => OP.id !== id),
           { ...prevData.find(OP => OP.id === id), [field]: value },
         ];
         // console.log('newData', newData);
-        queryClient.setQueryData(['OPobra', idSociety], newData);
+        queryClient.setQueryData(['OP' + tipo, idSociety], newData);
         return prevData;
       },
-      onError: (err, id, context) => queryClient.setQueryData(['OPobra', idSociety], context),
-      onSettled: () => queryClient.invalidateQueries(['OPobra', idSociety]),
+      onError: (err, id, context) => queryClient.setQueryData(['OP' + tipo, idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['OP' + tipo, idSociety]),
     }
   );
 
@@ -150,7 +166,7 @@ export function GrillaOPObra({ idSociety,  loggedUser }) {
       <div style={{ width: '100%' }}>
         <Prompt message="¿Autorizar fila?" action={() => authFila(rowIdToDelete)} />
         <DataGrid
-          rows={opObraInformation.map(OP => ({
+          rows={opInformation.map(OP => ({
             id: OP.id,        
             numero: OP.numero,
             empresa: OP.empresas[0].razonSocial,
@@ -161,6 +177,7 @@ export function GrillaOPObra({ idSociety,  loggedUser }) {
             apr_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
             createdAt: OP.createdAt,
             authId: OP.id,
+            onIrDetalle: () => irDetalle(OP),   
           }))}
           onCellEditCommit={modifyData}
           columns={columns(setIsPromptOpen, setRowIdToDelete)}
@@ -183,3 +200,15 @@ function CustomToolbar() {
     </GridToolbarContainer>
   );
 }
+
+function IrDetalleOP_1(params) {
+  const sendRow = params.row.onIrDetalle;  
+  const fideicomiso = params.row.fideicomiso;
+  return <Button onClick={sendRow} >{fideicomiso}  </Button>;
+} 
+function IrDetalleOP_2(params) {
+  const sendRow = params.row.onIrDetalle;  
+  const numero = params.row.numero;
+  return <Button onClick={sendRow} >{numero}  </Button>;
+} 
+

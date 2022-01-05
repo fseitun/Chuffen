@@ -45,6 +45,8 @@ export function FormRubro({ idSociety, loggedUser }) {
             <Field
               as={TextField}
               label="Rubro"
+              required
+              size="small"
               type="float"              
               name="rubro"
             />

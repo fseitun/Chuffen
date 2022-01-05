@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-
 import { postMethod } from 'src/utils/api';
 import { yearMonthDayString, isDateUsed } from 'src/utils/utils';
 import { usePrompt } from 'src/utils/usePrompt';
@@ -51,6 +50,7 @@ export function FormDolar({ idSociety, loggedUser}) {
             <Field
               as={TextField}
               label="BCRA"
+              size="small"
               type="float"
               maxLength={4}
               name="BCRA"
@@ -59,6 +59,7 @@ export function FormDolar({ idSociety, loggedUser}) {
             <Field
               as={TextField}
               label="MEP"
+              size="small"
               type="float"
               name="mep"
               onChange={event => onlyNumbers(event, setFieldValue, 'mep')}
@@ -97,7 +98,7 @@ function Picker({ field, form }) {
         inputFormat="dd/MM/yyyy"
         value={value}
         onChange={value => setFieldValue(name, value)}
-        renderInput={params => <TextField {...params} />}
+        renderInput={params => <TextField required size="small" {...params} />}
       />
     </LocalizationProvider>
   );

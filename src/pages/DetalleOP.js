@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRef } from 'react'
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Box, Typography, Grid } from '@mui/material';
 import { Helmet } from 'react-helmet';
@@ -8,7 +9,7 @@ import { FormDetalleOP } from 'src/components/detalleOP/FormDetalleOP';
 import { GrillaDetalleOP } from 'src/components/detalleOP/GrillaDetalleOP';
 import { mostrarFechaMesTXT } from 'src/utils/utils';
 import { PDFDownloadLink, PDFViewer, pdf } from "@react-pdf/renderer";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { useQueryClient, useMutation } from 'react-query';
 import { Button } from '@mui/material';
 import RepOp from "src/components/reportes/orden_de_pago/orden_de_pago";
@@ -29,6 +30,8 @@ export function DetalleOP({ idSociety, loggedUser }) {
   const id = idSociety.id;
   const fileName="OP_" + fideicomiso + "_" + numero + ".pdf";
   const buttonAdmRef = useRef();
+
+  
 
    //guarda en server
    const getPdfBlob = async () =>   {
@@ -94,6 +97,11 @@ export function DetalleOP({ idSociety, loggedUser }) {
     }
   );
 
+  var verAdm = verAuthBoton("adm", dataOP, "Autorizar en Obra", loggedUser?.["rol.descripcion"]);
+  const [verBoxAdm, setVerBoxAdm] = useState(verAdm);  
+  var verObra = verAuthBoton("obra", dataOP, "Autorizar en Obra", loggedUser?.["rol.descripcion"]);
+  const [verBoxObra, setVerBoxObra] = useState(verObra);
+
   const { mutate: authFilaAdm } = useMutation(
     async id =>
       await postMethod(`autorizacion/agregar/${idSociety?.id}`, {
@@ -104,8 +112,9 @@ export function DetalleOP({ idSociety, loggedUser }) {
         creador: loggedUser.id
 
       }),
+      /*setVerBoxAdm("none"),*/
     {
-      onSuccess: async () =>
+      onSuccess: async () =>        
         await queryClient.refetchQueries(['dataOP', idSociety]),
     }
   );
@@ -118,9 +127,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
     }
 }
 
-  var verAdm = verAuthBoton("adm", dataOP, "Autorizar en Obra", loggedUser?.["rol.descripcion"]);
-  var verObra = verAuthBoton("obra", dataOP, "Autorizar en Obra", loggedUser?.["rol.descripcion"]);
-  /*buttonAdmRef.disabled = true;*/
+
 
   return (
 
@@ -134,7 +141,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
         justifyContent: "flex-end",
       }}
     >
-      <Box display={verObra} sx={{ pt: 1 }}>
+      <Box display={verBoxObra} sx={{ pt: 1 }}>
         <Button
         /*variant="info"*/
         onClick={() => {
@@ -155,6 +162,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
                 color="secondary"
                 size="small"
                 onClick={() => {
+                  setVerBoxObra("none")
                   authFilaObra(idOP)
                   closeToast();
                 }}
@@ -168,7 +176,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
         Autorizar en Obra
         </Button>
       </Box>
-      <Box display={verAdm} sx={{ pt: 1 }}>
+      <Box display={verBoxAdm} sx={{ pt: 1 }}>
         <Button
           ref={buttonAdmRef}
           /*variant="info"*/
@@ -192,6 +200,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
                   color="secondary"
                   size="small"
                   onClick={() => {
+                    setVerBoxAdm("none")
                     authFilaAdm(idOP)
                     closeToast();
                   }}
@@ -307,7 +316,7 @@ function verAuthBoton(tipo, dataOP, label, rol_usuario){
   if(tipo==="adm"){
     if(dataOP?.auth_adm){
       if(dataOP.auth_adm[0]){
-        if(dataOP.auth_adm[0].usuarios[0].user != undefined){
+        if(dataOP.auth_adm[0].usuarios[0].user !== undefined){
           rta = "";
         }
       }     
@@ -315,7 +324,7 @@ function verAuthBoton(tipo, dataOP, label, rol_usuario){
   }else{
     if(dataOP?.auth_obra){
       if(dataOP.auth_obra[0]){
-        if(dataOP.auth_obra[0].usuarios[0].user != undefined){
+        if(dataOP.auth_obra[0].usuarios[0].user !== undefined){
           rta = "";
         }
       }     

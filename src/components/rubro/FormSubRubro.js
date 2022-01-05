@@ -44,6 +44,8 @@ export function FormSubRubro({ idSociety, idRubro, loggedUser }) {
             <Field
               as={TextField}
               label="SubRubro"
+              required
+              size="small"
               type="float"              
               name="subRubro"
             />

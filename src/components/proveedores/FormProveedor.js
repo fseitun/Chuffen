@@ -47,12 +47,14 @@ export function FormProveedor({ idSociety, loggedUser }) {
             as={TextField}
             label='CUIT'
             type='string'
+            required
+            size="small"
             maxLength={11}
             name='CUIT'
             onChange={event => onlyNumbers(event, setFieldValue, 'CUIT')}
           />
           
-          <Field as={TextField} label='Razón Social' type='string' name='razonSocial' />
+          <Field as={TextField} required size="small" label='Razón Social' type='string' name='razonSocial' />
 
             <Button type="submit" disabled={isSubmitting}>
               Agregar

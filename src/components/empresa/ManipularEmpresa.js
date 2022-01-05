@@ -2,7 +2,6 @@ import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { TextField, Button } from '@mui/material';
-
 import { getMethod, postMethod } from 'src/utils/api';
 
 export function ManipularEmpresa({ idSociety }) {

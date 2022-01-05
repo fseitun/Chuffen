@@ -33,10 +33,7 @@ export function FormUsuario({ idSociety, loggedUser}) {
           mail: '',
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
-          // checkear mail duplicado !!
-          //if (values.mail.trim() ==='') {
-          //  setIsPromptOpen(true);
-          //} else addUsuario(values);
+
           addUsuario(values);
           resetForm();
           setSubmitting(false);
@@ -45,8 +42,8 @@ export function FormUsuario({ idSociety, loggedUser}) {
         
         {({ isSubmitting }) => (
           <Form>
-                 <Field as={TextField} label='Usuario' type='string' maxLength={30} name='user' />
-          <Field as={TextField} label='Mail' type='mail' name='mail' />  
+            <Field as={TextField} required size="small" label='Usuario' type='string' maxLength={30} name='user' />
+            <Field as={TextField} required size="small" label='Mail' type='mail' name='mail' />  
             <Button type="submit" disabled={isSubmitting}>
               Agregar
             </Button>

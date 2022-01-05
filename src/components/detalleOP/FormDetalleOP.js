@@ -1,12 +1,7 @@
 import { TextField, Typography, Grid} from '@mui/material';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { Formik, Form, Field } from 'formik';
-import { Button } from '@mui/material';
-// import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
-// import AdapterDateFns from '@mui/lab/AdapterDateFns';
-// import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { Formik, Form } from 'formik';
 import { getMethod, postMethod } from 'src/utils/api';
-// import { yearMonthDayString } from 'src/utils/utils';
 import { usePrompt } from 'src/utils/usePrompt';
 
 export function FormDetalleOP({ idSociety, OPId}) {

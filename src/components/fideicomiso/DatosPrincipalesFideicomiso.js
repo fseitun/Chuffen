@@ -15,14 +15,9 @@ import { getMethod, postMethod } from 'src/utils/api';
 const filter = createFilterOptions();
 
 export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety }) {
-  // console.log('params:', params);
-  // console.log('selectedFideicomisoData:', selectedFideicomisoData);
-  // console.log('selectedFideicomisoData.personaId:', selectedFideicomisoData.personaId);
-  // console.log('idSociety:', idSociety);
+  
   const [managerId, setManagerId] = useState();
   useEffect(() => setManagerId(selectedFideicomisoData?.personaId), [selectedFideicomisoData]);
-  // console.log('selectedFideicomisoData:', selectedFideicomisoData);
-  // console.log('managerId:', managerId);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { data: contactInfo } = useQuery(['persona', managerId], () =>
     getMethod(`persona/mostrar/${idSociety.id}/${managerId}`)
