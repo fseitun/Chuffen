@@ -37,7 +37,7 @@ const DashboardLayoutContent = styled('div')({
 });
 
 export default function DashboardLayout({ setLoggedUser, idSociety, loggedUser }) {
-  // console.log('idSociety', idSociety);
+  
   const [isMobileNavOpen, setisMobileNavOpen] = useState(false);
 
   return (

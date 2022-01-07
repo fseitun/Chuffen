@@ -147,12 +147,13 @@ export function FormDetalleOP({ idSociety, OPId}) {
                   &nbsp;
                   </Grid>
 
-                  <Grid item md={2}>
-                  <TextField  sx={{ width: '20ch' }} label="RET IIBB" type="float" defaultValue={formOP?.RET_IVA || '' }  name="RET_IVA" onChange={event => onlyNumbers(event, setFieldValue, 'RET_IVA', idSociety.id, OPId, 0)} />
-                  </Grid>                 
+                                 
                   <Grid item md={2}>
                   <TextField sx={{ width: '20ch' }} label="RET GAN" type="float"  defaultValue={formOP?.RET_GAN || ''}  name="RET_GAN" onChange={event => onlyNumbers(event, setFieldValue, 'RET_GAN', idSociety.id, OPId, 0)} />
                   </Grid>
+                  <Grid item md={2}>
+                  <TextField  sx={{ width: '20ch' }} label="RET IVA" type="float" defaultValue={formOP?.RET_IVA || '' }  name="RET_IVA" onChange={event => onlyNumbers(event, setFieldValue, 'RET_IVA', idSociety.id, OPId, 0)} />
+                  </Grid>  
                   <Grid item md={2}>
                   <TextField sx={{ width: '20ch' }} label="RET SUSS" type="float"  defaultValue={formOP?.RET_SUSS || ''}  name="RET_SUSS"  onChange={event => onlyNumbers(event, setFieldValue, 'RET_SUSS', idSociety.id, OPId, 0)} />
                   </Grid>

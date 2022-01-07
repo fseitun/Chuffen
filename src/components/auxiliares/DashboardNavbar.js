@@ -13,9 +13,7 @@ import Logo from 'src/components/auxiliares/Logo.js';
 import { sideBarOptions } from 'src/components/auxiliares/sideBarOptions.js';
 import { useNavigate } from 'react-router-dom';
 
-const user = {
-  avatar: '/static/images/avatars/ingeniero.png',
-};
+
 
 export default function DashboardNavbar({
   setisMobileNavOpen,
@@ -23,6 +21,11 @@ export default function DashboardNavbar({
   idSociety,
   loggedUser,
 }) {
+
+  var pathAvatar = '/static/images/avatars/' + loggedUser.avatar;
+
+  const user = {avatar: pathAvatar,};
+
   const navigate = useNavigate();
 
   const { pathname } = useLocation();

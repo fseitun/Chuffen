@@ -112,6 +112,10 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),    
   },
   {
+    field: 'retencion',
+    hide: true,
+  },
+  {
     field: 'estadoRET', // campo en grilla
     headerName: 'Retenciones',
     width: 150,
@@ -119,6 +123,10 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     renderCell: ({ value }) => value.descripcion, // a visualizar
     renderEditCell: props => <ComboBoxRet retenciones={retenciones} props={props} />,
     headerAlign: 'center',
+  },
+  {
+    field: 'aprobado_obra',
+    hide: true,
   },
   {
     field: 'aprobado obra',
@@ -129,12 +137,20 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     renderCell: NonObraAuthRow,
   },
   {
+    field: 'aprobado_adm',
+    hide: true,
+  },
+  {
     field: 'aprobado adm',
     headerName: 'Ap. ADM',
     width: 140,
     headerAlign: 'center',
     align: 'center',
     renderCell: NonAdmAuthRow,
+  },
+  {
+    field: 'estado',
+    hide: true,
   },
   {
     field: 'estadoOP', // campo en grilla
@@ -144,6 +160,10 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     renderCell: ({ value }) => value.descripcion, // a visualizar
     renderEditCell: props => <ComboBoxEst estados={estados} props={props} />,
     headerAlign: 'center',
+  },
+  {
+    field: 'fondos_',
+    hide: true,
   },
   {
     field: 'fondos', // campo en grilla
@@ -162,6 +182,10 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     headerAlign: 'center',
     align: 'center',
     renderCell: DescargarPDF,
+  },
+  {
+    field: 'rubro',
+    hide: true,
   },  
   {
     field: 'rubroID',
@@ -171,6 +195,10 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     renderCell: ({ value }) => value.nombre,
     renderEditCell: props => <ComboBox rubros={rubros} props={props} />,
     headerAlign: 'center',
+  },
+  {
+    field: 'subrubro',
+    hide: true,
   },
   {
     field: 'subrubroID',
@@ -369,7 +397,7 @@ export function GrillaOP({ idSociety }) {
     //}
   );
   
-  
+
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
@@ -391,7 +419,7 @@ export function GrillaOP({ idSociety }) {
             RET_SUSS: OP.RET_SUSS,
             RET_GAN: OP.RET_GAN,
             RET_IVA: OP.RET_IVA,
-            rubroId: OP.rubroId,
+            rubroId: OP.rubroId,            
             estadoRET: {
               id: OP.estadoRET,
               descripcion: retenciones?.find(retencion => retencion.id === OP.estadoRET)?.descripcion,
@@ -420,7 +448,14 @@ export function GrillaOP({ idSociety }) {
             apr_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
             misFacturas: grfacturas?.filter(factura => factura?.OPId === OP.id),
             deleteId: OP.id,
-     
+            /* para exportar*/
+            retencion: retenciones?.find(retencion => retencion.id === OP.estadoRET)?.descripcion,
+            aprobado_obra: (OP.auth_obra[0]?OP.auth_obra[0].usuarios[0].user:''),
+            aprobado_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
+            estado: estados?.find(estado => estado.id === OP.estadoOP)?.descripcion,
+            fondos_: fondos_s?.find(fondos => fondos.id === OP.fondos)?.descripcion,            
+            rubro: rubros?.find(rubro => rubro.id === OP.rubroId)?.rubro,
+            subrubro: subRubros?.find(subRubro => subRubro.id === OP.subRubroId)?.subRubro,     
             onAuthObra: () => nonAuthObra(OP),
             onAuthAdm: () => nonAuthAdm(OP),
             cargarOP: () => cargar_y_subir_OP(OP),
@@ -436,6 +471,7 @@ export function GrillaOP({ idSociety }) {
           components={{
             Toolbar: CustomToolbar,
           }}
+         
           
         >
         
@@ -449,7 +485,8 @@ export function GrillaOP({ idSociety }) {
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarExport />
+      <GridToolbarExport csvOptions={{ fields: ['createdAt', 'fideicomiso', 'numero','empresa','monto','moneda','RET_SUSS','RET_GAN','RET_IVA','fondos_','retencion', 'aprobado_obra', 'aprobado_adm', 'estado', 'fondos_', 'rubro', 'subrubro','descripcion'] }} />
+      
     </GridToolbarContainer>
   );
 }

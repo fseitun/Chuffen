@@ -61,8 +61,7 @@ export default function App() {
     const localStorageIdSociety = localStorage.getItem('idSociety');
     return localStorageIdSociety ? JSON.parse(localStorageIdSociety) : null;
   });
-  // console.log('loggedUser:', loggedUser);
-  // console.log('idSociety:', idSociety);
+
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
