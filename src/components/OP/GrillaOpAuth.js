@@ -7,7 +7,6 @@ import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import { useNavigate } from 'react-router-dom';
 import { getMethod, postMethod} from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
-
 import { mostrarFecha } from 'src/utils/utils';
 
 const columns = (setIsPromptOpen, setRowIdToDelete) => [

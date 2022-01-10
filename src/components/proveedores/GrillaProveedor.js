@@ -88,6 +88,14 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     headerAlign: 'center',
   },
   {
+    field: 'enviar_OP_auto',
+    headerName: 'Enviar',
+    type: 'boolean',
+    width: 50,
+    editable: true,
+    headerAlign: 'center',
+  },
+  {
     field: 'deleteIcon',
     headerName: ' ',
     width: 50,
@@ -193,6 +201,8 @@ export function GrillaProveedor({ idSociety }) {
             CBU: proveedor.CBU,
             banco: proveedor.banco,
             nroCuenta: proveedor.nroCuenta,
+            enviar_OP_auto: proveedor.enviar_OP_auto,
+            /*enviar_OP_auto: parseInt(proveedor.enviar_OP_auto===0)? false:true,*/
             deleteId: proveedor.id,
           }))}
           onCellEditCommit={modifyData}

@@ -3,6 +3,10 @@ import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
+//import { MailIcon } from '@mui/icons-material/Mail';
+//import PriceCheckIcon from '@mui/icons-material/PriceCheck';
+//import { MarkEmailReadIcon } from '@mui/icons-material/MarkEmailRead';
+
 import { Box, Button, TextField, Autocomplete} from '@mui/material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { ToastContainer, toast } from 'react-toastify';
@@ -218,6 +222,15 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     align: 'center',    
   }, 
   {
+    field: 'enviada',
+    headerName: 'Enviar',
+    width: 70,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: EnviarMail,
+  },
+
+  {
     field: 'deleteIcon',
     headerName: ' ',
     width: 50,
@@ -373,6 +386,25 @@ export function GrillaOP({ idSociety }) {
     }
   );
 
+  const { mutate: enviarCorreo } = useMutation(
+    async el =>
+      await postMethod(`OP/enviarMail/${idSociety?.id}`, {
+
+        mailTo : idSociety?.mailOP,
+        mailConstructora : idSociety?.mailConstructora,
+        fideicomiso : el.fideicomisos[0]?.nombre,        
+        razonSocial : el.empresas[0]?.razonSocial,
+        enviar_OP_auto : el.empresas[0]?.enviar_OP_auto,
+        numero : el.numero,
+        id : el.id,
+
+      }),
+    {
+      onSuccess: async () =>
+        await queryClient.refetchQueries(['OP', idSociety]),
+    }
+  );
+
   const { mutate: modifyData } = useMutation(
     async ({ field, id, value }) =>//{
       //if(field!='fico'){
@@ -434,6 +466,7 @@ export function GrillaOP({ idSociety }) {
             },
             fideicomiso: OP.fideicomisos[0]?.nombre,
             archivada: OP.archivada,
+            enviada: OP.enviada,
             descripcion: OP.descripcion,
             createdAt: OP.createdAt,   
             rubroID: {
@@ -458,6 +491,7 @@ export function GrillaOP({ idSociety }) {
             subrubro: subRubros?.find(subRubro => subRubro.id === OP.subRubroId)?.subRubro,     
             onAuthObra: () => nonAuthObra(OP),
             onAuthAdm: () => nonAuthAdm(OP),
+            onEnviar: () => enviarCorreo(OP),
             cargarOP: () => cargar_y_subir_OP(OP),
             onIrDetalle: () => irDetalle(OP),    
             
@@ -502,12 +536,6 @@ function IrDetalleOP_2(params) {
   return <Button onClick={sendRow} >{numero}  </Button>;
 } 
 
-/*
-function IrDetalleOP_3(params) {
-  const sendRow = params.row.onIrDetalle;  
-  const empresa = params.row.empresa;
-  return <Button onClick={sendRow} >{empresa}  </Button>;
-}*/
 
 function ComboBox({ rubros, props }) {
   const { id, api, field } = props;
@@ -756,6 +784,7 @@ function NonAdmAuthRow(params) {
 
 } 
 
+
 function DescargarPDF(params) {  
   
   var cargarOP = params.row.cargarOP;
@@ -805,6 +834,51 @@ function DescargarPDF(params) {
     return <Button onClick={notify} >Generada</Button>;    
   }
 
+} 
+
+function EnviarMail(params) {
+
+  const enviar = params.row.onEnviar;  
+  const enviada = params.row.enviada;
+  const archivada = params.row.archivada;
+
+  const notify = () =>
+    toast(({ closeToast }) => (
+      <Box>
+        <Button
+          sx={{ p: 1, m: 1 }}
+          variant='contained'
+          color='secondary'
+          size='small'
+          onClick={closeToast}>
+          Cancelar
+        </Button>
+        <Button
+          sx={{ p: 1, m: 1 }}
+          variant='contained'
+          color='secondary'
+          size='small'
+          onClick={() => {
+            enviar();
+            closeToast();
+          }}>Enviar
+        </Button>
+      </Box>
+    ));
+  
+    if(archivada === 0){
+      return "";
+    }else{
+      if(enviada === 0){
+        return <Button onClick={notify} >Enviar</Button>;
+      
+      }else{
+        return <Button onClick={notify} >Re enviar</Button>;
+      }   
+    }
+
+  
+  
 } 
 
 
