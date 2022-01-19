@@ -1,4 +1,4 @@
-import { Container, Box } from '@mui/material';
+import { Container, Box, Hidden } from '@mui/material';
 import { Helmet } from 'react-helmet';
 
 import { FormProveedor } from 'src/components/proveedores/FormProveedor';
@@ -18,9 +18,11 @@ export function Proveedores({ idSociety, loggedUser }) {
         }}
       >
         <Container maxWidth={false}>
-          <Box sx={{ pt: 3 }}>
-            <FormProveedor idSociety={idSociety} loggedUser={loggedUser} />
-          </Box>
+          <Hidden smUp={(loggedUser?.['rol.factura'] ==='vista')} >
+            <Box sx={{ pt: 3 }}>
+              <FormProveedor idSociety={idSociety} loggedUser={loggedUser} />
+            </Box>
+          </Hidden> 
           <Box sx={{ pt: 3 }}>
             <GrillaProveedor idSociety={idSociety} loggedUser={loggedUser}/>
           </Box>

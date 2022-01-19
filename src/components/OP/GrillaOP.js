@@ -3,10 +3,6 @@ import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
-//import { MailIcon } from '@mui/icons-material/Mail';
-//import PriceCheckIcon from '@mui/icons-material/PriceCheck';
-//import { MarkEmailReadIcon } from '@mui/icons-material/MarkEmailRead';
-
 import { Box, Button, TextField, Autocomplete} from '@mui/material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { ToastContainer, toast } from 'react-toastify';
@@ -20,7 +16,7 @@ var miOP={};
 var fa={};
 var idSociedad=0;
 
-const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
+const columns = (puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'createdAt',
     headerName: 'Fecha',
@@ -56,7 +52,6 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     editable: false,
     headerAlign: 'center',
     align: 'center',
-    // renderCell: IrDetalleOP_3,
   },  
   {
     field: 'monto',
@@ -77,6 +72,15 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     align: 'left',    
   },
   {
+    field: 'estadoOP', // campo en grilla
+    headerName: 'Estado',
+    width: 150,
+    editable: puedeEditar,
+    renderCell: ({ value }) => value.descripcion, // a visualizar
+    renderEditCell: props => <ComboBoxEst estados={estados} props={props} />,
+    headerAlign: 'center',
+  },
+  {
     field: 'facturas',
     headerName: 'Facturas',
     width: 140,
@@ -89,7 +93,7 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     field: 'RET_SUSS',
     headerName: 'SUSS',
     width: 120,
-    editable: true,
+    editable: puedeEditar,
     headerAlign: 'center',
     align: 'right',
     valueFormatter: ({ value }) =>
@@ -99,7 +103,7 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     field: 'RET_GAN',
     headerName: 'GAN',
     width: 120,
-    editable: true,
+    editable: puedeEditar,
     headerAlign: 'center',
     align: 'right',
     valueFormatter: ({ value }) =>
@@ -109,7 +113,7 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     field: 'RET_IVA',
     headerName: 'IVA',
     width: 120,
-    editable: true,
+    editable: puedeEditar,
     headerAlign: 'center',
     align: 'right',
     valueFormatter: ({ value }) =>
@@ -123,7 +127,7 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     field: 'estadoRET', // campo en grilla
     headerName: 'Retenciones',
     width: 150,
-    editable: true,
+    editable: puedeEditar,
     renderCell: ({ value }) => value.descripcion, // a visualizar
     renderEditCell: props => <ComboBoxRet retenciones={retenciones} props={props} />,
     headerAlign: 'center',
@@ -157,24 +161,16 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     hide: true,
   },
   {
-    field: 'estadoOP', // campo en grilla
-    headerName: 'Estado',
-    width: 150,
-    editable: true,
-    renderCell: ({ value }) => value.descripcion, // a visualizar
-    renderEditCell: props => <ComboBoxEst estados={estados} props={props} />,
-    headerAlign: 'center',
-  },
-  {
     field: 'fondos_',
     hide: true,
   },
+
   {
     field: 'fondos', // campo en grilla
     headerName: 'Fondos',
     width: 150,
     type: 'singleSelect',
-    editable: true,
+    editable: puedeEditar, //props.row.confirmada,
     renderCell: ({ value }) => value.descripcion, // a visualizar
     renderEditCell: props => <ComboBoxFon fondos_s={fondos_s} props={props} />,
     headerAlign: 'center',
@@ -195,7 +191,7 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     field: 'rubroID',
     headerName: 'Rubro',
     width: 140,
-    editable: true,
+    editable: puedeEditar,
     renderCell: ({ value }) => value.nombre,
     renderEditCell: props => <ComboBox rubros={rubros} props={props} />,
     headerAlign: 'center',
@@ -208,16 +204,22 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     field: 'subrubroID',
     headerName: 'Sub Rubro',
     width: 140,
-    editable: true,
+    editable: puedeEditar,
     renderCell: ({ value }) => value.nombre,
     renderEditCell: props => <ComboBoxSub subRubros={subRubros} props={props} />,
     headerAlign: 'center',
   },  
   {
+    field: 'formaPago',
+    headerName: 'Forma Pago',
+    width: 160,
+    editable: false,
+  },
+  {
     field: 'descripcion',
     headerName: 'Detalle',
     width: 140,
-    editable: true,
+    editable: puedeEditar,
     headerAlign: 'center',
     align: 'center',    
   }, 
@@ -229,15 +231,24 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     align: 'center',
     renderCell: EnviarMail,
   },
+  {
+    field: 'confirmada',
+    headerName: 'Conf',
+    type: 'boolean',
+    width: 120,
+    editable: false,
+    headerAlign: 'center',
+  },
 
   {
     field: 'deleteIcon',
     headerName: ' ',
+    hide: !puedeEditar,
     width: 50,
     headerAlign: 'center',
     align: 'center',
-    renderCell: ({ row: { deleteId } }) => (
-      <DeleteIcon
+    renderCell: ({ row: { deleteId, confirmada } }) => (
+      confirmada? "":<DeleteIcon
         onClick={e => {
           setRowIdToDelete(deleteId);
           setIsPromptOpen(true);
@@ -253,26 +264,25 @@ const retenciones = [
   { id: 3, descripcion: 'Pendiente' },
 ];
 
-const estados = [  
-  { id: 0, descripcion: '-' },
-  { id: 1, descripcion: 'Para autorizar Obra' },
-  { id: 2, descripcion: 'Para pagar' },
-  { id: 3, descripcion: 'Pagada' },
-  { id: 4, descripcion: 'Para autorizar AC' },
-  { id: 5, descripcion: 'Pagado Parcial' },
-  { id: 6, descripcion: 'Anulado' },
-  { id: 7, descripcion: 'Cargada en Banco' },
-];
+// por ahora se inicializa en el login
+var estados = JSON.parse(localStorage.getItem("estados"));
+
+
 const fondos_s = [  
   { id: 1, descripcion: '-' },
   { id: 2, descripcion: 'OK cargado' },
 ];
 
 
-export function GrillaOP({ idSociety }) {
+export function GrillaOP({ idSociety, loggedUser}) {
   
   idSociedad = idSociety.id;
   var result = {};
+
+  var puedeEditar = true;
+  const accesoOP = loggedUser?.['rol.op'];
+  if( accesoOP ==='vista'){puedeEditar =false}
+  //manager
 
   const navigate = useNavigate();
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
@@ -302,9 +312,16 @@ export function GrillaOP({ idSociety }) {
 
 
   const { mutate: irDetalle } = useMutation(
-    async el =>    
-      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}`)
 
+    async el => await  getMethod(`op/mostrar/${idSociety.id}/${el.id}`),
+    {onSettled: (el) => { /*queryClient.refetchQueries(['formOP', idSociety]);*/
+    navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}/${el.estadoOP}/${el.confirmada}`)}
+  }
+    /*async el =>{
+
+    
+      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}/${el.estadoOP}/${el.confirmada}`)}
+*/
   );
 
   const { mutate: eliminate } = useMutation(
@@ -443,11 +460,12 @@ export function GrillaOP({ idSociety }) {
         <DataGrid 
           rows={opInformation.map(OP => ({
             id: OP.id,    
+            acceso: accesoOP,
             numero: OP.numero,
             empresa: OP.empresas[0]?.razonSocial,
             empresaId: OP.empresaId,
             monto: OP.monto, 
-            moneda: OP.moneda, 
+            moneda: OP.moneda,             
             RET_SUSS: OP.RET_SUSS,
             RET_GAN: OP.RET_GAN,
             RET_IVA: OP.RET_IVA,
@@ -460,6 +478,7 @@ export function GrillaOP({ idSociety }) {
               id: OP.estadoOP,
               descripcion: estados?.find(estado => estado.id === OP.estadoOP)?.descripcion,
             },
+            confirmada: OP.confirmada===0? false: true,
             fondos: {
               id: OP.fondos,
               descripcion: fondos_s?.find(fondos => fondos.id === OP.fondos)?.descripcion,
@@ -486,18 +505,21 @@ export function GrillaOP({ idSociety }) {
             aprobado_obra: (OP.auth_obra[0]?OP.auth_obra[0].usuarios[0].user:''),
             aprobado_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
             estado: estados?.find(estado => estado.id === OP.estadoOP)?.descripcion,
-            fondos_: fondos_s?.find(fondos => fondos.id === OP.fondos)?.descripcion,            
+            fondos_: fondos_s?.find(fondos => fondos.id === OP.fondos)?.descripcion,  
+            formaPago: OP.formaPago,          
             rubro: rubros?.find(rubro => rubro.id === OP.rubroId)?.rubro,
             subrubro: subRubros?.find(subRubro => subRubro.id === OP.subRubroId)?.subRubro,     
             onAuthObra: () => nonAuthObra(OP),
             onAuthAdm: () => nonAuthAdm(OP),
             onEnviar: () => enviarCorreo(OP),
             cargarOP: () => cargar_y_subir_OP(OP),
+            esEditable: () => (OP),
             onIrDetalle: () => irDetalle(OP),    
             
           }))}
           onCellEditCommit={modifyData}
-          columns={columns(rubros, subRubros, setIsPromptOpen, setRowIdToDelete)}
+          columns={columns(puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete)}
+          isCellEditable={(params) => (!params.row.confirmada || accesoOP ==='total')}
           disableSelectionOnClick
           autoHeight
           density={'comfortable'}
@@ -526,7 +548,8 @@ function CustomToolbar() {
 }
 
 function IrDetalleOP_1(params) {
-  const sendRow = params.row.onIrDetalle;  
+
+  const sendRow = params.row.onIrDetalle;
   const fideicomiso = params.row.fideicomiso;
   return <Button onClick={sendRow} >{fideicomiso}  </Button>;
 } 
@@ -655,6 +678,15 @@ function ComboBoxEst({ estados, props }) {
     descripcion: '',
   });
 
+  if(props.row.confirmada){
+    return (
+      <TextField defaultValue={props.row.estadoOP.descripcion }  
+      InputProps={{
+       readOnly: true,
+     }}
+    />)
+  }else{
+
   return (
     <Autocomplete
       value={selectedEst}
@@ -675,9 +707,10 @@ function ComboBoxEst({ estados, props }) {
       renderInput={params => <TextField {...params} label="Estado" />}
     />
   );
+    }
 }
 
-function ComboBoxFon({ fondos_s, props }) {
+function ComboBoxFon({fondos_s, props}) {
   const { id, api, field } = props;
 
   fondos_s = [
@@ -690,33 +723,42 @@ function ComboBoxFon({ fondos_s, props }) {
     descripcion: '',
   });
 
-  return (
-    <Autocomplete
-      value={selectedFon}
-      onChange={async (event, newValue) => {
-        setSelectedRol(newValue); 
-        if(newValue?.id > 0){
-          api.setEditCellValue({ id, field, value: newValue.id }, event);
-          await props.api.commitCellChange({ id, field });
-          api.setCellMode(id, field, 'view');
-        }
-      }}
 
-      id="combo-box-demo"
-      options={fondos_s}
-      isOptionEqualToValue={(op, val) => op.descripcion === val.descripcion}
-      getOptionLabel={option => option.descripcion}
-      sx={{ width: 300 }}
-      renderInput={params => <TextField {...params} label="Fondos" />}
-    />
-  );
+  if(props.row.confirmada){
+    return (
+      <TextField defaultValue={props.row.fondos.descripcion }  
+      InputProps={{
+       readOnly: true,
+     }}
+    />)
+  }else{
+    return (<Autocomplete
+    value={selectedFon}
+    
+    onChange={async (event, newValue) => {
+      setSelectedRol(newValue); 
+      if(newValue?.id > 0){
+        api.setEditCellValue({ id, field, value: newValue.id }, event);
+        await props.api.commitCellChange({ id, field });
+        api.setCellMode(id, field, 'view');
+      }
+    }}
+
+    id="combo-box-demo"
+    options={fondos_s}
+    isOptionEqualToValue={(op, val) => op.descripcion === val.descripcion}
+    getOptionLabel={option => option.descripcion}
+    sx={{ width: 300 }}
+    renderInput={params => <TextField {...params} label="Fondos" />}
+  />)
+  }
 }
 
 function NonObraAuthRow(params) {
   
   const authRow = params.row.onAuthObra;
   const apr_obra = params.row.apr_obra;
-  
+
   const notify = () =>
     toast(({ closeToast }) => (
       <Box>
@@ -742,7 +784,12 @@ function NonObraAuthRow(params) {
     ));
   
   if(apr_obra !== ""){
-    return <Button onClick={notify} >{apr_obra}  </Button>;
+    if(params.row.acceso ==='total'){
+      return <Button onClick={notify} >{apr_obra}  </Button>;
+    }else{
+      let str = "" + apr_obra;
+      return "" + str.toUpperCase();
+    }
   }else{
     return ""
   }
@@ -777,13 +824,18 @@ function NonAdmAuthRow(params) {
     ));
   
   if(apr_adm !== ""){
-    return <Button onClick={notify} >{apr_adm}  </Button>;
+    if(params.row.acceso ==='total'){
+      return <Button onClick={notify} >{apr_adm}  </Button>;
+    }else{
+      let str = "" + apr_adm;
+      return "" + str.toUpperCase();
+    }
+   
   }else{
     return ""
   }
 
 } 
-
 
 function DescargarPDF(params) {  
   
@@ -876,9 +928,5 @@ function EnviarMail(params) {
         return <Button onClick={notify} >Re enviar</Button>;
       }   
     }
-
-  
   
 } 
-
-

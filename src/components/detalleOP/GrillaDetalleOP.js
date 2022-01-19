@@ -6,7 +6,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getMethod, postMethod } from 'src/utils/api';
 
-const columns = [
+// const columns = [
+const columns = (puedeEditar, verEliminar) => [
   {
     field: 'empresa',
     headerName: 'Proveedor',
@@ -18,7 +19,7 @@ const columns = [
     field: 'detalle',
     headerName: 'Detalle',
     width: 175,
-    editable: true,
+    editable: puedeEditar,
     headerAlign: 'center',
   },
   {
@@ -33,7 +34,7 @@ const columns = [
     field: 'txtOC',
     headerName: 'Nro OC',
     width: 130,
-    editable: true,
+    editable: puedeEditar,
     headerAlign: 'center',
     align: 'center',
   },
@@ -61,6 +62,7 @@ const columns = [
   {
     field: 'deleteIcon',
     headerName: '',
+    hide: !verEliminar,
     width: 50,
     headerAlign: 'center',
     align: 'center',
@@ -71,6 +73,16 @@ const columns = [
 
 export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaData }) {
   
+  //var acceso = true;
+  //if(loggedUser?.['rol.op'] ==='vista'){acceso =false}
+  var puedeEditar = true;
+  const accesoOP = loggedUser?.['rol.op'];
+  if( accesoOP ==='vista'){puedeEditar =false}
+
+
+  var verEliminar = true;
+  if(loggedUser?.['rol.op'] ==='parcial' || loggedUser?.['rol.op'] ==='vista'){verEliminar =false}
+
   const {
     data: facturas,    
     /*rowLength: filas,*/
@@ -119,6 +131,7 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
         rows={facturas.map(el => ({
           id: el.id,
           empresa:(el.empresas[0]?el.empresas[0].razonSocial:''),
+          confirmada:(el.OPs[0]?el.OPs[0].confirmada:0),
           numero: el.numero,
           link: el.link,
           link2: el.link,
@@ -131,8 +144,8 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
           onDelete: () => deleteProduct(el.id),
         }))}
 
-
-        columns={columns}     
+        columns={columns(puedeEditar, verEliminar)}
+        isCellEditable={(params) => (!params.row.confirmada || accesoOP ==='total')}
         disableSelectionOnClick           
         autoHeight   
         onCellEditCommit={handleCellModification}

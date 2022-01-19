@@ -67,6 +67,14 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     align: 'left',    
   },
   {
+    field: 'formaPago',
+    headerName: 'Forma Pago',
+    width: 160,
+    editable: true,
+    type: 'singleSelect',
+    valueOptions: formaPagos
+  },
+  {
     field: 'PriceCheckIcon',
     headerName: ' ',
     width: 50,
@@ -84,6 +92,15 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   },
 
 ];
+
+
+// por ahora se inicializa en el login
+var formaPagos =[];
+if(localStorage.getItem("formaPagos")){
+  formaPagos = localStorage.getItem("formaPagos").split(",")
+}else{  
+  formaPagos[0] ="Otra";
+}
 
 export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
   
@@ -126,7 +143,7 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
 
   const { mutate: irDetalle } = useMutation(
     async el =>    
-      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}`)
+      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}/${el.estadoOP}/${el.confirmada}`)
 
   );
   
@@ -170,7 +187,8 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
             numero: OP.numero,
             empresa: OP.empresas[0].razonSocial,
             monto: OP.monto,
-            moneda: OP.moneda,         
+            moneda: OP.moneda,   
+            formaPago: OP.formaPago,      
             fideicomiso: OP.fideicomisos[0].nombre,          
             apr_obra: (OP.auth_obra[0]?OP.auth_obra[0].usuarios[0].user:''),
             apr_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),

@@ -49,8 +49,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     renderCell: ({ row: { deleteId } }) => (
       <DeleteIcon
         onClick={e => {
-          // console.log('e', e);
-          // console.log('deleteId', deleteId);
+
           setRowIdToDelete(deleteId);
           setIsPromptOpen(true);
         }}

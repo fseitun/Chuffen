@@ -3,11 +3,13 @@ import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
+import { Button } from '@mui/material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { mostrarFecha } from 'src/utils/utils';
+import { useNavigate } from 'react-router-dom';
 
-const columns = (setIsPromptOpen, setRowIdToDelete) => [
+const columns = (acceso, setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'fideicomiso',
     headerName: 'Fideicomiso',
@@ -47,7 +49,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     field: 'moneda',
     headerName: '',
     width: 50,
-    editable: true,
+    editable: acceso,
     headerAlign: 'center',
   },
 
@@ -55,7 +57,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     field: 'link',
     headerName: 'Link',
     width: 110,
-    editable: true,
+    editable: acceso,
     headerAlign: 'center',
     /*renderCell:  ({ row: { link } }) => (
       <a href={ link }  rel="noreferrer" target="_blank" >{ link }</a>)*/
@@ -75,7 +77,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     headerName: 'Fecha',
     width: 155,
     type: 'date',
-    editable: true,
+    editable: acceso,
     headerAlign: 'center',
     align: 'center',
     renderCell: fFechaIngreso,
@@ -85,7 +87,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     field: 'diasVTO',
     headerName: 'Días VTO',
     width: 140,
-    editable: true,
+    editable: acceso,
     type: 'singleSelect',
     valueOptions: [0,1,2,3,4,5,6,7,10,14,15,20,21,28,30,40,50,60,70,80,90,100,120,150]
   },
@@ -101,12 +103,29 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     
   },
   {
+    field: 'OPnumero',
+    headerName: 'OP',
+    width: 100,
+    editable: false,
+    headerAlign: 'center',
+    renderCell: IrDetalleOP_1,
+  },
+  {
+    field: 'estadoOP',
+    headerName: 'Estado OP',
+    width: 160,
+    editable: false,
+    headerAlign: 'center',
+  },
+
+  {
     field: 'deleteIcon',
     headerName: ' ',
+    hide: !acceso,
     width: 50,
     headerAlign: 'center',
     align: 'center',
-    renderCell: ({ row: { deleteId } }) => (
+    renderCell: ({ row: { deleteId, OPnumero} }) => (OPnumero>0? '':
       <DeleteIcon
         onClick={e => {
 
@@ -118,11 +137,18 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   },
 ];
 
-export function GrillaFactura({ idSociety }) {
+// por ahora se inicializa en el login
+var estados = JSON.parse(localStorage.getItem("estados"));
+
+export function GrillaFactura({ idSociety, loggedUser }) {
   
+  const navigate = useNavigate();
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
-  // console.log(rowIdToDelete);
+  
+  var acceso = true;
+  if(loggedUser?.['rol.factura'] ==='vista'){acceso =false}
+
 
   const {
     data: facturaInformation,
@@ -177,6 +203,12 @@ export function GrillaFactura({ idSociety }) {
     }
   );
 
+  const { mutate: irDetalle } = useMutation(
+    async el =>    
+      navigate(`./${el?.OPs[0]?.id}/${el?.OPs[0]?.createdAt}/${el.empresaId}/${el?.OPs[0]?.numero}/${el.fideicomisos[0]?.nombre}/${el?.OPs[0]?.estadoOP}/${el?.OPs[0]?.confirmada}`)
+
+  );
+
   
   if (isLoading) {
     return 'Cargando...';
@@ -200,12 +232,16 @@ export function GrillaFactura({ idSociety }) {
             moneda: factura.moneda,
             fechaIngreso: factura.fechaIngreso,
             diasVTO: factura.diasVTO, 
-            fechaVTO: factura.fechaVTO, 
-   
+            fechaVTO: factura.fechaVTO,  
+            OPnumero : (factura?.OPs? factura?.OPs[0]?.numero:''),
+            // OPId: factura.OPId,
+            estadoOP:(factura?.OPs? estados[factura?.OPs[0]?.estado]?.descripcion:''),
             deleteId: factura.id,
-          }))}
+            onIrDetalle: () => irDetalle(factura),  
+
+          }))}OPs
           onCellEditCommit={modifyData}
-          columns={columns(setIsPromptOpen, setRowIdToDelete)}
+          columns={columns(acceso, setIsPromptOpen, setRowIdToDelete)}
           pageSize={25}
           disableSelectionOnClick
           autoHeight
@@ -251,3 +287,9 @@ function fFechaIngreso(params) {
 
   return fechaIngreso;
 }
+
+function IrDetalleOP_1(params) {
+  const sendRow = params.row.onIrDetalle;  
+  const OPnumero = params.row.OPnumero;
+  return <Button onClick={sendRow} >{OPnumero}  </Button>;
+} 

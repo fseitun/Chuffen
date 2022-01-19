@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { ThemeProvider } from '@mui/material/styles';
 import GlobalStyles from 'src/components/auxiliares/GlobalStyles';
 import theme from 'src/theme';
+// import { UserContext } from 'src/context/UserContext';
 
 // *** Generales *********************************
 
@@ -18,12 +19,12 @@ import { useAuth } from 'src/utils/useAuth';
 import { Dolar } from 'src/pages/Dolar';
 import { Cac } from 'src/pages/Cac';
 import { Rubro } from 'src/pages/Rubro';
-//import { Rubro } from 'src/pages/Rubro';
 import { SubRubro } from 'src/pages/SubRubro';
+import { Banco } from 'src/pages/Banco';
+import { CuentaBanco } from 'src/pages/CuentaBanco';
 
 // *** Maestros *********************************
 import { Usuarios } from 'src/pages/Usuarios';
-
 import { Proveedores } from 'src/pages/Proveedores';
 import { Persona } from 'src/pages/Persona';
 import { Empresa } from 'src/pages/Empresa';
@@ -44,7 +45,6 @@ import { DetalleFideicomiso } from 'src/pages/DetalleFideicomiso';
 import { OP } from 'src/pages/OP';
 import { AuthAdmOP } from 'src/pages/AuthAdmOP';
 import { AuthObraOP } from 'src/pages/AuthObraOP';
-
 import { DetalleOP } from 'src/pages/DetalleOP';
 import { Factura } from 'src/pages/Factura';
 
@@ -62,12 +62,19 @@ export default function App() {
     return localStorageIdSociety ? JSON.parse(localStorageIdSociety) : null;
   });
 
+//  const userData = {
+//    id: 0,
+//  }
+// <UserContext.Provider value={userData} >
+// </UserContext.Provider> 
   return (
+    
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <Routes>
         {loggedUser ? (
           <>
+            
             <Route path="/" element={<Navigate to={`${idSociety?.nombre}`} />} />
             <Route
               path=":societyName"
@@ -86,12 +93,18 @@ export default function App() {
               <Route path="empresa" element={<Empresa idSociety={idSociety}  loggedUser={loggedUser}  />} />
               <Route path="persona" element={<Persona idSociety={idSociety}  loggedUser={loggedUser}  />} />
 
-              <Route path="factura" element={<Factura idSociety={idSociety} loggedUser={loggedUser} />} />
-             
+              <Route path="factura">
+                <Route path="" element={<Factura idSociety={idSociety} loggedUser={loggedUser} />} />
+                <Route
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:confirmada"
+                  element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
+                />
+              </Route>
+
               <Route path="OP">
                 <Route path="" element={<OP idSociety={idSociety} loggedUser={loggedUser} />} />
                 <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso"
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:confirmada"
                   element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
                 />
               </Route>
@@ -99,7 +112,7 @@ export default function App() {
               <Route path="AuthAdmOP">
                 <Route path="" element={<AuthAdmOP idSociety={idSociety}  loggedUser={loggedUser} />}  />
                 <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso"
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:confirmada"
                   element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
                 />
               </Route>
@@ -107,7 +120,7 @@ export default function App() {
               <Route path="AuthObraOP">
                 <Route path="" element={<AuthObraOP idSociety={idSociety}  loggedUser={loggedUser} />}  />
                 <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso"
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:confirmada"
                   element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
                 />
               </Route>
@@ -125,6 +138,14 @@ export default function App() {
                 />
               </Route>
 
+              <Route path="banco"> 
+                <Route path="" element={<Banco idSociety={idSociety} loggedUser={loggedUser} />} />
+                <Route
+                  path=":idBanco/:banco"
+                  element={<CuentaBanco idSociety={idSociety} loggedUser={loggedUser} />}
+                />
+              </Route>
+
               
               <Route path="fideicomiso">
                 <Route path="" element={<Fideicomiso idSociety={idSociety}  loggedUser={loggedUser}  />} />
@@ -135,6 +156,7 @@ export default function App() {
               </Route>
               <Route path="*" element={<NotFound />} />
             </Route>
+            
           </>
         ) : (
           <MainLayout>
@@ -154,5 +176,5 @@ export default function App() {
         )}
       </Routes>
     </ThemeProvider>
-  );
-}
+    
+  )}

@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { useQuery} from 'react-query';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
+import { isNumberUsed } from 'src/utils/utils';
 import { IconButton, Collapse, Box, TextField, Button, Autocomplete, Alert } from '@mui/material';
 import { getMethod, postMethod } from 'src/utils/api';
 import CloseIcon from '@mui/icons-material/Close';
 import { usePrompt } from 'src/utils/usePrompt';
 
 export function FormFactura({ idSociety, loggedUser}) {
-  const { Prompt } = usePrompt();
+  //const { Prompt } = usePrompt();
+  const { setIsPromptOpen, Prompt } = usePrompt();
   const queryClient = useQueryClient();
 
   const { data: fideicomisos } = useQuery(
@@ -49,19 +51,22 @@ export function FormFactura({ idSociety, loggedUser}) {
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
 
-          addFactura({
-            numero: values.numero,
-            montoTotal: values.montoTotal,
-            fechaIngreso: values.fechaIngreso,
-            empresaId: values.empresa.id,
-            fideicomisoId: values.fideicomiso.id,
-            moneda: 'ARS',
-            creador: loggedUser.id
-          });
-          
-          //resetForm();   
-     
-          setSubmitting(false);
+
+          if (await isNumberUsed('factura', idSociety.id, values.empresa.id , values.numero)) {
+            setIsPromptOpen(true);
+          }else{
+            addFactura({
+              numero: values.numero,
+              montoTotal: values.montoTotal,
+              fechaIngreso: values.fechaIngreso,
+              empresaId: values.empresa.id,
+              fideicomisoId: values.fideicomiso.id,
+              moneda: 'ARS',
+              creador: loggedUser.id
+            });            
+            //resetForm();
+            setSubmitting(false);
+          }
         }}
       >
         {({ isSubmitting, setFieldValue }) => (
@@ -71,6 +76,7 @@ export function FormFactura({ idSociety, loggedUser}) {
               as={Autocomplete}
               size={'small'}
               label='Fideicomiso'
+              title="Seleccione un fideicomiso."
               disablePortal
               required
               style={{ width: '230px', display: 'inline-flex' }}
@@ -89,6 +95,7 @@ export function FormFactura({ idSociety, loggedUser}) {
             as={Autocomplete}
             size={'small'}
             label='Razon Social'
+            title="Seleccione un proveedor."
             disablePortal
             required
             style={{ width: '230px', display: 'inline-flex' }}
@@ -103,8 +110,10 @@ export function FormFactura({ idSociety, loggedUser}) {
             renderInput={params => <TextField {...params} label='Razon Social' />}
           />
 
+        
           <Field
             as={TextField}
+            title="Cargar número completo de la factura."
             label='Numero'
             type='float'
             required
@@ -113,11 +122,13 @@ export function FormFactura({ idSociety, loggedUser}) {
             sx={{ width: '20ch' }}
             name='numero'
             onChange={event => onlyNumbers(event, setFieldValue, 'numero')}
-          />
+          />          
+          
 
           <Field
             as={TextField}
             label='Monto'
+            title="Monto total, solo numeros."
             required
             type='float'
             size="small"
@@ -155,7 +166,7 @@ export function FormFactura({ idSociety, loggedUser}) {
         )}
       </Formik>
       <Prompt
-        message="...error"
+        message="Ya existe ese número de factura para esa razon social."
         ok
       />
     </>

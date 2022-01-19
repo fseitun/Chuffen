@@ -3,6 +3,7 @@ import { styled } from '@mui/system';
 import { Outlet } from 'react-router-dom';
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
+import { useNavigate } from 'react-router-dom';
 // import { ReactQueryDevtools } from 'react-query/devtools';
 // <ReactQueryDevtools initialIsOpen={false} />
 
@@ -38,6 +39,16 @@ const DashboardLayoutContent = styled('div')({
 
 export default function DashboardLayout({ setLoggedUser, idSociety, loggedUser }) {
   
+  const navigate = useNavigate();
+
+  if(!loggedUser){
+    logOut();
+  }
+
+  function logOut() {
+    setLoggedUser(null);
+    navigate(`../${idSociety?.nombre}`);
+  }
   const [isMobileNavOpen, setisMobileNavOpen] = useState(false);
 
   return (

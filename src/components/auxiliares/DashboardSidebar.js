@@ -1,13 +1,19 @@
 import { Box, List, Drawer } from '@mui/material';
-
+import { useNavigate } from 'react-router-dom';
 import { NavItem } from './NavItem';
 import { sideBarOptions } from './sideBarOptions';
 
-export default function DashboardSidebar({ setisMobileNavOpen, isMobileNavOpen, idSociety, loggedUser }) {
+export default function DashboardSidebar({ setisMobileNavOpen, setLoggedUser, isMobileNavOpen, idSociety, loggedUser }) {
   // console.log('idSociety:', idSociety);
+  const navigate = useNavigate();
+  if(!loggedUser){
+    logOut();
+  }
 
-
-
+  function logOut() {
+    setLoggedUser(null);
+    navigate(`../${idSociety?.nombre}`);
+  }
   const content = (
     <Box
       sx={{

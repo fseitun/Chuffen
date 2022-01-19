@@ -1,23 +1,53 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
 import { Container, Box, TextField, Button, Alert } from '@mui/material';
 import { Helmet } from 'react-helmet';
 import { Formik } from 'formik';
 import { getMethod } from 'src/utils/api';
 import { postMethod } from 'src/utils/api';
+import { useQuery } from 'react-query';
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
 export function Login({ setLoggedUser, idSociety, setIdSociety }) {
 
+  //const queryClient = useQueryClient();
   let { societyName } = useParams();
   const navigate = useNavigate();
 
+  // localStorage.clear();
+  
+  localStorage.setItem("loggedUserInfo", null);
+  localStorage.setItem("bancos", null);
+  localStorage.setItem("cuentasbanco", null);
+  localStorage.setItem("estados", null);
+  localStorage.setItem("formaPagos", null);
+
   const [isAlertOpen, setIsAlertOpen] = useState('none');
+
 
   useEffect(() => {
     societyStateObjectSetter(societyName, setIdSociety);
   }, [setIdSociety, societyName]);
+
+  /****************************************************/
+  /*************** deuda tecnica **********************/
+  /****************************************************/
+
+  const { data: bancos } = useQuery(['bancos', idSociety], () =>
+    getMethod(`banco/listar/${idSociety.id}`)
+  );
+  localStorage.setItem("bancos", JSON.stringify(bancos));
+
+  const { data: cuentasbanco } = useQuery(['cuentasbanco', idSociety], () =>
+    getMethod(`cuentabanco/listar/${idSociety.id}/0`)
+  );  
+  localStorage.setItem("cuentasbanco", JSON.stringify(cuentasbanco));
+
+  /****************************************************/
+  /****************************************************/
+  /****************************************************/
 
   return (
     <>
@@ -49,6 +79,29 @@ export function Login({ setLoggedUser, idSociety, setIdSociety }) {
             }}
             onSubmit={async (values, actions) => {
               if (await userCheck(idSociety.id, values.email, values.password, setLoggedUser)) {
+
+                /****************************************************/
+                /*************** deuda tecnica **********************/
+                /****************************************************/
+
+                const estados = [  
+                  { id: 0, descripcion: '-' },
+                  { id: 1, descripcion: 'Para autorizar Obra' },
+                  { id: 2, descripcion: 'Para pagar' },
+                  { id: 3, descripcion: 'Pagada' },
+                  { id: 4, descripcion: 'Para autorizar AC' },
+                  { id: 5, descripcion: 'Pagado Parcial' },
+                  { id: 6, descripcion: 'Anulado' },
+                  { id: 7, descripcion: 'Cargada en Banco' },
+                ];
+                localStorage.setItem("estados", JSON.stringify(estados));
+                const formaPagos = "-,Transferencia,Cheque,Efectivo,Otra";
+                localStorage.setItem("formaPagos", formaPagos);            
+
+                /****************************************************/
+                /****************************************************/
+                /****************************************************/
+
                 navigate(`/${societyName}`, { replace: true });
               } else {
                 setIsAlertOpen('flex');
@@ -131,6 +184,8 @@ async function userCheck(idSociety, email, password, setLoggedUser) {
     mail: email,
     pass: password,
   });
+
+
   setLoggedUser(loggedUserInfo);
   return loggedUserInfo !== null ? true : false;
 }

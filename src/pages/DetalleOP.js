@@ -11,11 +11,11 @@ import { mostrarFechaMesTXT } from 'src/utils/utils';
 import { PDFDownloadLink, PDFViewer, pdf } from "@react-pdf/renderer";
 import { toast } from 'react-toastify';
 import { useQueryClient, useMutation } from 'react-query';
-import { Button } from '@mui/material';
+import { Button, Hidden } from '@mui/material';
 import RepOp from "src/components/reportes/orden_de_pago/orden_de_pago";
 import { useQuery } from 'react-query';
 import { getMethod, postMethod } from 'src/utils/api';
-import { acceso } from 'src/utils/utils';
+
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
 
@@ -27,13 +27,13 @@ export function DetalleOP({ idSociety, loggedUser }) {
   const { empresaId } = useParams();  
   const { numero } = useParams();
   const { fideicomiso } = useParams();
+  const { estadoOP } = useParams();
+  const { confirmada } = useParams();
   const id = idSociety.id;
   const fileName="OP_" + fideicomiso + "_" + numero + ".pdf";
-  const buttonAdmRef = useRef();
+  const buttonAdmRef = useRef();  
 
-  
-
-   //guarda en server
+   //guarda pdf en server
    const getPdfBlob = async () =>   {
 
     let blobPdf = await pdf(NewDocument()).toBlob();
@@ -53,6 +53,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
     }, 300);
   }
 
+  // es el reporte .pdf
   const NewDocument = () => {
     return (
       <RepOp dataOP={opCargadas(dataOP)} dataFacturas={facturasCargadas(fa)} apiServerUrl={apiServerUrl} idSociedad={id} />
@@ -72,7 +73,6 @@ export function DetalleOP({ idSociety, loggedUser }) {
       }
   }
   
-  //opForm
   const {
     data: dataOP,
     } = useQuery(['dataOP', idSociety.id], () =>
@@ -97,11 +97,6 @@ export function DetalleOP({ idSociety, loggedUser }) {
     }
   );
 
-  var verAdm = verAuthBoton("adm", dataOP, "Autorizar en Obra", loggedUser?.["rol.descripcion"]);
-  const [verBoxAdm, setVerBoxAdm] = useState(verAdm);  
-  var verObra = verAuthBoton("obra", dataOP, "Autorizar en Obra", loggedUser?.["rol.descripcion"]);
-  const [verBoxObra, setVerBoxObra] = useState(verObra);
-
   const { mutate: authFilaAdm } = useMutation(
     async id =>
       await postMethod(`autorizacion/agregar/${idSociety?.id}`, {
@@ -112,7 +107,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
         creador: loggedUser.id
 
       }),
-      /*setVerBoxAdm("none"),*/
+      
     {
       onSuccess: async () =>        
         await queryClient.refetchQueries(['dataOP', idSociety]),
@@ -127,12 +122,29 @@ export function DetalleOP({ idSociety, loggedUser }) {
     }
 }
 
+  /* ************************* */
+  var verAdm = verAuthBoton("adm", dataOP, "Autorizar en Obra", loggedUser?.["rol.descripcion"]);
+  const [verBoxAdm, setVerBoxAdm] = useState(verAdm);  
 
+  var verObra = verAuthBoton("obra", dataOP, "Autorizar en Obra", loggedUser?.["rol.descripcion"]);
+  const [verBoxObra, setVerBoxObra] = useState(verObra);
 
-  return (
+  let verAgregar = (loggedUser?.['rol.op'] ==='vista'); // si es vista listo no la ve
+  if(!verAgregar){
+      let conf = dataOP?(dataOP?.confirmada===1):false;
+      if(conf){// confirmada y no es vista
+              if(loggedUser?.['rol.op'] ==='total'){  // si es parcial
+                    verAgregar = false;
+              }else{
+                    verAgregar = true;
+              }
+      }
+  }
+  //dataOP?(dataOP?.confirmada===1):false
+  /* ************************* */
 
-   
-    <div style={{ minHeight: "100vh" }}>
+  return (   
+    <div id="MENU" style={{ minHeight: "100vh" }}>
       <nav
       style={{
         display: "flex",
@@ -143,7 +155,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
     >
       <Box display={verBoxObra} sx={{ pt: 1 }}>
         <Button
-        /*variant="info"*/
+        
         onClick={() => {
           toast(({ closeToast }) => (
             <Box>
@@ -214,6 +226,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
           Autorizar ADM
         </Button>      
       </Box>
+
       <Box sx={{ pt: 1 }}>
         <Button
           /*variant="info"*/
@@ -230,10 +243,13 @@ export function DetalleOP({ idSociety, loggedUser }) {
         >
           <Button variant="info" onClick={guardar_en_server} >Descargar</Button>
         </PDFDownloadLink>
-      </Box>
 
-    </nav>
-     
+   
+      </Box>
+  
+
+
+    </nav>     
 
       <Helmet>
           <title>
@@ -273,7 +289,9 @@ export function DetalleOP({ idSociety, loggedUser }) {
 
                 </Grid>
               </Box>
+              <Hidden  smUp={( verAgregar)} >
               <Box sx={{ pt: 3 }}>
+              
                 <AgregarFactura
                   OPId={idOP}
                   fecha={fecha}
@@ -281,8 +299,10 @@ export function DetalleOP({ idSociety, loggedUser }) {
                   idSociety={idSociety}
                   loggedUser={loggedUser}
                 />
+               
               </Box>
-              <Box sx={{ pt: 3 }}>
+              </Hidden> 
+              <Box  sx={{ pt: 3 }}>
                 <GrillaDetalleOP
                   OPId={idOP}
                   fecha={fecha}
@@ -291,13 +311,19 @@ export function DetalleOP({ idSociety, loggedUser }) {
                   loggedUser={loggedUser}
                 />
               </Box>
-              <Box sx={{ pt: 3 }}>
+
+              <Box  sx={{ pt: 3 }}>
                 <FormDetalleOP
                   OPId={idOP}
+                  estadoOP={estadoOP}
+                  confirmada={confirmada}
                   idSociety={idSociety}
                   loggedUser={loggedUser}
                 />
-              </Box>            
+              </Box>    
+           
+   
+                 
          
             </Container>
             
@@ -310,8 +336,15 @@ export function DetalleOP({ idSociety, loggedUser }) {
   );
 }
 
+
 function verAuthBoton(tipo, dataOP, label, rol_usuario){
-  let rta = acceso("manager", label, rol_usuario);
+  // rol adm, obra, manager
+
+  let rta = "";
+
+  if(tipo === "manager"){rta = label} 
+  if(tipo === rol_usuario){rta = label} 
+
 
   if(tipo==="adm"){
     if(dataOP?.auth_adm){

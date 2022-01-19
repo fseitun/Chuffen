@@ -1,4 +1,4 @@
-import { Container, Box } from '@mui/material';
+import { Container, Box, Hidden } from '@mui/material';
 import { Helmet } from 'react-helmet';
 
 import { FormFactura } from 'src/components/factura/FormFactura';
@@ -18,9 +18,11 @@ export function Factura({ idSociety , loggedUser}) {
         }}
       >
         <Container maxWidth={false}>
-          <Box sx={{ pt: 3 }}>
+          <Hidden smUp={(loggedUser?.['rol.factura'] ==='vista')} >
+          <Box sx={{ pt: 3 }} >
             <FormFactura idSociety={idSociety} loggedUser={loggedUser} />
           </Box>
+          </Hidden> 
           <Box sx={{ pt: 3 }}>
             <GrillaFactura idSociety={idSociety} loggedUser={loggedUser} />
           </Box>

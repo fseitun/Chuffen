@@ -63,6 +63,7 @@ export const sideBarOptions = [
     title: 'Rubros',
     acceso: 'rubro',
   },
+
 /*
   {
     path: 'empresa',
@@ -93,6 +94,13 @@ export const sideBarOptions = [
     icon: AttachMoney,
     title: 'Dólar',
     acceso: 'dolar',
+  },
+
+  {
+    path: 'banco',
+    icon: AttachMoney,
+    title: 'Bancos',
+    acceso: 'banco',
   },
 
   {

@@ -12,8 +12,8 @@ import { Link, useLocation } from 'react-router-dom';
 import Logo from 'src/components/auxiliares/Logo.js';
 import { sideBarOptions } from 'src/components/auxiliares/sideBarOptions.js';
 import { useNavigate } from 'react-router-dom';
-
-
+//import { useQuery } from 'react-query';
+//import { getMethod } from 'src/utils/api';
 
 export default function DashboardNavbar({
   setisMobileNavOpen,
@@ -33,6 +33,10 @@ export default function DashboardNavbar({
   // const lastPartOfPath = pathname.split('/').at(-1);
   const lastPartOfPath = pathname.split('/')[pathname.split('/').length - 1];
 
+  if(!loggedUser){
+    logOut();
+  }
+
   const nameOfPage =
     sideBarOptions.find(option => option.path === lastPartOfPath)?.title ||
     lastPartOfPath;
@@ -42,6 +46,25 @@ export default function DashboardNavbar({
     setLoggedUser(null);
     navigate(`../${idSociety?.nombre}`);
   }
+
+  /****************************************************/
+  /*************** deuda tecnica **********************/
+  /****************************************************/
+/*
+  const { data: bancos } = useQuery(['bancos', idSociety], () =>
+    getMethod(`banco/listar/${idSociety.id}`)
+  );
+  localStorage.setItem("bancos", JSON.stringify(bancos));
+
+  const { data: cuentasbanco } = useQuery(['cuentasbanco', idSociety], () =>
+    getMethod(`cuentabanco/listar/${idSociety.id}/0`)
+  );  
+  localStorage.setItem("cuentasbanco", JSON.stringify(cuentasbanco));*/
+
+  /****************************************************/
+  /****************************************************/
+  /****************************************************/
+
   return (
     <AppBar elevation={0}>
       <Toolbar>

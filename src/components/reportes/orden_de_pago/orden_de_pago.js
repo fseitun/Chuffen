@@ -67,18 +67,49 @@ const styles = StyleSheet.create({
 
   });
 
+  var arr_id = [];
+  var arr_banco = [];
+  var arr_cid = [];
+  var arr_cuenta = [];
+  
+  if(JSON.parse(localStorage.getItem("bancos"))){
+
+    var bancos = JSON.parse(localStorage.getItem("bancos"));
+    var banco_en_blanco = {id:0, banco:"", descripcionLarga:"" };
+    bancos.push(banco_en_blanco);
+
+
+    for (var i = 0; i < bancos.length; i++) {
+        arr_id.push(bancos[i].id);
+        arr_banco.push(bancos[i].banco);
+    }   
+
+    var cuentasbanco = JSON.parse(localStorage.getItem("cuentasbanco"));  
+    var cuenta_en_blanco = {id: 0,  bancoId: 0,  cuentaBanco: "",  descripcionLarga: "",  bancos: [{banco: ""}]};
+    cuentasbanco.push(cuenta_en_blanco);
+
+
+    for (var j= 0; j < cuentasbanco.length; j++) {
+        arr_cid.push(cuentasbanco[j].id);
+        arr_cuenta.push(cuentasbanco[j].cuentaBanco);
+    } 
+
+  }
+  
+
   const orden_de_pago = ({dataOP, dataFacturas, apiServerUrl, idSociedad}) => (
+
             <Document >
                 <Page size="A4" style={styles.page}> 
 
                     <View >
                         <Text style={styles.saltolinea}> </Text>                       
-                    </View>   
+                    </View>  
 
                     <View style={{flexDirection: 'row',marginLeft: '0',marginRight: '0'}} >
-                        <Text style={[styles.reportTitleFide, {width: (100 - parseInt(dataOP?.fideicomisos[0]?.ancho_logo) + '%'), color: dataOP?.fideicomisos[0]?.color}]}>{dataOP?.fideicomisos[0]?.titulo}</Text>
-                        <View style={{width: (dataOP?.fideicomisos[0]?.ancho_logo + '%') }} >
-                        <Image style={[styles.logo, {backgroundColor: dataOP?.fideicomisos[0]?.color3}]} src={{ uri: `${apiServerUrl}/sociedades/${idSociedad}/${dataOP? dataOP?.fideicomisos[0]?.logo:'logo.png'}` , method: "GET", headers: { "Cache-Control": "no-cache" }, body: "" }} />                   
+                        <Text style={[styles.reportTitleFide, {width: (dataOP? 100 - dataOP?.fideicomisos[0]?.ancho_logo + '%':'75%'), color: dataOP?.fideicomisos[0]?.color}]}>{dataOP?.fideicomisos[0]?.titulo}</Text>
+                        <View style={{width: dataOP? (dataOP?.fideicomisos[0]?.ancho_logo + '%'):'25%' }} >
+                        <Image style={[styles.logo, {backgroundColor: dataOP? dataOP?.fideicomisos[0]?.color3:'#FFFFFF' }]} src={{ uri: `${apiServerUrl}/sociedades/${idSociedad}/${dataOP? dataOP?.fideicomisos[0]?.logo:'logo.png'}` , method: "GET", headers: { "Cache-Control": "no-cache" }, body: "" }} />                   
                         </View>
                     </View>
 
@@ -86,11 +117,12 @@ const styles = StyleSheet.create({
                         <Text style={styles.reportTitle}>SOLICITUD DE PAGO     Nº	{dataOP?.numero}</Text>
                         
                     </View>
+
                     <View style={styles.invoiceDateContainer}>
                         <Text style={styles.label}>Fecha: </Text>
                         <Text >{mostrarFecha(dataOP?.createdAt)}</Text>
                     </View >
-                    
+
                     <TablaFacturas dataOP={dataOP} dataFacturas={dataFacturas} />
                     <View >
                         <Text style={styles.saltolinea}> </Text>                       
@@ -104,21 +136,21 @@ const styles = StyleSheet.create({
                     <View >
                         <Text style={styles.saltolinea}> </Text>                       
                     </View>
-
-
                     <View >
                         <Text style={styles.subreportTitle}>APROBACIÓN ADMINISTRATIVA</Text>                       
                     </View>
                     <TablaADM dataOP={dataOP} />
                     <View >
                         <Text style={styles.saltolinea}> </Text>                       
-                    </View>
+                    </View> 
+
                     <View >
                         <Text style={styles.subreportTitle}>PAGO</Text>                       
                     </View>                   
-                    <TablaPagos dataOP={dataOP} />
+                    <TablaPagos dataOP={dataOP} arr_id={arr_id} arr_banco={arr_banco} arr_cid={arr_cid} arr_cuenta={arr_cuenta} />
 
                     <TablaPie dataOP={dataOP} />
+
                 </Page>
             </Document>
         );

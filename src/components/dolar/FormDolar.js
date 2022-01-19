@@ -6,10 +6,14 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { postMethod } from 'src/utils/api';
 import { yearMonthDayString, isDateUsed } from 'src/utils/utils';
 import { usePrompt } from 'src/utils/usePrompt';
+// import useUser from "../../hooks/useUser";
 
 export function FormDolar({ idSociety, loggedUser}) {
   const { setIsPromptOpen, Prompt } = usePrompt();
   const queryClient = useQueryClient();
+  /*
+  const user = useUser();
+  console.log(user); */
 
   const { mutate: addDolar } = useMutation(
     newDolar => postMethod(`dolar/agregar/${idSociety.id}`, newDolar),
