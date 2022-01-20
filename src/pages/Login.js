@@ -64,9 +64,9 @@ export function Login({ setLoggedUser, idSociety, setIdSociety }) {
         }}
       >
         <Container maxWidth="sm">
-          <div style={{ width: '100%' }}>
+          <div style={{ width: '100%' }} >
             <img
-              style={{ display: 'block', margin: 'auto', width: '30%' }}
+              style={{ display: 'block', margin: 'auto', width: '50%', backgroundColor:"#6326d5" }}
               src={`${apiServerUrl}public/${idSociety?.logo}`}
               alt="logo"
             />

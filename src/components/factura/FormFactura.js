@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery} from 'react-query';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
-import { isNumberUsed } from 'src/utils/utils';
+import { isNumberUsed, isNumberUsedDig } from 'src/utils/utils';
 import { IconButton, Collapse, Box, TextField, Button, Autocomplete, Alert } from '@mui/material';
 import { getMethod, postMethod } from 'src/utils/api';
 import CloseIcon from '@mui/icons-material/Close';
@@ -50,9 +50,9 @@ export function FormFactura({ idSociety, loggedUser}) {
           fechaIngreso: new Date(),
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
-
-
-          if (await isNumberUsed('factura', idSociety.id, values.empresa.id , values.numero)) {
+          isNumberUsedDig('factura', idSociety.id, values.empresa.id , values.numero);
+          //if (await isNumberUsedDig('factura', idSociety.id, values.empresa.id , values.numero)) {
+          if (true) {
             setIsPromptOpen(true);
           }else{
             addFactura({

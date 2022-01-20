@@ -71,8 +71,6 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     headerName: 'Forma Pago',
     width: 160,
     editable: true,
-    type: 'singleSelect',
-    valueOptions: formaPagos
   },
   {
     field: 'PriceCheckIcon',

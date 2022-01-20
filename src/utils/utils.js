@@ -70,6 +70,21 @@ export async function isNumberUsed(endpoint, idSociety, empresaId, numero) {
   return !!data;
 }
 
+export async function isNumberUsedDig(endpoint, idSociety, empresaId, numero) {
+  
+  let dig = process.env.Q_DIGITOS_COM_FACTURA;
+  let num = "" + numero; 
+  if(num.length > dig){
+    num = num.slice(num.length - dig);
+  } 
+
+  let url = `${endpoint}/checknumero/${idSociety}/${empresaId}/${numero}`;
+  let data = await getMethod(url);
+
+  return !!data;
+}
+
+
 export async function isDateUsed(endpoint, idSociety, date) {
   let url = `${endpoint}/mostrar/${idSociety}/${date}`;
   let data = await getMethod(url);
