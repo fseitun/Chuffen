@@ -72,9 +72,9 @@ const styles = StyleSheet.create({
   var arr_cid = [];
   var arr_cuenta = [];
   
-  if(JSON.parse(localStorage.getItem("bancos"))){
+  if(JSON.parse(localStorage.getItem("bs"))){
 
-    var bancos = JSON.parse(localStorage.getItem("bancos"));
+    var bancos = JSON.parse(localStorage.getItem("bs"));
     var banco_en_blanco = {id:0, banco:"", descripcionLarga:"" };
     bancos.push(banco_en_blanco);
 
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
         arr_banco.push(bancos[i].banco);
     }   
 
-    var cuentasbanco = JSON.parse(localStorage.getItem("cuentasbanco"));  
+    var cuentasbanco = JSON.parse(localStorage.getItem("co"));  
     var cuenta_en_blanco = {id: 0,  bancoId: 0,  cuentaBanco: "",  descripcionLarga: "",  bancos: [{banco: ""}]};
     cuentasbanco.push(cuenta_en_blanco);
 

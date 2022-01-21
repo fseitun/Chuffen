@@ -77,11 +77,11 @@ export async function isNumberUsedDig(endpoint, idSociety, empresaId, numero) {
   if(num.length > dig){
     num = num.slice(num.length - dig);
   } 
-
-  let url = `${endpoint}/checknumero/${idSociety}/${empresaId}/${numero}`;
+  let url = `${endpoint}/checknumero/${idSociety}/${empresaId}/${num}`;
   let data = await getMethod(url);
+  
+  return (!!data);
 
-  return !!data;
 }
 
 
@@ -99,3 +99,20 @@ export function onlyNumbers(event, setFieldValue, typeOfData) {
     setFieldValue(typeOfData, value.toString());
   }
 }
+
+/*
+ultimos
+	const id = "ctl03_Tabs1";
+	console.log(id.slice(id.length - 5)); //Outputs: Tabs1
+primeros
+	const string = "0123456789";
+	console.log(string.slice(0, 2)); // "01"
+	console.log(string.slice(0, 8)); // "01234567"
+	console.log(string.slice(3, 7)); // "3456"
+sin decimales
+	Math.trunc(42.84);    // 42
+	Math.trunc(0.123);    //  0
+Number to string
+	n.toString()
+	""+n
+  */

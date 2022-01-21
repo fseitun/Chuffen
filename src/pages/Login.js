@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-
 import { Container, Box, TextField, Button, Alert } from '@mui/material';
 import { Helmet } from 'react-helmet';
 import { Formik } from 'formik';
@@ -19,8 +18,8 @@ export function Login({ setLoggedUser, idSociety, setIdSociety }) {
   // localStorage.clear();
   
   localStorage.setItem("loggedUserInfo", null);
-  localStorage.setItem("bancos", null);
-  localStorage.setItem("cuentasbanco", null);
+  localStorage.setItem("bs", null);
+  localStorage.setItem("co", null);
   localStorage.setItem("estados", null);
   localStorage.setItem("formaPagos", null);
 
@@ -38,12 +37,26 @@ export function Login({ setLoggedUser, idSociety, setIdSociety }) {
   const { data: bancos } = useQuery(['bancos', idSociety], () =>
     getMethod(`banco/listar/${idSociety.id}`)
   );
-  localStorage.setItem("bancos", JSON.stringify(bancos));
+  localStorage.setItem("bs", JSON.stringify(bancos));
 
   const { data: cuentasbanco } = useQuery(['cuentasbanco', idSociety], () =>
     getMethod(`cuentabanco/listar/${idSociety.id}/0`)
   );  
-  localStorage.setItem("cuentasbanco", JSON.stringify(cuentasbanco));
+  localStorage.setItem("co", JSON.stringify(cuentasbanco));
+
+  const estados = [  
+    { id: 0, descripcion: '-' },
+    { id: 1, descripcion: 'Para autorizar Obra' },
+    { id: 2, descripcion: 'Para pagar' },
+    { id: 3, descripcion: 'Pagada' },
+    { id: 4, descripcion: 'Para autorizar AC' },
+    { id: 5, descripcion: 'Pagado Parcial' },
+    { id: 6, descripcion: 'Anulado' },
+    { id: 7, descripcion: 'Cargada en Banco' },
+  ];
+  localStorage.setItem("estados", JSON.stringify(estados));
+  const formaPagos = "-,Transferencia,Cheque,Efectivo,Otra";
+  localStorage.setItem("formaPagos", formaPagos); 
 
   /****************************************************/
   /****************************************************/
@@ -84,19 +97,7 @@ export function Login({ setLoggedUser, idSociety, setIdSociety }) {
                 /*************** deuda tecnica **********************/
                 /****************************************************/
 
-                const estados = [  
-                  { id: 0, descripcion: '-' },
-                  { id: 1, descripcion: 'Para autorizar Obra' },
-                  { id: 2, descripcion: 'Para pagar' },
-                  { id: 3, descripcion: 'Pagada' },
-                  { id: 4, descripcion: 'Para autorizar AC' },
-                  { id: 5, descripcion: 'Pagado Parcial' },
-                  { id: 6, descripcion: 'Anulado' },
-                  { id: 7, descripcion: 'Cargada en Banco' },
-                ];
-                localStorage.setItem("estados", JSON.stringify(estados));
-                const formaPagos = "-,Transferencia,Cheque,Efectivo,Otra";
-                localStorage.setItem("formaPagos", formaPagos);            
+                          
 
                 /****************************************************/
                 /****************************************************/

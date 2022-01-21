@@ -50,7 +50,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
 
 
 
-  var bancos = JSON.parse(localStorage.getItem("bancos"));
+  var bancos = JSON.parse(localStorage.getItem("bs"));
   var banco_en_blanco = {id:0, banco:"", descripcionLarga:"" };
   bancos.push(banco_en_blanco);
 
@@ -67,7 +67,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
 
 */
 
-  var cuentasbanco = JSON.parse(localStorage.getItem("cuentasbanco"));  
+  var cuentasbanco = JSON.parse(localStorage.getItem("co"));  
   var cuenta_en_blanco = {id: 0,  bancoId: 0,  cuentaBanco: "",  descripcionLarga: "",  bancos: [{banco: ""}]};
   cuentasbanco.push(cuenta_en_blanco);
   

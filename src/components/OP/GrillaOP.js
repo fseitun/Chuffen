@@ -408,6 +408,8 @@ export function GrillaOP({ idSociety, loggedUser}) {
       await postMethod(`OP/enviarMail/${idSociety?.id}`, {
 
         mailTo : idSociety?.mailOP,
+        mailaccount : idSociety?.mailaccount,
+        mailfromname : idSociety?.mailfromname,
         mailConstructora : idSociety?.mailConstructora,
         fideicomiso : el.fideicomisos[0]?.nombre,        
         razonSocial : el.empresas[0]?.razonSocial,
