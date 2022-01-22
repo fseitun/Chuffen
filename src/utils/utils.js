@@ -1,5 +1,7 @@
+
 import { getMethod } from './api';
 // import moment from 'moment';
+const Qdigitos = process.env.REACT_APP_Q_DIGITOS_FACTURA;
 
 export function isValidDate(d) {
   let f = new Date(d);
@@ -72,11 +74,13 @@ export async function isNumberUsed(endpoint, idSociety, empresaId, numero) {
 
 export async function isNumberUsedDig(endpoint, idSociety, empresaId, numero) {
   
-  let dig = process.env.Q_DIGITOS_COM_FACTURA;
+
+  // let dig = process.env.Q_DIGITOS_COM_FACTURA;
   let num = "" + numero; 
-  if(num.length > dig){
-    num = num.slice(num.length - dig);
+  if(num.length > parseInt(Qdigitos)){
+    num = num.slice(num.length - parseInt(Qdigitos));
   } 
+  console.log(312222222, parseInt(Qdigitos), num);
   let url = `${endpoint}/checknumero/${idSociety}/${empresaId}/${num}`;
   let data = await getMethod(url);
   

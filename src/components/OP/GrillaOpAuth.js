@@ -74,8 +74,8 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   },
   {
     field: 'PriceCheckIcon',
-    headerName: ' ',
-    width: 50,
+    headerName: 'Autorizar',
+    width: 160,
     headerAlign: 'center',
     align: 'center',
     renderCell: ({ row: { authId } }) => (

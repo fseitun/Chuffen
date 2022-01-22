@@ -6,12 +6,15 @@ import { isNumberUsedDig } from 'src/utils/utils';
 import { IconButton, Collapse, Box, TextField, Button, Autocomplete, Alert } from '@mui/material';
 import { getMethod, postMethod } from 'src/utils/api';
 import CloseIcon from '@mui/icons-material/Close';
+import React from 'react';
 import { usePrompt } from 'src/utils/usePrompt';
+
 
 export function FormFactura({ idSociety, loggedUser}) {
   //const { Prompt } = usePrompt();
   const { setIsPromptOpen, Prompt } = usePrompt();
   const queryClient = useQueryClient();
+
 
   const { data: fideicomisos } = useQuery(
     ['fideicomisos'],

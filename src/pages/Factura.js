@@ -1,10 +1,12 @@
 import { Container, Box, Hidden } from '@mui/material';
 import { Helmet } from 'react-helmet';
-
 import { FormFactura } from 'src/components/factura/FormFactura';
 import { GrillaFactura } from 'src/components/factura/GrillaFactura';
 
 export function Factura({ idSociety , loggedUser}) {
+
+
+
   return (
     <>
       <Helmet>
