@@ -106,12 +106,13 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
   const [rowIdToDelete, setRowIdToDelete] = useState();
   // console.log(rowIdToDelete);
   const navigate = useNavigate();
-  
+  const blue = 0; // trae todas las de la OP
+
   let str = '';
   if(tipo ==='adm'){
-    str = `OP/listar/${idSociety.id}/authADM/nulo`;
+    str = `OP/listar/${idSociety.id}/authADM/nulo/${blue}`;
   }else{
-    str = `OP/listar/${idSociety.id}/authObra/nulo`;
+    str = `OP/listar/${idSociety.id}/authObra/nulo/${blue}`;
   }
 
   const {
@@ -141,7 +142,7 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
 
   const { mutate: irDetalle } = useMutation(
     async el =>    
-      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}/${el.estadoOP}/${el.confirmada}`)
+      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}/${el.estadoOP}/${el.confirmada}/${el.blue}`)
 
   );
   

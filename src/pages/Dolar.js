@@ -1,9 +1,16 @@
+
+import { useContext } from 'react';
 import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
 import { FormDolar } from 'src/components/dolar/FormDolar';
 import { GrillaDolar } from 'src/components/dolar/GrillaDolar';
 
-export function Dolar({ idSociety, loggedUser }) {
+import { SocietyContext } from 'src/App';
+
+export function Dolar({loggedUser}) {
+
+  const idSociety = useContext(SocietyContext);
+
   return (
     <>
       <Helmet>
@@ -18,10 +25,10 @@ export function Dolar({ idSociety, loggedUser }) {
       >
         <Container >
           <Box sx={{ pt: 3 }}>
-            <FormDolar idSociety={idSociety} loggedUser={loggedUser} />
+            <FormDolar  loggedUser={loggedUser} />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <GrillaDolar idSociety={idSociety} loggedUser={loggedUser} />
+            <GrillaDolar  loggedUser={loggedUser} />
           </Box>
         </Container>
       </Box>

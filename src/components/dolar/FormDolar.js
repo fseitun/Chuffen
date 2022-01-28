@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { TextField, Button } from '@mui/material';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
@@ -6,9 +7,12 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { postMethod } from 'src/utils/api';
 import { yearMonthDayString, isDateUsed } from 'src/utils/utils';
 import { usePrompt } from 'src/utils/usePrompt';
-// import useUser from "../../hooks/useUser";
 
-export function FormDolar({ idSociety, loggedUser}) {
+import { SocietyContext } from 'src/App';
+
+export function FormDolar({loggedUser}) {
+
+  const idSociety = useContext(SocietyContext);
   const { setIsPromptOpen, Prompt } = usePrompt();
   const queryClient = useQueryClient();
   /*

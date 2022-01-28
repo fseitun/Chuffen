@@ -1,11 +1,10 @@
-import { useState } from 'react';
+import { useState, createContext } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import dotenv from 'dotenv';
 
 import { ThemeProvider } from '@mui/material/styles';
 import GlobalStyles from 'src/components/auxiliares/GlobalStyles';
 import theme from 'src/theme';
-// import { UserContext } from 'src/context/UserContext';
 
 // *** Generales *********************************
 
@@ -53,6 +52,7 @@ import { OT } from 'src/pages/OT';
 //import { DetalleOT } from 'src/pages/DetalleOT';
 //import { Certificado } from 'src/pages/Certificado';
 
+export const SocietyContext = createContext({});
 dotenv.config();
 
 export default function App() {
@@ -62,12 +62,10 @@ export default function App() {
     return localStorageIdSociety ? JSON.parse(localStorageIdSociety) : null;
   });
 
-//  const userData = {
-//    id: 0,
-//  }
-// <UserContext.Provider value={userData} >
-// </UserContext.Provider> 
   return (
+
+    <SocietyContext.Provider value={idSociety}>
+
     
     <ThemeProvider theme={theme}>
       <GlobalStyles />
@@ -96,7 +94,7 @@ export default function App() {
               <Route path="factura">
                 <Route path="" element={<Factura idSociety={idSociety} loggedUser={loggedUser} />} />
                 <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:confirmada"
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:confirmada/:blue"
                   element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
                 />
               </Route>
@@ -104,7 +102,7 @@ export default function App() {
               <Route path="OP">
                 <Route path="" element={<OP idSociety={idSociety} loggedUser={loggedUser} />} />
                 <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:confirmada"
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:confirmada/:blue"
                   element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
                 />
               </Route>
@@ -112,7 +110,7 @@ export default function App() {
               <Route path="AuthAdmOP">
                 <Route path="" element={<AuthAdmOP idSociety={idSociety}  loggedUser={loggedUser} />}  />
                 <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:confirmada"
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:confirmada/:blue"
                   element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
                 />
               </Route>
@@ -120,7 +118,7 @@ export default function App() {
               <Route path="AuthObraOP">
                 <Route path="" element={<AuthObraOP idSociety={idSociety}  loggedUser={loggedUser} />}  />
                 <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:confirmada"
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:confirmada/:blue"
                   element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
                 />
               </Route>
@@ -165,7 +163,6 @@ export default function App() {
               element={
                 <Login
                   setLoggedUser={setLoggedUser}
-                  idSociety={idSociety}
                   setIdSociety={setIdSociety}
                 />
               }
@@ -176,5 +173,6 @@ export default function App() {
         )}
       </Routes>
     </ThemeProvider>
+    </SocietyContext.Provider>
     
   )}

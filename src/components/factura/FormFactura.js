@@ -3,17 +3,24 @@ import { useQuery} from 'react-query';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { isNumberUsedDig } from 'src/utils/utils';
-import { IconButton, Collapse, Box, TextField, Button, Autocomplete, Alert } from '@mui/material';
+import { IconButton, Collapse, Box, FormControlLabel, TextField, Button, Hidden, Checkbox, Autocomplete, Alert } from '@mui/material';
 import { getMethod, postMethod } from 'src/utils/api';
 import CloseIcon from '@mui/icons-material/Close';
 import React from 'react';
 import { usePrompt } from 'src/utils/usePrompt';
-
+import { yearMonthDayNum } from 'src/utils/utils'; 
 
 export function FormFactura({ idSociety, loggedUser}) {
   //const { Prompt } = usePrompt();
   const { setIsPromptOpen, Prompt } = usePrompt();
   const queryClient = useQueryClient();
+
+  // const [defaultFact, setDefaultFact] = useState(2021112101);
+
+  // const [fblue, setFBlue] = useState(false);
+  // var blue = 0;
+  var verCheckBlue = false;
+  if(loggedUser?.['rol.factura'] ==='total'){/*blue= -1;*/ verCheckBlue = true;}
 
 
   const { data: fideicomisos } = useQuery(
@@ -43,6 +50,7 @@ export function FormFactura({ idSociety, loggedUser}) {
   const [fideInForm, setFideInForm] = useState(null);
   const [typeInForm, setTypeInForm] = useState(null);
   const [open, setOpen] = useState(false);
+  const [chkblue, setChkblue] = useState(true);
 
   return (
     <>
@@ -54,9 +62,10 @@ export function FormFactura({ idSociety, loggedUser}) {
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           let existe = await isNumberUsedDig('factura', idSociety.id, values.empresa.id , values.numero)
-          if (existe) {
+          if (existe || values.numero ==='') {
             setIsPromptOpen(true);
           }else{
+            
             addFactura({
               numero: values.numero,
               montoTotal: values.montoTotal,
@@ -64,6 +73,7 @@ export function FormFactura({ idSociety, loggedUser}) {
               empresaId: values.empresa.id,
               fideicomisoId: values.fideicomiso.id,
               moneda: 'ARS',
+              blue: values.blue==='on'? 1:0,
               creador: loggedUser.id
             });            
             //resetForm();
@@ -112,32 +122,41 @@ export function FormFactura({ idSociety, loggedUser}) {
             renderInput={params => <TextField {...params} label='Razon Social' />}
           />
 
-        
-          <Field
-            as={TextField}
-            title="Cargar número completo de la factura."
-            label='Numero'
-            type='float'
-            required
-            maxLength={8}
-            size="small"
-            sx={{ width: '20ch' }}
-            name='numero'
-            onChange={event => onlyNumbers(event, setFieldValue, 'numero')}
-          />          
-          
+            <Field
+              as={TextField}
+              title="Cargar número completo de la factura."
+              label='Numero'
+              type='float'
+              required     
+              maxLength={11}         
+              size="small"
+              sx={{ width: '20ch' }}
+              name='numero'
+              onChange={event => onlyNumbers(event, setFieldValue, 'numero')}
+            /> 
 
           <Field
             as={TextField}
             label='Monto'
             title="Monto total, solo numeros."
             required
+            maxLength={9}
             type='float'
             size="small"
             sx={{ width: '20ch' }}
             name='montoTotal'
             onChange={event => onlyNumbers(event, setFieldValue, 'montoTotal')}
           />
+
+          &nbsp;&nbsp;
+          <Hidden  smUp={( !verCheckBlue)} >        
+          <FormControlLabel 
+            control={ <Checkbox  id={'blue'}  name={'blue'}             
+            onChange={(event) => onlyCheck(event, setFieldValue, 'blue', chkblue, setChkblue)}
+            /> }   label="Blue"  />
+          </Hidden>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
             <Button type="submit" disabled={isSubmitting}>
               Agregar
             </Button>
@@ -178,9 +197,32 @@ export function FormFactura({ idSociety, loggedUser}) {
 function onlyNumbers(event, setFieldValue, typeOfData) {
   event.preventDefault();
   const { value } = event.target;
-  const regex = /^\d{0,9}(\.\d{0,2})?$/;
+  const regex = /^\d{0,11}(\.\d{0,2})?$/;
   if (regex.test(value.toString())) {
     setFieldValue(typeOfData, value.toString());
   }
 }
+
+function onlyCheck(event, setFieldValue, typeOfData, chkblue, setChkblue, setFBlue) {
+  event.preventDefault();
+  // const { value } = event.target;
+  setChkblue(!chkblue);
+  if(chkblue){ 
+    let f = new Date();
+    let n = "" + yearMonthDayNum(f) + "01";
+    setFieldValue(typeOfData, 'on');
+    setFieldValue('numero', parseInt(n));
+    //setFBlue(true);
+
+  }else{
+
+    setFieldValue(typeOfData, 'off');
+    setFieldValue('numero', '');
+    //setFBlue(false);
+
+  }
+  
+}
+
+
 

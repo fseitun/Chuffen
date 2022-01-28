@@ -2,8 +2,9 @@ import * as React from 'react';
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+//import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@material-ui/data-grid"';
 import { Delete as DeleteIcon } from '@mui/icons-material';
-import { Box, Button, TextField, Autocomplete} from '@mui/material';
+import { Box, Button, TextField, Avatar, Autocomplete, Hidden} from '@mui/material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +17,16 @@ var miOP={};
 var fa={};
 var idSociedad=0;
 
-const columns = (puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
+const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
+  {
+    field: 'blue',
+    headerName: 'Blue',
+    hide: !verColumnBlue,
+    width: 70,
+    editable: false,
+    headerAlign: 'center',
+    renderCell: ({ value }) => value===0?'' :<Avatar sx={{ bgcolor: '#3944BC' }} >B</Avatar>,
+  },
   {
     field: 'createdAt',
     headerName: 'Fecha',
@@ -175,14 +185,7 @@ const columns = (puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDele
     renderEditCell: props => <ComboBoxFon fondos_s={fondos_s} props={props} />,
     headerAlign: 'center',
   },
-  {
-    field: 'archivada',
-    headerName: 'Generar',
-    width: 140,
-    headerAlign: 'center',
-    align: 'center',
-    renderCell: DescargarPDF,
-  },
+
   {
     field: 'rubro',
     hide: true,
@@ -223,10 +226,20 @@ const columns = (puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDele
     headerAlign: 'center',
     align: 'center',    
   }, 
+
+  {
+    field: 'archivada',
+    headerName: 'Generar',
+    width: 140,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: DescargarPDF,
+  },
+
   {
     field: 'enviada',
     headerName: 'Enviar',
-    width: 70,
+    width: 90,
     headerAlign: 'center',
     align: 'center',
     renderCell: EnviarMail,
@@ -273,6 +286,7 @@ const fondos_s = [
   { id: 2, descripcion: 'OK cargado' },
 ];
 
+const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
 export function GrillaOP({ idSociety, loggedUser}) {
   
@@ -282,19 +296,23 @@ export function GrillaOP({ idSociety, loggedUser}) {
   var puedeEditar = true;
   const accesoOP = loggedUser?.['rol.op'];
   if( accesoOP ==='vista'){puedeEditar =false}
-  //manager
+
+  var blue = 0;
+  var verColumnBlue = false;
+  if(loggedUser?.['rol.op'] ==='total'){blue= -1; verColumnBlue = true;}
+  
 
   const navigate = useNavigate();
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
   
-  const apiServerUrl = process.env.REACT_APP_API_SERVER
+  
                                                       
   const {
     data: opInformation,
     isLoading,
     error,
-  } = useQuery(['OP', idSociety], () => getMethod(`OP/listar/${idSociety.id}/todas/nulo`));
+  } = useQuery(['OP', idSociety], () => getMethod(`OP/listar/${idSociety.id}/todas/nulo/${blue}`));
 
   const queryClient = useQueryClient();
 
@@ -308,20 +326,16 @@ export function GrillaOP({ idSociety, loggedUser}) {
 
   // es un array de facturas para la columna facturas asociada a una OP (OPId)
   const { data: grfacturas } = useQuery(['grfacturas', idSociety.id], async() =>
-  await getMethod(`factura/listar/${idSociety.id}/todas/nada`));
+  await getMethod(`factura/listar/${idSociety.id}/todas/nada/${blue}`));
 
 
   const { mutate: irDetalle } = useMutation(
 
     async el => await  getMethod(`op/mostrar/${idSociety.id}/${el.id}`),
-    {onSettled: (el) => { /*queryClient.refetchQueries(['formOP', idSociety]);*/
-    navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}/${el.estadoOP}/${el.confirmada}`)}
-  }
-    /*async el =>{
-
+      {onSettled: (el) => { /*queryClient.refetchQueries(['formOP', idSociety]);*/
+      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}/${el.estadoOP}/${el.confirmada}/${el.blue}`)}
+    }
     
-      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}/${el.estadoOP}/${el.confirmada}`)}
-*/
   );
 
   const { mutate: eliminate } = useMutation(
@@ -372,6 +386,7 @@ export function GrillaOP({ idSociety, loggedUser}) {
       <RepOp dataOP={miOP} dataFacturas={fa} apiServerUrl={apiServerUrl} idSociedad={idSociety.id} />
     )
   }
+
   /***** fin generar y subir pdf ************************************************************************/
 
  
@@ -447,16 +462,26 @@ export function GrillaOP({ idSociety, loggedUser}) {
      // }
     //}
   );
+
   
+  /*
+  const [selectionModel, setSelectionModel] = React.useState(() =>
+    opInformation.filter((r) => r.age > 40).map((r) => r.id),
+  );*/
+
+  const [selectionModel, setSelectionModel] = useState([]);
+
 
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
     return `Hubo un error: ${error.message}`;
   } else
+  
     return (
 
       <div style={{ width: '100%' }}>
+        
         <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
         <ToastContainer /> 
         <DataGrid 
@@ -480,6 +505,7 @@ export function GrillaOP({ idSociety, loggedUser}) {
               id: OP.estadoOP,
               descripcion: estados?.find(estado => estado.id === OP.estadoOP)?.descripcion,
             },
+            blue: OP.blue,
             confirmada: OP.confirmada===0? false: true,
             fondos: {
               id: OP.fondos,
@@ -520,9 +546,12 @@ export function GrillaOP({ idSociety, loggedUser}) {
             
           }))}
           onCellEditCommit={modifyData}
-          columns={columns(puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete)}
+          columns={columns(verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete)}
           isCellEditable={(params) => (!params.row.confirmada || accesoOP ==='total')}
-          disableSelectionOnClick
+          /*disableSelectionOnClick*/
+          checkboxSelection
+          onSelectionModelChange={setSelectionModel}
+               
           autoHeight
           density={'comfortable'}
           scrollbarSize
@@ -531,18 +560,98 @@ export function GrillaOP({ idSociety, loggedUser}) {
           }}
          
           
-        >
-        
+        >      
 
         </DataGrid>
+
+        <Hidden  smUp={(loggedUser['rol.op'] ==='vista')} >
+            <Button onClick={()=>generar_y_enviar(selectionModel, idSociety)} >
+                Generar y Enviar OPs Seleccionadas
+            </Button>
+        </Hidden>
+
+        
+
       </div>
     );
 
+
 }
+
+function generar_y_enviar(selectionModel, idSociety) {
+
+    getOPs(selectionModel, idSociety);
+
+}
+
+async function getOPs(arr, idSociety) {
+
+  // console.log("BBBB", arr[0]);
+  for (let i = 0; i < arr.length ; i++) {
+    try {      
+      // console.log("BBB: ", selectionModel[i]);
+      let result = await getMethod(`op/mostrarConFacturas/${idSociety.id}/${arr[i]}`);
+      // console.log('AAAi=', i, 'res: ', op.op.numero);
+      let miOP = result.op;
+      let fa = {item: result.item};
+      if(miOP.estadoOP ===3 && miOP.blue === 0){
+            //console.log(op.numero);
+            console.log('AAi=', i, 'res: ', miOP.numero);
+            const NewDocument = () => {    
+              return (
+                <RepOp dataOP={miOP} dataFacturas={fa} apiServerUrl={apiServerUrl} idSociedad={idSociety.id} />
+              )
+            }
+            let generado = await getPdfBlob_2(NewDocument, miOP.id, miOP?.fideicomisos[0]?.nombre, miOP.numero, idSociety);
+            if(generado){
+              enviarCorreo_2(miOP.id, miOP?.fideicomisos[0]?.nombre, miOP.numero, miOP.empresas[0]?.razonSocial, miOP.empresas[0]?.enviar_OP_auto, idSociety)
+            }
+
+      } 
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+}
+
+async function getPdfBlob_2(NewDocument, idOP, fideicomiso, numero, idSociety){
+
+  let blobPdf = await pdf(NewDocument()).toBlob();
+  let formData = new FormData();
+  formData.append('logo', blobPdf);
+  formData.append('id', idOP);
+  formData.append('fideicomiso', fideicomiso);
+  formData.append('numero', numero);
+  formData.append('archivada', 1);    
+  let rta = await postMethod(`op/modificar/${idSociety.id}`, formData);
+  return !!rta
+}
+
+async function enviarCorreo_2(idOP, fideicomiso, numero, razonSocial, enviar_OP_auto, idSociety){
+
+  let rta = await postMethod(`OP/enviarMail/${idSociety?.id}`, {
+
+    mailTo : idSociety?.mailOP,
+    mailaccount : idSociety?.mailaccount,
+    mailfromname : idSociety?.mailfromname,
+    mailConstructora : idSociety?.mailConstructora,
+    fideicomiso : fideicomiso,        
+    razonSocial : razonSocial,
+    enviar_OP_auto : enviar_OP_auto,
+    numero : numero,
+    id : idOP,
+
+  })
+  return !!rta
+}
+
 
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
+
       <GridToolbarExport csvOptions={{ fields: ['createdAt', 'fideicomiso', 'numero','empresa','monto','moneda','RET_SUSS','RET_GAN','RET_IVA','fondos_','retencion', 'aprobado_obra', 'aprobado_adm', 'estado', 'fondos_', 'rubro', 'subrubro','descripcion'] }} />
       
     </GridToolbarContainer>
@@ -555,6 +664,7 @@ function IrDetalleOP_1(params) {
   const fideicomiso = params.row.fideicomiso;
   return <Button onClick={sendRow} >{fideicomiso}  </Button>;
 } 
+
 function IrDetalleOP_2(params) {
   const sendRow = params.row.onIrDetalle;  
   const numero = params.row.numero;
@@ -932,3 +1042,4 @@ function EnviarMail(params) {
     }
   
 } 
+

@@ -3,20 +3,31 @@ import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
+import { Avatar } from '@mui/material';
 import { Button } from '@mui/material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { mostrarFecha } from 'src/utils/utils';
 import { useNavigate } from 'react-router-dom';
 
-const columns = (acceso, setIsPromptOpen, setRowIdToDelete) => [
+const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
+  {
+    field: 'blue',
+    headerName: 'Blue',
+    hide: !verColumnBlue,
+    width: 70,
+    editable: false,
+    headerAlign: 'center',
+    renderCell: ({ value }) => value===0?'' :<Avatar sx={{ bgcolor: '#3944BC' }} >B</Avatar>,
+  },
+
   {
     field: 'fideicomiso',
     headerName: 'Fideicomiso',
     width: 160,
     editable: false,
     headerAlign: 'center',
-    align: 'center',
+    align: 'left',
     /*renderCell: IrDetalleOP_1,*/
   }, 
   {
@@ -26,6 +37,7 @@ const columns = (acceso, setIsPromptOpen, setRowIdToDelete) => [
     editable: false,
     headerAlign: 'center',
   },
+
   {
     field: 'numero',
     headerName: 'Número',
@@ -146,6 +158,9 @@ export function GrillaFactura({ idSociety, loggedUser }) {
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
   
+  var blue = 0;
+  var verColumnBlue = false;
+  if(loggedUser?.['rol.factura'] ==='total'){blue= -1; verColumnBlue = true;}
   var acceso = true;
   if(loggedUser?.['rol.factura'] ==='vista'){acceso =false}
 
@@ -154,7 +169,7 @@ export function GrillaFactura({ idSociety, loggedUser }) {
     data: facturaInformation,
     isLoading,
     error,
-  } = useQuery(['factura', idSociety], () => getMethod(`factura/listar/${idSociety.id}/todas/nada`));
+  } = useQuery(['factura', idSociety], () => getMethod(`factura/listar/${idSociety.id}/todas/nada/${blue}`));
 
   const queryClient = useQueryClient();
 
@@ -205,7 +220,7 @@ export function GrillaFactura({ idSociety, loggedUser }) {
 
   const { mutate: irDetalle } = useMutation(
     async el =>    
-      navigate(`./${el?.OPs[0]?.id}/${el?.OPs[0]?.createdAt}/${el.empresaId}/${el?.OPs[0]?.numero}/${el.fideicomisos[0]?.nombre}/${el?.OPs[0]?.estadoOP}/${el?.OPs[0]?.confirmada}`)
+      navigate(`./${el?.OPs[0]?.id}/${el?.OPs[0]?.createdAt}/${el.empresaId}/${el?.OPs[0]?.numero}/${el.fideicomisos[0]?.nombre}/${el?.OPs[0]?.estadoOP}/${el?.OPs[0]?.confirmada}/${el?.OPs[0]?.blue}`)
 
   );
 
@@ -225,6 +240,7 @@ export function GrillaFactura({ idSociety, loggedUser }) {
             fideicomiso: (factura?.fideicomisos? factura?.fideicomisos[0]?.nombre:''),
             empresaId: factura.empresaId,
             empresa:(factura?.empresas? factura?.empresas[0]?.razonSocial:''),
+            blue: factura.blue,
             numero: factura.numero,
             link: factura.link,
             link2: factura.link,
@@ -234,14 +250,13 @@ export function GrillaFactura({ idSociety, loggedUser }) {
             diasVTO: factura.diasVTO, 
             fechaVTO: factura.fechaVTO,  
             OPnumero : (factura?.OPs? factura?.OPs[0]?.numero:''),
-            // OPId: factura.OPId,
             estadoOP:(factura?.OPs? estados[factura?.OPs[0]?.estado]?.descripcion:''),
             deleteId: factura.id,
             onIrDetalle: () => irDetalle(factura),  
 
           }))}OPs
           onCellEditCommit={modifyData}
-          columns={columns(acceso, setIsPromptOpen, setRowIdToDelete)}
+          columns={columns(verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete)}
           pageSize={25}
           disableSelectionOnClick
           autoHeight

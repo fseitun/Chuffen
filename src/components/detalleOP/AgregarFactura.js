@@ -1,17 +1,26 @@
+// import { useState, useContext } from 'react';
 import { useState } from 'react';
 import { TextField, Button, Autocomplete } from '@mui/material';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { getMethod, postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
+// import { SumFacturaContext } from './sumFacturaContext';
 
-export function AgregarFactura({ idSociety, empresaId, OPId }) {
+
+export function AgregarFactura({ idSociety, empresaId, OPId, refetch }) {
+  
+  //const [sumFactura, setSumFactura] = useContext(SumFacturaContext);
+  //console.log(222222, sumFactura);
+
+
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
+  const blue = 0;
   
   const { data: facturas } = useQuery(
     ['facturas'],
-    () => getMethod(`factura/listar/${idSociety.id}/opid/0`));
+    () => getMethod(`factura/listar/${idSociety.id}/opid/0/${blue}`));
 
   const { mutate: addFactura } = useMutation(
     async factura =>
@@ -21,7 +30,9 @@ export function AgregarFactura({ idSociety, empresaId, OPId }) {
       }),
     {
       onSuccess: async () =>
-        await queryClient.refetchQueries(['facturas', idSociety]),
+      
+        await queryClient.refetchQueries(['facturas', idSociety])              
+        
     }
   );
 
@@ -36,6 +47,12 @@ export function AgregarFactura({ idSociety, empresaId, OPId }) {
         onSubmit={async (values, { setSubmitting, resetForm }) => {
        
           addFactura(values);
+          
+          setTimeout(() => {
+            refetch();
+            console.log("refetch");
+          }, 750)
+   
           resetForm();
           setSubmitting(false);
         }}

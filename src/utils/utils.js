@@ -55,9 +55,21 @@ export function yearMonthDayString(fecha) {
       .getDate(fecha)
       .toString()
       .padStart(2, '0')}`;
-  }
+  } 
+}
 
- 
+// entra date
+// Devuelve un string con formato YYYY-MM-DD
+export function yearMonthDayNum(fecha) {
+
+  if(fecha ===undefined || fecha ===null){
+    return null
+  }else{
+    return `${fecha.getFullYear(fecha)}${(1 + fecha.getMonth(fecha)).toString().padStart(2, '0')}${fecha
+      .getDate(fecha)
+      .toString()
+      .padStart(2, '0')}`;
+  } 
 }
 
 // entra date
@@ -80,7 +92,7 @@ export async function isNumberUsedDig(endpoint, idSociety, empresaId, numero) {
   if(num.length > parseInt(Qdigitos)){
     num = num.slice(num.length - parseInt(Qdigitos));
   } 
-  console.log(312222222, parseInt(Qdigitos), num);
+  
   let url = `${endpoint}/checknumero/${idSociety}/${empresaId}/${num}`;
   let data = await getMethod(url);
   

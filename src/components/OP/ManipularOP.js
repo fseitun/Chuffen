@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
-import { IconButton, Collapse, Box, TextField, Button, Autocomplete, Alert } from '@mui/material';
+import { IconButton, Collapse, Box, TextField, Hidden, FormControlLabel, Checkbox, Button, Autocomplete, Alert } from '@mui/material';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { getMethod, postMethod } from 'src/utils/api';
 
-
-
 export function ManipularOP({ idSociety, loggedUser  }) {
+
+ // var blue = 0;
+  var verCheckBlue = false;
+  if(loggedUser?.['rol.factura'] ==='total'){verCheckBlue = true;}
+  const [chkblue, setChkblue] = useState(true);
 
   const { data: fideicomisos } = useQuery(
     ['fideicomisos'],
@@ -21,7 +24,11 @@ export function ManipularOP({ idSociety, loggedUser  }) {
 
   const { data: ddfacturas } = useQuery(
     ['ddfacturas'],
-    () => getMethod(`factura/listar/${idSociety.id}/opid/0`));
+    () => getMethod(`factura/listar/${idSociety.id}/opid/0/0`));
+
+  const { data: ddfacturasBlue } = useQuery(
+    ['ddfacturasBlue'],
+    () => getMethod(`factura/listar/${idSociety.id}/opid/0/1`));
 
   const queryClient = useQueryClient();
 
@@ -49,17 +56,19 @@ export function ManipularOP({ idSociety, loggedUser  }) {
 
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        
+        // console.log(11111, chkblue);
         addOP({
+
           fideicomisoId: values.fideicomiso.id,
           empresaId: values.empresa.id,
           rubroId: values.empresa.rubroId,
           subRubroId: values.empresa.subrubroId,
           facturaId: values.factura.id,
+          blue: !chkblue? 1:0,
           creador: loggedUser.id ,
                     
         });
-
+        
         //resetForm();
         setOpen(true);
         setSubmitting(false);
@@ -107,7 +116,7 @@ export function ManipularOP({ idSociety, loggedUser  }) {
             size={'small'}
             label='Factura N॰'
             disablePortal
-            style={{ width: '230px', display: 'inline-flex' }}
+            style={{ width: '230px', display: !chkblue?'none':'inline-flex' }}
             onChange={(event, newValue) => {
               setFactInForm(newValue);
               setFieldValue('factura', newValue);
@@ -118,6 +127,32 @@ export function ManipularOP({ idSociety, loggedUser  }) {
             options={ddfacturas? ddfacturas?.filter(factura => factura?.empresaId === rsInForm?.id):[]}
             renderInput={params => <TextField {...params} label='Factura N॰' />}
           />
+
+          <Field
+            as={Autocomplete}
+            size={'small'}
+            label='Factura Blue N॰'
+            disablePortal
+            style={{ width: '230px', display: chkblue?'none':'inline-flex' }}
+            onChange={(event, newValue) => {
+              setFactInForm(newValue);
+              setFieldValue('factura', newValue);
+            }}
+            value={factInForm}
+            getOptionLabel={option => option.numero}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            options={ddfacturasBlue? ddfacturasBlue?.filter(factura => factura?.empresaId === rsInForm?.id):[]}
+            renderInput={params => <TextField {...params} label='Factura Blue N॰' />}
+          />
+
+          &nbsp;&nbsp;          
+          <Hidden  smUp={( !verCheckBlue)} >        
+          <FormControlLabel 
+            control={ <Checkbox  id={'blue'}  name={'blue'}             
+            onChange={(event) => onlyCheck(event, setFieldValue, 'blue', chkblue, setChkblue)}
+            /> }   label="Blue"  />
+          </Hidden>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
           <Button id='bagregar' variant="text" type='submit' disabled={isSubmitting}>
             Agregar
@@ -151,6 +186,20 @@ export function ManipularOP({ idSociety, loggedUser  }) {
       )}
     </Formik>
   );
+}
+
+function onlyCheck(event, setFieldValue, typeOfData, chkblue, setChkblue) {
+  event.preventDefault();
+  //const { value } = event.target;
+  setChkblue(!chkblue);
+  if(chkblue){ 
+    setFieldValue(typeOfData, 'on');
+    // console.log(55555, typeOfData, value, chkblue);
+  }else{
+    setFieldValue(typeOfData, 'off');
+    // console.log(66666, typeOfData, value, chkblue);
+  }
+  
 }
 
 

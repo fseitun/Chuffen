@@ -1,16 +1,23 @@
+// import { useState, useContext } from 'react';
 import { useState } from 'react';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import { TextField, Typography, Grid, Autocomplete, Hidden, Switch} from '@mui/material';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
-import { getMethod, postMethod } from 'src/utils/api';
+import { postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { isValidDate, yearMonthDayString } from 'src/utils/utils'; 
+// import { SumFacturaContext } from './sumFacturaContext';
 
 
-export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmada}) {
+
+export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmada, formOP, isLoading, error, refetch}) {
   
+  //const [sumFactura, setSumFactura] = useContext(SumFacturaContext);
+  //console.log(333333, sumFactura);
+
+
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
 
@@ -19,22 +26,9 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
   if(loggedUser?.['rol.op'] ==='vista'){
        acceso =false;
   }
-
-  const{
-      data: formOP,
-      isLoading,
-      error,
-      refetch
-    } = useQuery(['formOP', idSociety.id], () =>
-     getMethod(`op/mostrar/${idSociety.id}/${OPId}`,{fetchPolicy: 'network-only'})
-  ); 
-
-  /*
-  setTimeout(() => {
-    setGan(formOP?.RET_GAN);
-    console.log(7777, formOP?.RET_GAN);
-  }, 700)*/
-
+/*
+   
+*/
   const { mutate: updateOP } = useMutation(
       async newOP =>
         await postMethod(`op/modificar/${idSociety.id}`, newOP),
@@ -54,18 +48,6 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
   var banco_en_blanco = {id:0, banco:"", descripcionLarga:"" };
   bancos.push(banco_en_blanco);
 
-  /*
-
-    <div>
-      <button
-        onClick={() => {refetch()}}
-      >
-        Refetch
-      </button>
-      <p></p>
-    </div>
-
-*/
 
   var cuentasbanco = JSON.parse(localStorage.getItem("co"));  
   var cuenta_en_blanco = {id: 0,  bancoId: 0,  cuentaBanco: "",  descripcionLarga: "",  bancos: [{banco: ""}]};
@@ -157,7 +139,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
 
                   <Grid item md={2}   >
                   <Typography  align="right" color="textPrimary" variant="h5">
-                  Estado:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  Estado:&nbsp;&nbsp;&nbsp;
                         </Typography>
                   </Grid>     
                   <Grid item md={2}>                  
@@ -180,9 +162,8 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                       renderInput={params => <TextField {...params} label='Estado' />}
                       
                     />
-                  </Grid> 
-
-                  <Grid item md={3}>  
+                  </Grid>
+                  <Grid item md={2}>  
                       <Hidden  smUp={(loggedUser['rol.op'] ==='total'  || (isConfirmOP!==1)?true:false)} >
                           <Typography align="center" color="green" variant="h5">                      
                             {(isConfirmOP===1)?"Confirmada!":""}
@@ -205,21 +186,35 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                           
                           </Hidden>
 
+                  </Grid>              
+                  <Grid item md={2}>
+                        <Typography align="right" color="textPrimary" variant="h5">
+                        Aprobado por:
+                        </Typography>
                   </Grid>
-                  <Grid item md={5}>                           
-                  </Grid>
+                  <Grid item md={4}>
+                        <Typography align="left" color="textPrimary" variant="h5">
+                        {formOP?.auth_adm?formOP.auth_adm[0]?.usuarios[0]?.user:''}
+                        </Typography>
+                  </Grid>              
+
              
+                
+                  <Grid item md={12}>
+                  &nbsp;
+                  </Grid>    
 
                   <Grid item md={2}>
                   <Typography align="right" color="textPrimary" variant="h5">
-                  Sumatoria Facturas:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  Sumatoria Facturas:&nbsp;&nbsp;&nbsp;
                         </Typography>
-                  </Grid>     
+                  </Grid>
                   <Grid item md={2}>
-                        <Typography align="left" color="textPrimary" variant="h5">
+                        <Typography align="left" color="textPrimary" variant="h4">
                         &nbsp;{formOP?.monto}
                         </Typography>
                   </Grid>
+
                   <Grid item md={4}>
                         <Typography align="right" color="textPrimary" variant="h5">
                         Forma de Pago:
@@ -233,55 +228,59 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
 
 
 
-                  <Grid item md={2}>
-                        <Typography align="right" color="textPrimary" variant="h5">
-                        Monto a Abonar:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
-                              </Typography>
-                  </Grid>  
-                  <Grid item md={2}>
-                        <Typography align="left" color="textPrimary" variant="h5">
-                        &nbsp;{formOP?.monto_a_pagar}
-                        </Typography>
-                  </Grid>
-                  <Grid item md={4}>
-                        <Typography align="right" color="textPrimary" variant="h5">
-                        Aprobado por:
-                        </Typography>
-                  </Grid>
-                  <Grid item md={4}>
-                        <Typography align="left" color="textPrimary" variant="h5">
-                        {formOP?.auth_adm?formOP.auth_adm[0]?.usuarios[0]?.user:''}
-                        </Typography>
-                  </Grid>              
-
+                 
+                 
 
 
                   <Grid item md={12}>
                   &nbsp;
                   </Grid>
 
-                                 
                   <Grid item md={2}>
+                  </Grid>               
+                  <Grid item md={10}>
                   <TextField  size={'small'} sx={{ width: '20ch' }} label="RET GAN" type="number" key={formOP?.RET_GAN} defaultValue={formOP?.RET_GAN}  name="RET_GAN" onChange={event => onlyNumbers(event, setFieldValue, refetch, 'RET_GAN', idSociety.id, OPId, 0, 0)} 
                        InputProps={{
                         readOnly: (!acceso || (isConfirmOP===1)?true:false),
                       }}
                   />
                   </Grid>
+
                   <Grid item md={2}>
+                  </Grid>               
+                  <Grid item md={10}>
                   <TextField  size={'small'} sx={{ width: '20ch' }} label="RET IVA" type="number" key={formOP?.RET_IVA} defaultValue={formOP?.RET_IVA}  name="RET_IVA" onChange={event => onlyNumbers(event, setFieldValue, refetch, 'RET_IVA', idSociety.id, OPId, 0, 0)} 
                        InputProps={{
                         readOnly: (!acceso || (isConfirmOP===1)?true:false),
                       }}
                   />
                   </Grid>  
+
                   <Grid item md={2}>
+                  </Grid>               
+                  <Grid item md={10}>
                   <TextField size={'small'} sx={{ width: '20ch' }} label="RET SUSS" type="number"  key={formOP?.RET_SUSS}  defaultValue={formOP?.RET_SUSS}  name="RET_SUSS"  onChange={event => onlyNumbers(event, setFieldValue, refetch, 'RET_SUSS', idSociety.id, OPId, 0)} 
                        InputProps={{
                         readOnly: (!acceso || (isConfirmOP===1)?true:false),
                       }}
                   />
                   </Grid>
+
+
+                  <Grid item md={2}>
+                        <Typography align="right" color="textPrimary" variant="h5">
+                        Monto a Abonar:&nbsp;&nbsp;&nbsp;  
+                              </Typography>
+                  </Grid>  
+                  <Grid item md={2}>
+                        <Typography align="left" color="textPrimary" variant="h4">
+                        &nbsp;{formOP?.monto_a_pagar + " " + formOP?.moneda}
+                        </Typography>
+                  </Grid>
+
+
+
+
                   <Grid item md={6}>
                   &nbsp;
                   </Grid>
@@ -428,9 +427,11 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                   </Grid>  
                   <Grid item md={2}>
                         <TextField  name="monto1" size={'small'}sx={{ width: '20ch' }} label="Monto" type="float"  key={formOP?.OPpago.monto1}  defaultValue={formOP?.OPpago.monto1}  onChange={event => onlyNumbers(event, setFieldValue, refetch, 'monto1', idSociety.id, OPId, 1, 0)}
-                             InputProps={{
+                             inputProps={{readOnly: (!acceso || (isConfirmOP===1)?true:false), min: 0, style: { textAlign: 'center' }}}
+                             /*InputProps={{
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
-                            }} />                  
+                  
+                            }}*/ />                  
                   </Grid>
 
                   <Grid item md={2}>
@@ -528,9 +529,10 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                   </Grid>  
                   <Grid item md={2}>
                         <TextField  name="monto2" size={'small'}sx={{ width: '20ch' }} label="Monto" type="float"  key={formOP?.OPpago.monto2}  defaultValue={formOP?.OPpago.monto2}   onChange={event => onlyNumbers(event, setFieldValue, refetch, 'monto2', idSociety.id, OPId, 1, 0)}
-                            InputProps={{
+                            inputProps={{readOnly: (!acceso || (isConfirmOP===1)?true:false), min: 0, style: { textAlign: 'center' }}}
+                            /*InputProps={{
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
-                            }} />                  
+                            }}*/ />                  
                   </Grid>
 
                   <Grid item md={2}>
@@ -628,9 +630,10 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                   </Grid>  
                   <Grid item md={2}>
                         <TextField  name="monto3" size={'small'}sx={{ width: '20ch' }} label="Monto" type="float"  key={formOP?.OPpago.monto3}  defaultValue={formOP?.OPpago.monto3}   onChange={event => onlyNumbers(event, setFieldValue, refetch, 'monto3', idSociety.id, OPId, 1, 0)}
-                            InputProps={{
+                            inputProps={{readOnly: (!acceso || (isConfirmOP===1)?true:false), min: 0, style: { textAlign: 'center' }}}
+                            /*InputProps={{
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
-                            }} />                  
+                            }}*/ />                  
                   </Grid>
 
                   <Grid item md={2}>
@@ -728,9 +731,20 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                   </Grid>  
                   <Grid item md={2}>
                         <TextField  name="monto4" size={'small'}sx={{ width: '20ch' }} label="Monto" type="float"  key={formOP?.OPpago.monto4}  defaultValue={formOP?.OPpago.monto4}   onChange={event => onlyNumbers(event, setFieldValue, refetch, 'monto4', idSociety.id, OPId, 1, 0)}
-                            InputProps={{
+                            inputProps={{readOnly: (!acceso || (isConfirmOP===1)?true:false), min: 0, style: { textAlign: 'center' }}}
+                            /*InputProps={{
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
-                            }} />                  
+                            }}*/ />                  
+                  </Grid>
+
+                  <Grid item md={10}>
+                                  
+                  </Grid>
+                  <Grid item md={2}>
+                        <Typography align="center" color="textPrimary" variant="h5">
+                        
+                        {(Math.round(formOP?.OPpago.monto1 * 100)/100 + Math.round(formOP?.OPpago.monto2 * 100)/100 + Math.round(formOP?.OPpago.monto3 * 100)/100 + Math.round(formOP?.OPpago.monto4 * 100)/100)}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </Typography>                 
                   </Grid>
               
                 </Grid>
@@ -802,8 +816,7 @@ function handleModification(event, setFieldValue, refetch, typeOfData, idSociety
   setTimeout(() => {
     refetch();
     console.log("refetch");
-  }, 500)
-
+  }, 800)
 
 }
 
@@ -820,7 +833,6 @@ function confirmarOP(event, setIsConfirmOP, typeOfData, idSociety, OPId, flagPag
   }    
     
   postMethod(`op/modificar/${idSociety}`, newData);
-
 
 }
 

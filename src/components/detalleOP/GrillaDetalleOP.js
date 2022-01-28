@@ -71,28 +71,25 @@ const columns = (puedeEditar, verEliminar) => [
 
 ];
 
-export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaData }) {
+export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaData, refetch }) {
   
-  //var acceso = true;
-  //if(loggedUser?.['rol.op'] ==='vista'){acceso =false}
+  const queryClient = useQueryClient();
+
   var puedeEditar = true;
   const accesoOP = loggedUser?.['rol.op'];
+  const blue = -1; // trae todas las de la OP
   if( accesoOP ==='vista'){puedeEditar =false}
-
 
   var verEliminar = true;
   if(loggedUser?.['rol.op'] ==='parcial' || loggedUser?.['rol.op'] ==='vista'){verEliminar =false}
 
   const {
     data: facturas,    
-    /*rowLength: filas,*/
     isLoading,
     error,
   } = useQuery(['facturas', idSociety, selectedFacturaData], () =>
-    getMethod(`factura/listar/${idSociety?.id}/opid/${OPId}`)
+    getMethod(`factura/listar/${idSociety?.id}/opid/${OPId}/${blue}`)
   );
-
-  const queryClient = useQueryClient();
 
   const { mutate: deleteProduct } = useMutation(
     async id =>
@@ -102,25 +99,34 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
         OPId: null,
       }),
     {
-      onSuccess: async () =>
-        await queryClient.refetchQueries(['facturas', idSociety, selectedFacturaData]),
+      
+      onSuccess: async ()=> {
+        if (idSociety.id > 0) {
+            await queryClient.refetchQueries(['facturas', idSociety, selectedFacturaData])
+        }
+        refetch()
+        
+      }
     }
   );
 
 
+ // await queryClient.refetchQueries(['facturas', idSociety, selectedFacturaData]), 
 
-  if (isLoading) return 'Cargando...';
-  if (error) return `Hubo un error: ${error.message}`;
 
   function handleCellModification(e) {
     
     let newData = {
       id: e.id,
      [e.field]: e.value,
-    };
-    
+    };    
     postMethod(`factura/modificar/${idSociety?.id}`, newData);
+    
   }
+
+
+  if (isLoading) return 'Cargando...';
+  if (error) return `Hubo un error: ${error.message}`;
 
   return (
     <div style={{ width: '100%' }}>

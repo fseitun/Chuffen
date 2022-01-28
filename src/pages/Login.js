@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Container, Box, TextField, Button, Alert } from '@mui/material';
 import { Helmet } from 'react-helmet';
@@ -6,11 +6,13 @@ import { Formik } from 'formik';
 import { getMethod } from 'src/utils/api';
 import { postMethod } from 'src/utils/api';
 import { useQuery } from 'react-query';
+import { SocietyContext } from 'src/App';
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
-export function Login({ setLoggedUser, idSociety, setIdSociety }) {
+export function Login({ setLoggedUser, setIdSociety }) {
 
+  const idSociety = useContext(SocietyContext);
   //const queryClient = useQueryClient();
   let { societyName } = useParams();
   const navigate = useNavigate();
@@ -79,7 +81,8 @@ export function Login({ setLoggedUser, idSociety, setIdSociety }) {
         <Container maxWidth="sm">
           <div style={{ width: '100%' }} >
             <img
-              style={{ display: 'block', margin: 'auto', width: '50%', backgroundColor:"#6326d5" }}
+              /* backgroundColor:"#6326d5" */
+              style={{ display: 'block', margin: 'auto', width: '50%', backgroundColor:"#777777" }}
               src={`${apiServerUrl}public/${idSociety?.logo}`}
               alt="logo"
             />

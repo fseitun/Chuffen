@@ -1,11 +1,13 @@
+
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { mostrarFecha } from 'src/utils/utils';
+import { SocietyContext } from 'src/App';
 
 const columns = (setIsPromptOpen, setRowIdToDelete) => [
   {
@@ -58,8 +60,8 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   },
 ];
 
-export function GrillaDolar({ idSociety }) {
-  
+export function GrillaDolar() {
+  const idSociety = useContext(SocietyContext);
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
   // console.log(rowIdToDelete);
