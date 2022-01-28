@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
 
       <View style={styles.rowf}>
             <Text style={[styles.descriptionf,{ borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}>TOTAL</Text>
-            <Text style={styles.totalf}>{(parseInt(dataOP?.OPpago?.monto1? dataOP?.OPpago?.monto1:0) + parseInt(dataOP?.OPpago?.monto2? dataOP?.OPpago?.monto2:0)+ parseInt(dataOP?.OPpago?.monto3? dataOP?.OPpago?.monto3:0) + parseInt(dataOP?.OPpago?.monto4? dataOP?.OPpago?.monto4:0))}</Text>
+            <Text style={styles.totalf}>{(parseFloat(dataOP?.OPpago?.monto1? dataOP?.OPpago?.monto1:0) + parseFloat(dataOP?.OPpago?.monto2? dataOP?.OPpago?.monto2:0)+ parseFloat(dataOP?.OPpago?.monto3? dataOP?.OPpago?.monto3:0) + parseFloat(dataOP?.OPpago?.monto4? dataOP?.OPpago?.monto4:0))}</Text>
       </View>
       
       

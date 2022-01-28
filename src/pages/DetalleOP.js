@@ -1,42 +1,28 @@
-import React from 'react';
-import { useRef } from 'react'
-//import { useState, createContext } from 'react';
-import { useState } from 'react';
+import React, { useRef, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import { Container, Box, Typography, Grid } from '@mui/material';
+import { Container, Box, Typography, Grid, Button, Hidden } from '@mui/material';
 import { Helmet } from 'react-helmet';
+import { PDFDownloadLink, PDFViewer, pdf } from "@react-pdf/renderer";
+import { toast } from 'react-toastify';
+import { useQuery, useQueryClient, useMutation } from 'react-query';
+import RepOp from "src/components/reportes/orden_de_pago/orden_de_pago";
 import { AgregarFactura } from 'src/components/detalleOP/AgregarFactura';
 import { FormDetalleOP } from 'src/components/detalleOP/FormDetalleOP';
 import { GrillaDetalleOP } from 'src/components/detalleOP/GrillaDetalleOP';
 import { mostrarFechaMesTXT } from 'src/utils/utils';
-import { PDFDownloadLink, PDFViewer, pdf } from "@react-pdf/renderer";
-import { toast } from 'react-toastify';
-import { useQueryClient, useMutation } from 'react-query';
-import { Button, Hidden } from '@mui/material';
-import RepOp from "src/components/reportes/orden_de_pago/orden_de_pago";
-import { useQuery } from 'react-query';
 import { getMethod, postMethod } from 'src/utils/api';
 
-//import { SumFacturaContext } from 'src/components/detalleOP/sumFacturaContext';
-
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
-
-
 
 export function DetalleOP({ idSociety, loggedUser }) {
 
   const [verPDF, setVerPDF] = React.useState(false);
-  const { idOP } = useParams();
-  const { fecha } = useParams();  
-  const { empresaId } = useParams();  
-  const { numero } = useParams();
-  const { fideicomiso } = useParams();
-  const { estadoOP } = useParams();
-  const { confirmada } = useParams();
+  const { idOP, fecha, empresaId, numero, fideicomiso, estadoOP, confirmada, blue } = useParams();
+
   const id = idSociety.id;
   const fileName = "OP_" + fideicomiso + "_" + numero + ".pdf";
   const buttonAdmRef = useRef();  
-  const { blue } = useParams();
+  
 
   const{
       data: formOP,
@@ -44,9 +30,9 @@ export function DetalleOP({ idSociety, loggedUser }) {
       error,
       refetch
     } = useQuery(['formOP', idSociety.id], () =>
-    getMethod(`op/mostrar/${idSociety.id}/${idOP}`)
-  );
+    getMethod(`op/mostrarConFacturas/${idSociety.id}/${idOP}`)
 
+  );
 
   
    //guarda pdf en server
@@ -69,31 +55,23 @@ export function DetalleOP({ idSociety, loggedUser }) {
     }, 300);
   }
 
+  function facturasCargadas(fa){
+      if(fa){return { item: fa};}else{return null}
+  }
+
+  function cargadas(obj){
+    if(obj){return obj;}else{return null}
+  }
+
   // es el reporte .pdf
   const NewDocument = () => {
     return (
-      <RepOp dataOP={opCargadas(dataOP)} dataFacturas={facturasCargadas(fa)} apiServerUrl={apiServerUrl} idSociedad={id} />
+      <RepOp dataOP={cargadas(formOP?.op)} dataFacturas={facturasCargadas(formOP?.item)} apiServerUrl={apiServerUrl} idSociedad={id} />
     )
   }
 
-  const { data: fa,
-  } = useQuery(
-    ['fa'],
-    () => getMethod(`factura/listar/${idSociety.id}/opid/${idOP}/${blue}`));
 
-  function facturasCargadas(fa){
-      if(fa){     
-        return { item: fa};
-      }else{
-        return null
-      }
-  }
-  
-  const {
-    data: dataOP,
-    } = useQuery(['dataOP', idSociety.id], () =>
-    getMethod(`op/mostrar/${idSociety.id}/${idOP}`)
-  );  
+
   
   const queryClient = useQueryClient();
 
@@ -109,7 +87,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
       }),
     {
       onSuccess: async () =>
-        await queryClient.refetchQueries(['dataOP', idSociety]),
+        await queryClient.refetchQueries(['formOP', idSociety]),
     }
   );
 
@@ -126,28 +104,22 @@ export function DetalleOP({ idSociety, loggedUser }) {
       
     {
       onSuccess: async () =>        
-        await queryClient.refetchQueries(['dataOP', idSociety]),
+        await queryClient.refetchQueries(['formOP', idSociety]),
     }
   );
 
-  function opCargadas(dataOP){
-    if(dataOP){     
-      return dataOP;
-    }else{
-      return null
-    }
-}
+
 
   /* ************************* */
-  var verAdm = verAuthBoton("adm", dataOP, "Autorizar en Obra", loggedUser?.["rol.descripcion"]);
+  var verAdm = verAuthBoton("adm", formOP, "Autorizar en Obra", loggedUser?.["rol.descripcion"]);
   const [verBoxAdm, setVerBoxAdm] = useState(verAdm);  
 
-  var verObra = verAuthBoton("obra", dataOP, "Autorizar en Obra", loggedUser?.["rol.descripcion"]);
+  var verObra = verAuthBoton("obra", formOP, "Autorizar en Obra", loggedUser?.["rol.descripcion"]);
   const [verBoxObra, setVerBoxObra] = useState(verObra);
 
   let verAgregar = (loggedUser?.['rol.op'] ==='vista'); // si es vista listo no la ve
   if(!verAgregar){
-      let conf = dataOP?(dataOP?.confirmada===1):false;
+      let conf = formOP?(formOP?.confirmada===1):false;
       if(conf){// confirmada y no es vista
               if(loggedUser?.['rol.op'] ==='total'){  // si es parcial
                     verAgregar = false;
@@ -169,7 +141,9 @@ export function DetalleOP({ idSociety, loggedUser }) {
         justifyContent: "flex-end",
       }}
     >
-      <Box display={verBoxObra} sx={{ pt: 1 }}>
+      
+   
+      <Box  mt={2} display={verBoxObra} sx={{ pt: 1 }}>
         <Button
         
         onClick={() => {
@@ -204,7 +178,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
         Autorizar en Obra
         </Button>
       </Box>
-      <Box display={verBoxAdm} sx={{ pt: 1 }}>
+      <Box  mt={2} display={verBoxAdm} sx={{ pt: 1 }}>
         <Button
           ref={buttonAdmRef}
           /*variant="info"*/
@@ -243,7 +217,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
         </Button>      
       </Box>
 
-      <Box sx={{ pt: 1 }}>
+      <Box mt={2} sx={{ pt: 1 }}>
         <Button
           /*variant="info"*/
           onClick={() => {
@@ -254,7 +228,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
         </Button>
 
         <PDFDownloadLink
-          document={<RepOp dataOP={opCargadas(dataOP)} dataFacturas={facturasCargadas(fa)} apiServerUrl={apiServerUrl} idSociedad={id} />}
+          document={<RepOp dataOP={cargadas(formOP?.op)} dataFacturas={facturasCargadas(formOP?.item)} apiServerUrl={apiServerUrl} idSociedad={id} />}
           fileName={fileName}
         >
           <Button variant="info" onClick={guardar_en_server} >Descargar</Button>
@@ -276,7 +250,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
                   
           {verPDF ? (
             <PDFViewer style={{ width: "100%", height: "90vh" }}>
-              <RepOp dataOP={opCargadas(dataOP)} dataFacturas={facturasCargadas(fa)} apiServerUrl={apiServerUrl} idSociedad={id} />
+              <RepOp dataOP={cargadas(formOP?.op)} dataFacturas={facturasCargadas(formOP?.item)} apiServerUrl={apiServerUrl} idSociedad={id} />
             </PDFViewer>
           ) : 
      
@@ -301,13 +275,13 @@ export function DetalleOP({ idSociety, loggedUser }) {
                       <Grid item md={5}>
 
                         <Hidden  smUp={( !(parseInt(blue)===1))} >
-                          <Typography align="left" color="blue" variant="h4">
-                                {numero.replace("OP_","")} Blue
+                          <Typography align="left" color="textPrimary" variant="h4">
+                                {numero.replace("OP_","")} (Blue) &nbsp;&nbsp; {fideicomiso}
                           </Typography>
                         </Hidden>
                         <Hidden  smUp={( !(parseInt(blue)===0))} >
                           <Typography align="left" color="textPrimary" variant="h4">
-                                {numero.replace("OP_","")}
+                                {numero.replace("OP_","")}&nbsp;&nbsp;&nbsp;&nbsp; {fideicomiso}
                           </Typography>
                         </Hidden>
 
@@ -354,7 +328,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
                   idSociety={idSociety}
                   loggedUser={loggedUser}
 
-                  formOP={formOP}
+                  formOP={formOP?.op}
                   isLoading={isLoading}
                   error={error}
                   refetch={refetch}
@@ -376,7 +350,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
 
 //</SumFacturaContext.Provider>
 
-function verAuthBoton(tipo, dataOP, label, rol_usuario){
+function verAuthBoton(tipo, formOP, label, rol_usuario){
   // rol adm, obra, manager
   let rta = "";
 
@@ -384,17 +358,17 @@ function verAuthBoton(tipo, dataOP, label, rol_usuario){
   if(tipo === rol_usuario){rta = label} 
 
   if(tipo==="adm"){
-    if(dataOP?.auth_adm){
-      if(dataOP.auth_adm[0]){
-        if(dataOP.auth_adm[0].usuarios[0].user !== undefined){
+    if(formOP?.auth_adm){
+      if(formOP.auth_adm[0]){
+        if(formOP.auth_adm[0].usuarios[0].user !== undefined){
           rta = "";
         }
       }     
     }
   }else{
-    if(dataOP?.auth_obra){
-      if(dataOP.auth_obra[0]){
-        if(dataOP.auth_obra[0].usuarios[0].user !== undefined){
+    if(formOP?.auth_obra){
+      if(formOP.auth_obra[0]){
+        if(formOP.auth_obra[0].usuarios[0].user !== undefined){
           rta = "";
         }
       }     

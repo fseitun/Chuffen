@@ -1,22 +1,18 @@
-// import { useState, useContext } from 'react';
 import { useState } from 'react';
 import { TextField, Button, Autocomplete } from '@mui/material';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { getMethod, postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
-// import { SumFacturaContext } from './sumFacturaContext';
+import { useParams } from 'react-router-dom';
 
 
 export function AgregarFactura({ idSociety, empresaId, OPId, refetch }) {
   
-  //const [sumFactura, setSumFactura] = useContext(SumFacturaContext);
-  //console.log(222222, sumFactura);
 
-
+  const { blue } = useParams();
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
-  const blue = 0;
   
   const { data: facturas } = useQuery(
     ['facturas'],

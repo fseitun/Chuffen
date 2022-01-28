@@ -816,7 +816,7 @@ function handleModification(event, setFieldValue, refetch, typeOfData, idSociety
   setTimeout(() => {
     refetch();
     console.log("refetch");
-  }, 800)
+  }, 1000)
 
 }
 
