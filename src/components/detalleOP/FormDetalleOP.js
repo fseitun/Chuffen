@@ -14,10 +14,6 @@ import { isValidDate, yearMonthDayString } from 'src/utils/utils';
 
 export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmada, formOP, isLoading, error, refetch}) {
   
-  //const [sumFactura, setSumFactura] = useContext(SumFacturaContext);
-  //console.log(333333, sumFactura);
-
-
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
 
@@ -196,9 +192,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                         <Typography align="left" color="textPrimary" variant="h5">
                         {formOP?.auth_adm?formOP.auth_adm[0]?.usuarios[0]?.user:''}
                         </Typography>
-                  </Grid>              
-
-             
+                  </Grid>
                 
                   <Grid item md={12}>
                   &nbsp;
@@ -226,45 +220,66 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                         </Typography>
                   </Grid>
 
-
-
-                 
-                 
-
-
                   <Grid item md={12}>
                   &nbsp;
                   </Grid>
 
                   <Grid item md={2}>
                   </Grid>               
-                  <Grid item md={10}>
+                  <Grid item md={2}>
                   <TextField  size={'small'} sx={{ width: '20ch' }} label="RET GAN" type="number" key={formOP?.RET_GAN} defaultValue={formOP?.RET_GAN}  name="RET_GAN" onChange={event => onlyNumbers(event, setFieldValue, refetch, 'RET_GAN', idSociety.id, OPId, 0, 0)} 
                        InputProps={{
                         readOnly: (!acceso || (isConfirmOP===1)?true:false),
                       }}
                   />
                   </Grid>
+                  <Grid item md={2}>                                                                                                                                             
+                  <TextField  size={'small'} sx={{ width: '20ch' }} label="Certificado GAN"  key={formOP?.COMP_GAN} defaultValue={formOP?.COMP_GAN}  name="COMP_GAN" onChange={event => handleModification(event, setFieldValue, refetch, 'COMP_GAN', idSociety.id, OPId, 0, 0)} 
+                       InputProps={{
+                        readOnly: (!acceso || (isConfirmOP===1)?true:false),
+                      }}
+                  />
+                  </Grid>
+                  <Grid item md={6}>
+                  </Grid> 
 
                   <Grid item md={2}>
                   </Grid>               
-                  <Grid item md={10}>
+                  <Grid item md={2}>
                   <TextField  size={'small'} sx={{ width: '20ch' }} label="RET IVA" type="number" key={formOP?.RET_IVA} defaultValue={formOP?.RET_IVA}  name="RET_IVA" onChange={event => onlyNumbers(event, setFieldValue, refetch, 'RET_IVA', idSociety.id, OPId, 0, 0)} 
                        InputProps={{
                         readOnly: (!acceso || (isConfirmOP===1)?true:false),
                       }}
                   />
-                  </Grid>  
+                  </Grid>
+                  <Grid item md={2}>                                                                                                                                             
+                  <TextField  size={'small'} sx={{ width: '20ch' }} label="Certificado IVA"  key={formOP?.COMP_IVA} defaultValue={formOP?.COMP_IVA}  name="COMP_IVA" onChange={event => handleModification(event, setFieldValue, refetch, 'COMP_IVA', idSociety.id, OPId, 0, 0)} 
+                       InputProps={{
+                        readOnly: (!acceso || (isConfirmOP===1)?true:false),
+                      }}
+                  />
+                  </Grid>
+                  <Grid item md={6}>
+                  </Grid>   
 
                   <Grid item md={2}>
                   </Grid>               
-                  <Grid item md={10}>
+                  <Grid item md={2}>
                   <TextField size={'small'} sx={{ width: '20ch' }} label="RET SUSS" type="number"  key={formOP?.RET_SUSS}  defaultValue={formOP?.RET_SUSS}  name="RET_SUSS"  onChange={event => onlyNumbers(event, setFieldValue, refetch, 'RET_SUSS', idSociety.id, OPId, 0)} 
                        InputProps={{
                         readOnly: (!acceso || (isConfirmOP===1)?true:false),
                       }}
                   />
                   </Grid>
+                  <Grid item md={2}>                                                                                                                                             
+                  <TextField  size={'small'} sx={{ width: '20ch' }} label="Certificado SUSS"  key={formOP?.COMP_SUSS} defaultValue={formOP?.COMP_SUSS}  name="COMP_SUSS" onChange={event => handleModification(event, setFieldValue, refetch, 'COMP_SUSS', idSociety.id, OPId, 0, 0)} 
+                       InputProps={{
+                        readOnly: (!acceso || (isConfirmOP===1)?true:false),
+                      }}
+                  />
+                  </Grid>
+                  <Grid item md={6}>
+                  </Grid> 
 
 
                   <Grid item md={2}>
@@ -300,7 +315,11 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                   <Grid item md={12}>
                   &nbsp;
                   </Grid>
-
+                  <Grid item md={2}>
+                        <Typography align="left" color="textPrimary" variant="h5">
+                          Modo
+                        </Typography>              
+                  </Grid> 
                   <Grid item md={2}>
                         <Typography align="left" color="textPrimary" variant="h5">
                           Banco
@@ -315,12 +334,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                         <Typography align="left" color="textPrimary" variant="h5">
                           Comprobante
                         </Typography>              
-                  </Grid>  
-                  <Grid item md={2}>
-                        <Typography align="left" color="textPrimary" variant="h5">
-                          Modo
-                        </Typography>              
-                  </Grid>  
+                  </Grid>                 
                   <Grid item md={2}>
                         <Typography align="left" color="textPrimary" variant="h5">
                           Fecha
@@ -332,6 +346,27 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                         </Typography>                
                   </Grid>  
 
+                    
+                  <Grid item md={2}>
+                    <Field
+                          as={Autocomplete}
+                          size={'small'}
+                          label='Modo'
+                          disabled={!acceso || (isConfirmOP===1)}
+                          disablePortal
+                          style={{ width: '160px', display: 'inline-flex' }}
+                          onChange={(event, newValue) => {
+    
+                            onlyNumbers(event, setFieldValue, refetch, 'modo1', idSociety.id, OPId, 1, newValue)
+                          }}
+                          value={formOP?.OPpago.modo1 || formaPagos[0]}
+                          getOptionLabel={option => option}
+                          isOptionEqualToValue={(option, value) => option === value}
+                          options={formaPagos}
+                          renderInput={params => <TextField {...params} label='Modo' />}
+                          
+                        />            
+                  </Grid> 
                   <Grid item md={2}>
 
                     <Field
@@ -384,27 +419,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                              InputProps={{
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
                             }}/>                  
-                  </Grid>  
-                  <Grid item md={2}>
-                    <Field
-                          as={Autocomplete}
-                          size={'small'}
-                          label='Modo'
-                          disabled={!acceso || (isConfirmOP===1)}
-                          disablePortal
-                          style={{ width: '160px', display: 'inline-flex' }}
-                          onChange={(event, newValue) => {
-    
-                            onlyNumbers(event, setFieldValue, refetch, 'modo1', idSociety.id, OPId, 1, newValue)
-                          }}
-                          value={formOP?.OPpago.modo1 || formaPagos[0]}
-                          getOptionLabel={option => option}
-                          isOptionEqualToValue={(option, value) => option === value}
-                          options={formaPagos}
-                          renderInput={params => <TextField {...params} label='Modo' />}
-                          
-                        />            
-                  </Grid>  
+                  </Grid> 
                   <Grid item md={2}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
@@ -434,6 +449,26 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                             }}*/ />                  
                   </Grid>
 
+                  <Grid item md={2}>
+                    <Field
+                          as={Autocomplete}
+                          size={'small'}
+                          label='Modo'
+                          disabled={!acceso || (isConfirmOP===1)}
+                          disablePortal
+                          style={{ width: '160px', display: 'inline-flex' }}
+                          onChange={(event, newValue) => {
+
+                            onlyNumbers(event, setFieldValue, refetch, 'modo2', idSociety.id, OPId, 1, newValue)
+                          }}
+                          value={formOP?.OPpago.modo2 || formaPagos[0]}
+                          getOptionLabel={option => option}
+                          isOptionEqualToValue={(option, value) => option === value}
+                          options={formaPagos}
+                          renderInput={params => <TextField {...params} label='Modo' />}
+                          
+                        />            
+                  </Grid>
                   <Grid item md={2}>
 
                     <Field
@@ -486,27 +521,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                             InputProps={{
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
                             }}/>                  
-                  </Grid>  
-                  <Grid item md={2}>
-                    <Field
-                          as={Autocomplete}
-                          size={'small'}
-                          label='Modo'
-                          disabled={!acceso || (isConfirmOP===1)}
-                          disablePortal
-                          style={{ width: '160px', display: 'inline-flex' }}
-                          onChange={(event, newValue) => {
-
-                            onlyNumbers(event, setFieldValue, refetch, 'modo2', idSociety.id, OPId, 1, newValue)
-                          }}
-                          value={formOP?.OPpago.modo2 || formaPagos[0]}
-                          getOptionLabel={option => option}
-                          isOptionEqualToValue={(option, value) => option === value}
-                          options={formaPagos}
-                          renderInput={params => <TextField {...params} label='Modo' />}
-                          
-                        />            
-                  </Grid>  
+                  </Grid>                      
                   <Grid item md={2}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
@@ -535,6 +550,26 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                             }}*/ />                  
                   </Grid>
 
+                  <Grid item md={2}>
+                    <Field
+                          as={Autocomplete}
+                          size={'small'}
+                          label='Modo'
+                          disabled={!acceso || (isConfirmOP===1)}
+                          disablePortal
+                          style={{ width: '160px', display: 'inline-flex' }}
+                          onChange={(event, newValue) => {
+
+                            onlyNumbers(event, setFieldValue, refetch, 'modo3', idSociety.id, OPId, 1, newValue)
+                          }}
+                          value={formOP?.OPpago.modo3 || formaPagos[0]}
+                          getOptionLabel={option => option}
+                          isOptionEqualToValue={(option, value) => option === value}
+                          options={formaPagos}
+                          renderInput={params => <TextField {...params} label='Modo' />}
+                          
+                        />            
+                  </Grid>  
                   <Grid item md={2}>
 
                     <Field
@@ -587,27 +622,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                             InputProps={{
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
                             }}/>                  
-                  </Grid>  
-                  <Grid item md={2}>
-                    <Field
-                          as={Autocomplete}
-                          size={'small'}
-                          label='Modo'
-                          disabled={!acceso || (isConfirmOP===1)}
-                          disablePortal
-                          style={{ width: '160px', display: 'inline-flex' }}
-                          onChange={(event, newValue) => {
-
-                            onlyNumbers(event, setFieldValue, refetch, 'modo3', idSociety.id, OPId, 1, newValue)
-                          }}
-                          value={formOP?.OPpago.modo3 || formaPagos[0]}
-                          getOptionLabel={option => option}
-                          isOptionEqualToValue={(option, value) => option === value}
-                          options={formaPagos}
-                          renderInput={params => <TextField {...params} label='Modo' />}
-                          
-                        />            
-                  </Grid>  
+                  </Grid>                    
                   <Grid item md={2}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
@@ -636,6 +651,26 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                             }}*/ />                  
                   </Grid>
 
+                  <Grid item md={2}>
+                    <Field
+                          as={Autocomplete}
+                          size={'small'}
+                          label='Modo'
+                          disabled={!acceso || (isConfirmOP===1)}
+                          disablePortal
+                          style={{ width: '160px', display: 'inline-flex' }}
+                          onChange={(event, newValue) => {
+
+                            onlyNumbers(event, setFieldValue, refetch, 'modo4', idSociety.id, OPId, 1, newValue)
+                          }}
+                          value={formOP?.OPpago.modo4 || formaPagos[0]}
+                          getOptionLabel={option => option}
+                          isOptionEqualToValue={(option, value) => option === value}
+                          options={formaPagos}
+                          renderInput={params => <TextField {...params} label='Modo' />}
+                          
+                        />            
+                  </Grid>
                   <Grid item md={2}>
 
                     <Field
@@ -688,27 +723,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                             InputProps={{
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
                             }}/>                  
-                  </Grid>  
-                  <Grid item md={2}>
-                    <Field
-                          as={Autocomplete}
-                          size={'small'}
-                          label='Modo'
-                          disabled={!acceso || (isConfirmOP===1)}
-                          disablePortal
-                          style={{ width: '160px', display: 'inline-flex' }}
-                          onChange={(event, newValue) => {
-
-                            onlyNumbers(event, setFieldValue, refetch, 'modo4', idSociety.id, OPId, 1, newValue)
-                          }}
-                          value={formOP?.OPpago.modo4 || formaPagos[0]}
-                          getOptionLabel={option => option}
-                          isOptionEqualToValue={(option, value) => option === value}
-                          options={formaPagos}
-                          renderInput={params => <TextField {...params} label='Modo' />}
-                          
-                        />            
-                  </Grid>  
+                  </Grid>                      
                   <Grid item md={2}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
@@ -816,7 +831,7 @@ function handleModification(event, setFieldValue, refetch, typeOfData, idSociety
   setTimeout(() => {
     refetch();
     console.log("refetch");
-  }, 1000)
+  }, 2000)
 
 }
 

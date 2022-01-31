@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet } from '@react-pdf/renderer';
+import {View, Text, Link, StyleSheet } from '@react-pdf/renderer';
 import { mostrarFecha } from 'src/utils/utils';
 
 const styles = StyleSheet.create({
@@ -89,47 +89,47 @@ const styles = StyleSheet.create({
        
       <View /* Encabezado*/   
        style={[styles.container, { borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff', backgroundColor: dataOP? dataOP?.fideicomisos[0]?.color2:'#ffffff'}]}>
-         <Text style={[styles.col1, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}>Banco</Text>
+        <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}>Modo</Text>
+        <Text style={[styles.col1, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}>Banco</Text>
         <Text style={[styles.col2, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}>Cuenta Nro</Text>
         <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}>Comprobante</Text>
-        <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}>Modo</Text>
         <Text style={[styles.col4, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}>Fecha</Text>
         <Text style={styles.col5}>Monto</Text>
         
       </View> 
 
       <View style={[styles.row, { borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]} >
+      <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.modo1}</Text>
         <Text style={[styles.col1, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {arr_banco[arr_id.indexOf(dataOP?.OPpago?.banco1)]}</Text>
         <Text style={[styles.col2, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {arr_cuenta[arr_cid.indexOf(dataOP?.OPpago?.nro1)]}</Text>
-        <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.descri1}</Text>
-        <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.modo1}</Text>
+        <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> <Link src={dataOP?.OPpago?.descri1} >{dataOP?.OPpago?.descri1? " comprobante..":''}</Link></Text>
         <Text style={[styles.col4, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {mostrarFecha(dataOP?.OPpago?.fecha1)}</Text>            
         <Text style={styles.col5}>{parseInt(dataOP?.OPpago?.monto1)===0? "": dataOP?.OPpago?.monto1}</Text>
       </View>
 
       <View style={[styles.row, { borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]} >
+      <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.modo2}</Text>
         <Text style={[styles.col1, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {arr_banco[arr_id.indexOf(dataOP?.OPpago?.banco2)]}</Text>
         <Text style={[styles.col2, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {arr_cuenta[arr_cid.indexOf(dataOP?.OPpago?.nro2)]}</Text>
-        <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.descri2}</Text>
-        <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.modo2}</Text>
+        <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> <Link src={dataOP?.OPpago?.descri2} >{dataOP?.OPpago?.descri2? " comprobante..":''}</Link></Text>
         <Text style={[styles.col4, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {mostrarFecha(dataOP?.OPpago?.fecha2)}</Text>            
         <Text style={styles.col5}>{parseInt(dataOP?.OPpago?.monto1)===0? "": dataOP?.OPpago?.monto2}</Text>
       </View>
 
       <View style={[styles.row, { borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]} >
+      <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.modo3}</Text>
         <Text style={[styles.col1, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {arr_banco[arr_id.indexOf(dataOP?.OPpago?.banco3)]}</Text>
         <Text style={[styles.col2, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {arr_cuenta[arr_cid.indexOf(dataOP?.OPpago?.nro3)]}</Text>
-        <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.descri3}</Text>
-        <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.modo3}</Text>
+        <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> <Link src={dataOP?.OPpago?.descri3} >{dataOP?.OPpago?.descri3? " comprobante..":''}</Link></Text>
         <Text style={[styles.col4, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {mostrarFecha(dataOP?.OPpago?.fecha3)}</Text>            
         <Text style={styles.col5}>{parseInt(dataOP?.OPpago?.monto1)===0? "": dataOP?.OPpago?.monto3}</Text>
       </View>
 
       <View style={[styles.row, { borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]} >
+      <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.modo4}</Text>
         <Text style={[styles.col1, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {arr_banco[arr_id.indexOf(dataOP?.OPpago?.banco4)]}</Text>
         <Text style={[styles.col2, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {arr_cuenta[arr_cid.indexOf(dataOP?.OPpago?.nro4)]}</Text>
-        <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.descri4}</Text>
-        <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.modo4}</Text>
+        <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> <Link src={dataOP?.OPpago?.descri4} >{dataOP?.OPpago?.descri4? " comprobante..":''}</Link></Text>
         <Text style={[styles.col4, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {mostrarFecha(dataOP?.OPpago?.fecha4)}</Text>            
         <Text style={styles.col5}>{parseInt(dataOP?.OPpago?.monto1)===0? "": dataOP?.OPpago?.monto4}</Text>
       </View>

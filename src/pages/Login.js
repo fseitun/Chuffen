@@ -57,7 +57,7 @@ export function Login({ setLoggedUser, setIdSociety }) {
     { id: 7, descripcion: 'Cargada en Banco' },
   ];
   localStorage.setItem("estados", JSON.stringify(estados));
-  const formaPagos = "-,Transferencia,Cheque,Efectivo,Otra";
+  const formaPagos = "-,Transferencia ARS,Transferencia USD,Cheque,Efectivo ARS,Efectivo USD,Otra";
   localStorage.setItem("formaPagos", formaPagos); 
 
   /****************************************************/

@@ -1,7 +1,7 @@
 import React from 'react';
-import {View, Text, StyleSheet } from '@react-pdf/renderer';
+import {View, Text, Link, StyleSheet } from '@react-pdf/renderer';
 
-
+ 
 const styles = StyleSheet.create({
 
     container: {
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
              style={[styles.row, { borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]} >
             <Text style={[styles.description, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[0]?.empresas[0]?.razonSocial}</Text>
             <Text style={[styles.qty, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[0]?.detalle}</Text>
-            <Text style={[styles.rate, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[0]?.numero}</Text>
+            <Text style={[styles.rate, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}>   <Link src={dataFacturas?.item[0]?.link} >{dataFacturas?.item[0]? "  " + dataFacturas?.item[0]?.numero:''}</Link> </Text>
             <Text style={[styles.rate, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[0]?.txtOC}</Text>
             <Text style={[styles.amountRow, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[0]?.montoTotal}</Text>
       </View>
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
              style={[styles.row, { borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]} >
             <Text style={[styles.description, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[1]?.empresas[0]?.razonSocial}</Text>
             <Text style={[styles.qty, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[1]?.detalle}</Text>
-            <Text style={[styles.rate, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[1]?.numero}</Text>
+            <Text style={[styles.rate, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> <Link src={dataFacturas?.item[1]?.link} >{dataFacturas?.item[1]? "  " + dataFacturas?.item[1]?.numero:''}</Link></Text>
             <Text style={[styles.rate, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[1]?.txtOC}</Text>
             <Text style={[styles.amountRow, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[1]?.montoTotal}</Text>
       </View>
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
              style={[styles.row, { borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]} >
             <Text style={[styles.description, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[2]?.empresas[0]?.razonSocial}</Text>
             <Text style={[styles.qty, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[2]?.detalle}</Text>
-            <Text style={[styles.rate, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[2]?.numero}</Text>
+            <Text style={[styles.rate, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> <Link src={dataFacturas?.item[2]?.link} >{dataFacturas?.item[2]? "  " + dataFacturas?.item[2]?.numero:''}</Link></Text>
             <Text style={[styles.rate, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[2]?.txtOC}</Text>
             <Text style={[styles.amountRow, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[2]?.montoTotal}</Text>
       </View>
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
              style={[styles.row, { borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]} >
             <Text style={[styles.description, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[3]?.empresas[0]?.razonSocial}</Text>
             <Text style={[styles.qty, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[3]?.detalle}</Text>
-            <Text style={[styles.rate, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[3]?.numero}</Text>
+            <Text style={[styles.rate, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> <Link src={dataFacturas?.item[3]?.link} >{dataFacturas?.item[3]? "  " + dataFacturas?.item[3]?.numero:''}</Link></Text>
             <Text style={[styles.rate, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[3]?.txtOC}</Text>
             <Text style={[styles.amountRow, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[3]?.montoTotal}</Text>
       </View>
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
              style={[styles.row, { borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]} >
             <Text style={[styles.description, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[4]?.empresas[0]?.razonSocial}</Text>
             <Text style={[styles.qty, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[4]?.detalle}</Text>
-            <Text style={[styles.rate, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[4]?.numero}</Text>
+            <Text style={[styles.rate, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> <Link src={dataFacturas?.item[4]?.link} >{dataFacturas?.item[4]? "  " + dataFacturas?.item[4]?.numero:''}</Link></Text>
             <Text style={[styles.rate, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[4]?.txtOC}</Text>
             <Text style={[styles.amountRow, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataFacturas?.item[4]?.montoTotal}</Text>
       </View>
