@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
-// import { Hidden } from '@material-ui/core';
+
                 
 export function FormProveedor({ idSociety, loggedUser }) {
   const { Prompt } = usePrompt();
