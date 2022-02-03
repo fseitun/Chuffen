@@ -91,6 +91,15 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     headerAlign: 'center',
   },
   {
+    field: 'estadoRET', // campo en grilla
+    headerName: 'Retenciones',
+    width: 150,
+    editable: puedeEditar,
+    renderCell: ({ value }) => value.descripcion, // a visualizar
+    renderEditCell: props => <ComboBoxRet retenciones={retenciones} props={props} />,
+    headerAlign: 'center',
+  },
+  {
     field: 'facturas',
     headerName: 'Facturas',
     width: 140,
@@ -99,16 +108,7 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     align: 'center',
     renderCell: ({ row: { misFacturas }}) => misFacturas?.map(({numero}) => numero)?.join(', '), 
   },
-  {
-    field: 'RET_SUSS',
-    headerName: 'SUSS',
-    width: 120,
-    editable: puedeEditar,
-    headerAlign: 'center',
-    align: 'right',
-    valueFormatter: ({ value }) =>
-    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),    
-  },
+
   {
     field: 'RET_GAN',
     headerName: 'GAN',
@@ -130,18 +130,20 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),    
   },
   {
+    field: 'RET_SUSS',
+    headerName: 'SUSS',
+    width: 120,
+    editable: puedeEditar,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),    
+  },
+  {
     field: 'retencion',
     hide: true,
   },
-  {
-    field: 'estadoRET', // campo en grilla
-    headerName: 'Retenciones',
-    width: 150,
-    editable: puedeEditar,
-    renderCell: ({ value }) => value.descripcion, // a visualizar
-    renderEditCell: props => <ComboBoxRet retenciones={retenciones} props={props} />,
-    headerAlign: 'center',
-  },
+
   {
     field: 'aprobado_obra',
     hide: true,

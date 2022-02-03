@@ -68,13 +68,7 @@ const styles = StyleSheet.create({
             <Text style={styles.col1}>FACTURAS:</Text>
             <Text style={{ width: '33%', textAlign: 'center',borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color: '#ffffff', borderBottomWidth: 1, paddingLeft: 8,}} >{dataOP?.monto}</Text>
             <Text style={styles.col3}></Text>
-      </View>
-
-      <View style={styles.row} >
-            <Text style={styles.col1}>RET SUSS:</Text>
-            <Text style={{ width: '33%', textAlign: 'center',borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color: '#ffffff', borderBottomWidth: 1, paddingLeft: 8,}} >{dataOP?.RET_SUSS}</Text>
-            <Text style={styles.col3}> <Link src={dataOP?.COMP_SUSS} >{dataOP?.COMP_SUSS? " cert..":''}</Link></Text>
-      </View>
+      </View>   
 
       <View style={styles.row} >
             <Text style={styles.col1}>RET GAN:</Text>
@@ -86,6 +80,12 @@ const styles = StyleSheet.create({
             <Text style={styles.col1}>RET IVA:</Text>
             <Text style={{ width: '33%', textAlign: 'center',borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color: '#ffffff', borderBottomWidth: 1, paddingLeft: 8,}} >{dataOP?.RET_IVA}</Text>
             <Text style={styles.col3}> <Link src={dataOP?.COMP_IVA} >{dataOP?.COMP_IVA? " cert..":''}</Link> </Text>
+      </View>
+
+      <View style={styles.row} >
+            <Text style={styles.col1}>RET SUSS:</Text>
+            <Text style={{ width: '33%', textAlign: 'center',borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color: '#ffffff', borderBottomWidth: 1, paddingLeft: 8,}} >{dataOP?.RET_SUSS}</Text>
+            <Text style={styles.col3}> <Link src={dataOP?.COMP_SUSS} >{dataOP?.COMP_SUSS? " cert..":''}</Link></Text>
       </View>
 
       <View style={styles.rowbis} >
