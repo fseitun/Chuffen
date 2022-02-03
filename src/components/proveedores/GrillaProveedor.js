@@ -266,7 +266,7 @@ function ComboBox({ rubros, props }) {
 
 function ComboBoxSub({ subRubros, props }, params) {
   const { id, api, field } = props;
-  // console.log('props que recibe el combo', props?.row?.rubroID.id);
+
   subRubros = [
     
     ...subRubros.filter(subR => subR.rubroId === parseInt(props?.row?.rubroID.id)),
