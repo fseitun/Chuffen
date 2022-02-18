@@ -20,7 +20,16 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     headerAlign: 'center',
     renderCell: ({ value }) => value===0?'' :<Avatar sx={{ bgcolor: '#3944BC' }} >B</Avatar>,
   },
-
+  {
+    field: 'tipo', // campo en grilla
+    headerName: 'Tipo de Comp.',
+    width: 170,
+    // type: 'singleSelect',
+    editable: false,
+    renderCell: ({ value }) => value.descripcion, // a visualizar
+    // renderEditCell: props => <ComboBoxFon fondos_s={fondos_s} props={props} />,
+    headerAlign: 'center',
+  },
   {
     field: 'fideicomiso',
     headerName: 'Fideicomiso',
@@ -37,7 +46,6 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     editable: false,
     headerAlign: 'center',
   },
-
   {
     field: 'numero',
     headerName: 'Número',
@@ -56,7 +64,6 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
-
   {
     field: 'moneda',
     headerName: '',
@@ -64,7 +71,6 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     editable: acceso,
     headerAlign: 'center',
   },
-
   {
     field: 'link',
     headerName: 'Link',
@@ -152,12 +158,13 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
 // por ahora se inicializa en el login
 var estados = JSON.parse(localStorage.getItem("estados"));
 
-export function GrillaFactura({ idSociety, loggedUser }) {
+export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUser }) {
   
   const navigate = useNavigate();
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
   
+  var tipos = JSON.parse(localStorage.getItem("tipos"));
   var blue = 0;
   var verColumnBlue = false;
   if(loggedUser?.['rol.factura'] ==='total'){blue= -1; verColumnBlue = true;}
@@ -224,6 +231,38 @@ export function GrillaFactura({ idSociety, loggedUser }) {
 
   );
 
+  function filtrar(element, filtComp, filtFide, filtRS){
+
+    if(filtFide === -1 && filtRS === -1 && filtComp === -1){
+      return true;
+    }
+
+    if(filtFide > -1 && filtRS === -1 && filtComp === -1){//fide
+      if(element.fideicomisoId===filtFide){return true;}else{return false;}
+    }
+    if(filtFide === -1 && filtRS > -1 && filtComp === -1){// proveedor
+
+      if(element.empresaId===filtRS){return true;}else{return false;}
+    }
+    if(filtFide === -1 && filtRS === -1 && filtComp > -1){//estado
+      if(element.tipo===filtComp){return true;}else{return false;}
+    }
+
+    if(filtFide > -1 && filtRS > -1 && filtComp === -1){
+      if(element.fideicomisoId===filtFide && element.empresaId===filtRS){return true;}else{return false;}
+    }
+    if(filtFide > -1 && filtRS === -1 && filtComp > -1){
+      if(element.fideicomisoId===filtFide && element.tipo===filtComp){return true;}else{return false;}
+    }
+    if(filtFide === -1 && filtRS > -1 && filtComp > -1){
+      if(element.empresaId===filtRS && element.tipo===filtComp){return true;}else{return false;}
+    }
+    if(filtFide > -1 && filtRS > -1 && filtComp > -1){
+      if(element.fideicomisoId===filtFide && element.empresaId===filtRS && element.tipo===filtComp){return true;}else{return false;}
+    }  
+
+  }
+
   
   if (isLoading) {
     return 'Cargando...';
@@ -235,23 +274,28 @@ export function GrillaFactura({ idSociety, loggedUser }) {
       <div style={{ width: '100%' }}>
         <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
         <DataGrid
-          rows={facturaInformation.map(factura => ({
-            id: factura.id,
+          rows={facturaInformation.filter(element =>filtrar(element, filtComp, filtFide, filtRS)).map(factura => ({
+            id: factura?.id,
             fideicomiso: (factura?.fideicomisos? factura?.fideicomisos[0]?.nombre:''),
-            empresaId: factura.empresaId,
+            empresaId: factura?.empresaId,
             empresa:(factura?.empresas? factura?.empresas[0]?.razonSocial:''),
-            blue: factura.blue,
-            numero: factura.numero,
-            link: factura.link,
-            link2: factura.link,
-            montoTotal: factura.montoTotal,
-            moneda: factura.moneda,
-            fechaIngreso: factura.fechaIngreso,
-            diasVTO: factura.diasVTO, 
-            fechaVTO: factura.fechaVTO,  
+            blue: factura?.blue,
+            numero: factura?.numero,
+            // tipo: factura?.tipo,
+            tipo: {
+              id: factura.tipo,
+              descripcion: tipos?.find(tipo => tipo.id === factura.tipo)?.descripcion,
+            },
+            link: factura?.link,
+            link2: factura?.link,
+            montoTotal: parseInt(factura.tipo)===2? (-1 * factura.montoTotal):factura.montoTotal, //factura?.montoTotal,
+            moneda: factura?.moneda,
+            fechaIngreso: factura?.fechaIngreso,
+            diasVTO: factura?.diasVTO, 
+            fechaVTO: factura?.fechaVTO,  
             OPnumero : (factura?.OPs? factura?.OPs[0]?.numero:''),
             estadoOP:(factura?.OPs? estados[factura?.OPs[0]?.estado]?.descripcion:''),
-            deleteId: factura.id,
+            deleteId: factura?.id,
             onIrDetalle: () => irDetalle(factura),  
 
           }))}OPs

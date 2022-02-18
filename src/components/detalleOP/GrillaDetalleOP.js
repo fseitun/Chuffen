@@ -9,6 +9,16 @@ import { getMethod, postMethod } from 'src/utils/api';
 // const columns = [
 const columns = (puedeEditar, verEliminar) => [
   {
+    field: 'tipo', // campo en grilla
+    headerName: 'Tipo de Comp.',
+    width: 170,
+    // type: 'singleSelect',
+    editable: false,
+    renderCell: ({ value }) => value.descripcion, // a visualizar
+    // renderEditCell: props => <ComboBoxFon fondos_s={fondos_s} props={props} />,
+    headerAlign: 'center',
+  },
+  {
     field: 'empresa',
     headerName: 'Proveedor',
     width: 170,
@@ -74,6 +84,7 @@ const columns = (puedeEditar, verEliminar) => [
 export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaData, refetch }) {
   
   const queryClient = useQueryClient();
+  var tipos = JSON.parse(localStorage.getItem("tipos"));
 
   var puedeEditar = true;
   const accesoOP = loggedUser?.['rol.op'];
@@ -139,9 +150,13 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
           empresa:(el.empresas[0]?el.empresas[0].razonSocial:''),
           confirmada:(el.OPs[0]?el.OPs[0].confirmada:0),
           numero: el.numero,
+          tipo: {
+            id: el.tipo,
+            descripcion: tipos?.find(tipo => tipo.id === el.tipo)?.descripcion,
+          },
           link: el.link,
           link2: el.link,
-          montoTotal: el.montoTotal,
+          montoTotal: el.montoTotal, // parseInt(el.tipo)===2? (-1 * el.montoTotal):el.montoTotal,
           moneda: el.moneda,
           detalle: el.detalle,
           txtOC: el.txtOC,
@@ -155,6 +170,7 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
         disableSelectionOnClick           
         autoHeight   
         onCellEditCommit={handleCellModification}
+        /*hideFooterSelectedRowCount*/
      
       />
     </div>

@@ -66,31 +66,31 @@ const styles = StyleSheet.create({
   
        <View style={styles.row} >
             <Text style={styles.col1}>FACTURAS:</Text>
-            <Text style={{ width: '33%', textAlign: 'center',borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color: '#ffffff', borderBottomWidth: 1, paddingLeft: 8,}} >{dataOP?.monto}</Text>
+            <Text style={{ width: '33%', textAlign: 'center',borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color: '#ffffff', borderBottomWidth: 1, paddingLeft: 8,}} >{dataOP?.monto? Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(dataOP?.monto)):""}</Text>
             <Text style={styles.col3}></Text>
       </View>   
 
       <View style={styles.row} >
             <Text style={styles.col1}>RET GAN:</Text>
-            <Text style={{ width: '33%', textAlign: 'center',borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color: '#ffffff', borderBottomWidth: 1, paddingLeft: 8,}} >{dataOP?.RET_GAN}</Text>
+            <Text style={{ width: '33%', textAlign: 'center',borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color: '#ffffff', borderBottomWidth: 1, paddingLeft: 8,}} >{dataOP?.RET_GAN? Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(dataOP?.RET_GAN)):""}</Text>
             <Text style={styles.col3}> <Link src={dataOP?.COMP_GAN} >{dataOP?.COMP_GAN? " cert..":''}</Link>   </Text>
       </View>
 
       <View style={styles.row} >
             <Text style={styles.col1}>RET IVA:</Text>
-            <Text style={{ width: '33%', textAlign: 'center',borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color: '#ffffff', borderBottomWidth: 1, paddingLeft: 8,}} >{dataOP?.RET_IVA}</Text>
+            <Text style={{ width: '33%', textAlign: 'center',borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color: '#ffffff', borderBottomWidth: 1, paddingLeft: 8,}} >{dataOP?.RET_IVA? Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(dataOP?.RET_IVA)):""}</Text>
             <Text style={styles.col3}> <Link src={dataOP?.COMP_IVA} >{dataOP?.COMP_IVA? " cert..":''}</Link> </Text>
       </View>
 
       <View style={styles.row} >
             <Text style={styles.col1}>RET SUSS:</Text>
-            <Text style={{ width: '33%', textAlign: 'center',borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color: '#ffffff', borderBottomWidth: 1, paddingLeft: 8,}} >{dataOP?.RET_SUSS}</Text>
+            <Text style={{ width: '33%', textAlign: 'center',borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color: '#ffffff', borderBottomWidth: 1, paddingLeft: 8,}} >{dataOP?.RET_SUSS? Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(dataOP?.RET_SUSS)):""}</Text>
             <Text style={styles.col3}> <Link src={dataOP?.COMP_SUSS} >{dataOP?.COMP_SUSS? " cert..":''}</Link></Text>
       </View>
 
       <View style={styles.rowbis} >
             <Text style={styles.col1bis}>Monto a Abonar:</Text>
-            <Text style={styles.col2bis}>${dataOP?.monto_a_pagar}</Text>
+            <Text style={styles.col2bis}>${dataOP?.monto_a_pagar? Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(dataOP?.monto_a_pagar)):""}</Text>
             <Text style={styles.col3bis}>Aprobado por {dataOP?.auth_adm[0]? dataOP.auth_adm[0].usuarios[0]?.user:""}</Text>
       </View>
 

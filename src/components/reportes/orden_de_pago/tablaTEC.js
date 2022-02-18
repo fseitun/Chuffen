@@ -45,14 +45,14 @@ const styles = StyleSheet.create({
 
       <View style={styles.row} >
             <Text style={styles.col1}>Detalles:</Text>
-            <Text style={styles.col2}></Text>
+            <Text style={styles.col2}>{dataOP?.descripcion?.slice(0, 44)}</Text>
             <Text style={styles.col3}></Text>
       </View>
        
   
        <View style={styles.row} >
             <Text style={styles.col1}></Text>
-            <Text style={styles.col2}>{dataOP?.descripcion}</Text>
+            <Text style={styles.col2}>{dataOP?.descripcion?.slice(45, 99)}</Text>
             <Text style={styles.col3}>Aprobado por {dataOP?.auth_obra[0]?.usuarios[0]?.user}</Text>
       </View>    
 

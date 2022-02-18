@@ -20,9 +20,8 @@ export function DetalleOP({ idSociety, loggedUser }) {
   const { idOP, fecha, empresaId, numero, fideicomiso, estadoOP, confirmada, blue } = useParams();
 
   const id = idSociety.id;
-  const fileName = "OP_" + fideicomiso + "_" + numero + ".pdf";
-  const buttonAdmRef = useRef();  
   
+  const buttonAdmRef = useRef();  
 
   const{
       data: formOP,
@@ -30,11 +29,10 @@ export function DetalleOP({ idSociety, loggedUser }) {
       error,
       refetch
     } = useQuery(['formOP', idSociety.id], () =>
-    getMethod(`op/mostrarConFacturas/${idSociety.id}/${idOP}`)
+      getMethod(`op/mostrarConFacturas/${idSociety.id}/${idOP}`)
 
   );
 
-  
    //guarda pdf en server
    const getPdfBlob = async () =>   {
 
@@ -57,6 +55,16 @@ export function DetalleOP({ idSociety, loggedUser }) {
 
   function facturasCargadas(fa){
       if(fa){return { item: fa};}else{return null}
+  }
+
+  function nomPdfCargado(obj, numero, fideicomiso){
+    
+    if(obj){
+      if(obj.empresas[0]){
+        let fileName = numero + " OP-" + fideicomiso + "-" +  obj?.empresas[0]?.razonSocial + ".pdf";
+        return fileName;
+      }else{return "-"}
+    }else{return "-"}
   }
 
   function cargadas(obj){
@@ -128,6 +136,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
               }
       }
   }
+  
 
   return ( 
       
@@ -228,8 +237,9 @@ export function DetalleOP({ idSociety, loggedUser }) {
         </Button>
 
         <PDFDownloadLink
-          document={<RepOp dataOP={cargadas(formOP?.op)} dataFacturas={facturasCargadas(formOP?.item)} apiServerUrl={apiServerUrl} idSociedad={id} />}
-          fileName={fileName}
+          document={isLoading===false? <RepOp dataOP={cargadas(formOP?.op)} dataFacturas={facturasCargadas(formOP?.item)} apiServerUrl={apiServerUrl} idSociedad={id} />:null }
+
+          fileName={nomPdfCargado(formOP?.op, numero, fideicomiso)}
         >
           <Button variant="info" onClick={guardar_en_server} >Descargar</Button>
         </PDFDownloadLink>
@@ -311,6 +321,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
               </Hidden> 
               <Box  sx={{ pt: 3 }}>
                 <GrillaDetalleOP
+                
                   OPId={idOP}
                   fecha={fecha}
                   empresaId={empresaId}
@@ -322,12 +333,12 @@ export function DetalleOP({ idSociety, loggedUser }) {
 
               <Box  sx={{ pt: 3 }}>
                 <FormDetalleOP
+
                   OPId={idOP}
                   estadoOP={estadoOP}
                   confirmada={confirmada}
                   idSociety={idSociety}
                   loggedUser={loggedUser}
-
                   formOP={formOP?.op}
                   isLoading={isLoading}
                   error={error}

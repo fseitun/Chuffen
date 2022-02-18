@@ -35,10 +35,16 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
 
   // por ahora se inicializa en el login
   var estados = JSON.parse(localStorage.getItem("estados"));
+  var retenciones = JSON.parse(localStorage.getItem("retenciones"));
+  var fondos_s = JSON.parse(localStorage.getItem("fondos_s"));
+
   const [isConfirmOP, setIsConfirmOP] = useState(parseInt(confirmada));
-  const [typeInForm, setTypeInForm] = useState(estados[parseInt(estadoOP)]);
+  const [iniEstado, setIniEstado] = useState(estados[parseInt(estadoOP)]);
+  const [iniRet, setIniRet] = useState(retenciones[parseInt(formOP?.estadoRET)]);
+  const [iniFondos, setIniFondos] = useState(fondos_s[parseInt(formOP?.fondos)]);
 
-
+// console.log("aaaaaaa", iniRet, formOP?.estadoRET);
+// console.log("aaaaaaa", iniFondos, formOP?.fondos);
 
   var bancos = JSON.parse(localStorage.getItem("bs"));
   var banco_en_blanco = {id:0, banco:"", descripcionLarga:"" };
@@ -101,6 +107,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                         onChange={event => handleModification(event, setFieldValue, refetch, 'descripcion', idSociety.id, OPId, 0, 0)}
                         /* onFocus={event => formOP.descripcion? handleModification(event, setFieldValue, refetch, 'descripcion', idSociety.id, OPId, 0, 0):false } */
                         InputProps={{
+                              maxLength: 90,
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
                             }}
 
@@ -134,9 +141,9 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                   </Grid>
 
                   <Grid item md={2}   >
-                  <Typography  align="right" color="textPrimary" variant="h5">
-                  Estado:&nbsp;&nbsp;&nbsp;
-                        </Typography>
+                    <Typography  align="right" color="textPrimary" variant="h5">
+                      Estado:&nbsp;&nbsp;&nbsp;
+                    </Typography>
                   </Grid>     
                   <Grid item md={2}>                  
                     <Field
@@ -146,12 +153,13 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                       disabled={!acceso || (isConfirmOP===1)}
                       disablePortal
                       style={{ width: '160px', display: 'inline-flex' }}
+                      
                       onChange={(event, newValue) => {
-                        setTypeInForm(newValue);
-                        setFieldValue('estadoOP', newValue);                        
-                        onlyNumbers(event, setFieldValue, refetch, 'estadoOP', idSociety.id, OPId, 0, newValue.id)
+                        // setTypeInForm(newValue);
+                       // newValue? setFieldValue('estadoOP', newValue):false;                        
+                        onlyNumbers2(event, setFieldValue, setIniEstado, refetch, 'estadoOP', idSociety.id, OPId, 0, newValue)
                       }}
-                      value={typeInForm}
+                      value={iniEstado}
                       getOptionLabel={option => option.descripcion}
                       isOptionEqualToValue={(option, value) => option.id === value.id}
                       options={estados}
@@ -166,7 +174,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                           </Typography> 
                       </Hidden>
 
-                      <Hidden  smUp={(!acceso || (typeInForm.id!==3)  || (isConfirmOP===1)?true:false)} >
+                      <Hidden  smUp={(!acceso || (iniEstado.id!==3)  || (isConfirmOP===1)?true:false)} >
 
                                                     
                            <Typography align="left" color="blue" variant="h5">                      
@@ -193,6 +201,64 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                         {formOP?.auth_adm?formOP.auth_adm[0]?.usuarios[0]?.user:''}
                         </Typography>
                   </Grid>
+                  
+                  <Grid item md={12}>
+                  &nbsp;
+                  </Grid> 
+
+                  <Grid item md={2}   >
+                    <Typography  align="right" color="textPrimary" variant="h5">
+                      Est. Retención, Fondos:&nbsp;&nbsp;&nbsp;
+                    </Typography>
+                  </Grid>     
+                  <Grid item md={2}>                  
+                    <Field
+                      as={Autocomplete}
+                      size={'small'}
+                      label='Estado Retención'
+                      disabled={!acceso || (isConfirmOP===1)}
+                      disablePortal
+                      style={{ width: '160px', display: 'inline-flex' }}
+                      
+                      onChange={(event, newValue) => {
+                        // setTypeInForm(newValue);
+                       // newValue? setFieldValue('estadoOP', newValue):false;                        
+                        onlyNumbers2(event, setFieldValue, setIniRet, refetch, 'estadoRET', idSociety.id, OPId, 0, newValue)
+                      }}
+                      value={iniRet}
+                      getOptionLabel={option => option.descripcion}
+                      isOptionEqualToValue={(option, value) => option.id === value.id}
+                      options={retenciones}
+                      renderInput={params => <TextField {...params} label='Retención' />}
+                      
+                    />
+                  </Grid>
+                  <Grid item md={2}>  
+                    <Field
+                        as={Autocomplete}
+                        size={'small'}
+                        label='Fondos'
+                        disabled={!acceso || (isConfirmOP===1)}
+                        disablePortal
+                        style={{ width: '160px', display: 'inline-flex' }}
+                        
+                        onChange={(event, newValue) => {
+                          // setTypeInForm(newValue);
+                        // newValue? setFieldValue('estadoOP', newValue):false;                        
+                          onlyNumbers2(event, setFieldValue, setIniFondos, refetch, 'fondos', idSociety.id, OPId, 0, newValue)
+                        }}
+                        value={iniFondos}
+                        getOptionLabel={option => option.descripcion}
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        options={fondos_s}
+                        renderInput={params => <TextField {...params} label='Fondos' />}
+                        
+                      />
+
+                  </Grid> 
+                  <Grid item md={6}>
+                     &nbsp;
+                  </Grid> 
                 
                   <Grid item md={12}>
                   &nbsp;
@@ -205,7 +271,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                   </Grid>
                   <Grid item md={2}>
                         <Typography align="left" color="textPrimary" variant="h4">
-                        &nbsp;{formOP?.monto}
+                        &nbsp;{Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(formOP?.monto))}
                         </Typography>
                   </Grid>
 
@@ -288,8 +354,8 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                               </Typography>
                   </Grid>  
                   <Grid item md={2}>
-                        <Typography align="left" color="textPrimary" variant="h4">
-                        &nbsp;{formOP?.monto_a_pagar + " " + formOP?.moneda}
+                        <Typography align="left" color="green" variant="h4">
+                        &nbsp;{Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(formOP?.monto_a_pagar)) + " " + formOP?.moneda}
                         </Typography>
                   </Grid>
 
@@ -381,9 +447,9 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                           setFieldValue('banco1', newValue);
                           onlyNumbers(event, setFieldValue, refetch, 'banco1', idSociety.id, OPId, 1, newValue.id)
                         }}
-                        value={bancos.find(banco => banco.id === (formOP?.OPpago.banco1 || 0))}
+                        value={bancos.find(banco => banco.id === (formOP?.OPpago?.banco1 || 0))}
                         getOptionLabel={option => option.banco}
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        isOptionEqualToValue={(option, value) => option?.id === value?.id}
                         options={bancos}
                         renderInput={params => <TextField {...params} label='banco' />}
                         
@@ -483,7 +549,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                           setFieldValue('banco2', newValue);
                           onlyNumbers(event, setFieldValue, refetch, 'banco2', idSociety.id, OPId, 1, newValue.id)
                         }}
-                        value={bancos.find(banco => banco.id === (formOP?.OPpago.banco2 || 0))}
+                        value={bancos.find(banco => banco.id === (formOP?.OPpago?.banco2 || 0))}
                         getOptionLabel={option => option.banco}
                         isOptionEqualToValue={(option, value) => option.id === value.id}
                         options={bancos}
@@ -584,7 +650,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                           setFieldValue('banco3', newValue);
                           onlyNumbers(event, setFieldValue, refetch, 'banco3', idSociety.id, OPId, 1, newValue.id)
                         }}
-                        value={bancos.find(banco => banco.id === (formOP?.OPpago.banco3 || 0))}
+                        value={bancos.find(banco => banco.id === (formOP?.OPpago?.banco3 || 0))}
                         getOptionLabel={option => option.banco}
                         isOptionEqualToValue={(option, value) => option.id === value.id}
                         options={bancos}
@@ -685,7 +751,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                           setFieldValue('banco4', newValue);
                           onlyNumbers(event, setFieldValue, refetch, 'banco4', idSociety.id, OPId, 1, newValue.id)
                         }}
-                        value={bancos.find(banco => banco.id === (formOP?.OPpago.banco4 || 0))}
+                        value={bancos.find(banco => banco.id === (formOP?.OPpago?.banco4 || 0))}
                         getOptionLabel={option => option.banco}
                         isOptionEqualToValue={(option, value) => option.id === value.id}
                         options={bancos}
@@ -758,7 +824,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                   <Grid item md={2}>
                         <Typography align="center" color="textPrimary" variant="h5">
                         
-                        {(Math.round(formOP?.OPpago.monto1 * 100)/100 + Math.round(formOP?.OPpago.monto2 * 100)/100 + Math.round(formOP?.OPpago.monto3 * 100)/100 + Math.round(formOP?.OPpago.monto4 * 100)/100)}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number((Math.round(formOP?.OPpago.monto1 * 100)/100 + Math.round(formOP?.OPpago.monto2 * 100)/100 + Math.round(formOP?.OPpago.monto3 * 100)/100 + Math.round(formOP?.OPpago.monto4 * 100)/100)))}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         </Typography>                 
                   </Grid>
               
@@ -776,11 +842,36 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
 }
 
 
+function onlyNumbers2(event, setFieldValue, setTypeInForm, refetch, typeOfData, idSociety, OPId, flagPago, newValue) {
+  
+  // console.log(event.target);
+  const { value } = event.target;
+  console.log(value, newValue?.id);
+  if(value===0){
+    console.log(11);
+    event.preventDefault();
+    // const { value } = event.target;
+    const regex = /^\d{0,7}(\.\d{0,2})?$/;
+    // console.log(regex.test(value.toString()));
+    if (regex.test(value.toString())) {
+      console.log(22, typeOfData);
+      setTypeInForm(newValue);
+      setFieldValue(typeOfData, value.toString());
+      handleModification(event, setFieldValue, refetch, typeOfData, idSociety, OPId, flagPago, newValue?.id);
+
+    }else{
+      return false;
+    }
+  }
+}
+
 function onlyNumbers(event, setFieldValue, refetch, typeOfData, idSociety, OPId, flagPago, valorCombo) {
+
+  
   event.preventDefault();
   const { value } = event.target;
   const regex = /^\d{0,7}(\.\d{0,2})?$/;
-  console.log(regex.test(value.toString()));
+  // console.log(regex.test(value.toString()));
   if (regex.test(value.toString())) {
 
     setFieldValue(typeOfData, value.toString());
@@ -795,7 +886,8 @@ function handleModification(event, setFieldValue, refetch, typeOfData, idSociety
 
   
   let val = null;
- 
+  console.log(333, event.target, valorCombo, typeOfData);
+
   if(flag === 2){ // si es una fecha
     
     val = yearMonthDayString(event) + " 03:00:00";
@@ -805,7 +897,7 @@ function handleModification(event, setFieldValue, refetch, typeOfData, idSociety
     setFieldValue(typeOfData, value.toString());
 
     val = value;
-    if(typeOfData==='estadoOP'){
+    if(typeOfData==='estadoOP' || typeOfData==='estadoRET' || typeOfData==='fondos'){
       val = valorCombo;
     }
     if(typeOfData==='banco1' || typeOfData==='banco2' || typeOfData==='banco3' || typeOfData==='banco4'){

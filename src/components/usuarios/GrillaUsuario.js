@@ -59,6 +59,7 @@ const roles = [
   { id: 1, rol_descripcion: 'administrativo' },
   { id: 2, rol_descripcion: 'obra' },
   { id: 3, rol_descripcion: 'manager' },
+  { id: 4, rol_descripcion: 'vista' },
 ];
 
 export function GrillaUsuario({ idSociety }) {

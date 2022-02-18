@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
             <Document >
                 <Page size="A4" style={styles.page}> 
 
+
                     <View >
                         <Text style={styles.saltolinea}> </Text>                       
                     </View>  
@@ -113,6 +114,8 @@ const styles = StyleSheet.create({
                         </View>
                     </View>
 
+                
+
                     <View style={styles.titleContainer}>
                         <Text style={styles.reportTitle}>SOLICITUD DE PAGO     Nº	{dataOP?.numero}</Text>
                         
@@ -123,10 +126,13 @@ const styles = StyleSheet.create({
                         <Text >{mostrarFecha(dataOP?.createdAt)}</Text>
                     </View >
 
+             
+
                     <TablaFacturas dataOP={dataOP} dataFacturas={dataFacturas} />
                     <View >
                         <Text style={styles.saltolinea}> </Text>                       
                     </View>
+
 
                     <View >
                         <Text style={styles.subreportTitle}>APROBACIÓN TÉCNICA</Text>                       

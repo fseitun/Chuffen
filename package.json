@@ -5,8 +5,8 @@
     "version": "1.0.0",
     "private": false,
     "scripts": {
-        "build": "react-scripts build --openssl-legacy-provider",
-    	"start": "react-scripts start --openssl-legacy-provider"
+        "build": "react-scripts build",
+        "start": "react-scripts start"
     },
     "eslintConfig": {
         "extends": "react-app"

@@ -57,6 +57,31 @@ export function Login({ setLoggedUser, setIdSociety }) {
     { id: 7, descripcion: 'Cargada en Banco' },
   ];
   localStorage.setItem("estados", JSON.stringify(estados));
+
+  const retenciones = [  
+    { id: 0, descripcion: '-' },
+    { id: 1, descripcion: 'No aplican' },
+    { id: 2, descripcion: 'OK' },
+    { id: 3, descripcion: 'Pendiente' },
+  ];
+  localStorage.setItem("retenciones", JSON.stringify(retenciones));
+  
+  const fondos_s = [
+    { id: 0, descripcion: '-' },  
+    { id: 1, descripcion: 'Sin fondos' },
+    { id: 2, descripcion: 'OK cargado' },
+  ];
+  localStorage.setItem("fondos_s", JSON.stringify(fondos_s));
+
+  const tipos = [
+    { id: 0, descripcion: 'Factura' },  
+    { id: 1, descripcion: 'Nota débito' },
+    { id: 2, descripcion: 'Nota crédito' },
+    { id: 3, descripcion: 'Boleta Pago' },
+  ];
+  localStorage.setItem("tipos", JSON.stringify(tipos));
+
+
   const formaPagos = "-,Transferencia ARS,Transferencia USD,Cheque,Efectivo ARS,Efectivo USD,Otra";
   localStorage.setItem("formaPagos", formaPagos); 
 

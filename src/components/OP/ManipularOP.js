@@ -1,34 +1,15 @@
 import { useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { IconButton, Collapse, Box, TextField, Hidden, FormControlLabel, Checkbox, Button, Autocomplete, Alert } from '@mui/material';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
-import { getMethod, postMethod } from 'src/utils/api';
+import { postMethod } from 'src/utils/api';
 
-export function ManipularOP({ idSociety, loggedUser  }) {
+export function ManipularOP({ idSociety, loggedUser, fideicomisos, proveedores, ddfacturas, ddfacturasBlue  }) {
 
- // var blue = 0;
   var verCheckBlue = false;
   if(loggedUser?.['rol.factura'] ==='total'){verCheckBlue = true;}
   const [chkblue, setChkblue] = useState(true);
-
-  const { data: fideicomisos } = useQuery(
-    ['fideicomisos'],
-    () => getMethod(`fideicomiso/listar/${idSociety.id}`));
-
-
-  const { data: proveedores } = useQuery(
-    ['proveedores'],
-    () => getMethod(`proveedor/listar/${idSociety.id}`));
-
-
-  const { data: ddfacturas } = useQuery(
-    ['ddfacturas'],
-    () => getMethod(`factura/listar/${idSociety.id}/opid/0/0`));
-
-  const { data: ddfacturasBlue } = useQuery(
-    ['ddfacturasBlue'],
-    () => getMethod(`factura/listar/${idSociety.id}/opid/0/1`));
 
   const queryClient = useQueryClient();
 

@@ -13,8 +13,8 @@ export function mostrarCUIT(value) {
   try {
     value = value.split('');
     value.splice(2, 0, '-');
-    value.splice(5, 0, '.');
-    value.splice(9, 0, '.');
+    //value.splice(5, 0, '.');
+    //value.splice(9, 0, '.');
     value.splice(13, 0, '-');
     return value.join('');
   } catch (e) {

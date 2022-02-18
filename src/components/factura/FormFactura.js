@@ -1,35 +1,22 @@
 import { useState } from 'react';
-import { useQuery} from 'react-query';
+
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { isNumberUsedDig } from 'src/utils/utils';
 import { IconButton, Collapse, Box, FormControlLabel, TextField, Button, Hidden, Checkbox, Autocomplete, Alert } from '@mui/material';
-import { getMethod, postMethod } from 'src/utils/api';
+import { postMethod } from 'src/utils/api';
 import CloseIcon from '@mui/icons-material/Close';
 import React from 'react';
 import { usePrompt } from 'src/utils/usePrompt';
 import { yearMonthDayNum } from 'src/utils/utils'; 
 
-export function FormFactura({ idSociety, loggedUser}) {
-  //const { Prompt } = usePrompt();
+export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores}) {
+
   const { setIsPromptOpen, Prompt } = usePrompt();
   const queryClient = useQueryClient();
 
-  // const [defaultFact, setDefaultFact] = useState(2021112101);
-
-  // const [fblue, setFBlue] = useState(false);
-  // var blue = 0;
   var verCheckBlue = false;
   if(loggedUser?.['rol.factura'] ==='total'){/*blue= -1;*/ verCheckBlue = true;}
-
-
-  const { data: fideicomisos } = useQuery(
-    ['fideicomisos'],
-    () => getMethod(`fideicomiso/listar/${idSociety.id}`));
-
-  const { data: proveedores } = useQuery(
-    ['proveedores'],
-    () => getMethod(`proveedor/listar/${idSociety.id}`));
 
   const { mutate: addFactura } = useMutation(
     newFactura => postMethod(`factura/agregar/${idSociety.id}`, newFactura),
@@ -47,6 +34,9 @@ export function FormFactura({ idSociety, loggedUser}) {
     }
   );
 
+  var tipos = JSON.parse(localStorage.getItem("tipos"));
+
+  const [tipoInForm, setTipoInForm] = useState(tipos[0]);
   const [fideInForm, setFideInForm] = useState(null);
   const [typeInForm, setTypeInForm] = useState(null);
   const [open, setOpen] = useState(false);
@@ -68,8 +58,9 @@ export function FormFactura({ idSociety, loggedUser}) {
             
             addFactura({
               numero: values.numero,
-              montoTotal: values.montoTotal,
+              montoTotal: values.tipo.id===2? (-1 * values.montoTotal):values.montoTotal,
               fechaIngreso: values.fechaIngreso,
+              tipo: values.tipo.id,           
               empresaId: values.empresa.id,
               fideicomisoId: values.fideicomiso.id,
               moneda: 'ARS',
@@ -83,6 +74,26 @@ export function FormFactura({ idSociety, loggedUser}) {
       >
         {({ isSubmitting, setFieldValue }) => (
           <Form>
+
+            <Field
+              as={Autocomplete}
+              size={'small'}
+              label='Tipo'
+              title="Tipo de comprobante"
+              disablePortal
+              required
+              style={{ width: '180px', display: 'inline-flex' }}
+              onChange={(event, newValue) => {
+                setTipoInForm(newValue);
+                setFieldValue('tipo', newValue);
+                setNumber((newValue?.id===3), setFieldValue)
+              }}
+              value={tipoInForm}
+              getOptionLabel={option => option.descripcion}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              options={(tipos? tipos:[])}
+              renderInput={params => <TextField {...params} label='Tipo de comprobante' />}
+            />
 
             <Field
               as={Autocomplete}
@@ -203,21 +214,32 @@ function onlyNumbers(event, setFieldValue, typeOfData) {
   }
 }
 
+function setNumber(val, setFieldValue){
+
+  if(val){
+    let f = new Date();
+    let n = "" + yearMonthDayNum(f) + "01";
+    setFieldValue('numero', parseInt(n));
+  }else{
+    setFieldValue('numero', '');
+  }
+}
+
 function onlyCheck(event, setFieldValue, typeOfData, chkblue, setChkblue, setFBlue) {
   event.preventDefault();
   // const { value } = event.target;
   setChkblue(!chkblue);
   if(chkblue){ 
-    let f = new Date();
-    let n = "" + yearMonthDayNum(f) + "01";
-    setFieldValue(typeOfData, 'on');
-    setFieldValue('numero', parseInt(n));
+
+    setNumber(true, setFieldValue);
+    setFieldValue(typeOfData, 'on');    
     //setFBlue(true);
 
   }else{
 
     setFieldValue(typeOfData, 'off');
-    setFieldValue('numero', '');
+    setNumber(false, setFieldValue);
+    
     //setFBlue(false);
 
   }

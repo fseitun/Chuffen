@@ -110,9 +110,9 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
 
   let str = '';
   if(tipo ==='adm'){
-    str = `OP/listar/${idSociety.id}/authADM/nulo/${blue}`;
+    str = `OP/listar/${idSociety.id}/authADM/nulo/${blue}/0/0/0`;
   }else{
-    str = `OP/listar/${idSociety.id}/authObra/nulo/${blue}`;
+    str = `OP/listar/${idSociety.id}/authObra/nulo/${blue}/0/0/0`;
   }
 
   const {
