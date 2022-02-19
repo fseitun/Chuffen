@@ -121,16 +121,6 @@ export function Login({ setLoggedUser, setIdSociety }) {
             onSubmit={async (values, actions) => {
               if (await userCheck(idSociety.id, values.email, values.password, setLoggedUser)) {
 
-                /****************************************************/
-                /*************** deuda tecnica **********************/
-                /****************************************************/
-
-                          
-
-                /****************************************************/
-                /****************************************************/
-                /****************************************************/
-
                 navigate(`/${societyName}`, { replace: true });
               } else {
                 setIsAlertOpen('flex');
