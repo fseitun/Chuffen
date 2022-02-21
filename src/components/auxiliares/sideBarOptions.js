@@ -8,9 +8,8 @@ import {
   /*Assignment,*/
   ListAlt,
   CreditCard,
-  /*
   Construction,
-  MonetizationOn,
+  /*MonetizationOn,
   Business,
   PeopleAlt,
   Schema,
@@ -46,6 +45,13 @@ export const sideBarOptions = [
     acceso: 'factura',
   },
   {
+    path: 'OT',
+    icon: Construction,
+    title: 'OC',
+    acceso: 'OT',
+  },
+
+  {
     path: 'proveedores',
     icon: LocalShipping,
     title: 'Proveedores',
@@ -76,13 +82,8 @@ export const sideBarOptions = [
     icon: PeopleAlt,
     title: 'Personas',
   },*/
-  /*
-  {
-    path: 'OT',
-    icon: TrendingUp,
-    title: 'test pdf',
-    acceso: 'OT',
-  },*/
+  
+
   {
     path: 'cac',
     icon: TrendingUp,

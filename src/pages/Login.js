@@ -82,7 +82,7 @@ export function Login({ setLoggedUser, setIdSociety }) {
   localStorage.setItem("tipos", JSON.stringify(tipos));
 
 
-  const formaPagos = "-,Transferencia ARS,Transferencia USD,Cheque,Efectivo ARS,Efectivo USD,Otra";
+  const formaPagos = "-,Transferencia ARS,Transferencia USD,Cheque,Efectivo ARS,Efectivo USD,Débito automático,Echeq,Otra";
   localStorage.setItem("formaPagos", formaPagos); 
 
   /****************************************************/

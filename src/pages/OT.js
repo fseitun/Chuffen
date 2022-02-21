@@ -1,9 +1,9 @@
 import { Container, Box, Hidden } from '@mui/material';
 import { useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { ManipularOP } from 'src/components/OP/ManipularOP';
-import { FiltroOP } from 'src/components/OP/FiltroOP';
-import { GrillaOP } from 'src/components/OP/GrillaOP';
+import { ManipularOT } from 'src/components/OT/ManipularOT';
+import { FiltroOT } from 'src/components/OT/FiltroOT';
+import { GrillaOT } from 'src/components/OT/GrillaOT';
 import { useQuery } from 'react-query';
 import { getMethod } from 'src/utils/api';
 
@@ -57,19 +57,19 @@ export function OT({ idSociety, loggedUser }) {
         <Container maxWidth={false}>
           <Hidden smUp={(loggedUser?.['rol.factura'] ==='vista')} >
             <Box sx={{ pt: 3 }}>
-              <ManipularOP idSociety={idSociety}  loggedUser={loggedUser} fideicomisos={fideicomisos} proveedores={proveedores}  ddfacturas={ddfacturas} ddfacturasBlue={ddfacturasBlue} />
+              <ManipularOT idSociety={idSociety}  loggedUser={loggedUser} fideicomisos={fideicomisos} proveedores={proveedores}  ddfacturas={ddfacturas} ddfacturasBlue={ddfacturasBlue} />
             </Box>
           </Hidden>
 
           <Box sx={{ pt: 3 }}>
-            <FiltroOP idSociety={idSociety}  loggedUser={loggedUser} 
+            <FiltroOT idSociety={idSociety}  loggedUser={loggedUser} 
             fideicomisos={fideicomisos}  setFiltFide={setFiltFide} setFiltRS={setFiltRS} setFiltEst={setFiltEst} proveedores={proveedores} ddfacturas={ddfacturas} ddfacturasBlue={ddfacturasBlue}
             />
           </Box>
 
 
           <Box sx={{ pt: 3 }}>
-            <GrillaOP idSociety={idSociety}  loggedUser={loggedUser} opInformation={opInformation} filtFide={filtFide} filtRS={filtRS} filtEst={filtEst}  isLoading={isLoading}  error={error} />
+            <GrillaOT idSociety={idSociety}  loggedUser={loggedUser} opInformation={opInformation} filtFide={filtFide} filtRS={filtRS} filtEst={filtEst}  isLoading={isLoading}  error={error} />
           </Box>
         </Container>
       </Box>
