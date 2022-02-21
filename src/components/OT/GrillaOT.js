@@ -29,6 +29,10 @@ var idSociedad=0;
 
 const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
   {
+    field: 'id',
+   
+  },
+  {
     field: 'blue',
     headerName: 'Blue',
     hide: !verColumnBlue,

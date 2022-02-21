@@ -28,6 +28,15 @@ var idSociedad=0;
 
 
 const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
+  
+  {
+    field: 'id',
+    headerName: 'Num',
+    width: 55,
+    editable: false,
+    headerAlign: 'center',
+    align: 'center',
+  }, 
   {
     field: 'blue',
     headerName: 'Blue',

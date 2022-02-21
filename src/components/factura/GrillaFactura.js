@@ -11,6 +11,16 @@ import { mostrarFecha } from 'src/utils/utils';
 import { useNavigate } from 'react-router-dom';
 
 const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
+
+  {
+    field: 'id',
+    headerName: 'Num',
+    width: 60,
+    editable: false,
+    headerAlign: 'center',
+    align: 'center',
+  }, 
+  
   {
     field: 'blue',
     headerName: 'Blue',

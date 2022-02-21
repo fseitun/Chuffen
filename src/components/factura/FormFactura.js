@@ -36,7 +36,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
 
   var tipos = JSON.parse(localStorage.getItem("tipos"));
 
-  const [tipoInForm, setTipoInForm] = useState(tipos[0]);
+  const [tipoInForm, setTipoInForm] = useState(tipos? tipos[0]:null);
   const [fideInForm, setFideInForm] = useState(null);
   const [typeInForm, setTypeInForm] = useState(null);
   const [open, setOpen] = useState(false);
@@ -51,22 +51,24 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
           fechaIngreso: new Date(),
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
+          console.log(111);
           let existe = await isNumberUsedDig('factura', idSociety.id, values.empresa.id , values.numero)
           if (existe || values.numero ==='') {
+            console.log(222);
             setIsPromptOpen(true);
           }else{
-            
+            console.log(333, values?.tipo, values?.empresa);
+            // values.tipo.id===2? (-1 * values.montoTotal):values.montoTotal
             addFactura({
               numero: values.numero,
-              montoTotal: values.tipo.id===2? (-1 * values.montoTotal):values.montoTotal,
+              montoTotal: values.montoTotal,
               fechaIngreso: values.fechaIngreso,
-              tipo: values.tipo.id,           
               empresaId: values.empresa.id,
               fideicomisoId: values.fideicomiso.id,
               moneda: 'ARS',
               blue: values.blue==='on'? 1:0,
               creador: loggedUser.id
-            });            
+            });          
             //resetForm();
             setSubmitting(false);
           }
