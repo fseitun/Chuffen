@@ -814,7 +814,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
                             }}/> 
 
-                        <TextField  size={'small'} sx={{ width: '8ch' }} label="Link" type="float"  key={formOP?.OPpago.descri4} defaultValue={formOP?.OPpago.descri4 + "4"} name="descri4"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri4', idSociety.id, OPId, 1, 0)}
+                        <TextField  size={'small'} sx={{ width: '8ch' }} label="Link" type="float"  key={formOP?.OPpago.descri4  + "4"} defaultValue={formOP?.OPpago.descri4} name="descri4"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri4', idSociety.id, OPId, 1, 0)}
                              InputProps={{
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
                             }}/>                  
