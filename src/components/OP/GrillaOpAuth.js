@@ -142,7 +142,7 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
 
   const { mutate: irDetalle } = useMutation(
     async el =>    
-      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}/${el.estadoOP}/${el.confirmada}/${el.blue}`)
+      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}/${el.estadoOP}/${el?.auth_adm[0]?.usuarios[0]?.user}/${el?.auth_obra[0]?.usuarios[0]?.user}/${el.confirmada}/${el.blue}`)
 
   );
   

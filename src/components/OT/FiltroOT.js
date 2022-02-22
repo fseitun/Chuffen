@@ -21,8 +21,7 @@ export function FiltroOT({setFiltFide, setFiltRS, setFiltEst, idSociety, loggedU
     if(campo ==='fide'){setFiltFide(id);}
     if(campo ==='rs'){setFiltRS(id);}
     if(campo ==='estado'){setFiltEst(id);}
-    // setFilt(arr);
-    // console.log(2222, filt);
+
   }  
   
   return (
@@ -47,7 +46,7 @@ export function FiltroOT({setFiltFide, setFiltRS, setFiltEst, idSociety, loggedU
             as={Autocomplete}
             size={'small'}
             
-            label='Filtar por Fideicomiso'
+            label='Filtrar por Fideicomiso'
             disablePortal
             style={{ width: '230px', display: 'inline-flex' }}
             onChange={(event, newValue) => {
@@ -58,14 +57,14 @@ export function FiltroOT({setFiltFide, setFiltRS, setFiltEst, idSociety, loggedU
             getOptionLabel={option => option.nombre}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             options={(fideicomisos? fideicomisos:[])}
-            renderInput={params => <TextField variant="standard" {...params} label='Filtar por Fideicomiso' />}
+            renderInput={params => <TextField variant="standard" {...params} label='Filtrar por Fideicomiso' />}
           />
           
           &nbsp;
           <Field
             as={Autocomplete}
             size={'small'}
-            label='Filtar por Razon Social'
+            label='Filtrar por Razon Social'
             disablePortal
             style={{ width: '230px', display: 'inline-flex' }}
             onChange={(event, newValue) => {
@@ -76,7 +75,7 @@ export function FiltroOT({setFiltFide, setFiltRS, setFiltEst, idSociety, loggedU
             getOptionLabel={option => option.razonSocial}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             options={(proveedores? proveedores:[])}
-            renderInput={params => <TextField variant="standard" {...params} label='Filtar por Razon Social' />}
+            renderInput={params => <TextField variant="standard" {...params} label='Filtrar por Razon Social' />}
           />
           &nbsp;
 

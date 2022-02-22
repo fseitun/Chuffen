@@ -21,9 +21,7 @@
       if(campo ==='comp'){setFiltComp(id);}
       if(campo ==='fide'){setFiltFide(id);}
       if(campo ==='rs'){setFiltRS(id);}
- 
-      // setFilt(arr);
-      console.log(2222, id);
+
     }  
     
     return (
@@ -47,7 +45,7 @@
             <Field
               as={Autocomplete}
               size={'small'}
-              label='Filtar por Tipo Comprobante'
+              label='Filtrar por Tipo Comprobante'
               disablePortal
               style={{ width: '230px', display: 'inline-flex' }}
               onChange={(event, newValue) => {
@@ -58,7 +56,7 @@
               getOptionLabel={option => option.descripcion}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               options={(tipos? tipos:[])}
-              renderInput={params => <TextField variant="standard" {...params} label='Filtar por Tipo Comprobante' />}
+              renderInput={params => <TextField variant="standard" {...params} label='Filtrar por Tipo Comprobante' />}
             />
             &nbsp;
   
@@ -66,7 +64,7 @@
               as={Autocomplete}
               size={'small'}
               
-              label='Filtar por Fideicomiso'
+              label='Filtrar por Fideicomiso'
               disablePortal
               style={{ width: '230px', display: 'inline-flex' }}
               onChange={(event, newValue) => {
@@ -77,14 +75,14 @@
               getOptionLabel={option => option.nombre}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               options={(fideicomisos? fideicomisos:[])}
-              renderInput={params => <TextField variant="standard" {...params} label='Filtar por Fideicomiso' />}
+              renderInput={params => <TextField variant="standard" {...params} label='Filtrar por Fideicomiso' />}
             />
             
             &nbsp;
             <Field
               as={Autocomplete}
               size={'small'}
-              label='Filtar por Razon Social'
+              label='Filtrar por Razon Social'
               disablePortal
               style={{ width: '230px', display: 'inline-flex' }}
               onChange={(event, newValue) => {
@@ -95,7 +93,7 @@
               getOptionLabel={option => option.razonSocial}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               options={(proveedores? proveedores:[])}
-              renderInput={params => <TextField variant="standard" {...params} label='Filtar por Razon Social' />}
+              renderInput={params => <TextField variant="standard" {...params} label='Filtrar por Razon Social' />}
             />
             &nbsp;
 

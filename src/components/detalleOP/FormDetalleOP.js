@@ -51,6 +51,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
   bancos.push(banco_en_blanco);
 
 
+
   var cuentasbanco = JSON.parse(localStorage.getItem("co"));  
   var cuenta_en_blanco = {id: 0,  bancoId: 0,  cuentaBanco: "",  descripcionLarga: "",  bancos: [{banco: ""}]};
   cuentasbanco.push(cuenta_en_blanco);
@@ -447,7 +448,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                           setFieldValue('banco1', newValue);
                           onlyNumbers(event, setFieldValue, refetch, 'banco1', idSociety.id, OPId, 1, newValue.id)
                         }}
-                        value={bancos.find(banco => banco.id === (formOP?.OPpago?.banco1 || 0))}
+                        value={bancos.find(banco => banco.id === parseInt(formOP?.OPpago?.banco1 || 0))}
                         getOptionLabel={option => option.banco}
                         isOptionEqualToValue={(option, value) => option?.id === value?.id}
                         options={bancos}
@@ -481,10 +482,17 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                                 
                   </Grid>  
                   <Grid item md={2}>
-                        <TextField  size={'small'} sx={{ width: '20ch' }} label="Descripción" type="float"  key={formOP?.OPpago.descri1} defaultValue={formOP?.OPpago.descri1} name="descri1"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri1', idSociety.id, OPId, 1, 0)}
+                       
+                        <TextField  size={'small'} sx={{ width: '12ch' }} label="Nro" type="float"  key={formOP?.OPpago.descri12} defaultValue={formOP?.OPpago.descri12} name="descri12"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri12', idSociety.id, OPId, 1, 0)}
                              InputProps={{
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
-                            }}/>                  
+                            }}/> 
+
+                        <TextField  size={'small'} sx={{ width: '8ch' }} label="Link" type="float"  key={formOP?.OPpago.descri1 + "1"} defaultValue={formOP?.OPpago.descri1} name="descri1"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri1', idSociety.id, OPId, 1, 0)}
+                             InputProps={{
+                              readOnly: (!acceso || (isConfirmOP===1)?true:false),
+                            }}/>  
+
                   </Grid> 
                   <Grid item md={2}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -549,16 +557,17 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                           setFieldValue('banco2', newValue);
                           onlyNumbers(event, setFieldValue, refetch, 'banco2', idSociety.id, OPId, 1, newValue.id)
                         }}
-                        value={bancos.find(banco => banco.id === (formOP?.OPpago?.banco2 || 0))}
+                        value={bancos.find(banco => banco.id === parseInt(formOP?.OPpago?.banco2 || 0))}
                         getOptionLabel={option => option.banco}
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
-                        options={bancos}
+                        isOptionEqualToValue={(option, value) => option?.id === value?.id}
+                        options={bancos? bancos:[]}
                         renderInput={params => <TextField {...params} label='banco' />}
                         
                       />
 
                                   
                   </Grid>
+                  
                   <Grid item md={2}>
                     <Field
                         as={Autocomplete}
@@ -572,9 +581,9 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                           setFieldValue('nro2', newValue);
                           onlyNumbers(event, setFieldValue, refetch, 'nro2', idSociety.id, OPId, 1, newValue.id)
                         }}
-                        value={cuentasbanco.find(cuenta => cuenta.id === (formOP?.OPpago.nro2 || 0))}
+                        value={cuentasbanco.find(cuenta => cuenta.id === parseInt(formOP?.OPpago.nro2 || 0))}
                         getOptionLabel={option => option.cuentaBanco}
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        isOptionEqualToValue={(option, value) => option?.id === value?.id}
                         options={cuentasbanco.filter(cuenta => cuenta.bancoId === parseInt((formOP?.OPpago.banco2 || 0)))}
                         
                         renderInput={params => <TextField {...params} label='Cuenta' />}
@@ -583,11 +592,20 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                                 
                   </Grid>  
                   <Grid item md={2}>
-                        <TextField  size={'small'} sx={{ width: '20ch' }} label="Descripción" type="float"  key={formOP?.OPpago.descri2} defaultValue={formOP?.OPpago.descri2} name="descri2"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri2', idSociety.id, OPId, 1, 0)}
-                            InputProps={{
+
+                        <TextField  size={'small'} sx={{ width: '12ch' }} label="Nro" type="float"  key={formOP?.OPpago.descri22} defaultValue={formOP?.OPpago.descri22} name="descri22"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri22', idSociety.id, OPId, 1, 0)}
+                             InputProps={{
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
-                            }}/>                  
+                            }}/> 
+
+                        <TextField  size={'small'} sx={{ width: '8ch' }} label="Link" type="float"  key={formOP?.OPpago.descri2 + "2"} defaultValue={formOP?.OPpago.descri2} name="descri2"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri2', idSociety.id, OPId, 1, 0)}
+                             InputProps={{
+                              readOnly: (!acceso || (isConfirmOP===1)?true:false),
+                            }}/>            
+
+
                   </Grid>                      
+                 
                   <Grid item md={2}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
@@ -650,7 +668,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                           setFieldValue('banco3', newValue);
                           onlyNumbers(event, setFieldValue, refetch, 'banco3', idSociety.id, OPId, 1, newValue.id)
                         }}
-                        value={bancos.find(banco => banco.id === (formOP?.OPpago?.banco3 || 0))}
+                        value={bancos.find(banco => banco.id === parseInt(formOP?.OPpago?.banco3 || 0))}
                         getOptionLabel={option => option.banco}
                         isOptionEqualToValue={(option, value) => option.id === value.id}
                         options={bancos}
@@ -673,9 +691,9 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                           setFieldValue('nro3', newValue);
                           onlyNumbers(event, setFieldValue, refetch, 'nro3', idSociety.id, OPId, 1, newValue.id)
                         }}
-                        value={cuentasbanco.find(cuenta => cuenta.id === (formOP?.OPpago.nro3 || 0))}
+                        value={cuentasbanco.find(cuenta => cuenta.id === parseInt(formOP?.OPpago.nro3 || 0))}
                         getOptionLabel={option => option.cuentaBanco}
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        isOptionEqualToValue={(option, value) => option?.id === value?.id}
                         options={cuentasbanco.filter(cuenta => cuenta.bancoId === parseInt((formOP?.OPpago.banco3 || 0)))}
                         
                         renderInput={params => <TextField {...params} label='Cuenta' />}
@@ -684,10 +702,16 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                                 
                   </Grid>  
                   <Grid item md={2}>
-                        <TextField  size={'small'} sx={{ width: '20ch' }} label="Descripción" type="float"  key={formOP?.OPpago.descri3} defaultValue={formOP?.OPpago.descri3} name="descri3"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri3', idSociety.id, OPId, 1, 0)}
-                            InputProps={{
+                        <TextField  size={'small'} sx={{ width: '12ch' }} label="Nro" type="float"  key={formOP?.OPpago.descri32} defaultValue={formOP?.OPpago.descri32} name="descri32"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri32', idSociety.id, OPId, 1, 0)}
+                             InputProps={{
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
-                            }}/>                  
+                            }}/> 
+
+                        <TextField  size={'small'} sx={{ width: '8ch' }} label="Link" type="float"  key={formOP?.OPpago.descri3 + "3"} defaultValue={formOP?.OPpago.descri3} name="descri3"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri3', idSociety.id, OPId, 1, 0)}
+                             InputProps={{
+                              readOnly: (!acceso || (isConfirmOP===1)?true:false),
+                            }}/> 
+
                   </Grid>                    
                   <Grid item md={2}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -751,9 +775,9 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                           setFieldValue('banco4', newValue);
                           onlyNumbers(event, setFieldValue, refetch, 'banco4', idSociety.id, OPId, 1, newValue.id)
                         }}
-                        value={bancos.find(banco => banco.id === (formOP?.OPpago?.banco4 || 0))}
+                        value={bancos.find(banco => banco.id === parseInt(formOP?.OPpago?.banco4 || 0))}
                         getOptionLabel={option => option.banco}
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        isOptionEqualToValue={(option, value) => option?.id === value?.id}
                         options={bancos}
                         renderInput={params => <TextField {...params} label='banco' />}
                         
@@ -774,9 +798,9 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                           setFieldValue('nro4', newValue);
                           onlyNumbers(event, setFieldValue, refetch, 'nro4', idSociety.id, OPId, 1, newValue.id)
                         }}
-                        value={cuentasbanco.find(cuenta => cuenta.id === (formOP?.OPpago.nro4 || 0))}
+                        value={cuentasbanco.find(cuenta => cuenta.id === parseInt(formOP?.OPpago.nro4 || 0))}
                         getOptionLabel={option => option.cuentaBanco}
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        isOptionEqualToValue={(option, value) => option?.id === value?.id}
                         options={cuentasbanco.filter(cuenta => cuenta.bancoId === parseInt((formOP?.OPpago.banco4 || 0)))}
                         
                         renderInput={params => <TextField {...params} label='Cuenta' />}
@@ -785,8 +809,13 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                                 
                   </Grid>  
                   <Grid item md={2}>
-                        <TextField  size={'small'} sx={{ width: '20ch' }} label="Descripción" type="float"  key={formOP?.OPpago.descri4}  defaultValue={formOP?.OPpago.descri4} name="descri4"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri4', idSociety.id, OPId, 1, 0)}
-                            InputProps={{
+                        <TextField  size={'small'} sx={{ width: '12ch' }} label="Nro" type="float"  key={formOP?.OPpago.descri42} defaultValue={formOP?.OPpago.descri42} name="descri42"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri42', idSociety.id, OPId, 1, 0)}
+                             InputProps={{
+                              readOnly: (!acceso || (isConfirmOP===1)?true:false),
+                            }}/> 
+
+                        <TextField  size={'small'} sx={{ width: '8ch' }} label="Link" type="float"  key={formOP?.OPpago.descri4} defaultValue={formOP?.OPpago.descri4 + "4"} name="descri4"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri4', idSociety.id, OPId, 1, 0)}
+                             InputProps={{
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
                             }}/>                  
                   </Grid>                      
@@ -810,6 +839,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
 
                                   
                   </Grid>  
+
                   <Grid item md={2}>
                         <TextField  name="monto4" size={'small'}sx={{ width: '20ch' }} label="Monto" type="float"  key={formOP?.OPpago.monto4}  defaultValue={formOP?.OPpago.monto4}   onChange={event => onlyNumbers(event, setFieldValue, refetch, 'monto4', idSociety.id, OPId, 1, 0)}
                             inputProps={{readOnly: (!acceso || (isConfirmOP===1)?true:false), min: 0, style: { textAlign: 'center' }}}
@@ -827,8 +857,8 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                         {Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number((Math.round(formOP?.OPpago.monto1 * 100)/100 + Math.round(formOP?.OPpago.monto2 * 100)/100 + Math.round(formOP?.OPpago.monto3 * 100)/100 + Math.round(formOP?.OPpago.monto4 * 100)/100)))}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         </Typography>                 
                   </Grid>
-              
-                </Grid>
+
+                </Grid> 
             
           </Form>
         )}
@@ -883,10 +913,9 @@ function onlyNumbers(event, setFieldValue, refetch, typeOfData, idSociety, OPId,
 }
 
 function handleModification(event, setFieldValue, refetch, typeOfData, idSociety, OPId, flag, valorCombo) {
-
   
   let val = null;
-  console.log(333, event.target, valorCombo, typeOfData);
+
 
   if(flag === 2){ // si es una fecha
     

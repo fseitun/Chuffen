@@ -14,18 +14,17 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
 
   {
     field: 'id',
-    headerName: 'Num',
-    width: 60,
+    headerName: '',
+    width: 55,
     editable: false,
     headerAlign: 'center',
-    align: 'center',
-  }, 
+  },
   
   {
     field: 'blue',
     headerName: 'Blue',
     hide: !verColumnBlue,
-    width: 70,
+    width: 55,
     editable: false,
     headerAlign: 'center',
     renderCell: ({ value }) => value===0?'' :<Avatar sx={{ bgcolor: '#3944BC' }} >B</Avatar>,
@@ -120,7 +119,7 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     valueOptions: [0,1,2,3,4,5,6,7,10,14,15,20,21,28,30,40,50,60,70,80,90,100,120,150]
   },
   {
-    field: 'id',
+    field: 'fechaIngreso_mas_diasVTO',
     headerName: 'VTO',
     width: 155,
     type: 'date',
@@ -237,7 +236,7 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
 
   const { mutate: irDetalle } = useMutation(
     async el =>    
-      navigate(`./${el?.OPs[0]?.id}/${el?.OPs[0]?.createdAt}/${el.empresaId}/${el?.OPs[0]?.numero}/${el.fideicomisos[0]?.nombre}/${el?.OPs[0]?.estadoOP}/${el?.OPs[0]?.confirmada}/${el?.OPs[0]?.blue}`)
+      navigate(`./${el?.OPs[0]?.id}/${el?.OPs[0]?.createdAt}/${el.empresaId}/${el?.OPs[0]?.numero}/${el.fideicomisos[0]?.nombre}/${el?.OPs[0]?.estadoOP}/${el?.OPs[0]?.authADM}/${el?.OPs[0]?.authOBRA}/${el?.OPs[0]?.confirmada}/${el?.OPs[0]?.blue}`)
 
   );
 

@@ -17,7 +17,7 @@ const apiServerUrl = process.env.REACT_APP_API_SERVER;
 export function DetalleOP({ idSociety, loggedUser }) {
 
   const [verPDF, setVerPDF] = React.useState(false);
-  const { idOP, fecha, empresaId, numero, fideicomiso, estadoOP, confirmada, blue } = useParams();
+  const { idOP, fecha, empresaId, numero, fideicomiso, estadoOP, auth_adm, auth_obra, confirmada, blue } = useParams();
 
   const id = idSociety.id;
   
@@ -94,8 +94,13 @@ export function DetalleOP({ idSociety, loggedUser }) {
 
       }),
     {
-      onSuccess: async () =>
-        await queryClient.refetchQueries(['formOP', idSociety]),
+      onSuccess: async ()=> {
+        if(idSociety.id > 0) {
+          await queryClient.refetchQueries(['formOP', idSociety])
+        }
+        refetch()
+        
+      }
     }
   );
 
@@ -111,21 +116,18 @@ export function DetalleOP({ idSociety, loggedUser }) {
       }),
       
     {
-      onSuccess: async () =>        
-        await queryClient.refetchQueries(['formOP', idSociety]),
+      onSuccess: async ()=> {
+        if(idSociety.id > 0) {
+          await queryClient.refetchQueries(['formOP', idSociety])
+        }
+        refetch()
+        
+      }
     }
   );
 
 
-
-  /* ************************* */
-  var verAdm = verAuthBoton("adm", formOP, "Autorizar en Obra", loggedUser?.["rol.descripcion"]);
-  const [verBoxAdm, setVerBoxAdm] = useState(verAdm);  
-
-  var verObra = verAuthBoton("obra", formOP, "Autorizar en Obra", loggedUser?.["rol.descripcion"]);
-  const [verBoxObra, setVerBoxObra] = useState(verObra);
-
-  let verAgregar = (loggedUser?.['rol.op'] ==='vista'); // si es vista listo no la ve
+  let verAgregar = (loggedUser?.['rol.op'] ==='vista'); // si es vista, no ve boton agregar 
   if(!verAgregar){
       let conf = formOP?(formOP?.confirmada===1):false;
       if(conf){// confirmada y no es vista
@@ -151,53 +153,16 @@ export function DetalleOP({ idSociety, loggedUser }) {
       }}
     >
       
-   
-      <Box  mt={2} display={verBoxObra} sx={{ pt: 1 }}>
-        <Button
-        
-        onClick={() => {
-          toast(({ closeToast }) => (
-            <Box>
-              <Button
-                sx={{ p: 1, m: 1 }}
-                variant="contained"
-                color="secondary"
-                size="small"
-                onClick={closeToast}
-              >
-                Cancelar
-              </Button>
-              <Button
-                sx={{ p: 1, m: 1 }}
-                variant="contained"
-                color="secondary"
-                size="small"
-                onClick={() => {
-                  setVerBoxObra("none")
-                  authFilaObra(idOP)
-                  closeToast();
-                }}
-              >
-                Autorizar
-              </Button>
-            </Box>
-          ));
-        }}
-      >
-        Autorizar en Obra
-        </Button>
-      </Box>
-      <Box  mt={2} display={verBoxAdm} sx={{ pt: 1 }}>
-        <Button
-          ref={buttonAdmRef}
-          /*variant="info"*/
+      <Hidden  smUp={( verAuthBoton("obra", (formOP?.auth_obra? (formOP?.auth_obra[0]?.usuarios? formOP?.auth_obra[0]?.usuarios:auth_obra):auth_obra), loggedUser?.["rol.descripcion"]))} >
+      
+        <Box  mt={2} sx={{ pt: 1 }}>
+          <Button
           
           onClick={() => {
             toast(({ closeToast }) => (
               <Box>
                 <Button
                   sx={{ p: 1, m: 1 }}
-                  
                   variant="contained"
                   color="secondary"
                   size="small"
@@ -211,8 +176,8 @@ export function DetalleOP({ idSociety, loggedUser }) {
                   color="secondary"
                   size="small"
                   onClick={() => {
-                    setVerBoxAdm("none")
-                    authFilaAdm(idOP)
+                    // setVerBoxObra("none")
+                    authFilaObra(idOP)
                     closeToast();
                   }}
                 >
@@ -221,11 +186,51 @@ export function DetalleOP({ idSociety, loggedUser }) {
               </Box>
             ));
           }}
-        >        
-          Autorizar ADM
-        </Button>      
-      </Box>
-
+        >
+          Autorizar en Obra
+          </Button>
+        </Box>
+      </Hidden>
+      <Hidden  smUp={( verAuthBoton("adm", (formOP?.auth_adm? (formOP?.auth_adm[0]?.usuarios? formOP?.auth_adm[0]?.usuarios:auth_adm):auth_adm), loggedUser?.["rol.descripcion"]))} >
+        <Box  mt={2} sx={{ pt: 1 }}>
+          <Button
+            ref={buttonAdmRef}
+            /*variant="info"*/
+            
+            onClick={() => {
+              toast(({ closeToast }) => (
+                <Box>
+                  <Button
+                    sx={{ p: 1, m: 1 }}
+                    
+                    variant="contained"
+                    color="secondary"
+                    size="small"
+                    onClick={closeToast}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    sx={{ p: 1, m: 1 }}
+                    variant="contained"
+                    color="secondary"
+                    size="small"
+                    onClick={() => {
+                      // setVerBoxAdm("none")
+                      authFilaAdm(idOP)
+                      closeToast();
+                    }}
+                  >
+                    Autorizar
+                  </Button>
+                </Box>
+              ));
+            }}
+          >        
+            Autorizar ADM
+          </Button>      
+        </Box>
+      </Hidden>
       <Box mt={2} sx={{ pt: 1 }}>
         <Button
           /*variant="info"*/
@@ -359,38 +364,29 @@ export function DetalleOP({ idSociety, loggedUser }) {
   );  
 }
 
-//</SumFacturaContext.Provider>
 
-function verAuthBoton(tipo, formOP, label, rol_usuario){
+function verAuthBoton(tipo, auth, rol_usuario){
   // rol adm, obra, manager
-  let rta = "";
+  let rta = true;
 
-  if(tipo === "manager"){rta = label} 
-  if(tipo === rol_usuario){rta = label} 
+  if(rol_usuario==="manager" && tipo === "adm"){// adm
 
-  if(tipo==="adm"){
-    if(formOP?.auth_adm){
-      if(formOP.auth_adm[0]){
-        if(formOP.auth_adm[0].usuarios[0].user !== undefined){
-          rta = "";
+        if(auth === null || auth === 'null' || auth === undefined || auth === "undefined"){   
+          rta = false;
         }
-      }     
-    }
-  }else{
-    if(formOP?.auth_obra){
-      if(formOP.auth_obra[0]){
-        if(formOP.auth_obra[0].usuarios[0].user !== undefined){
-          rta = "";
-        }
-      }     
+ 
+  }
+
+  if((rol_usuario==="manager" || rol_usuario==="obra")  && tipo === "obra"){// obra
+ 
+    if(auth === null || auth === 'null' || auth === undefined || auth === "undefined"){
+     
+      rta = false;
     }
   }  
 
-  if(rta ===""){
-    return "none";
-  }else{  
-    return "";
-  }  
+  return rta;
+
 
 }
 

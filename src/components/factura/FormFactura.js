@@ -36,7 +36,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
 
   var tipos = JSON.parse(localStorage.getItem("tipos"));
 
-  const [tipoInForm, setTipoInForm] = useState(tipos? tipos[0]:null);
+  const [tipoInForm, setTipoInForm] = useState({id: 0, descripcion: 'Factura'});
   const [fideInForm, setFideInForm] = useState(null);
   const [typeInForm, setTypeInForm] = useState(null);
   const [open, setOpen] = useState(false);
@@ -51,18 +51,20 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
           fechaIngreso: new Date(),
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
-          console.log(111);
+
+          if(values?.tipo === undefined){values.tipo = tipoInForm;}
+  
           let existe = await isNumberUsedDig('factura', idSociety.id, values.empresa.id , values.numero)
           if (existe || values.numero ==='') {
             console.log(222);
             setIsPromptOpen(true);
           }else{
-            console.log(333, values?.tipo, values?.empresa);
-            // values.tipo.id===2? (-1 * values.montoTotal):values.montoTotal
+   
             addFactura({
               numero: values.numero,
-              montoTotal: values.montoTotal,
+              montoTotal: values.tipo.id===2? (-1 * values.montoTotal):values.montoTotal,
               fechaIngreso: values.fechaIngreso,
+              tipo: values.tipo.id,
               empresaId: values.empresa.id,
               fideicomisoId: values.fideicomiso.id,
               moneda: 'ARS',
@@ -211,7 +213,8 @@ function onlyNumbers(event, setFieldValue, typeOfData) {
   event.preventDefault();
   const { value } = event.target;
   const regex = /^\d{0,11}(\.\d{0,2})?$/;
-  if (regex.test(value.toString())) {
+  var regex2 = /[\x08\x0D\d]/;
+  if (regex.test(value.toString()) || regex2.test(value.toString())) {
     setFieldValue(typeOfData, value.toString());
   }
 }

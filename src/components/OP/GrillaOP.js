@@ -14,6 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { PDFDownloadLink, pdf } from "@react-pdf/renderer";
 import RepOp from "src/components/reportes/orden_de_pago/orden_de_pago";
 import { darken, lighten } from '@mui/material/styles';
+import { NavLink as RouterLink, matchPath, useLocation } from 'react-router-dom';
 
 const getBackgroundColor = (color, mode) =>
   mode === 'dark' ? darken(color, 0.6) : lighten(color, 0.6);
@@ -36,6 +37,8 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     editable: false,
     headerAlign: 'center',
     align: 'center',
+    renderCell: IrDetalleOP_0
+
   }, 
   {
     field: 'blue',
@@ -334,7 +337,7 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
 
     async el => await  getMethod(`op/mostrar/${idSociety.id}/${el.id}`),
       {onSettled: (el) => { /*queryClient.refetchQueries(['formOP', idSociety]);*/
-      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}/${el.estadoOP}/${el.confirmada}/${el.blue}`)}
+      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}/${el.estadoOP}/${el?.auth_adm[0]?.usuarios[0]?.user}/${el?.auth_obra[0]?.usuarios[0]?.user}/${el.confirmada}/${el.blue}`)}
     }
     
   );
@@ -384,7 +387,9 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
     formData.append('numero', numero);
     formData.append('nombreArchivo', fileName);
     formData.append('archivada', 1);    
-    postMethod(`op/modificar/${idSociety.id}`, formData);
+    await postMethod(`op/modificar/${idSociety.id}`, formData);
+
+    await queryClient.refetchQueries(['OP', idSociety])
     
   }
 
@@ -754,6 +759,22 @@ function CustomToolbar() {
     </GridToolbarContainer>
   );
 }
+
+
+
+function IrDetalleOP_0(params) {
+
+  let path = `${params.row.id}/${params.row.createdAt}/${params.row.empresaId}/${params.row.numero}/${params.row.fideicomiso}/${params.row.estadoOP?.id}/${params.row.apr_adm===''? 'null':params.row.apr_adm}/${params.row.apr_obra===''? 'null':params.row.apr_obra}/${params.row.confirmada? 1:0}/${params.row.blue}`;
+  
+  return <Button
+          component={RouterLink}
+          sx={{color: 'primary.main',}}
+          to={path}
+        >
+          <span>{ params.row.id }</span>
+        </Button>
+
+} 
 
 function IrDetalleOP_1(params) {
 

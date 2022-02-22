@@ -44,13 +44,14 @@ export const sideBarOptions = [
     title: 'Facturas',
     acceso: 'factura',
   },
+  /*
   {
     path: 'OT',
     icon: Construction,
     title: 'OC',
     acceso: 'OT',
   },
-
+*/
   {
     path: 'proveedores',
     icon: LocalShipping,
