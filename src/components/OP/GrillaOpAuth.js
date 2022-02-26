@@ -2,19 +2,49 @@ import * as React from 'react';
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
-import { Button} from '@mui/material';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
-import { useNavigate } from 'react-router-dom';
+import { NavLink as RouterLink, useNavigate } from 'react-router-dom';
 import { getMethod, postMethod} from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { mostrarFecha } from 'src/utils/utils';
+import { Box, Button, IconButton, Collapse, Alert, Avatar} from '@mui/material';
+import 'react-toastify/dist/ReactToastify.css';
+import CloseIcon from '@mui/icons-material/Close';
+import { darken, lighten } from '@mui/material/styles';
 
-const columns = (setIsPromptOpen, setRowIdToDelete) => [
+const getBackgroundColor = (color, mode) =>
+  mode === 'dark' ? darken(color, 0.6) : lighten(color, 0.6);
+
+const getHoverBackgroundColor = (color, mode) =>
+  mode === 'dark' ? darken(color, 0.5) : lighten(color, 0.5);
+
+const columns = (tipo, setIsPromptOpen, setRowIdToDelete) => [
+
+  
+  {
+    field: 'estadoOP',
+    headerName: 'Pendiente Obra',
+    width: 70,
+    hide: (tipo==='obra'),
+    editable: false,
+    headerAlign: 'center',
+    renderCell: ({ value }) => value?.id!==1?'' :<Avatar sx={{ bgcolor: '#39BC44' }} >Ob</Avatar>,
+  },
+  {
+    field: 'id',
+    headerName: 'Id',
+    width: 55,
+    editable: false,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: IrDetalleOP_0
+
+  }, 
   {
     field: 'createdAt',
     headerName: 'Fecha',
     editable: false,
-    width: 120,
+    width: 115,
     type: 'date',
     headerAlign: 'center',
     align: 'center',
@@ -32,8 +62,8 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   },
   {
     field: 'numero',
-    headerName: 'Numero',
-    width: 130,
+    headerName: 'Nro',
+    width: 110,
     editable: false,
     headerAlign: 'center',
     align: 'right',
@@ -52,7 +82,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     field: 'monto',
     headerName: 'Monto',
     editable: false,
-    width: 125,
+    width: 120,
     headerAlign: 'center',
     align: 'right',
     valueFormatter: ({ value }) =>
@@ -62,20 +92,20 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     field: 'moneda',
     headerName: '',
     editable: false,
-    width: 60,
+    width: 50,
     headerAlign: 'center',
     align: 'left',    
   },
   {
     field: 'formaPago',
     headerName: 'Forma Pago',
-    width: 160,
+    width: 155,
     editable: true,
   },
   {
     field: 'PriceCheckIcon',
     headerName: 'Autorizar',
-    width: 160,
+    width: 155,
     headerAlign: 'center',
     align: 'center',
     renderCell: ({ row: { authId } }) => (
@@ -104,7 +134,6 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
   
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
-  // console.log(rowIdToDelete);
   const navigate = useNavigate();
   const blue = 0; // trae todas las de la OP
 
@@ -124,19 +153,21 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
   const queryClient = useQueryClient();
 
   const { mutate: authFila } = useMutation(
-    async id =>
+ 
+    async ({ rowIdToDelete, tipo, loggedUser }) =>
+    
       await postMethod(`autorizacion/agregar/${idSociety?.id}`, {
 
-        opid : id,
+        opid : rowIdToDelete,
         documento: 'op',
         tipoAutorizacion: tipo,
         creador: loggedUser.id
 
       }),
-    {
-      onSuccess: async () =>
-        await queryClient.refetchQueries(['OP' + tipo, idSociety]),
-    }
+      {
+        onSuccess: async () =>
+          await queryClient.refetchQueries(['OP' + tipo, idSociety]),
+      }
 
   );
 
@@ -171,7 +202,22 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
     }
   );
 
-  
+  const [selectionModel, setSelectionModel] = useState([]);
+
+  const [open, setOpen] = useState(false);
+
+  // postMethod
+
+  function filtrar(element, tipo){
+    if(tipo==='adm'){
+      return true;
+    }else{ // tipo = 'obra'
+       // Estado = Para Autorizar en Obra      
+      if(element.estadoOP===1){return true;}else{return false;}
+    }
+
+  }
+
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
@@ -179,33 +225,110 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
   } else
     return (
       <div style={{ width: '100%' }}>
-        <Prompt message="¿Autorizar fila?" action={() => authFila(rowIdToDelete)} />
+        <Prompt message="¿Autorizar fila?" action={() => authFila({rowIdToDelete, tipo, loggedUser})} />
+
+        <Box
+          sx={{
+            height: 400,
+            width: 1,
+          
+            '& .super-app-theme--true': {
+              bgcolor: (theme) =>
+              getBackgroundColor(theme.palette.success.main, theme.palette.mode),
+            '&:hover': {
+              bgcolor: (theme) =>
+                getHoverBackgroundColor(
+                  theme.palette.success.main,
+                  theme.palette.mode,
+                ),
+            },
+            },
+            '& .super-app-theme--otra': {
+              bgcolor: (theme) =>
+                getBackgroundColor(theme.palette.error.main, theme.palette.mode),
+              '&:hover': {
+                bgcolor: (theme) =>
+                  getHoverBackgroundColor(theme.palette.error.main, theme.palette.mode),
+              },
+            },
+          }}
+        > 
+
         <DataGrid
-          rows={opInformation.map(OP => ({
-            id: OP.id,        
+          rows={opInformation.filter(element =>filtrar(element, tipo)).map(OP => ({
+            id: OP.id,  
             numero: OP.numero,
             empresa: OP.empresas[0].razonSocial,
+            empresaId: OP.empresaId,
             monto: OP.monto,
             moneda: OP.moneda,   
             formaPago: OP.formaPago,      
             fideicomiso: OP.fideicomisos[0].nombre,          
             apr_obra: (OP.auth_obra[0]?OP.auth_obra[0].usuarios[0].user:''),
             apr_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
+            authOBRA: (OP.authOBRA? true: false),
             createdAt: OP.createdAt,
             authId: OP.id,
+            estadoOP: {
+              id: OP.estadoOP,
+            },
+            blue: OP.blue,
+            confirmada: OP.confirmada===0? false: true,
             onIrDetalle: () => irDetalle(OP),   
           }))}
           onCellEditCommit={modifyData}
-          columns={columns(setIsPromptOpen, setRowIdToDelete)}
-          pageSize={25}
-          disableSelectionOnClick
+          columns={columns(tipo, setIsPromptOpen, setRowIdToDelete)}
+
+          checkboxSelection
+          onSelectionModelChange={setSelectionModel}
+
+          pageSize={25}        
           autoHeight
           scrollbarSize
           components={{
             Toolbar: CustomToolbar,
           }}
-        />
+
+          getRowClassName={(params) => `super-app-theme--${params.row.authOBRA}`}
+
+        >
+
+
+
+</DataGrid>
+
+
+<Button onClick={()=>auth_seleccionados(selectionModel, idSociety, tipo, loggedUser, authFila, setOpen)} >
+        Autorizar filas Seleccionadas
+</Button>
+
+
+<Collapse in={open}>
+      <Alert
+        action={
+          <IconButton
+            aria-label="close"
+            color="inherit"
+            size="small"
+            onClick={() => {
+              setOpen(false);
+            }}
+          >
+            <CloseIcon fontSize="inherit" />
+          </IconButton>
+        }
+        sx={{ mb: 2 }}
+      >
+        Acción realizada!
+      </Alert>
+  </Collapse>  
+
+
+</Box>  
+
       </div>
+
+      
     );
 }
 
@@ -217,11 +340,75 @@ function CustomToolbar() {
   );
 }
 
+function auth_seleccionados(selectionModel, idSociety, tipo, loggedUser, authFila, setOpen) {
+  let err = false;
+  let rowIdToDelete = 0;
+  // console.log(selectionModel.length, idSociety.id, tipo, loggedUser.id);
+  for (let i = 0; i < selectionModel.length ; i++) {
+    try {      
+
+      // console.log(22222, selectionModel[i]);
+      rowIdToDelete = selectionModel[i];
+      authFila(({rowIdToDelete, tipo, loggedUser}));
+
+      
+    } catch (error) {
+      err = true;
+      console.log(error);
+
+    }
+  }
+
+
+
+  if(!err){
+    setOpen(true);
+  }
+
+}
+
+/*
+
+  const { mutate: authFila } = useMutation(
+    async id =>
+      await postMethod(`autorizacion/agregar/${idSociety?.id}`, {
+
+        opid : id,
+        documento: 'op',
+        tipoAutorizacion: tipo,
+        creador: loggedUser.id
+
+      }),
+    {
+      onSuccess: async () =>
+        await queryClient.refetchQueries(['OP' + tipo, idSociety]),
+    }
+
+  );
+
+*/
+
+
+function IrDetalleOP_0(params) {
+ 
+  let path = `${params.row.id}/${params.row.createdAt}/${params.row.empresaId}/${params.row.numero}/${params.row.fideicomiso}/${params.row.estadoOP?.id}/${params.row.apr_adm===''? 'null':params.row.apr_adm}/${params.row.apr_obra===''? 'null':params.row.apr_obra}/${params.row.confirmada? 1:0}/${params.row.blue}`;
+  
+  return <Button
+          component={RouterLink}
+          sx={{color: 'primary.main',}}
+          to={path}
+        >
+          <span>{ params.row.id }</span>
+        </Button>
+
+} 
+
 function IrDetalleOP_1(params) {
   const sendRow = params.row.onIrDetalle;  
   const fideicomiso = params.row.fideicomiso;
   return <Button onClick={sendRow} >{fideicomiso}  </Button>;
 } 
+
 function IrDetalleOP_2(params) {
   const sendRow = params.row.onIrDetalle;  
   const numero = params.row.numero;

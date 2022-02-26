@@ -48,10 +48,10 @@ export function Login({ setLoggedUser, setIdSociety }) {
 
   const estados = [  
     { id: 0, descripcion: '-' },
-    { id: 1, descripcion: 'Para autorizar Obra' },
+    { id: 1, descripcion: 'Para autorizar en Obra' },
     { id: 2, descripcion: 'Para pagar' },
     { id: 3, descripcion: 'Pagada' },
-    { id: 4, descripcion: 'Para autorizar AC' },
+    { id: 4, descripcion: 'Para autorizar Admin. Central' },
     { id: 5, descripcion: 'Pagado Parcial' },
     { id: 6, descripcion: 'Anulado' },
     { id: 7, descripcion: 'Cargada en Banco' },

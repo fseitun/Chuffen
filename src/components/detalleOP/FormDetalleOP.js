@@ -104,7 +104,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                   </Grid>
 
                   <Grid item md={6}>
-                        <TextField   sx={{ width: '68ch' }} label="Detalle"  defaultValue={formOP?.descripcion || ""} type="float"  name="descripcion" 
+                        <TextField   sx={{ width: '64ch' }} label="Detalle"  defaultValue={formOP?.descripcion || ""} type="float"  name="descripcion" 
                         onChange={event => handleModification(event, setFieldValue, refetch, 'descripcion', idSociety.id, OPId, 0, 0)}
                         /* onFocus={event => formOP.descripcion? handleModification(event, setFieldValue, refetch, 'descripcion', idSociety.id, OPId, 0, 0):false } */
                         InputProps={{
@@ -130,11 +130,12 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                   </Grid>
 
                   <Grid item md={12}>                  
-                    <Grid item md={12}>                  
+                    <Grid item md={4}>                  
                       <Typography align="left" color="textPrimary" variant="h4">
                       Aprobación Administrativa
                       </Typography>
-                    </Grid>                 
+                    </Grid>  
+
                   </Grid>
 
                   <Grid item md={12}>
@@ -146,14 +147,14 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                       Estado:&nbsp;&nbsp;&nbsp;
                     </Typography>
                   </Grid>     
-                  <Grid item md={2}>                  
+                  <Grid item md={4}>                  
                     <Field
                       as={Autocomplete}
                       size={'small'}
                       label='Estado'
                       disabled={!acceso || (isConfirmOP===1)}
                       disablePortal
-                      style={{ width: '160px', display: 'inline-flex' }}
+                      style={{ width: '325px', display: 'inline-flex' }}
                       
                       onChange={(event, newValue) => {
                         // setTypeInForm(newValue);
@@ -168,9 +169,10 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                       
                     />
                   </Grid>
+
                   <Grid item md={2}>  
                       <Hidden  smUp={(loggedUser['rol.op'] ==='total'  || (isConfirmOP!==1)?true:false)} >
-                          <Typography align="center" color="green" variant="h5">                      
+                          <Typography align="right" color="green" variant="h5">                      
                             {(isConfirmOP===1)?"Confirmada!":""}
                           </Typography> 
                       </Hidden>
@@ -178,30 +180,23 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                       <Hidden  smUp={(!acceso || (iniEstado.id!==3)  || (isConfirmOP===1)?true:false)} >
 
                                                     
-                           <Typography align="left" color="blue" variant="h5">                      
-                           <Switch  onChange={event => confirmarOP(event, setIsConfirmOP,'confirmada', idSociety.id, OPId, 0, 1)}  /> Confirmar
+                           <Typography align="right" color="blue" variant="h5">                      
+                            <Switch  onChange={event => confirmarOP(event, setIsConfirmOP,'confirmada', idSociety.id, OPId, 0, 1)}  /> Confirmar
                           </Typography> 
                       </Hidden>
 
                       <Hidden  smUp={(verBotonDesconfirmar)} >
                       
-                          <Typography align="left" color="blue" variant="h5">                      
-                              <Switch  defaultChecked onChange={event => confirmarOP(event, setIsConfirmOP,'confirmada', idSociety.id, OPId, 0, 0)}  /> Desconfirmar
-                              </Typography> 
+                          <Typography align="right" color="blue" variant="h5">                      
+                            <Switch  defaultChecked onChange={event => confirmarOP(event, setIsConfirmOP,'confirmada', idSociety.id, OPId, 0, 0)}  /> Desconfirmar
+                            </Typography> 
                           
-                          </Hidden>
+                      </Hidden>
 
-                  </Grid>              
-                  <Grid item md={2}>
-                        <Typography align="right" color="textPrimary" variant="h5">
-                        Aprobado por:
-                        </Typography>
                   </Grid>
                   <Grid item md={4}>
-                        <Typography align="left" color="textPrimary" variant="h5">
-                        {formOP?.auth_adm?formOP.auth_adm[0]?.usuarios[0]?.user:''}
-                        </Typography>
-                  </Grid>
+                  &nbsp;
+                  </Grid>               
                   
                   <Grid item md={12}>
                   &nbsp;
@@ -209,7 +204,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
 
                   <Grid item md={2}   >
                     <Typography  align="right" color="textPrimary" variant="h5">
-                      Est. Retención, Fondos:&nbsp;&nbsp;&nbsp;
+                      Retención, Fondos:&nbsp;&nbsp;&nbsp;
                     </Typography>
                   </Grid>     
                   <Grid item md={2}>                  
@@ -230,7 +225,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                       getOptionLabel={option => option.descripcion}
                       isOptionEqualToValue={(option, value) => option.id === value.id}
                       options={retenciones}
-                      renderInput={params => <TextField {...params} label='Retención' />}
+                      renderInput={params => <TextField {...params} label='Estado Retención' />}
                       
                     />
                   </Grid>
@@ -256,10 +251,21 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                         
                       />
 
-                  </Grid> 
-                  <Grid item md={6}>
-                     &nbsp;
-                  </Grid> 
+                  </Grid>
+                  <Grid item md={2}>
+                        <Typography align="right" color="textPrimary" variant="h5">
+                        Forma de Pago:
+                        </Typography>
+                  </Grid>
+                  <Grid item md={4}>
+                        <Typography align="left" color="textPrimary" variant="h5">
+                        {formOP?.formaPago}
+                        </Typography>
+                  </Grid>
+
+
+
+
                 
                   <Grid item md={12}>
                   &nbsp;
@@ -275,17 +281,34 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                         &nbsp;{Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(formOP?.monto))}
                         </Typography>
                   </Grid>
-
-                  <Grid item md={4}>
+                  <Grid item md={2}>
+                    &nbsp;
+                  </Grid>
+                  <Grid item md={2}>
                         <Typography align="right" color="textPrimary" variant="h5">
-                        Forma de Pago:
+                        Aprobado por:
                         </Typography>
                   </Grid>
                   <Grid item md={4}>
                         <Typography align="left" color="textPrimary" variant="h5">
-                        {formOP?.formaPago}
+                        {formOP?.auth_adm?formOP.auth_adm[0]?.usuarios[0]?.user:''}
                         </Typography>
                   </Grid>
+
+               
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                   <Grid item md={12}>
                   &nbsp;
@@ -483,7 +506,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                   </Grid>  
                   <Grid item md={2}>
                        
-                        <TextField  size={'small'} sx={{ width: '12ch' }} label="Nro" type="float"  key={formOP?.OPpago.descri12} defaultValue={formOP?.OPpago.descri12} name="descri12"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri12', idSociety.id, OPId, 1, 0)}
+                        <TextField  size={'small'} sx={{ width: '11ch' }} label="Nro" type="float"  key={formOP?.OPpago.descri12} defaultValue={formOP?.OPpago.descri12} name="descri12"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri12', idSociety.id, OPId, 1, 0)}
                              InputProps={{
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
                             }}/> 
@@ -593,7 +616,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                   </Grid>  
                   <Grid item md={2}>
 
-                        <TextField  size={'small'} sx={{ width: '12ch' }} label="Nro" type="float"  key={formOP?.OPpago.descri22} defaultValue={formOP?.OPpago.descri22} name="descri22"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri22', idSociety.id, OPId, 1, 0)}
+                        <TextField  size={'small'} sx={{ width: '11ch' }} label="Nro" type="float"  key={formOP?.OPpago.descri22} defaultValue={formOP?.OPpago.descri22} name="descri22"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri22', idSociety.id, OPId, 1, 0)}
                              InputProps={{
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
                             }}/> 
@@ -702,7 +725,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                                 
                   </Grid>  
                   <Grid item md={2}>
-                        <TextField  size={'small'} sx={{ width: '12ch' }} label="Nro" type="float"  key={formOP?.OPpago.descri32} defaultValue={formOP?.OPpago.descri32} name="descri32"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri32', idSociety.id, OPId, 1, 0)}
+                        <TextField  size={'small'} sx={{ width: '11ch' }} label="Nro" type="float"  key={formOP?.OPpago.descri32} defaultValue={formOP?.OPpago.descri32} name="descri32"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri32', idSociety.id, OPId, 1, 0)}
                              InputProps={{
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
                             }}/> 
@@ -809,7 +832,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                                 
                   </Grid>  
                   <Grid item md={2}>
-                        <TextField  size={'small'} sx={{ width: '12ch' }} label="Nro" type="float"  key={formOP?.OPpago.descri42} defaultValue={formOP?.OPpago.descri42} name="descri42"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri42', idSociety.id, OPId, 1, 0)}
+                        <TextField  size={'small'} sx={{ width: '11ch' }} label="Nro" type="float"  key={formOP?.OPpago.descri42} defaultValue={formOP?.OPpago.descri42} name="descri42"  onChange={event => handleModification(event, setFieldValue, refetch, 'descri42', idSociety.id, OPId, 1, 0)}
                              InputProps={{
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
                             }}/> 

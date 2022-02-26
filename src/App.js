@@ -48,7 +48,7 @@ import { DetalleOP } from 'src/pages/DetalleOP';
 import { Factura } from 'src/pages/Factura';
 
 // *** Orden de Trabajo **********************
-import { OT } from 'src/pages/OT';
+import { OC } from 'src/pages/OC';
 //import { DetalleOT } from 'src/pages/DetalleOT';
 //import { Certificado } from 'src/pages/Certificado';
 
@@ -87,7 +87,7 @@ export default function App() {
             >
               <Route path="dolar" element={<Dolar idSociety={idSociety} loggedUser={loggedUser}  />} />
               <Route path="cac" element={<Cac idSociety={idSociety}  loggedUser={loggedUser}  />} />
-              <Route path="OT" element={<OT idSociety={idSociety}  loggedUser={loggedUser}  />} />
+              <Route path="OC" element={<OC idSociety={idSociety}  loggedUser={loggedUser}  />} />
               <Route path="empresa" element={<Empresa idSociety={idSociety}  loggedUser={loggedUser}  />} />
               <Route path="persona" element={<Persona idSociety={idSociety}  loggedUser={loggedUser}  />} />
 

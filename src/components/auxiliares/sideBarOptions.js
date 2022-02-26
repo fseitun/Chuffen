@@ -43,15 +43,13 @@ export const sideBarOptions = [
     icon: ListAlt,
     title: 'Facturas',
     acceso: 'factura',
-  },
-  /*
+  },  
   {
-    path: 'OT',
+    path: 'OC',
     icon: Construction,
     title: 'OC',
-    acceso: 'OT',
+    acceso: 'orden_compra',
   },
-*/
   {
     path: 'proveedores',
     icon: LocalShipping,

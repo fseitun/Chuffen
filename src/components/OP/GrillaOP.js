@@ -14,7 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { PDFDownloadLink, pdf } from "@react-pdf/renderer";
 import RepOp from "src/components/reportes/orden_de_pago/orden_de_pago";
 import { darken, lighten } from '@mui/material/styles';
-import { NavLink as RouterLink, matchPath, useLocation } from 'react-router-dom';
+import { NavLink as RouterLink } from 'react-router-dom';
 
 const getBackgroundColor = (color, mode) =>
   mode === 'dark' ? darken(color, 0.6) : lighten(color, 0.6);
@@ -664,7 +664,7 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
               >
                 Acción realizada!
               </Alert>
-            </Collapse>  
+          </Collapse>  
 
 
         </Box>
