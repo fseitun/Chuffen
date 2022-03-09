@@ -54,7 +54,7 @@ export default function DashboardNavbar({
         </Link>
         <div style={{ marginLeft: 50, fontSize: 24 }}>
           <Typography align="left" color="white" variant="h4">
-            {nameOfPage==='0' || nameOfPage==='1'? 'OP Detalle': nameOfPage
+            {nameOfPage
               .replace('-', ' de ')
               .replace('%20', ' ')
               .replace('%20', ' ')

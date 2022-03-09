@@ -236,7 +236,7 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
 
   const { mutate: irDetalle } = useMutation(
     async el =>    
-      navigate(`./${el?.OPs[0]?.id}/${el?.OPs[0]?.createdAt}/${el.empresaId}/${el?.OPs[0]?.numero}/${el.fideicomisos[0]?.nombre}/${el?.OPs[0]?.estadoOP}/${el?.OPs[0]?.authADM}/${el?.OPs[0]?.authOBRA}/${el?.OPs[0]?.confirmada}/${el?.OPs[0]?.blue}`)
+      navigate(`./${el?.OP?.id}/${el?.OP?.createdAt}/${el.empresaId}/${el?.OP?.numero}/${el.fideicomisos?.nombre}/${el?.OP.estadoOP}/${el?.OP?.authADM}/${el?.OP.authOBRA}/${el?.OP?.confirmada}/${el?.OPs?.blue}/OP Detalle`)
 
   );
 
@@ -302,8 +302,8 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
             fechaIngreso: factura?.fechaIngreso,
             diasVTO: factura?.diasVTO, 
             fechaVTO: factura?.fechaVTO,  
-            OPnumero : (factura?.OPs? factura?.OPs[0]?.numero:''),
-            estadoOP:(factura?.OPs? estados[factura?.OPs[0]?.estado]?.descripcion:''),
+            OPnumero : (factura?.OP? factura?.OP?.numero:''),
+            estadoOP:(factura?.OP? estados[factura?.OP?.estado]?.descripcion:''),
             deleteId: factura?.id,
             onIrDetalle: () => irDetalle(factura),  
 

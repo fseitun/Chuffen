@@ -30,8 +30,11 @@ export function DetalleOP({ idSociety, loggedUser }) {
       refetch
     } = useQuery(['formOP', idSociety.id], () =>
       getMethod(`op/mostrarConFacturas/${idSociety.id}/${idOP}`)
-
   );
+
+
+
+  
 
    //guarda pdf en server
    const getPdfBlob = async () =>   {
@@ -139,6 +142,11 @@ export function DetalleOP({ idSociety, loggedUser }) {
       }
   }
   
+  if (isLoading) {
+    return 'Cargando...';
+  } else if (error) {
+    return `Hubo un error: ${error.message}`;
+  } else
 
   return ( 
       
@@ -347,6 +355,8 @@ export function DetalleOP({ idSociety, loggedUser }) {
                   formOP={formOP?.op}
                   isLoading={isLoading}
                   error={error}
+                  empresaId={empresaId}
+                  fideicomiso={fideicomiso}
                   refetch={refetch}
 
                 />

@@ -15,15 +15,15 @@ export function FormDolar({loggedUser}) {
   const idSociety = useContext(SocietyContext);
   const { setIsPromptOpen, Prompt } = usePrompt();
   const queryClient = useQueryClient();
-  /*
-  const user = useUser();
-  console.log(user); */
+
 
   const { mutate: addDolar } = useMutation(
     newDolar => postMethod(`dolar/agregar/${idSociety.id}`, newDolar),
     {
       onMutate: async newDolar => {
         newDolar.creador = loggedUser.id;
+        console.log(newDolar);
+        
         await queryClient.invalidateQueries(['dolar', idSociety]);
         const prevData = await queryClient.getQueryData(['dolar', idSociety]);
         const newData = [...prevData, { ...newDolar, id: new Date().getTime() }];

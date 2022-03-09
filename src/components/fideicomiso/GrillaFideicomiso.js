@@ -193,7 +193,7 @@ export function GrillaFideicomiso({ idSociety }) {
           //columns={columns(color, setColor, idSociety?.id, setNewLogoFlag, setIsPromptOpen, setRowIdToDelete)}
           columns={columns(color, setColor, idSociety?.id, setIsPromptOpen, setRowIdToDelete)}
           pageSize={25}
-          disableSelectionOnClick
+          /* disableSelectionOnClick */
           autoHeight
           scrollbarSize
           components={{

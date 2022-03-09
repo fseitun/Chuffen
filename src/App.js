@@ -49,7 +49,7 @@ import { Factura } from 'src/pages/Factura';
 
 // *** Orden de Trabajo **********************
 import { OC } from 'src/pages/OC';
-//import { DetalleOT } from 'src/pages/DetalleOT';
+import { DetalleOC } from 'src/pages/DetalleOC';
 //import { Certificado } from 'src/pages/Certificado';
 
 export const SocietyContext = createContext({});
@@ -87,14 +87,22 @@ export default function App() {
             >
               <Route path="dolar" element={<Dolar idSociety={idSociety} loggedUser={loggedUser}  />} />
               <Route path="cac" element={<Cac idSociety={idSociety}  loggedUser={loggedUser}  />} />
-              <Route path="OC" element={<OC idSociety={idSociety}  loggedUser={loggedUser}  />} />
+              
+              <Route path="OC">
+                <Route path="" element={<OC idSociety={idSociety} loggedUser={loggedUser} />} />
+                <Route
+                  path=":idOC/:page"
+                  element={<DetalleOC idSociety={idSociety} loggedUser={loggedUser} />}
+                />
+              </Route>
+
               <Route path="empresa" element={<Empresa idSociety={idSociety}  loggedUser={loggedUser}  />} />
               <Route path="persona" element={<Persona idSociety={idSociety}  loggedUser={loggedUser}  />} />
 
               <Route path="factura">
                 <Route path="" element={<Factura idSociety={idSociety} loggedUser={loggedUser} />} />
                 <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue"
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
                   element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
                 />
               </Route>
@@ -102,7 +110,7 @@ export default function App() {
               <Route path="OP">
                 <Route path="" element={<OP idSociety={idSociety} loggedUser={loggedUser} />} />
                 <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue"
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
                   element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
                 />
               </Route>
@@ -110,7 +118,7 @@ export default function App() {
               <Route path="AuthAdmOP">
                 <Route path="" element={<AuthAdmOP idSociety={idSociety}  loggedUser={loggedUser} />}  />
                 <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue"
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
                   element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
                 />
               </Route>
@@ -118,7 +126,7 @@ export default function App() {
               <Route path="AuthObraOP">
                 <Route path="" element={<AuthObraOP idSociety={idSociety}  loggedUser={loggedUser} />}  />
                 <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue"
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
                   element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
                 />
               </Route>

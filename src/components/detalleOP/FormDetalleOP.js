@@ -1,30 +1,30 @@
-// import { useState, useContext } from 'react';
 import { useState } from 'react';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
-import { TextField, Typography, Grid, Autocomplete, Hidden, Switch} from '@mui/material';
-import { useMutation, useQueryClient } from 'react-query';
+import { Button, TextField, Typography, Grid, Autocomplete, Hidden, Switch} from '@mui/material';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
-import { postMethod } from 'src/utils/api';
+import { postMethod, getMethod} from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { isValidDate, yearMonthDayString } from 'src/utils/utils'; 
-// import { SumFacturaContext } from './sumFacturaContext';
+import { NavLink as RouterLink } from 'react-router-dom';
+// import { useQuery, useQueryClient, useMutation } from 'react-query';
 
 
-
-export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmada, formOP, isLoading, error, refetch}) {
+export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmada, formOP, isLoading, error, refetch, empresaId, fideicomiso}) {
   
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
+
+  // const { empresaId, fideicomiso } = useParams();
+
 
   var acceso = true;
 
   if(loggedUser?.['rol.op'] ==='vista'){
        acceso =false;
   }
-/*
-   
-*/
+
   const { mutate: updateOP } = useMutation(
       async newOP =>
         await postMethod(`op/modificar/${idSociety.id}`, newOP),
@@ -43,23 +43,21 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
   const [iniRet, setIniRet] = useState(retenciones[parseInt(formOP?.estadoRET)]);
   const [iniFondos, setIniFondos] = useState(fondos_s[parseInt(formOP?.fondos)]);
 
-// console.log("aaaaaaa", iniRet, formOP?.estadoRET);
-// console.log("aaaaaaa", iniFondos, formOP?.fondos);
-
   var bancos = JSON.parse(localStorage.getItem("bs"));
   var banco_en_blanco = {id:0, banco:"", descripcionLarga:"" };
   bancos.push(banco_en_blanco);
 
-
-
   var cuentasbanco = JSON.parse(localStorage.getItem("co"));  
   var cuenta_en_blanco = {id: 0,  bancoId: 0,  cuentaBanco: "",  descripcionLarga: "",  bancos: [{banco: ""}]};
   cuentasbanco.push(cuenta_en_blanco);
-  
+    
   // por ahora se inicializa en el login
   var formaPagos = localStorage.getItem("formaPagos").split(",")
   
   var verBotonDesconfirmar = (loggedUser['rol.op'] ==='total' && (isConfirmOP===1))? false:true;
+  var verBotonOC = (loggedUser['rol.oc'] !=='no' )? false:true;
+   
+
 //console.log(999999, isValidDate("2021-12-13"));
 
   if (isLoading) {
@@ -123,6 +121,32 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                         <Typography align="left" color="textPrimary" variant="h5">                        
                         {formOP?.auth_obra?formOP.auth_obra[0]?.usuarios[0]?.user:''}
                         </Typography>
+                  </Grid>
+                  <Grid item md={12}>
+                  &nbsp;
+                  </Grid>
+                  <Grid item md={2}>                        
+                        <Typography  align="right" color="textPrimary" variant="h5">
+                            Orden de Compra:&nbsp;&nbsp;&nbsp;
+                        </Typography>
+                  </Grid>
+                  <Grid item md={4}>
+                            
+                    <ComboOC useQuery={useQuery} setFieldValue={setFieldValue} OCId={formOP?.OCId} OPId={OPId} idSociety={idSociety} empresaId={empresaId} fideicomisoId={formOP?.fideicomisoId} />
+              
+                  </Grid>
+                  <Grid item md={4}>
+                    <Hidden  smUp={(verBotonOC  || formOP?.OCId < 1)} >
+                      <Typography align="center" color="textPrimary" variant="h4">
+                        <Button
+                            component={RouterLink}                            
+                            /* sx={{color: 'primary.main',}}*/
+                            to={`../../oc/${formOP?.OCId}/OC Detalle`}
+                          >
+                            ver compra&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </Button>
+                      </Typography>
+                    </Hidden> 
                   </Grid>
 
                   <Grid item md={12}>
@@ -217,8 +241,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                       style={{ width: '160px', display: 'inline-flex' }}
                       
                       onChange={(event, newValue) => {
-                        // setTypeInForm(newValue);
-                       // newValue? setFieldValue('estadoOP', newValue):false;                        
+                        
                         onlyNumbers2(event, setFieldValue, setIniRet, refetch, 'estadoRET', idSociety.id, OPId, 0, newValue)
                       }}
                       value={iniRet}
@@ -239,8 +262,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                         style={{ width: '160px', display: 'inline-flex' }}
                         
                         onChange={(event, newValue) => {
-                          // setTypeInForm(newValue);
-                        // newValue? setFieldValue('estadoOP', newValue):false;                        
+                            
                           onlyNumbers2(event, setFieldValue, setIniFondos, refetch, 'fondos', idSociety.id, OPId, 0, newValue)
                         }}
                         value={iniFondos}
@@ -262,10 +284,6 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                         {formOP?.formaPago}
                         </Typography>
                   </Grid>
-
-
-
-
                 
                   <Grid item md={12}>
                   &nbsp;
@@ -949,7 +967,7 @@ function handleModification(event, setFieldValue, refetch, typeOfData, idSociety
     setFieldValue(typeOfData, value.toString());
 
     val = value;
-    if(typeOfData==='estadoOP' || typeOfData==='estadoRET' || typeOfData==='fondos'){
+    if(typeOfData==='OCId' || typeOfData==='estadoOP' || typeOfData==='estadoRET' || typeOfData==='fondos'){
       val = valorCombo;
     }
     if(typeOfData==='banco1' || typeOfData==='banco2' || typeOfData==='banco3' || typeOfData==='banco4'){
@@ -973,8 +991,10 @@ function handleModification(event, setFieldValue, refetch, typeOfData, idSociety
     
   postMethod(`op/modificar/${idSociety}`, newData);
   setTimeout(() => {
-    refetch();
-    console.log("refetch");
+    if(refetch){
+      refetch();
+      console.log("refetch");
+    }
   }, 2000)
 
 }
@@ -993,5 +1013,63 @@ function confirmarOP(event, setIsConfirmOP, typeOfData, idSociety, OPId, flagPag
     
   postMethod(`op/modificar/${idSociety}`, newData);
 
+}
+
+function ComboOC({idSociety, setFieldValue, empresaId,fideicomisoId, OPId, OCId, useQuery}) {
+
+  var oc_en_blanco = {id: 0, fideicomisoId: 0, empresaId: 0, descripcion1: "-"};
+
+  const{
+      data: ordenes,
+      isLoading,
+      error,
+      refetch
+    } = useQuery(['ordenes', idSociety.id], () =>
+        getMethod(`oc/listarCombo/${idSociety.id}/0/0`)
+  );
+
+  const [selectedOC, setSelectedOC] = useState(oc_en_blanco);
+ 
+  if (isLoading) {
+    return 'Cargando...';
+  } else if (error) {
+    return `Hubo un error: ${error.message}`;
+  } else
+
+  var ordenesConBlanco = [
+    ...ordenes.filter(el => el.fideicomisoId === parseInt(fideicomisoId) && el.empresaId === parseInt(empresaId)), oc_en_blanco
+    ];
+
+  if(ordenesConBlanco.length > 1 ){ 
+    if((parseInt(OCId) > 0 && selectedOC?.id === 0) || (parseInt(OCId) === 0 && selectedOC?.id > 0)){  
+      setSelectedOC(ordenesConBlanco.find(item => item.id===parseInt(OCId)));
+    }
+  }
+
+  return (
+
+    <Field
+      as={Autocomplete}
+      size={'small'}
+      label='Orden de Compra'
+      // disabled={!acceso || (isConfirmOP===1)}
+      disablePortal
+      style={{ width: '325px', display: 'inline-flex' }}
+      
+      onChange={(event, newValue) => {
+        // setTypeInForm(newValue);
+        // newValue? setFieldValue('estadoOP', newValue):false;                        
+        onlyNumbers2(event, setFieldValue, setSelectedOC, refetch, 'OCId', idSociety.id, OPId, 0, newValue)
+      }}
+      value={selectedOC}
+      getOptionLabel={option => option?.descripcion1}
+      isOptionEqualToValue={(option, value) => option?.id === value?.id}
+      options={ordenesConBlanco}
+      renderInput={params => <TextField {...params} label='Orden de Compra' />}
+      
+    />
+
+  );  
+  
 }
 

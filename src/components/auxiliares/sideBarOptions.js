@@ -47,7 +47,7 @@ export const sideBarOptions = [
   {
     path: 'OC',
     icon: Construction,
-    title: 'OC',
+    title: 'OCs',
     acceso: 'orden_compra',
   },
   {

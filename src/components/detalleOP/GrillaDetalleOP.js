@@ -148,7 +148,7 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
         rows={facturas.map(el => ({
           id: el.id,
           empresa:(el.empresas[0]?el.empresas[0].razonSocial:''),
-          confirmada:(el.OPs[0]?el.OPs[0].confirmada:0),
+          // confirmada:(el.OPs[0]?el?.OPs[0]?.confirmada:0),
           numero: el.numero,
           tipo: {
             id: el.tipo,
@@ -166,7 +166,7 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
         }))}
 
         columns={columns(puedeEditar, verEliminar)}
-        isCellEditable={(params) => (!params.row.confirmada || accesoOP ==='total')}
+        // isCellEditable={(params) => (!params.row.confirmada || accesoOP ==='total')}
         disableSelectionOnClick           
         autoHeight   
         onCellEditCommit={handleCellModification}

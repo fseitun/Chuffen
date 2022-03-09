@@ -213,8 +213,11 @@ function onlyNumbers(event, setFieldValue, typeOfData) {
   event.preventDefault();
   const { value } = event.target;
   const regex = /^\d{0,11}(\.\d{0,2})?$/;
-  var regex2 = /[\x08\x0D\d]/;
-  if (regex.test(value.toString()) || regex2.test(value.toString())) {
+  // var regex2 = /[\x08\x0D\d]/;
+  var key = event.which || event.keyCode; // keyCode detection
+  var ctrl = event.ctrlKey ? event.ctrlKey : ((key === 17) ? true : false); // ctrl detection
+  // if (regex.test(value.toString()) || regex2.test(value.toString())) {
+    if (regex.test(value.toString()) || ctrl) {  
     setFieldValue(typeOfData, value.toString());
   }
 }

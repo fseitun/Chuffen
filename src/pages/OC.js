@@ -9,15 +9,15 @@ import { getMethod } from 'src/utils/api';
 
 export function OC({ idSociety, loggedUser }) {
 
-  var blue = 0;
-  if(loggedUser?.['rol.op'] ==='total'){blue= -1;}
+  // var blue = 0;
+  // if(loggedUser?.['rol.op'] ==='total'){blue= -1;}
 
   const {
-    data: opInformation,
+    data: ocInformation,
     isLoading,
     error,
     // refetch
-  } = useQuery(['OC', idSociety], () => getMethod(`OC/listar/${idSociety.id}/todas`));
+  } = useQuery(['OC', idSociety], () => getMethod(`OC/listar/${idSociety.id}/0/0`));
 
 
   const { data: fideicomisos } = useQuery(
@@ -62,6 +62,17 @@ export function OC({ idSociety, loggedUser }) {
               <ManipularOC idSociety={idSociety}  loggedUser={loggedUser} fideicomisos={fideicomisos} proveedores={proveedores} />
             </Box>
           </Hidden>
+
+          <Box sx={{ pt: 3 }}>
+            <FiltroOC idSociety={idSociety}  loggedUser={loggedUser} 
+            fideicomisos={fideicomisos}  setFiltFide={setFiltFide} setFiltRS={setFiltRS} proveedores={proveedores} 
+            />
+          </Box>
+
+
+          <Box sx={{ pt: 3 }}>
+            <GrillaOC idSociety={idSociety}  loggedUser={loggedUser} ocInformation={ocInformation} filtFide={filtFide} filtRS={filtRS}  isLoading={isLoading}  error={error} />
+          </Box>
 
    
         </Container>

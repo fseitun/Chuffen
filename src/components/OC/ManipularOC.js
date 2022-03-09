@@ -38,7 +38,7 @@ export function ManipularOC({ idSociety, loggedUser, fideicomisos, proveedores  
 
           fideicomisoId: values.fideicomiso.id,
           empresaId: values.empresa.id,
-          descripcion: values.descripcion,
+          descripcion1: values.descripcion,
           creador: loggedUser.id ,
                     
         });
