@@ -9,9 +9,6 @@ import { getMethod } from 'src/utils/api';
 
 export function OC({ idSociety, loggedUser }) {
 
-  // var blue = 0;
-  // if(loggedUser?.['rol.op'] ==='total'){blue= -1;}
-
   const {
     data: ocInformation,
     isLoading,
@@ -33,17 +30,6 @@ export function OC({ idSociety, loggedUser }) {
   const [filtFide, setFiltFide] = useState(-1);
   const [filtRS, setFiltRS] = useState(-1);
 
-  /*
-         <Box sx={{ pt: 3 }}>
-            <FiltroOC idSociety={idSociety}  loggedUser={loggedUser} 
-            fideicomisos={fideicomisos}  setFiltFide={setFiltFide} setFiltRS={setFiltRS} setFiltEst={setFiltEst} proveedores={proveedores} ddfacturas={ddfacturas} ddfacturasBlue={ddfacturasBlue}
-            />
-          </Box>
-
-
-          <Box sx={{ pt: 3 }}>
-            <GrillaOC idSociety={idSociety}  loggedUser={loggedUser} opInformation={opInformation} filtFide={filtFide} filtRS={filtRS} filtEst={filtEst}  isLoading={isLoading}  error={error} />
-          </Box>*/
   
   return (
     <>
@@ -57,7 +43,7 @@ export function OC({ idSociety, loggedUser }) {
           py: 3,
         }}>
         <Container maxWidth={false}>
-          <Hidden smUp={(loggedUser?.['rol.factura'] ==='vista')} >
+          <Hidden smUp={(loggedUser?.['rol.oc'] ==='vista')} >
             <Box sx={{ pt: 3 }}>
               <ManipularOC idSociety={idSociety}  loggedUser={loggedUser} fideicomisos={fideicomisos} proveedores={proveedores} />
             </Box>

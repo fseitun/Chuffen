@@ -59,6 +59,14 @@ const columns = (puedeEditar, verEliminar) => [
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
+  {
+    field: 'es_ajuste',
+    headerName: 'Aguste',
+    type: 'boolean',
+    width: 130,
+    editable: false,
+    headerAlign: 'center',
+  },
 
   {
     field: 'link2',
@@ -81,7 +89,7 @@ const columns = (puedeEditar, verEliminar) => [
 
 ];
 
-export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaData, refetch }) {
+export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaData, facturas, isLoading, error, refetch }) {
   
   const queryClient = useQueryClient();
   var tipos = JSON.parse(localStorage.getItem("tipos"));
@@ -94,13 +102,14 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
   var verEliminar = true;
   if(loggedUser?.['rol.op'] ==='parcial' || loggedUser?.['rol.op'] ==='vista'){verEliminar =false}
 
+  /*
   const {
     data: facturas,    
     isLoading,
     error,
   } = useQuery(['facturas', idSociety, selectedFacturaData], () =>
     getMethod(`factura/listar/${idSociety?.id}/opid/${OPId}/${blue}`)
-  );
+  );*/
 
   const { mutate: deleteProduct } = useMutation(
     async id =>
@@ -158,6 +167,7 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
           link2: el.link,
           montoTotal: el.montoTotal, // parseInt(el.tipo)===2? (-1 * el.montoTotal):el.montoTotal,
           moneda: el.moneda,
+          es_ajuste: el.es_ajuste,
           detalle: el.detalle,
           txtOC: el.txtOC,
           fechaIngreso: el.fechaIngreso,

@@ -7,7 +7,7 @@ import { usePrompt } from 'src/utils/usePrompt';
 import { useParams } from 'react-router-dom';
 
 
-export function AgregarFactura({ idSociety, empresaId, OPId, refetch }) {
+export function AgregarFactura({ idSociety, fideicomisoId, empresaId, OPId, refetch }) {
   
 
   const { blue } = useParams();
@@ -69,7 +69,7 @@ export function AgregarFactura({ idSociety, empresaId, OPId, refetch }) {
               value={typeInForm}
               getOptionLabel={option => option.numero}
               isOptionEqualToValue={(option, value) => option.id === value.id}
-              options={facturas? facturas?.filter(factura => factura?.empresaId === parseInt(empresaId)):[]}
+              options={facturas? facturas?.filter(factura => factura?.fideicomisoId === parseInt(fideicomisoId) && factura?.empresaId === parseInt(empresaId)):[]}
               renderInput={params => <TextField {...params} label='Número Factura' />}
             />
             

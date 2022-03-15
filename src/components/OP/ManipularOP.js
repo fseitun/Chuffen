@@ -105,7 +105,7 @@ export function ManipularOP({ idSociety, loggedUser, fideicomisos, proveedores, 
             value={factInForm}
             getOptionLabel={option => option.numero}
             isOptionEqualToValue={(option, value) => option.id === value.id}
-            options={ddfacturas? ddfacturas?.filter(factura => factura?.empresaId === rsInForm?.id):[]}
+            options={ddfacturas? ddfacturas?.filter(factura => factura?.fideicomisoId === fideInForm?.id && factura?.empresaId === rsInForm?.id):[]}
             renderInput={params => <TextField {...params} label='Factura N॰' />}
           />
 
@@ -122,7 +122,7 @@ export function ManipularOP({ idSociety, loggedUser, fideicomisos, proveedores, 
             value={factInForm}
             getOptionLabel={option => option.numero}
             isOptionEqualToValue={(option, value) => option.id === value.id}
-            options={ddfacturasBlue? ddfacturasBlue?.filter(factura => factura?.empresaId === rsInForm?.id):[]}
+            options={ddfacturasBlue? ddfacturasBlue?.filter(factura => factura?.fideicomisoId === fideInForm?.id && factura?.empresaId === rsInForm?.id):[]}
             renderInput={params => <TextField {...params} label='Factura Blue N॰' />}
           />
 

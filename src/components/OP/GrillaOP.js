@@ -27,7 +27,6 @@ var miOP={};
 var fa={};
 var idSociedad=0;
 
-
 const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
   
   {
@@ -526,26 +525,41 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
           sx={{
             height: 400,
             width: 1,
-          
-            '& .super-app-theme--true': {
+          // Confirmada
+            '& .color_x_estado-conf': {
               bgcolor: (theme) =>
               getBackgroundColor(theme.palette.success.main, theme.palette.mode),
             '&:hover': {
               bgcolor: (theme) =>
                 getHoverBackgroundColor(
                   theme.palette.success.main,
-                  theme.palette.mode,
-                ),
+                  theme.palette.mode,),},
             },
-            },
-            '& .super-app-theme--otra': {
+            // para autorizar
+            '& .color_x_estado-auth': {
               bgcolor: (theme) =>
                 getBackgroundColor(theme.palette.error.main, theme.palette.mode),
               '&:hover': {
                 bgcolor: (theme) =>
-                  getHoverBackgroundColor(theme.palette.error.main, theme.palette.mode),
-              },
+                  getHoverBackgroundColor(theme.palette.error.main, theme.palette.mode),},
             },
+            // anulada
+            '& .color_x_estado-anulado': {
+              bgcolor: (theme) =>
+                getBackgroundColor(theme.palette.text.primary, theme.palette.mode),
+              '&:hover': {
+                bgcolor: (theme) =>
+                  getHoverBackgroundColor(theme.palette.text.primary, theme.palette.mode),},
+            },
+               // para pagar
+               '& .color_x_estado-parap': {
+                bgcolor: (theme) =>
+                  getBackgroundColor(theme.palette.warning.light, theme.palette.mode),
+                '&:hover': {
+                  bgcolor: (theme) =>
+                    getHoverBackgroundColor(theme.palette.warning.light, theme.palette.mode),},
+              },
+            
           }}
         >         
         
@@ -625,7 +639,7 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
             Toolbar: CustomToolbar,
           }}
 
-          getRowClassName={(params) => `super-app-theme--${params.row.confirmada}`}
+          getRowClassName={(params) => `color_x_estado-${params.row.confirmada?'conf':params.row.estadoOP?.id===6? 'anulado':params.row.estadoOP?.id===2? 'parap':params.row.estadoOP?.id===1||params.row.estadoOP?.id===4? 'auth':'regular'}`}
           /*
           style={{
             rowStyle: (params) => ({

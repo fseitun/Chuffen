@@ -18,6 +18,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
   var verCheckBlue = false;
   if(loggedUser?.['rol.factura'] ==='total'){/*blue= -1;*/ verCheckBlue = true;}
 
+
   const { mutate: addFactura } = useMutation(
     newFactura => postMethod(`factura/agregar/${idSociety.id}`, newFactura),
     {
@@ -36,17 +37,40 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
 
   var tipos = JSON.parse(localStorage.getItem("tipos"));
 
+
   const [tipoInForm, setTipoInForm] = useState({id: 0, descripcion: 'Factura'});
   const [fideInForm, setFideInForm] = useState(null);
   const [typeInForm, setTypeInForm] = useState(null);
   const [open, setOpen] = useState(false);
-  const [chkblue, setChkblue] = useState(true);
+
+  let verCheckBlueDis = false;
+  let iniNumber = '';
+  let iniBlue = true;
+  let alwaysBlue = false;
+
+// *******************************************
+  let f = new Date();
+  let n = "" + yearMonthDayNum(f) + "01";
+
+  console.log(1111, loggedUser?.['rol.descripcion']);
+  if(loggedUser?.['rol.descripcion'] ==='blue'){
+    iniNumber = n
+    iniBlue = false;
+    verCheckBlueDis = true;
+    verCheckBlue = false;
+    alwaysBlue = true;
+  }
+
+// *******************************************
+
+  const [chkblue, setChkblue] = useState(iniBlue);
+
 
   return (
     <>
       <Formik
         initialValues={{
-          numero: '',
+          numero: iniNumber,
           montoTotal: '',
           fechaIngreso: new Date(),
         }}
@@ -56,7 +80,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
   
           let existe = await isNumberUsedDig('factura', idSociety.id, values.empresa.id , values.numero)
           if (existe || values.numero ==='') {
-            console.log(222);
+            // console.log(222);
             setIsPromptOpen(true);
           }else{
    
@@ -68,7 +92,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
               empresaId: values.empresa.id,
               fideicomisoId: values.fideicomiso.id,
               moneda: 'ARS',
-              blue: values.blue==='on'? 1:0,
+              blue: values.blue==='on'? 1:(alwaysBlue? 1:0),
               creador: loggedUser.id
             });          
             //resetForm();
@@ -146,6 +170,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
               maxLength={11}         
               size="small"
               sx={{ width: '20ch' }}
+  
               name='numero'
               onChange={event => onlyNumbers(event, setFieldValue, 'numero')}
             /> 
@@ -165,10 +190,15 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
 
           &nbsp;&nbsp;
           <Hidden  smUp={( !verCheckBlue)} >        
-          <FormControlLabel 
-            control={ <Checkbox  id={'blue'}  name={'blue'}             
-            onChange={(event) => onlyCheck(event, setFieldValue, 'blue', chkblue, setChkblue)}
-            /> }   label="Blue"  />
+              <FormControlLabel 
+                control={ <Checkbox  id={'blue'}  name={'blue'}             
+                onChange={(event) => onlyCheck(event, setFieldValue, 'blue', chkblue, setChkblue)}
+                /> }   label="Blue"  />
+          </Hidden>
+          <Hidden  smUp={( !verCheckBlueDis)} >        
+              <FormControlLabel 
+                control={ <Checkbox  disabled defaultChecked id={'blue'}  name={'blue2'}
+                /> }   label="Blue"  />
           </Hidden>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 

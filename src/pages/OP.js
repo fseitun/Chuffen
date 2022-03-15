@@ -55,7 +55,7 @@ export function OP({ idSociety, loggedUser }) {
           py: 3,
         }}>
         <Container maxWidth={false}>
-          <Hidden smUp={(loggedUser?.['rol.factura'] ==='vista')} >
+          <Hidden smUp={(loggedUser?.['rol.op'] ==='vista')} >
             <Box sx={{ pt: 3 }}>
               <ManipularOP idSociety={idSociety}  loggedUser={loggedUser} fideicomisos={fideicomisos} proveedores={proveedores}  ddfacturas={ddfacturas} ddfacturasBlue={ddfacturasBlue} />
             </Box>

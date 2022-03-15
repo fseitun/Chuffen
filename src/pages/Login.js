@@ -68,7 +68,7 @@ export function Login({ setLoggedUser, setIdSociety }) {
   
   const fondos_s = [
     { id: 0, descripcion: '-' },  
-    { id: 1, descripcion: 'Sin fondos' },
+    { id: 1, descripcion: 'No cargado' },
     { id: 2, descripcion: 'OK cargado' },
   ];
   localStorage.setItem("fondos_s", JSON.stringify(fondos_s));
@@ -82,7 +82,7 @@ export function Login({ setLoggedUser, setIdSociety }) {
   localStorage.setItem("tipos", JSON.stringify(tipos));
 
 
-  const formaPagos = "-,Transferencia ARS,Transferencia USD,Cheque,Efectivo ARS,Efectivo USD,Débito automático,Echeq,Otra";
+  const formaPagos = "-,Cheque,Débito automático,Echeq,Efectivo ARS,Efectivo USD,Retenciones,Transferencia ARS,Transferencia USD,Otra";
   localStorage.setItem("formaPagos", formaPagos); 
 
   /****************************************************/

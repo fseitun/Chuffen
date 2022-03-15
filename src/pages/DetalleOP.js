@@ -32,10 +32,6 @@ export function DetalleOP({ idSociety, loggedUser }) {
       getMethod(`op/mostrarConFacturas/${idSociety.id}/${idOP}`)
   );
 
-
-
-  
-
    //guarda pdf en server
    const getPdfBlob = async () =>   {
 
@@ -80,8 +76,6 @@ export function DetalleOP({ idSociety, loggedUser }) {
       <RepOp dataOP={cargadas(formOP?.op)} dataFacturas={facturasCargadas(formOP?.item)} apiServerUrl={apiServerUrl} idSociedad={id} />
     )
   }
-
-
 
   
   const queryClient = useQueryClient();
@@ -152,65 +146,25 @@ export function DetalleOP({ idSociety, loggedUser }) {
       
     
     <div id="MENU" style={{ minHeight: "100vh" }}>
-      <nav
-      style={{
-        display: "flex",
-        borderBottom: "1px solid black",
-        paddingBottom: "5px",
-        justifyContent: "flex-end",
-      }}
-    >
-      
-      <Hidden  smUp={( verAuthBoton("obra", (formOP?.auth_obra? (formOP?.auth_obra[0]?.usuarios? formOP?.auth_obra[0]?.usuarios:auth_obra):auth_obra), loggedUser?.["rol.descripcion"]))} >
-      
-        <Box  mt={2} sx={{ pt: 1 }}>
-          <Button
-          
-          onClick={() => {
-            toast(({ closeToast }) => (
-              <Box>
-                <Button
-                  sx={{ p: 1, m: 1 }}
-                  variant="contained"
-                  color="secondary"
-                  size="small"
-                  onClick={closeToast}
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  sx={{ p: 1, m: 1 }}
-                  variant="contained"
-                  color="secondary"
-                  size="small"
-                  onClick={() => {
-                    // setVerBoxObra("none")
-                    authFilaObra(idOP)
-                    closeToast();
-                  }}
-                >
-                  Autorizar
-                </Button>
-              </Box>
-            ));
-          }}
-        >
-          Autorizar en Obra
-          </Button>
-        </Box>
-      </Hidden>
-      <Hidden  smUp={( verAuthBoton("adm", (formOP?.auth_adm? (formOP?.auth_adm[0]?.usuarios? formOP?.auth_adm[0]?.usuarios:auth_adm):auth_adm), loggedUser?.["rol.descripcion"]))} >
-        <Box  mt={2} sx={{ pt: 1 }}>
-          <Button
-            ref={buttonAdmRef}
-            /*variant="info"*/
+    <nav
+        style={{
+          display: "flex",
+          borderBottom: "1px solid black",
+          paddingBottom: "5px",
+          justifyContent: "flex-end",
+        }}
+      >
+        
+        <Hidden  smUp={( verAuthBoton("obra", (formOP?.auth_obra? (formOP?.auth_obra[0]?.usuarios? formOP?.auth_obra[0]?.usuarios:auth_obra):auth_obra), loggedUser?.["rol.descripcion"]))} >
+        
+          <Box  mt={2} sx={{ pt: 1 }}>
+            <Button
             
             onClick={() => {
               toast(({ closeToast }) => (
                 <Box>
                   <Button
                     sx={{ p: 1, m: 1 }}
-                    
                     variant="contained"
                     color="secondary"
                     size="small"
@@ -224,8 +178,8 @@ export function DetalleOP({ idSociety, loggedUser }) {
                     color="secondary"
                     size="small"
                     onClick={() => {
-                      // setVerBoxAdm("none")
-                      authFilaAdm(idOP)
+                      // setVerBoxObra("none")
+                      authFilaObra(idOP)
                       closeToast();
                     }}
                   >
@@ -234,34 +188,71 @@ export function DetalleOP({ idSociety, loggedUser }) {
                 </Box>
               ));
             }}
-          >        
-            Autorizar ADM
-          </Button>      
+          >
+            Autorizar en Obra
+            </Button>
+          </Box>
+        </Hidden>
+        <Hidden  smUp={( verAuthBoton("adm", (formOP?.auth_adm? (formOP?.auth_adm[0]?.usuarios? formOP?.auth_adm[0]?.usuarios:auth_adm):auth_adm), loggedUser?.["rol.descripcion"]))} >
+          <Box  mt={2} sx={{ pt: 1 }}>
+            <Button
+              ref={buttonAdmRef}
+              /*variant="info"*/
+              
+              onClick={() => {
+                toast(({ closeToast }) => (
+                  <Box>
+                    <Button
+                      sx={{ p: 1, m: 1 }}
+                      
+                      variant="contained"
+                      color="secondary"
+                      size="small"
+                      onClick={closeToast}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      sx={{ p: 1, m: 1 }}
+                      variant="contained"
+                      color="secondary"
+                      size="small"
+                      onClick={() => {
+                        // setVerBoxAdm("none")
+                        authFilaAdm(idOP)
+                        closeToast();
+                      }}
+                    >
+                      Autorizar
+                    </Button>
+                  </Box>
+                ));
+              }}
+            >        
+              Autorizar ADM
+            </Button>      
+          </Box>
+        </Hidden>
+        <Box mt={2} sx={{ pt: 1 }}>
+          <Button
+            /*variant="info"*/
+            onClick={() => {
+              setVerPDF(!verPDF);
+            }}
+          >
+            {verPDF ? "Ocultar PDF" : "Ver PDF"}
+          </Button>
+
+          <PDFDownloadLink
+            document={isLoading===false? <RepOp dataOP={cargadas(formOP?.op)} dataFacturas={facturasCargadas(formOP?.item)} apiServerUrl={apiServerUrl} idSociedad={id} />:null }
+
+            fileName={nomPdfCargado(formOP?.op, numero, fideicomiso)}
+          >
+            <Button variant="info" onClick={guardar_en_server} >Descargar</Button>
+          </PDFDownloadLink>
+
+    
         </Box>
-      </Hidden>
-      <Box mt={2} sx={{ pt: 1 }}>
-        <Button
-          /*variant="info"*/
-          onClick={() => {
-            setVerPDF(!verPDF);
-          }}
-        >
-          {verPDF ? "Ocultar PDF" : "Ver PDF"}
-        </Button>
-
-        <PDFDownloadLink
-          document={isLoading===false? <RepOp dataOP={cargadas(formOP?.op)} dataFacturas={facturasCargadas(formOP?.item)} apiServerUrl={apiServerUrl} idSociedad={id} />:null }
-
-          fileName={nomPdfCargado(formOP?.op, numero, fideicomiso)}
-        >
-          <Button variant="info" onClick={guardar_en_server} >Descargar</Button>
-        </PDFDownloadLink>
-
-   
-      </Box>
-  
-
-
     </nav>     
 
       <Helmet>
@@ -271,103 +262,102 @@ export function DetalleOP({ idSociety, loggedUser }) {
       </Helmet>  
       <>
                   
-          {verPDF ? (
-            <PDFViewer style={{ width: "100%", height: "90vh" }}>
-              <RepOp dataOP={cargadas(formOP?.op)} dataFacturas={facturasCargadas(formOP?.item)} apiServerUrl={apiServerUrl} idSociedad={id} />
-            </PDFViewer>
-          ) : 
-     
-          <Box
-                sx={{
-                  backgroundColor: 'background.default',
-                  minHeight: '100%',
-                  py: 3,
-                }}
-              >
-            <Container >
+        {verPDF ? (
+          <PDFViewer style={{ width: "100%", height: "90vh" }}>
+            <RepOp dataOP={cargadas(formOP?.op)} dataFacturas={facturasCargadas(formOP?.item)} apiServerUrl={apiServerUrl} idSociedad={id} />
+          </PDFViewer>
+        ) : 
+    
+        <Box sx={{backgroundColor: 'background.default',minHeight: '100%',py: 3,}} >
+          <Container >
 
-              <Box sx={{ pt: 3 }}>
-                <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >
-                                
-                      <Grid item md={2}>
+            <Box sx={{ pt: 3 }}>
+              <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >
+                              
+                    <Grid item md={2}>
+                      <Typography align="left" color="textPrimary" variant="h4">
+                            Solicitud de Pago:
+                      </Typography>
+                    </Grid>
+
+                    <Grid item md={5}>
+
+                      <Hidden  smUp={( !(parseInt(blue)===1))} >
                         <Typography align="left" color="textPrimary" variant="h4">
-                              Solicitud de Pago:
+                              {numero.replace("OP_","")} (Blue) &nbsp;&nbsp; {fideicomiso}
                         </Typography>
-                      </Grid>
+                      </Hidden>
+                      <Hidden  smUp={( !(parseInt(blue)===0))} >
+                        <Typography align="left" color="textPrimary" variant="h4">
+                              {numero.replace("OP_","")}&nbsp;&nbsp;&nbsp;&nbsp; {fideicomiso}
+                        </Typography>
+                      </Hidden>
 
-                      <Grid item md={5}>
+                    </Grid>
 
-                        <Hidden  smUp={( !(parseInt(blue)===1))} >
-                          <Typography align="left" color="textPrimary" variant="h4">
-                                {numero.replace("OP_","")} (Blue) &nbsp;&nbsp; {fideicomiso}
+                    <Grid item md={5}>
+                          <Typography align="right" color="textPrimary" variant="h5">
+                            {mostrarFechaMesTXT(fecha)}
                           </Typography>
-                        </Hidden>
-                        <Hidden  smUp={( !(parseInt(blue)===0))} >
-                          <Typography align="left" color="textPrimary" variant="h4">
-                                {numero.replace("OP_","")}&nbsp;&nbsp;&nbsp;&nbsp; {fideicomiso}
-                          </Typography>
-                        </Hidden>
+                    </Grid>             
 
-                      </Grid>
-
-                      <Grid item md={5}>
-                            <Typography align="right" color="textPrimary" variant="h5">
-                              {mostrarFechaMesTXT(fecha)}
-                            </Typography>
-                      </Grid>             
-
-                </Grid>
-              </Box>
-              <Hidden  smUp={( verAgregar)} >
-                <Box sx={{ pt: 3 }}>
-                
-                  <AgregarFactura
-                    OPId={idOP}
-                    fecha={fecha}
-                    empresaId={empresaId}
-                    idSociety={idSociety}
-                    refetch={refetch}
-                    loggedUser={loggedUser}
-                  />
-                
-                </Box>
-              </Hidden> 
-              <Box  sx={{ pt: 3 }}>
-                <GrillaDetalleOP
-                
+              </Grid>
+            </Box>
+            <Hidden  smUp={( verAgregar)} >
+              <Box sx={{ pt: 3 }}>
+              
+                <AgregarFactura
                   OPId={idOP}
                   fecha={fecha}
+                  fideicomisoId={formOP?.op?.fideicomisoId}
                   empresaId={empresaId}
                   idSociety={idSociety}
                   refetch={refetch}
                   loggedUser={loggedUser}
                 />
+              
               </Box>
+            </Hidden> 
+            <Box  sx={{ pt: 3 }}>
+              <GrillaDetalleOP
+              
+                OPId={idOP}
+                fecha={fecha}
+                empresaId={empresaId}
+                idSociety={idSociety}
 
-              <Box  sx={{ pt: 3 }}>
-                <FormDetalleOP
+                facturas={formOP?.item}
+                isLoading={isLoading}
+                error={error}
 
-                  OPId={idOP}
-                  estadoOP={estadoOP}
-                  confirmada={confirmada}
-                  idSociety={idSociety}
-                  loggedUser={loggedUser}
-                  formOP={formOP?.op}
-                  isLoading={isLoading}
-                  error={error}
-                  empresaId={empresaId}
-                  fideicomiso={fideicomiso}
-                  refetch={refetch}
+                refetch={refetch}
+                loggedUser={loggedUser}
+              />
+            </Box>
 
-                />
-              </Box>
-         
-            </Container>
-            
-          </Box>
-          
-          }
-        </>
+            <Box  sx={{ pt: 3 }}>
+              <FormDetalleOP
+
+                OPId={idOP}
+                estadoOP={estadoOP}
+                confirmada={confirmada}
+                idSociety={idSociety}
+                loggedUser={loggedUser}
+                formOP={formOP?.op}
+                isLoading={isLoading}
+                error={error}
+                empresaId={empresaId}
+                fideicomiso={fideicomiso}
+                refetch={refetch}
+
+              />
+            </Box>
+        
+          </Container>            
+        </Box>
+        
+        }
+      </>
    
     </div>
     

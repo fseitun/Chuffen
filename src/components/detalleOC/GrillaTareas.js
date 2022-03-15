@@ -132,8 +132,9 @@ const columns = (acceso, total, setIsPromptOpen, setRowIdToDelete) => [
   },
   {
     field: 'deleteIcon',
-    headerName: ' ',
+    headerName: '',
     width: 50,
+    hide: !acceso,
     headerAlign: 'center',
     align: 'center',
     renderCell: ({ row: { deleteId } }) => (
@@ -148,14 +149,13 @@ const columns = (acceso, total, setIsPromptOpen, setRowIdToDelete) => [
   },
 ];
 
-export function GrillaTareas({ OCId, loggedUser, formOC, refetch, moneda, totPagos}) {
+export function GrillaTareas({ OCId, loggedUser, formOC, refetch, moneda, totPagos, totAjuste}) {
   const idSociety = useContext(SocietyContext);
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
 
   var acceso = true;
-  if(loggedUser?.['rol.factura'] ==='vista'){acceso =false}
-
+  if(loggedUser?.['rol.oc'] ==='vista'){acceso =false}
   
   const {
     data: detalle,
@@ -220,7 +220,7 @@ export function GrillaTareas({ OCId, loggedUser, formOC, refetch, moneda, totPag
     return `Hubo un error: ${error.message}`;
   } else
     var totTareas = (moneda==='ARS'?formOC?.oc?.monto_ARS:formOC?.oc?.monto_USD);
-    var avance = totPagos / totTareas;
+    var avance = (totPagos-totAjuste) / totTareas;
     if(!avance){avance=0.0};
 
     return (

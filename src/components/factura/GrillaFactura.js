@@ -81,6 +81,14 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     headerAlign: 'center',
   },
   {
+    field: 'es_ajuste',
+    headerName: 'Aguste',
+    type: 'boolean',
+    width: 130,
+    editable: true,
+    headerAlign: 'center',
+  },
+  {
     field: 'link',
     headerName: 'Link',
     width: 110,
@@ -176,7 +184,12 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
   var tipos = JSON.parse(localStorage.getItem("tipos"));
   var blue = 0;
   var verColumnBlue = false;
+  
   if(loggedUser?.['rol.factura'] ==='total'){blue= -1; verColumnBlue = true;}
+  if(loggedUser?.['rol.descripcion'] ==='blue'){blue= -1; verColumnBlue = true;}
+
+
+
   var acceso = true;
   if(loggedUser?.['rol.factura'] ==='vista'){acceso =false}
 
@@ -213,7 +226,7 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
 
       await postMethod(`factura/modificar/${idSociety.id}`, {
         id,
-        [field]: value,
+        [field]: field==='es_ajuste'? (value?1:0):value,
       })
       ),
       
@@ -295,6 +308,7 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
               id: factura.tipo,
               descripcion: tipos?.find(tipo => tipo.id === factura.tipo)?.descripcion,
             },
+            es_ajuste: factura?.es_ajuste,
             link: factura?.link,
             link2: factura?.link,
             montoTotal: parseInt(factura.tipo)===2? (-1 * factura.montoTotal):factura.montoTotal, //factura?.montoTotal,
