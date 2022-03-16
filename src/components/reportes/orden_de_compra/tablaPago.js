@@ -89,8 +89,8 @@ const styles = StyleSheet.create({
       <View /* Encabezado*/   
        style={[styles.container, { borderBottomColor: dataOC? dataOC?.oc?.fideicomisos[0]?.color:'#ffffff', backgroundColor: dataOC?.oc? dataOC?.oc?.fideicomisos[0]?.color2:'#ffffff'}]}>
         <Text style={[styles.col1, { borderRightColor: dataOC? dataOC?.oc?.fideicomisos[0]?.color:'#ffffff' }]}>Num</Text>
-        <Text style={[styles.col2, { borderRightColor: dataOC? dataOC?.oc?.fideicomisos[0]?.color:'#ffffff' }]}>Monto</Text>
-        <Text style={[styles.col3, { borderRightColor: dataOC? dataOC?.oc?.fideicomisos[0]?.color:'#ffffff' }]}>Ajuste</Text>
+        <Text style={[styles.col2, { borderRightColor: dataOC? dataOC?.oc?.fideicomisos[0]?.color:'#ffffff' }]}>Monto Contrato</Text>
+        <Text style={[styles.col3, { borderRightColor: dataOC? dataOC?.oc?.fideicomisos[0]?.color:'#ffffff' }]}>Mayor Costo</Text>
         <Text style={[styles.col4, { borderRightColor: dataOC? dataOC?.oc?.fideicomisos[0]?.color:'#ffffff' }]}>Fecha</Text>
 
       </View>     

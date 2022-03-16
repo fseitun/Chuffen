@@ -82,9 +82,9 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
   },
   {
     field: 'es_ajuste',
-    headerName: 'Aguste',
+    headerName: 'Mayor Costo',
     type: 'boolean',
-    width: 130,
+    width: 160,
     editable: true,
     headerAlign: 'center',
   },

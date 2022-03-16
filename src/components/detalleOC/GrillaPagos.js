@@ -18,8 +18,8 @@ const columns = (verLink) => [
   
   {
     field: 'avance',
-    headerName: 'Avance',
-    width: 130,
+    headerName: 'Monto Contrato',
+    width: 180,
     editable: false,
     headerAlign: 'center',
     align: 'right',
@@ -29,8 +29,8 @@ const columns = (verLink) => [
   },
   {
     field: 'ajuste',
-    headerName: 'Mayores Costos',
-    width: 190,
+    headerName: 'Mayor Costo',
+    width: 180,
     editable: false,
     headerAlign: 'center',
     align: 'right',
@@ -107,7 +107,7 @@ export function GrillaPagos({ OCId, loggedUser, formOC, isLoading, error, moneda
           </Grid>                      
           <Grid item md={3}>
             <Typography align="right" color="textWarning" variant="h5">
-                  Avance:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(totPagos-totAjuste)) + " " + moneda }
+                  Monto Contrato:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(totPagos-totAjuste)) + " " + moneda }
                   
             </Typography>           
           </Grid>

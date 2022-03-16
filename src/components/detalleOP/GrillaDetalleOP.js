@@ -61,9 +61,9 @@ const columns = (puedeEditar, verEliminar) => [
   },
   {
     field: 'es_ajuste',
-    headerName: 'Aguste',
+    headerName: 'M. Costo',
     type: 'boolean',
-    width: 130,
+    width: 150,
     editable: false,
     headerAlign: 'center',
   },
