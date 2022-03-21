@@ -1,6 +1,7 @@
+import * as React from 'react';
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -36,8 +37,6 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     renderCell: ({ row: { deleteId } }) => (
       <DeleteIcon
         onClick={e => {
-          // console.log('e', e);
-          // console.log('deleteId', deleteId);
           setRowIdToDelete(deleteId);
           setIsPromptOpen(true);
         }}
@@ -51,8 +50,7 @@ export function GrillaBanco({ idSociety }) {
   const [rowIdToDelete, setRowIdToDelete] = useState();
 
   const navigate = useNavigate();
-  // console.log(rowIdToDelete);
-
+  
   const {
     data: bancoInformation,
     isLoading,
@@ -75,7 +73,6 @@ export function GrillaBanco({ idSociety }) {
       onSettled: () => queryClient.invalidateQueries(['banco', idSociety]),
     }
   );
-  // eliminate(1);
 
   const { mutate: modifyData } = useMutation(
     async ({ field, id, value }) =>
@@ -87,12 +84,10 @@ export function GrillaBanco({ idSociety }) {
       onMutate: async ({ field, id, value }) => {
         await queryClient.cancelQueries(['banco', idSociety]);
         const prevData = queryClient.getQueryData(['banco', idSociety]);
-        // console.log('prevData', prevData);
         const newData = [
           ...prevData.filter(banco => banco.id !== id),
           { ...prevData.find(banco => banco.id === id), [field]: value },
         ];
-        // console.log('newData', newData);
         queryClient.setQueryData(['banco', idSociety], newData);
         return prevData;
       },
@@ -104,8 +99,29 @@ export function GrillaBanco({ idSociety }) {
   const { mutate: irDetalle } = useMutation(
     async banco =>    
       navigate(`./${banco.id}/Cuentas de Banco-${banco.banco}`)
-      //navigate(`./${params.row.id}/Cuentas de Banco-${params.row.banco}`);
   );
+
+  const [sortModel, setSortModel] = React.useState([
+    {
+      field: 'banco',
+      sort: 'asc',
+    },
+  ]);
+
+  const onSort = (newSort) => {
+
+    if(newSort.length === 0){
+      newSort.push(sortModel[0]);
+      if(sortModel[0]?.sort === 'asc'){
+        newSort[0].sort = 'desc';
+      }else{
+        newSort[0].sort = 'asc';
+      }
+    }
+    setSortModel(newSort);    
+  };
+
+  const [pageSize, setPageSize] = useState(25);
 
   if (isLoading) {
     return 'Cargando...';
@@ -116,6 +132,7 @@ export function GrillaBanco({ idSociety }) {
       <div style={{ width: '100%' }}>
         <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
         <DataGrid
+          
           rows={bancoInformation.map(banco => ({
             id: banco.id,
             banco: banco.banco,
@@ -125,10 +142,16 @@ export function GrillaBanco({ idSociety }) {
           }))}
           onCellEditCommit={modifyData}
           
-          /* onRowDoubleClick={a => {return IrACuentaBanco(a);}}*/
-        compone
           columns={columns(setIsPromptOpen, setRowIdToDelete)}
-          pageSize={25}
+
+          sortModel={sortModel}
+          onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
+       
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          pagination
+          
           disableSelectionOnClick
           autoHeight
           scrollbarSize
@@ -144,16 +167,15 @@ export function GrillaBanco({ idSociety }) {
             </Typography>
       </div>
     );
-    /*
-    function IrACuentaBanco(params) {
-      navigate(`./${params.row.id}/Cuentas de Banco-${params.row.banco}`);
-    }*/
 }
 
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarExport />
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport csvOptions={{ fields: ['banco', 'descripcionLarga'] }} />
     </GridToolbarContainer>
   );
 }

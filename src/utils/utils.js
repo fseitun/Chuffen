@@ -117,6 +117,9 @@ export function onlyNumbers(event, setFieldValue, typeOfData) {
 }
 
 /*
+var d = new Date(year, month, day);
+d.setMonth(d.getMonth() + 8);
+
 ultimos
 	const id = "ctl03_Tabs1";
 	console.log(id.slice(id.length - 5)); //Outputs: Tabs1

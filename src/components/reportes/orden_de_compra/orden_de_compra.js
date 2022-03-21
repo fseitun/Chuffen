@@ -111,10 +111,14 @@ const styles = StyleSheet.create({
 
                     <View style={{flexDirection: 'row',marginLeft: '0',marginRight: '0'}} >
                         <Text style={[styles.reportTitleFide, {width: (dataOC?.oc? 100 - dataOC?.oc?.fideicomisos[0]?.ancho_logo + '%':'75%'), color: dataOC?.oc?.fideicomisos[0]?.color}]}>{dataOC?.oc?.fideicomisos[0]?.titulo}</Text>
-                        <View style={{width: dataOC? (dataOC?.oc?.fideicomisos[0]?.ancho_logo + '%'):'25%' }} >
-                        <Image style={[styles.logo, {backgroundColor: dataOC?.oc? dataOC?.oc?.fideicomisos[0]?.color3:'#FFFFFF' }]} src={{ uri: `${apiServerUrl}/sociedades/${idSociedad}/${dataOC?.oc? dataOC?.oc?.fideicomisos[0]?.logo:'logo.png'}` , method: "GET", headers: { "Cache-Control": "no-cache" }, body: "" }} />                   
+                      
+                        <View style={{width: dataOC? (80 + '%'):'25%' }} >
+                          <Image style={[styles.logo, {backgroundColor: dataOC?.oc? dataOC?.oc?.fideicomisos[0]?.color3:'#FFFFFF' }]}
+                               src={{ uri: `${apiServerUrl}/sociedades/${idSociedad}/${dataOC?.oc? dataOC?.oc?.fideicomisos[0]?.logo:'logo.png'}` , method: "GET", headers: { "Cache-Control": "no-cache" }, body: "" }} /> 
                         </View>
+
                     </View>
+
                     <View style={styles.invoiceDateContainer}>
                         <Text style={styles.label}>Fecha: </Text>
                         <Text >{mostrarFecha(dataOC?.oc?.createdAt)}</Text>
@@ -145,7 +149,6 @@ const styles = StyleSheet.create({
                     </View>
 
                     <TablaPago dataOC={dataOC}  moneda={moneda}  totARS={totARS}  totUSD={totUSD}  ajARS={ajARS} ajUSD={ajUSD} />
-
                 </Page>
             </Document>
         );

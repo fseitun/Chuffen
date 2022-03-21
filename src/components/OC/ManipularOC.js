@@ -33,7 +33,7 @@ export function ManipularOC({ idSociety, loggedUser, fideicomisos, proveedores  
 
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        // console.log(11111, chkblue);
+        
         addOC({
 
           fideicomisoId: values.fideicomiso.id,

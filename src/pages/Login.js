@@ -45,7 +45,12 @@ export function Login({ setLoggedUser, setIdSociety }) {
     getMethod(`cuentabanco/listar/${idSociety.id}/0`)
   );  
   localStorage.setItem("co", JSON.stringify(cuentasbanco));
-
+/*
+  const { data: CAC } = useQuery(['CAC', idSociety], () =>
+    getMethod(`CAC/listar/${idSociety.id}`)
+  );
+  localStorage.setItem("CAC", JSON.stringify(CAC));
+*/
   const estados = [  
     { id: 0, descripcion: '-' },
     { id: 1, descripcion: 'Para autorizar en Obra' },

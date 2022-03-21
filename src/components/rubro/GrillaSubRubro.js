@@ -1,6 +1,7 @@
+import * as React from 'react';
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
@@ -11,7 +12,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'subRubro',
     headerName: 'SubRubro',
-    width: 170,
+    width: 260,
     editable: true,
     headerAlign: 'center',
     align: 'center',
@@ -89,6 +90,28 @@ export function GrillaSubRubro({ idSociety, idRubro }) {
     }
   );
 
+  const [sortModel, setSortModel] = React.useState([
+    {
+      field: 'subRubro',
+      sort: 'asc',
+    },
+  ]);
+
+  const onSort = (newSort) => {
+
+    if(newSort.length === 0){
+      newSort.push(sortModel[0]);
+      if(sortModel[0]?.sort === 'asc'){
+        newSort[0].sort = 'desc';
+      }else{
+        newSort[0].sort = 'asc';
+      }
+    }
+    setSortModel(newSort);    
+  };
+
+  const [pageSize, setPageSize] = useState(25);
+
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
@@ -107,7 +130,15 @@ export function GrillaSubRubro({ idSociety, idRubro }) {
         
         compone
           columns={columns(setIsPromptOpen, setRowIdToDelete)}
-          pageSize={25}
+          
+          sortModel={sortModel}
+          onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
+       
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          pagination
+
           disableSelectionOnClick
           autoHeight
          
@@ -124,7 +155,10 @@ export function GrillaSubRubro({ idSociety, idRubro }) {
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarExport />
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport csvOptions={{ fields: ['subRubro'] }} />
     </GridToolbarContainer>
   );
 }

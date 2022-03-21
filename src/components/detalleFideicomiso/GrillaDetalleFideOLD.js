@@ -98,7 +98,7 @@ export function GrillaDetalleFideOLD({ idSociety, selectedFideicomisoData }) {
           onDelete: () => deleteProduct(el.id),
         }))}
         columns={columns}
-        pageSize={25}
+        /*pageSize={25}*/
         disableSelectionOnClick
         autoHeight
         sortModel={[

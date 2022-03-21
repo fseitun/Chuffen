@@ -37,7 +37,7 @@ export function ManipularOP({ idSociety, loggedUser, fideicomisos, proveedores, 
 
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        // console.log(11111, chkblue);
+        
         addOP({
 
           fideicomisoId: values.fideicomiso.id,
@@ -171,14 +171,12 @@ export function ManipularOP({ idSociety, loggedUser, fideicomisos, proveedores, 
 
 function onlyCheck(event, setFieldValue, typeOfData, chkblue, setChkblue) {
   event.preventDefault();
-  //const { value } = event.target;
+  
   setChkblue(!chkblue);
   if(chkblue){ 
     setFieldValue(typeOfData, 'on');
-    // console.log(55555, typeOfData, value, chkblue);
   }else{
     setFieldValue(typeOfData, 'off');
-    // console.log(66666, typeOfData, value, chkblue);
   }
   
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Button, TextField, Avatar, Autocomplete, Hidden} from '@mui/material';
@@ -31,7 +31,7 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
   
   {
     field: 'id',
-    headerName: 'Num',
+    headerName: 'Id',
     width: 55,
     editable: false,
     headerAlign: 'center',
@@ -48,6 +48,7 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     headerAlign: 'center',
     renderCell: ({ value }) => value===0?'' :<Avatar sx={{ bgcolor: '#3944BC' }} >B</Avatar>,
   },
+  
   {
     field: 'createdAt',
     headerName: 'Fecha',
@@ -107,7 +108,7 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     headerName: 'Estado',
     width: 150,
     editable: puedeEditar,
-    renderCell: ({ value }) => value.descripcion, // a visualizar
+    // renderCell: ({ value }) => value.descripcion, // a visualizar
     renderEditCell: props => <ComboBoxEst estados={estados} props={props} />,
     headerAlign: 'center',
   },
@@ -116,7 +117,7 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     headerName: 'Retenciones',
     width: 150,
     editable: puedeEditar,
-    renderCell: ({ value }) => value.descripcion, // a visualizar
+    // renderCell: ({ value }) => value.descripcion, // a visualizar
     renderEditCell: props => <ComboBoxRet retenciones={retenciones} props={props} />,
     headerAlign: 'center',
   },
@@ -124,6 +125,8 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     field: 'facturas',
     headerName: 'Facturas',
     width: 140,
+    sortable: false,
+    filterable: false,
     editable: false,
     headerAlign: 'center',
     align: 'center',
@@ -163,84 +166,69 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),    
   },
   {
-    field: 'retencion',
-    hide: true,
-  },
-
-  {
-    field: 'aprobado_obra',
-    hide: true,
-  },
-  {
-    field: 'aprobado obra',
+    field: 'apr_obra',
     headerName: 'Ap. Obra',
+    //sortable: false,
+    //filterable: false,
     width: 140,
     headerAlign: 'center',
     align: 'center',
     renderCell: NonObraAuthRow,
   },
   {
-    field: 'aprobado_adm',
-    hide: true,
-  },
-  {
-    field: 'aprobado adm',
-    headerName: 'Ap. ADM',
+    field: 'apr_adm',
+    headerName: 'Ap. ADM',   
+    //sortable: false,
+    //filterable: false,
     width: 140,
     headerAlign: 'center',
     align: 'center',
     renderCell: NonAdmAuthRow,
   },
-  {
+  /*{
     field: 'estado',
     hide: true,
-  },
+  },*/
   {
     field: 'formaPago',
     headerName: 'Forma Pago',
     width: 160,
     editable: false,
   },
-  {
+  /*{
     field: 'fondos_',
     hide: true,
-  },
+  },*/
   {
     field: 'fondos', // campo en grilla
     headerName: 'Fondos',
     width: 150,
     type: 'singleSelect',
     editable: puedeEditar, //props.row.confirmada,
-    renderCell: ({ value }) => value.descripcion, // a visualizar
+    // renderCell: ({ value }) => value.descripcion, // a visualizar
     renderEditCell: props => <ComboBoxFon fondos_s={fondos_s} props={props} />,
     headerAlign: 'center',
   },
+
   {
-    field: 'rubro',
-    hide: true,
-  },  
-  {
-    field: 'rubroID',
+    field: 'rubroId',
     headerName: 'Rubro',
     width: 140,
     hide: true,
-    editable: puedeEditar,
-    renderCell: ({ value }) => value.nombre,
-    renderEditCell: props => <ComboBox rubros={rubros} props={props} />,
+    editable: false,
+    //renderCell: ({ value }) => value.nombre,
+    // renderEditCell: props => <ComboBox rubros={rubros} props={props} />,
     headerAlign: 'center',
   },
+
   {
-    field: 'subrubro',
-    hide: true,
-  },
-  {
-    field: 'subrubroID',
+    field: 'subrubroId',
     headerName: 'Sub Rubro',
     width: 140,
     hide: true,
-    editable: puedeEditar,
-    renderCell: ({ value }) => value.nombre,
-    renderEditCell: props => <ComboBoxSub subRubros={subRubros} props={props} />,
+    editable: false,
+    // renderCell: ({ value }) => value.nombre,
+    // renderEditCell: props => <ComboBoxSub subRubros={subRubros} props={props} />,
     headerAlign: 'center',
   },  
 
@@ -276,6 +264,22 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     editable: false,
     headerAlign: 'center',
   },
+  /*{
+    field: 'aprobado_obra',
+    hide: true,
+  },
+  {
+    field: 'aprobado_adm',
+    hide: true,
+  },*/
+  /*{
+    field: 'subrubro',
+    hide: true,
+  },
+  {
+    field: 'rubro',
+    hide: true,
+  },  */
   {
     field: 'deleteIcon',
     headerName: ' ',
@@ -508,6 +512,29 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
 
   }
 
+  const [sortModel, setSortModel] = React.useState([
+    {
+      field: 'createdAt',
+      sort: 'desc',
+    },
+  ]);
+
+  const onSort = (newSort) => {
+
+    if(newSort.length === 0){
+      newSort.push(sortModel[0]);
+      if(sortModel[0]?.sort === 'asc'){
+        newSort[0].sort = 'desc';
+      }else{
+        newSort[0].sort = 'asc';
+      }
+    }
+    setSortModel(newSort);    
+  };
+
+  const [pageSize, setPageSize] = useState(25);
+
+
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
@@ -566,56 +593,53 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
         <DataGrid 
           rows={opInformation.filter(element =>filtrar(element, filtFide, filtRS, filtEst)).map(OP => ({
             id: OP.id,    
-            acceso: accesoOP,
+            blue: OP.blue,
+            createdAt: OP.createdAt,
+            fideicomiso: OP.fideicomisos[0]?.nombre,
             numero: OP.numero,
             empresa: OP.empresas[0]?.razonSocial,
-            empresaId: OP.empresaId,
             monto: OP.monto, 
-            moneda: OP.moneda,             
+            moneda: OP.moneda,   
+            estadoOP: estados?.find(estado => estado.id === OP.estadoOP)?.descripcion,
+            estadoRET: retenciones?.find(retencion => retencion.id === OP.estadoRET)?.descripcion,
+            misFacturas: grfacturas?.filter(factura => factura?.OPId === OP.id),
+            fondos: fondos_s?.find(fondos => fondos.id === OP.fondos)?.descripcion,
+            descripcion: OP.descripcion,
+            archivada: OP.archivada,
+            enviada: OP.enviada,
+            confirmada: OP.confirmada===0? false: true,
+
+
+            
+                   
             RET_SUSS: OP.RET_SUSS,
             RET_GAN: OP.RET_GAN,
             RET_IVA: OP.RET_IVA,
-            rubroId: OP.rubroId,            
-            estadoRET: {
-              id: OP.estadoRET,
-              descripcion: retenciones?.find(retencion => retencion.id === OP.estadoRET)?.descripcion,
-            },
-            estadoOP: {
-              id: OP.estadoOP,
-              descripcion: estados?.find(estado => estado.id === OP.estadoOP)?.descripcion,
-            },
-            blue: OP.blue,
-            confirmada: OP.confirmada===0? false: true,
-            fondos: {
-              id: OP.fondos,
-              descripcion: fondos_s?.find(fondos => fondos.id === OP.fondos)?.descripcion,
-            },
-            fideicomiso: OP.fideicomisos[0]?.nombre,
-            archivada: OP.archivada,
-            enviada: OP.enviada,
-            descripcion: OP.descripcion,
-            createdAt: OP.createdAt,   
-            rubroID: {
+            // rubroId: OP.rubroId,  
+            // empresaId: OP.empresaId,           
+            /*rubroID: {
               id: OP.rubroId,
               nombre: rubros?.find(rubro => rubro.id === OP.rubroId)?.rubro,
             },
             subrubroID: {
               id: OP.subrubroId,
               nombre: subRubros?.find(subRubro => subRubro.id === OP.subRubroId)?.subRubro,
-            }, 
+            }, */
             apr_obra: (OP.auth_obra[0]?OP.auth_obra[0].usuarios[0].user:''),
             apr_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
-            misFacturas: grfacturas?.filter(factura => factura?.OPId === OP.id),
+            filtroRubroID: OP.rubroId,
+            acceso: accesoOP,
             deleteId: OP.id,
             /* para exportar*/
-            retencion: retenciones?.find(retencion => retencion.id === OP.estadoRET)?.descripcion,
+            // retencion: retenciones?.find(retencion => retencion.id === OP.estadoRET)?.descripcion,
             aprobado_obra: (OP.auth_obra[0]?OP.auth_obra[0].usuarios[0].user:''),
             aprobado_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
-            estado: estados?.find(estado => estado.id === OP.estadoOP)?.descripcion,
-            fondos_: fondos_s?.find(fondos => fondos.id === OP.fondos)?.descripcion,  
+            // estado: estados?.find(estado => estado.id === OP.estadoOP)?.descripcion,
+            // fondos_: fondos_s?.find(fondos => fondos.id === OP.fondos)?.descripcion,  
             formaPago: OP.formaPago,          
-            rubro: rubros?.find(rubro => rubro.id === OP.rubroId)?.rubro,
-            subrubro: subRubros?.find(subRubro => subRubro.id === OP.subRubroId)?.subRubro,     
+            rubroId: rubros?.find(rubro => rubro.id === OP.rubroId)?.rubro,
+            //// rubroID: rubros?.find(rubro => rubro.id === proveedor.rubroId)?.rubro,
+            subrubroId: subRubros?.find(subRubro => subRubro.id === OP.subRubroId)?.subRubro,     
             onAuthObra: () => nonAuthObra(OP),
             onAuthAdm: () => nonAuthAdm(OP),
             onEnviar: () => enviarCorreo(OP),
@@ -626,6 +650,15 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
           }))}
           onCellEditCommit={modifyData}
           columns={columns(verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete)}
+          
+          sortModel={sortModel}
+          onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
+       
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          pagination
+
           isCellEditable={(params) => (!params.row.confirmada || accesoOP ==='total')}
 
           /*disableSelectionOnClick*/
@@ -633,22 +666,14 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
           onSelectionModelChange={setSelectionModel}
                
           autoHeight
-          density={'comfortable'}
+          
           scrollbarSize
           components={{
             Toolbar: CustomToolbar,
           }}
 
           getRowClassName={(params) => `color_x_estado-${params.row.confirmada?'conf':params.row.estadoOP?.id===6? 'anulado':params.row.estadoOP?.id===2? 'parap':params.row.estadoOP?.id===1||params.row.estadoOP?.id===4? 'auth':'regular'}`}
-          /*
-          style={{
-            rowStyle: (params) => ({
-              backgroundColor:
-                  params.row.confirmada
-                  ? "#000"
-                  : "#fff"
-            })
-        }}  */
+          
           
         >      
 
@@ -767,13 +792,13 @@ async function enviarCorreo_2(idOP, fideicomiso, numero, razonSocial, enviar_OP_
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-
-      <GridToolbarExport csvOptions={{ fields: ['createdAt', 'fideicomiso', 'numero','empresa','monto','moneda','RET_SUSS','RET_GAN','RET_IVA','fondos_','retencion', 'aprobado_obra', 'aprobado_adm', 'estado', 'fondos_', 'rubro', 'subrubro','descripcion'] }} />
-      
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport csvOptions={{ fields: ['id', 'createdAt', 'fideicomiso', 'numero','empresa','monto','moneda','RET_SUSS','RET_GAN','RET_IVA','fondos','estadoRET', 'estadoOP', 'apr_obra', 'apr_adm','rubroId', 'subrubroId','descripcion'] }} />
     </GridToolbarContainer>
   );
 }
-
 
 
 function IrDetalleOP_0(params) {
@@ -803,7 +828,7 @@ function IrDetalleOP_2(params) {
   return <Button onClick={sendRow} >{numero}  </Button>;
 } 
 
-
+/*
 function ComboBox({ rubros, props }) {
   const { id, api, field } = props;
 
@@ -830,7 +855,7 @@ function ComboBox({ rubros, props }) {
           api.setCellMode(id, field, 'view');
         }
       }}
-      //disablePortal
+      // disablePortal
       id="combo-box-demo"
       options={rubros}
       isOptionEqualToValue={(op, val) => op.rubro === val.rubro}
@@ -846,7 +871,7 @@ function ComboBoxSub({ subRubros, props }, params) {
   
   subRubros = [
     
-    ...subRubros.filter(subR => subR.rubroId === parseInt(props?.row?.rubroID.id)),
+    ...subRubros.filter(subR => subR.rubroId === parseInt(props?.row?.filtroRubroID)),
     {
       subRubro: '',
     },
@@ -873,7 +898,7 @@ function ComboBoxSub({ subRubros, props }, params) {
       renderInput={params => <TextField {...params} label="subRubro" />}
     />
   );
-}
+}*/
 
 function ComboBoxRet({ retenciones, props }) {
   const { id, api, field } = props;

@@ -1,14 +1,11 @@
 import React from 'react';
-import {View, Text, Link, StyleSheet } from '@react-pdf/renderer';
+import {View, Text, StyleSheet } from '@react-pdf/renderer';
 import ItemTarea from './itemTarea';
-// import { mostrarFecha } from 'src/utils/utils';
 
 const styles = StyleSheet.create({
 
   container: {
       flexDirection: 'row',
-      //borderBottomColor: '#bff0fd',
-      //backgroundColor: '#bff0fd',
       borderBottomWidth: 1,
       alignItems: 'center',
       height: 21,

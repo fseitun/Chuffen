@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { Autocomplete, TextField } from '@mui/material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
@@ -69,21 +69,21 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
   },
 
   {
-    field: 'rubroID',
+    field: 'rubroId',
     headerName: 'Rubro',
     width: 140,
     editable: true,
-    renderCell: ({ value }) => value.nombre,
+    // renderCell: ({ value }) => value.nombre,
     renderEditCell: props => <ComboBox rubros={rubros} props={props} />,
     headerAlign: 'center',
   },
 
   {
-    field: 'subrubroID',
+    field: 'subrubroId',
     headerName: 'Sub Rubro',
     width: 140,
     editable: true,
-    renderCell: ({ value }) => value.nombre,
+    // renderCell: ({ value }) => value.nombre,
     renderEditCell: props => <ComboBoxSub subRubros={subRubros} props={props} />,
     headerAlign: 'center',
   },
@@ -111,6 +111,7 @@ const columns = (rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
     ),
   },
 ];
+
 
 export function GrillaProveedor({ idSociety }) {
   
@@ -148,7 +149,6 @@ export function GrillaProveedor({ idSociety }) {
       onSettled: () => queryClient.invalidateQueries(['proveedor', idSociety]),
     }
   );
-  // eliminate(1);
 
   const { mutate: modifyData } = useMutation(
     async ({ field, id, value }) =>
@@ -174,6 +174,27 @@ export function GrillaProveedor({ idSociety }) {
     }
   );
 
+  const [sortModel, setSortModel] = React.useState([
+    {
+      field: 'razonSocial',
+      sort: 'asc',
+    },
+  ]);
+
+  const onSort = (newSort) => {
+
+    if(newSort.length === 0){
+      newSort.push(sortModel[0]);
+      if(sortModel[0]?.sort === 'asc'){
+        newSort[0].sort = 'desc';
+      }else{
+        newSort[0].sort = 'asc';
+      }
+    }
+    setSortModel(newSort);    
+  };
+
+  const [pageSize, setPageSize] = useState(25);
   
   if (isLoading) {
     return 'Cargando...';
@@ -186,28 +207,32 @@ export function GrillaProveedor({ idSociety }) {
         <DataGrid
           rows={proveedorInformation.map(proveedor => ({
             id: proveedor.id,
-            rubroID: {
-              id: proveedor.rubroId,
-              nombre: rubros?.find(rubro => rubro.id === proveedor.rubroId)?.rubro,
-            },
-            subrubroID: {
-              id: proveedor.subrubroId,
-              nombre: subRubros?.find(subRubro => subRubro.id === proveedor.subrubroId)?.subRubro,
-            },          
+            rubroId: rubros?.find(rubro => rubro.id === proveedor.rubroId)?.rubro,
+            rubro_filtro: proveedor.rubroId,
+            subrubroId: subRubros?.find(subRubro => subRubro.id === proveedor.subrubroId)?.subRubro,
+           
             razonSocial: proveedor.razonSocial,
             CUIT: proveedor.CUIT,
             mail: proveedor.mail,
             telefono: proveedor.telefono,
             CBU: proveedor.CBU,
             banco: proveedor.banco,
-            nroCuenta: proveedor.nroCuenta,
+            nroCuenta: proveedor.nroCuenta,        
+
             enviar_OP_auto: proveedor.enviar_OP_auto,
-            /*enviar_OP_auto: parseInt(proveedor.enviar_OP_auto===0)? false:true,*/
             deleteId: proveedor.id,
           }))}
           onCellEditCommit={modifyData}
           columns={columns(rubros, subRubros, setIsPromptOpen, setRowIdToDelete)}
-          pageSize={25}
+          
+          sortModel={sortModel}
+          onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
+       
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          pagination
+
           disableSelectionOnClick
           autoHeight
           scrollbarSize
@@ -222,7 +247,10 @@ export function GrillaProveedor({ idSociety }) {
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarExport />
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport csvOptions={{ fields: ['razonSocial', 'CUIT', 'mail', 'telefono', 'CBU', 'banco', 'nroCuenta','rubroId','subrubroId'] }} />
     </GridToolbarContainer>
   );
 }
@@ -269,7 +297,7 @@ function ComboBoxSub({ subRubros, props }, params) {
 
   subRubros = [
     
-    ...subRubros.filter(subR => subR.rubroId === parseInt(props?.row?.rubroID.id)),
+    ...subRubros.filter(subR => subR.rubroId === parseInt(props?.row?.rubro_filtro)),
     {
       subRubro: '',
     },

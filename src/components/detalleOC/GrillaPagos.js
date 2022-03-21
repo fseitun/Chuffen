@@ -3,23 +3,37 @@ import { Typography, Grid, Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { mostrarFecha } from 'src/utils/utils';
 import { NavLink as RouterLink } from 'react-router-dom';
+import { ProgressBar } from 'src/components/detalleOC/ProgressBar';
+import { yearMonthDayString } from 'src/utils/utils';
 
-
-const columns = (verLink) => [  
+const columns = (verLink, moneda) => [  
 
   {
     field: 'numero',
-    headerName: 'Orden de Pago',
-    width: 200,
+    headerName: 'OP',
+    width: 95,
     editable: false,
     headerAlign: 'center',
     align: 'center'
   },
   
   {
-    field: 'avance',
+    field: 'avanceARS',
     headerName: 'Monto Contrato',
     width: 180,
+    hide: (moneda==='USD'),
+    editable: false,
+    headerAlign: 'center',
+    align: 'right',
+
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
+    field: 'avanceUSD',
+    headerName: 'Monto Contrato',
+    width: 180,
+    hide: (moneda==='ARS'),
     editable: false,
     headerAlign: 'center',
     align: 'right',
@@ -39,17 +53,43 @@ const columns = (verLink) => [
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
   {
+    field: 'montoOP',
+    headerName: 'Monto OP',
+    width: 140,
+    hide: (moneda==='ARS'),
+    editable: false,
+    headerAlign: 'center',
+    align: 'right',
+
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
     field: 'moneda',
     headerName: '',
     width: 50,
     editable: false,
     headerAlign: 'center',
   },
+  {
+    field: 'cotizacion_usd',
+    headerName: 'Cambio',
+    width: 130,
+    hide: (moneda==='ARS'),
+    editable: false,
+    headerAlign: 'center',
+    align: 'right',
+
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+
 
   {
     field: 'estado',
     headerName: 'Estado',
     width: 170,
+    hide: true, //(moneda==='USD'),
     editable: false,
     headerAlign: 'center',
     align: 'center',
@@ -66,6 +106,26 @@ const columns = (verLink) => [
     valueFormatter: ({ value }) => mostrarFecha(value),
   },
   {
+    field: 'CACop',
+    headerName: 'CAC',
+    width: 110,  
+    hide: (moneda==='USD'),
+    editable: false,
+    headerAlign: 'center',
+    align: 'center',
+  },
+  {
+    field: 'teorico',
+    headerName: 'Costo Teórico',
+    width: 170,  
+    editable: false,
+    hide: (moneda==='USD'),
+    headerAlign: 'center',
+    align: 'center',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(Math.trunc(value*100)/100)),
+  },
+  {
     field: 'id',
     headerName: '',
     hide: !verLink,
@@ -79,8 +139,7 @@ const columns = (verLink) => [
 ];
 
 
-
-export function GrillaPagos({ OCId, loggedUser, formOC, isLoading, error, moneda, totPagos, totAjuste}) {
+export function GrillaPagos({ OCId, loggedUser, formOC, isLoading, error, moneda, totPagos, totAjuste, CACs}) {
   // const idSociety = useContext(SocietyContext);
   const detalle = formOC?.pago;
   var estados = JSON.parse(localStorage.getItem("estados"));
@@ -88,14 +147,36 @@ export function GrillaPagos({ OCId, loggedUser, formOC, isLoading, error, moneda
   var verLink = false;
   if(loggedUser?.['rol.op'] !=='no'){verLink = true;} 
 
+  function buscarCAC(fechaOP){
+          
+    // console.log(formOC?.oc.CACbase, fechaOP?.slice(0, 7), yyyy + "-" + mm, CACs[0]?.fecha?.slice(0, 7)); 
+    let rta = CACs?.find(cac => cac.fecha.slice(0, 7) === fechaOP?.slice(0, 7))?.definitivo;
+    if(!rta){// si no encuenta una CAC definitivo, busco el mes anterior
+      let d = new Date(fechaOP.slice(0, 10) + " " + fechaOP.slice(12, 5));
+      
+      d.setMonth(d.getMonth() - 1)
+      rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.definitivo;
+      if(!rta){// si no encuenta una CAC definitivo, busco el mes anterior
+        d.setMonth(d.getMonth() - 1)
+        rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.definitivo;
+        if(!rta){  
+         rta = 0;
+        } 
+      }
+    }
+
+    return rta;
+  }
 
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
     return `Hubo un error: ${error.message}`;
   } else
-
-    // console.log(333, formOC?.oc?.fideicomisos[0]?.nombre, formOC?.oc?.empresaId);
+    var totTareas = (moneda==='ARS'?formOC?.oc?.monto_ARS:formOC?.oc?.monto_USD);
+    var avance = (totAjuste) / totTareas;
+    if(!avance){avance=0.0};
+ 
     return (
       <div style={{ width: '100%' }}>
         <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >
@@ -107,29 +188,35 @@ export function GrillaPagos({ OCId, loggedUser, formOC, isLoading, error, moneda
           </Grid>                      
           <Grid item md={3}>
             <Typography align="right" color="textWarning" variant="h5">
-                  Monto Contrato:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(totPagos-totAjuste)) + " " + moneda }
+                Monto Contrato:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(totPagos-totAjuste)) + " " + moneda }
                   
             </Typography>           
           </Grid>
           <Grid item md={3}>
             <Typography align="right" color="textPrimary" variant="h5">
-                    Mayores Costos:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(totAjuste)) + " " + moneda }
+                Mayores Costos:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(totAjuste)) + " " + moneda }
             </Typography>
+          </Grid>
+          <Grid item md={2}>
+            <ProgressBar value={avance} />
           </Grid>
 
           <Grid item md={12}>
            
             <DataGrid
-              rows={detalle.filter(item => item.moneda === moneda).map(item => ({
+              rows={detalle.filter(item => item.OC_moneda === moneda).map(item => ({
                 id: item.id,
                 numero: item.numero,
-                avance: (item.monto - item.ajuste),
+                montoOP: (item.monto - item.ajuste),
+                cotizacion_usd: item.cotizacion_usd,
+                avanceARS: (item.monto - item.ajuste),
+                avanceUSD: item.moneda==='ARS'? ((item.monto - item.ajuste)/item.cotizacion_usd): (item.monto - item.ajuste),
                 moneda: item.moneda,
                 ajuste: item.ajuste,
                 estado: estados?.find(estado => estado.id === item.estadoOP)?.descripcion,
                 createdAt: item.createdAt,
-
-                estadoOP: item.estadoOP,
+                CACop: buscarCAC(item?.createdAt),
+                teorico: (1 - (formOC?.oc?.CACbase / buscarCAC(item?.createdAt))) * (item.monto - item.ajuste),
                 confirmada: item.confirmada,
                 blue: item.blue,
                 authADM: item.authADM,
@@ -140,8 +227,8 @@ export function GrillaPagos({ OCId, loggedUser, formOC, isLoading, error, moneda
 
               }))}
               /* onCellEditCommit={modifyData}*/
-              columns={columns(verLink)}
-              pageSize={25}
+              columns={columns(verLink, moneda)}
+              /*pageSize={25}*/
               disableSelectionOnClick
               autoHeight
               

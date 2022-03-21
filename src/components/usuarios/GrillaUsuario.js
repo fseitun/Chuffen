@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { Autocomplete, TextField } from '@mui/material';
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { Autocomplete, TextField, Box } from '@mui/material';
+import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
@@ -11,6 +11,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'user',
     headerName: 'Usuario',
+    // headerClassName: 'super-app-theme--header',
     width: 170,
     editable: true,
     headerAlign: 'center',
@@ -26,22 +27,27 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     headerName: 'Clave',
     width: 150,
     editable: true,
+    sortable: false,
+    filterable: false,
     headerAlign: 'center',
     renderCell: Passformat,
   },
   {
-    field: 'rolId', // campo en grilla
+    field: 'rolId',
     headerName: 'Rol',
-    width: 150,
     editable: true,
-    renderCell: ({ value }) => value.rol_descripcion, // a visualizar
+    width: 160,
+    // hide: true,
     renderEditCell: props => <ComboBox roles={roles} props={props} />,
     headerAlign: 'center',
   },
+
   {
     field: 'deleteIcon',
     headerName: ' ',
     width: 50,
+    sortable: false,
+    filterable: false,
     headerAlign: 'center',
     align: 'center',
     renderCell: ({ row: { deleteId } }) => (
@@ -117,6 +123,44 @@ export function GrillaUsuario({ idSociety }) {
         }     
   );
 
+  const [sortModel, setSortModel] = React.useState([
+    {
+      field: 'user',
+      sort: 'asc',
+    },
+  ]);
+
+  const onSort = (newSort) => {
+
+    if(newSort.length === 0){
+      newSort.push(sortModel[0]);
+      if(sortModel[0]?.sort === 'asc'){
+        newSort[0].sort = 'desc';
+      }else{
+        newSort[0].sort = 'asc';
+      }
+    }/*
+    else if(newSort[0]?.field === 'rolId'){
+
+      newSort[0].field = 'sort_' + newSort[0].field;
+      if(sortModel[0]?.field === 'sort_rolId'){ 
+        
+        if(sortModel[0]?.sort === 'asc'){
+          newSort[0].sort = 'desc';
+        }else{
+          newSort[0].sort = 'asc';
+        }
+
+      }  
+
+    }*/
+
+    setSortModel(newSort);
+    
+  };
+
+  const [pageSize, setPageSize] = useState(25);
+
   
   if (isLoading) {
     return 'Cargando...';
@@ -126,30 +170,50 @@ export function GrillaUsuario({ idSociety }) {
     return (
       <div style={{height: '100%', width: '100%' }}>
         <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
+
+        <Box
+          /* sx={{
+            height: 300,
+            width: 1,
+            '& .super-app-theme--header': {
+              backgroundColor: 'rgba(255, 7, 0, 0.55)',
+            },
+          }}*/
+        >
+
+    
         <DataGrid
+
+          sortModel={sortModel}
           rows={usuarioInformation.map(usuario => ({
             id: usuario.id,
             user: usuario.user,
             mail: usuario.mail,
             pass: usuario.pass,
-            rolId: { // es lo que manda por post a la api
-              id: usuario['rol.id'],
-              rol_descripcion: roles?.find(rol => rol.id === usuario['rol.id'])?.rol_descripcion,
-            }, 
-            
+            rolId: usuario['rol.descripcion'],
             deleteId: usuario.id,
           }))}
+
           onCellEditCommit={modifyData}
           columns={columns(setIsPromptOpen, setRowIdToDelete)}
-          pageSize={25}
+          onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
+       
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          pagination
+
           autoHeight={true}
           disableSelectionOnClick
-          density={'comfortable'}
+          
           scrollbarSize
+
           components={{
             Toolbar: CustomToolbar,
           }}
+        
         />
+        </Box>
       </div>
     );
 }
@@ -191,7 +255,10 @@ function ComboBox({ roles, props }) {
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarExport />
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport csvOptions={{ fields: ['user', 'mail', 'rolId'] }} />
     </GridToolbarContainer>
   );
 }

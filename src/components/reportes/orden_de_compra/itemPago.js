@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Link, StyleSheet } from '@react-pdf/renderer';
+import {View, Text, StyleSheet } from '@react-pdf/renderer';
 import { mostrarFecha } from 'src/utils/utils';
 
 const styles = StyleSheet.create({
@@ -81,14 +81,14 @@ const styles = StyleSheet.create({
 
 
   // const tablaTareas = ({dataOC, moneda}) => (
-    var itemPago = ({dataOC, color, moneda}) => dataOC.pago.filter(p => p.moneda===moneda).map(function(p, i){
+    var itemPago = ({dataOC, color, moneda}) => dataOC.pago.filter(p => p.OC_moneda===moneda).map(function(p, i){
       return (
-        <View style={[styles.row, { borderBottomColor: color }]} >
-        <Text style={[styles.col1, { borderRightColor: color }]}> {p.numero}</Text>
-        <Text style={[styles.col2, { borderRightColor: color }]}> {Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(p.monto))}</Text>
-        <Text style={[styles.col3, { borderRightColor: color }]}> {Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(p.ajuste))}</Text>            
-        <Text style={styles.col4}>{mostrarFecha(p.createdAt)}</Text>
-      </View>  
+        <View key={'row' + p.numero + i}  style={[styles.row, { borderBottomColor: color }]} >
+          <Text key={'col_a' + i} style={[styles.col1, { borderRightColor: color }]}> {p.numero}</Text>
+          <Text key={'col_b' + i} style={[styles.col2, { borderRightColor: color }]}> {Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(moneda==='ARS'? p.monto-p.ajuste:(p.moneda==='ARS'? ((p.monto - p.ajuste)/p.cotizacion_usd): (p.monto - p.ajuste))))}</Text>
+          <Text key={'col_c' + i} style={[styles.col3, { borderRightColor: color }]}> {Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(p.ajuste))}</Text>            
+          <Text key={'col_d' + i} style={styles.col4}>{mostrarFecha(p.createdAt)}</Text>
+        </View>  
           );
     });
   

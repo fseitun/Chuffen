@@ -1,20 +1,16 @@
-// import { useState, useContext } from 'react';
 import * as React from 'react';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-//import { TextField, Typography, Grid, Autocomplete, Hidden, Switch} from '@mui/material';
 import { Box, Tab, Hidden} from '@mui/material';
 import { FormDetalleOC } from 'src/components/detalleOC/FormDetalleOC';
+import { AltaDetalleOC } from 'src/components/detalleOC/AltaDetalleOC';
 import { GrillaTareas } from 'src/components/detalleOC/GrillaTareas';
 import { GrillaPagos } from 'src/components/detalleOC/GrillaPagos';
-// import { SumFacturaContext } from './sumFacturaContext';
 
 
-export function TabOC({ OCId,  idSociety, loggedUser, formOC, isLoading, error, refetch, totPagosARS, totPagosUSD, totAjusteARS, totAjusteUSD}) {
-
-  const [value, setValue] = React.useState('1');
+export function TabOC({ OCId,  idSociety, loggedUser, formOC, isLoading, error, refetch, totPagosARS, totPagosUSD, totAjusteARS, totAjusteUSD, moneda, setMoneda, CACs}) {
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
+    setMoneda(newValue);
   };
 
   
@@ -29,18 +25,31 @@ export function TabOC({ OCId,  idSociety, loggedUser, formOC, isLoading, error, 
           
     <>
 
-          <TabContext value={value}>
+          <TabContext value={moneda}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <TabList onChange={handleChange} aria-label="lab API tabs example">
-                <Tab label="Pesos" value="1" />
-                <Tab label="Dolares" value="2" />
-                <Tab label="Resumen" value="3" />
+                <Tab label="Pesos" value="ARS" />
+                <Tab label="Dolares" value="USD" />
+                
               </TabList>
             </Box>
-            <TabPanel value="1">
+            <TabPanel value="ARS">
+                  <Box sx={{ pt: 3 }}>
+                    <FormDetalleOC
+                          OCId={OCId}
+                          idSociety={idSociety}
+                          loggedUser={loggedUser}
+                          formOC={formOC}
+                          isLoading={isLoading}
+                          error={error}
+                          refetch={refetch}
+                          moneda={'ARS'}
+                    />
+                  </Box>
+
                   <Hidden  smUp={verAgregar} >
                     <Box sx={{ pt: 3 }}>
-                      <FormDetalleOC
+                      <AltaDetalleOC
                             OCId={OCId}
                             idSociety={idSociety}
                             loggedUser={loggedUser}
@@ -80,14 +89,15 @@ export function TabOC({ OCId,  idSociety, loggedUser, formOC, isLoading, error, 
                           totPagos={totPagosARS}
                           totAjuste={totAjusteARS}
                           moneda={'ARS'}
+                          CACs={CACs}
                     />
                   </Box>
             
             </TabPanel>
-            <TabPanel value="2">
+            <TabPanel value="USD">
                 <Hidden  smUp={verAgregar} >
                       <Box sx={{ pt: 3 }}>
-                        <FormDetalleOC
+                        <AltaDetalleOC
                               OCId={OCId}
                               idSociety={idSociety}
                               loggedUser={loggedUser}
@@ -129,12 +139,8 @@ export function TabOC({ OCId,  idSociety, loggedUser, formOC, isLoading, error, 
                     />
                   </Box>
             
-            
-            
             </TabPanel>
-            <TabPanel value="3">
-              
-            </TabPanel>
+
           </TabContext>                  
     </>   
   );

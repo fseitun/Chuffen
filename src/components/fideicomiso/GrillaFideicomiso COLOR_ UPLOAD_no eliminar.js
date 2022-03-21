@@ -210,7 +210,7 @@ export function GrillaFideicomiso({ idSociety }) {
           onDelete: () => mutate(el.id),
         }))}
         columns={columns(color, setColor, idSociety?.id, setFechaInicio, setNewLogoFlag)}
-        pageSize={25}
+        /*pageSize={25}*/
         disableSelectionOnClick
         autoHeight
         scrollbarSize

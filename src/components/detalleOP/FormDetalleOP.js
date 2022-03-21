@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
-import { Button, TextField, Typography, Grid, Autocomplete, Hidden, Switch} from '@mui/material';
+import { Button, RadioGroup, Radio, FormControlLabel, TextField, Typography, Grid, Autocomplete, Hidden, Switch} from '@mui/material';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { postMethod, getMethod} from 'src/utils/api';
@@ -15,9 +15,6 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
   
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
-
-  // const { empresaId, fideicomiso } = useParams();
-
 
   var acceso = true;
 
@@ -43,30 +40,18 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
   const [iniRet, setIniRet] = useState(retenciones[parseInt(formOP?.estadoRET)]);
   const [iniFondos, setIniFondos] = useState(fondos_s[parseInt(formOP?.fondos)]);
   const [flagField, setFlagField] = useState("");
-  
-  // const [detalleTec, setDetalleTec] = useState(formOP?.descripcion);
 
-  // const bancoBlanco = {id: 0, banco: "-", descripcionLarga: "-"};
-  // const cuentaBlanco = {id: 0, bancoId: 0, cuentaBanco: "-", descripcionLarga: "-","bancos": [bancoBlanco]};
+  const [monedaOC, setMonedaOC] = useState(formOP?.OC_moneda);
 
   const bancos = [
     {id: 0, banco: "-", descripcionLarga: "-"},
     ...JSON.parse(localStorage.getItem("bs"))
   ];
-  //console.log(999999, isValidDate("2021-12-13"));
-
-  // var bancos = JSON.parse(localStorage.getItem("bs"));
-  // var banco_en_blanco = {id:0, banco:"", descripcionLarga:"" };
-  // bancos.push(banco_en_blanco);
 
   const cuentasbanco = [
     {id: 0,  bancoId: 0,  cuentaBanco: "-",  descripcionLarga: "-",  bancos: [{id: 0, banco: "-", descripcionLarga: "-"}]},
     ...JSON.parse(localStorage.getItem("co"))
   ];
-
-  //var cuentasbanco = JSON.parse(localStorage.getItem("co"));  
-  //var cuenta_en_blanco = {id: 0,  bancoId: 0,  cuentaBanco: "-",  descripcionLarga: "-",  bancos: [{id: 0, banco: "-", descripcionLarga: "-"}]};
-  // cuentasbanco.push(cuenta_en_blanco);
     
   // por ahora se inicializa en el login
   var formaPagos = localStorage.getItem("formaPagos").split(",")
@@ -138,31 +123,72 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                         {formOP?.auth_obra?formOP.auth_obra[0]?.usuarios[0]?.user:''}
                         </Typography>
                   </Grid>
+
                   <Grid item md={12}>
                   &nbsp;
                   </Grid>
-                  <Grid item md={2}>                        
-                        <Typography  align="right" color="textPrimary" variant="h5">
-                            Orden de Compra:&nbsp;&nbsp;&nbsp;
-                        </Typography>
-                  </Grid>
-                  <Grid item md={4}>
-                            
-                    <ComboOC useQuery={useQuery} setFieldValue={setFieldValue} OCId={formOP?.OCId} OPId={OPId} idSociety={idSociety} empresaId={empresaId} fideicomisoId={formOP?.fideicomisoId} />
-              
-                  </Grid>
-                  <Grid item md={4}>
-                    <Hidden  smUp={(verBotonOC  || formOP?.OCId < 1)} >
-                      <Typography align="center" color="textPrimary" variant="h4">
-                        <Button
-                            component={RouterLink}                            
-                            /* sx={{color: 'primary.main',}}*/
-                            to={`../../oc/${formOP?.OCId}/OC Detalle`}
-                          >
-                            ver compra&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        </Button>
-                      </Typography>
-                    </Hidden> 
+
+                  <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >  
+                  
+                    <Grid item md={2}>                        
+                          <Typography  align="right" color="textPrimary" variant="h5">
+                              Orden de Compra:&nbsp;&nbsp;&nbsp;
+                          </Typography>
+                    </Grid>
+                    <Grid item md={4}>
+                              
+                      <ComboOC useQuery={useQuery} setFieldValue={setFieldValue} OCId={formOP?.OCId} OPId={OPId} idSociety={idSociety} empresaId={empresaId} fideicomisoId={formOP?.fideicomisoId} />
+                
+                    </Grid>
+                    <Grid item md={6}>
+                      <Hidden  smUp={(verBotonOC  || formOP?.OCId < 1)} >
+                        <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 2, sm: 4, md: 6 }} >  
+                          <Grid item md={2}>
+                              <Typography align="right" color="textPrimary" variant="h4">
+                                <Button
+                                    component={RouterLink}                            
+                                    /* sx={{color: 'primary.main',}}*/
+                                    to={`../../oc/${formOP?.OCId}/OC Detalle`}
+                                  >
+                                    ver compra
+                                </Button>
+                              </Typography>
+                          </Grid>
+                          <Grid item md={1}>
+                         
+                          </Grid>
+                          <Grid item md={2}>
+                            <RadioGroup
+                                row
+                                aria-labelledby="demo-row-radio-buttons-group-label"
+                                key={formOP?.OC_moneda}
+                                defaultValue={formOP?.OC_moneda}                                
+                                onChange={event => onlyNumbers4(event, setFieldValue, setMonedaOC, refetch, 'OC_moneda', idSociety.id, OPId, 1, 0)}
+                                name="row-radio-buttons-group"
+                                    >
+                                      <FormControlLabel value="ARS" control={<Radio />} label="ARS" />
+                                      <FormControlLabel value="USD" control={<Radio />} label="USD" />
+
+                            </RadioGroup>
+                          </Grid>  
+                          <Grid item md={1}>
+                              <Hidden  smUp={(monedaOC==='ARS')} >
+                                <TextField  size={'small'} sx={{ width: '14ch' }} label="Tipo de cambio" type="number" key={formOP?.cotizacion_usd} defaultValue={formOP?.cotizacion_usd}  name="cotizacion_usd" onChange={event => setFlagField('cotizacion_usd')} onBlur={event => onlyNumbers3(event, setFieldValue, refetch, 'cotizacion_usd', idSociety.id, OPId, 0, 0,null, flagField)}  
+                                      InputProps={{
+                                        readOnly: (!acceso || (isConfirmOP===1)?true:false),
+                                      }}
+                                  />
+                              </Hidden>
+                          </Grid>      
+                        </Grid>
+
+
+                      </Hidden> 
+                    </Grid>
+
+                
+
+                    
                   </Grid>
 
                   <Grid item md={12}>
@@ -978,6 +1004,13 @@ function onlyNumbers3(event, setFieldValue, refetch, typeOfData, idSociety, OPId
   }
 }
 
+function onlyNumbers4(event, setFieldValue, setMonedaOC, refetch, typeOfData, idSociety, OPId, flagPago, valorCombo, formOP){
+
+    const { value } = event.target;
+    setMonedaOC(value);
+    handleModification(event, setFieldValue, refetch, typeOfData, idSociety, OPId, flagPago, valorCombo, formOP);
+
+}
 
 function onlyNumbers(event, setFieldValue, refetch, typeOfData, idSociety, OPId, flagPago, valorCombo, formOP) {
 
@@ -985,13 +1018,11 @@ function onlyNumbers(event, setFieldValue, refetch, typeOfData, idSociety, OPId,
   event.preventDefault();
   const { value } = event.target;
   const regex = /^\d{0,7}(\.\d{0,2})?$/;
-  /// console.log(1111, typeOfData, valorCombo);
   
   if(value!==undefined){
     if (regex.test(value.toString())) {
 
       setFieldValue(typeOfData, value.toString());
-      //// console.log(2222, typeOfData, valorCombo);
       handleModification(event, setFieldValue, refetch, typeOfData, idSociety, OPId, flagPago, valorCombo, formOP);
 
     }else{
@@ -1021,7 +1052,6 @@ function handleModification(event, setFieldValue, refetch, typeOfData, idSociety
     }
     if(typeOfData.toString().substring(0,5)==='banco'){
       val = valorCombo;
-      // console.log(4444, typeOfData, valorCombo, typeOfData.toString().substring(0,4));
     }
     if(typeOfData.toString().substring(0,3)==='nro'){
       val = valorCombo;
@@ -1038,8 +1068,6 @@ function handleModification(event, setFieldValue, refetch, typeOfData, idSociety
   if(flag > 0){
         newData.flagPago = 1;
   }
-
-  /// console.log(3333, typeOfData, valorCombo, typeOfData.toString().substring(0,4));
   
   if(valorCombo==="Retenciones"){
     let r = parseFloat(formOP?.RET_GAN) + parseFloat(formOP?.RET_IVA) + parseFloat(formOP?.RET_SUSS);
@@ -1093,7 +1121,8 @@ function ComboOC({idSociety, setFieldValue, empresaId,fideicomisoId, OPId, OCId,
   );
 
   const [selectedOC, setSelectedOC] = useState(oc_en_blanco);
- 
+  
+  
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
@@ -1116,13 +1145,10 @@ function ComboOC({idSociety, setFieldValue, empresaId,fideicomisoId, OPId, OCId,
       as={Autocomplete}
       size={'small'}
       label='Orden de Compra'
-      // disabled={!acceso || (isConfirmOP===1)}
       disablePortal
       style={{ width: '325px', display: 'inline-flex' }}
       
-      onChange={(event, newValue) => {
-        // setTypeInForm(newValue);
-        // newValue? setFieldValue('estadoOP', newValue):false;                        
+      onChange={(event, newValue) => {                      
         onlyNumbers2(event, setFieldValue, setSelectedOC, refetch, 'OCId', idSociety.id, OPId, 0, newValue)
       }}
       value={selectedOC}

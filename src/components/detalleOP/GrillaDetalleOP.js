@@ -1,10 +1,10 @@
-import { useQuery, useQueryClient, useMutation } from 'react-query';
+import { useQueryClient, useMutation } from 'react-query';
 import { DataGrid } from '@mui/x-data-grid';
 import { Box, Button } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getMethod, postMethod } from 'src/utils/api';
+import { postMethod } from 'src/utils/api';
 
 // const columns = [
 const columns = (puedeEditar, verEliminar) => [
@@ -96,20 +96,11 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
 
   var puedeEditar = true;
   const accesoOP = loggedUser?.['rol.op'];
-  const blue = -1; // trae todas las de la OP
+
   if( accesoOP ==='vista'){puedeEditar =false}
 
   var verEliminar = true;
   if(loggedUser?.['rol.op'] ==='parcial' || loggedUser?.['rol.op'] ==='vista'){verEliminar =false}
-
-  /*
-  const {
-    data: facturas,    
-    isLoading,
-    error,
-  } = useQuery(['facturas', idSociety, selectedFacturaData], () =>
-    getMethod(`factura/listar/${idSociety?.id}/opid/${OPId}/${blue}`)
-  );*/
 
   const { mutate: deleteProduct } = useMutation(
     async id =>

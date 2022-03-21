@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Link, StyleSheet } from '@react-pdf/renderer';
+import {View, Text, StyleSheet } from '@react-pdf/renderer';
 import { mostrarFecha } from 'src/utils/utils';
 
 const styles = StyleSheet.create({
@@ -84,11 +84,11 @@ const styles = StyleSheet.create({
     var itemTarea = ({dataOC, color, moneda}) => dataOC.item.filter(p => p.moneda===moneda).map(function(p, i){
       return (      
 
-            <View style={[styles.row, { borderBottomColor: color }]} >
-            <Text style={[styles.col1, { borderRightColor: color }]}> {p.numero}</Text>
-            <Text style={[styles.col2, { borderRightColor: color }]}> {p.descripcion}</Text>
-            <Text style={[styles.col3, { borderRightColor: color }]}> {mostrarFecha(p.createdAt)}</Text>            
-            <Text style={styles.col4}>{Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(p.monto))}</Text>
+            <View key={'row' + p.numero + i} style={[styles.row, { borderBottomColor: color }]} >
+            <Text key={'col_x' + i} style={[styles.col1, { borderRightColor: color }]}> {p.numero}</Text>
+            <Text key={'col_y' + i} style={[styles.col2, { borderRightColor: color }]}> {p.descripcion}</Text>
+            <Text key={'col_z' + i} style={[styles.col3, { borderRightColor: color }]}> {mostrarFecha(p.createdAt)}</Text>            
+            <Text key={'col_w' + i} style={styles.col4}>{Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(p.monto))}</Text>
             </View>  
           );
     });

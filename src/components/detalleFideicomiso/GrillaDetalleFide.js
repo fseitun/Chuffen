@@ -310,7 +310,7 @@ export function GrillaDetalleFide({ filtComp, filtFide, filtRS, idSociety, logge
           }))}OPs
           onCellEditCommit={modifyData}
           columns={columns(verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete)}
-          pageSize={25}
+          /*pageSize={25}*/
           disableSelectionOnClick
           autoHeight
           scrollbarSize

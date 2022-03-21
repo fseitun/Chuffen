@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { isNumberUsedDig } from 'src/utils/utils';
-import { IconButton, Collapse, Box, FormControlLabel, TextField, Button, Hidden, Checkbox, Autocomplete, Alert } from '@mui/material';
+import { IconButton, Collapse, Box, Grid, FormControlLabel, TextField, Button, Hidden, Checkbox, Autocomplete, Alert } from '@mui/material';
 import { postMethod } from 'src/utils/api';
 import CloseIcon from '@mui/icons-material/Close';
 import React from 'react';
@@ -48,11 +48,9 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
   let iniBlue = true;
   let alwaysBlue = false;
 
-// *******************************************
   let f = new Date();
   let n = "" + yearMonthDayNum(f) + "01";
 
-  console.log(1111, loggedUser?.['rol.descripcion']);
   if(loggedUser?.['rol.descripcion'] ==='blue'){
     iniNumber = n
     iniBlue = false;
@@ -61,7 +59,6 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
     alwaysBlue = true;
   }
 
-// *******************************************
 
   const [chkblue, setChkblue] = useState(iniBlue);
 
@@ -80,13 +77,16 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
   
           let existe = await isNumberUsedDig('factura', idSociety.id, values.empresa.id , values.numero)
           if (existe || values.numero ==='') {
-            // console.log(222);
+          
             setIsPromptOpen(true);
           }else{
-   
+            let tot = parseFloat(values.neto) + parseFloat(values.neto?values.iva:0) + parseFloat(values.iva?values.percepciones:0);
             addFactura({
               numero: values.numero,
-              montoTotal: values.tipo.id===2? (-1 * values.montoTotal):values.montoTotal,
+              neto: values.neto,
+              iva: values.iva,
+              percepciones: values.percepciones,
+              montoTotal: values.tipo.id===2? (-1 * tot):tot,
               fechaIngreso: values.fechaIngreso,
               tipo: values.tipo.id,
               empresaId: values.empresa.id,
@@ -103,108 +103,143 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
         {({ isSubmitting, setFieldValue }) => (
           <Form>
 
-            <Field
-              as={Autocomplete}
-              size={'small'}
-              label='Tipo'
-              title="Tipo de comprobante"
-              disablePortal
-              required
-              style={{ width: '180px', display: 'inline-flex' }}
-              onChange={(event, newValue) => {
-                setTipoInForm(newValue);
-                setFieldValue('tipo', newValue);
-                setNumber((newValue?.id===3), setFieldValue)
-              }}
-              value={tipoInForm}
-              getOptionLabel={option => option.descripcion}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              options={(tipos? tipos:[])}
-              renderInput={params => <TextField {...params} label='Tipo de comprobante' />}
-            />
+            <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >                  
 
-            <Field
+              <Grid item md={12}>      
+
+                <Field
+                as={Autocomplete}
+                size={'small'}
+                label='Tipo'
+                title="Tipo de comprobante"
+                disablePortal
+                required
+                style={{ width: '180px', display: 'inline-flex' }}
+                onChange={(event, newValue) => {
+                  setTipoInForm(newValue);
+                  setFieldValue('tipo', newValue);
+                  setNumber((newValue?.id===3), setFieldValue)
+                }}
+                value={tipoInForm}
+                getOptionLabel={option => option.descripcion}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                options={(tipos? tipos:[])}
+                renderInput={params => <TextField {...params} label='Tipo de comprobante' />}
+              />
+
+              <Field
+                as={Autocomplete}
+                size={'small'}
+                label='Fideicomiso'
+                title="Seleccione un fideicomiso."
+                disablePortal
+                required
+                style={{ width: '180px', display: 'inline-flex' }}
+                onChange={(event, newValue) => {
+                  setFideInForm(newValue);
+                  setFieldValue('fideicomiso', newValue);
+                }}
+                value={fideInForm}
+                getOptionLabel={option => option.nombre}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                options={(fideicomisos? fideicomisos:[])}
+                renderInput={params => <TextField {...params} label='Fideicomiso' />}
+              />
+
+              <Field
               as={Autocomplete}
               size={'small'}
-              label='Fideicomiso'
-              title="Seleccione un fideicomiso."
+              label='Razon Social'
+              title="Seleccione un proveedor."
               disablePortal
               required
               style={{ width: '230px', display: 'inline-flex' }}
               onChange={(event, newValue) => {
-                setFideInForm(newValue);
-                setFieldValue('fideicomiso', newValue);
+                setTypeInForm(newValue);
+                setFieldValue('empresa', newValue);
               }}
-              value={fideInForm}
-              getOptionLabel={option => option.nombre}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              options={(fideicomisos? fideicomisos:[])}
-              renderInput={params => <TextField {...params} label='Fideicomiso' />}
+              value={typeInForm}
+              getOptionLabel={option => option?.razonSocial}
+              isOptionEqualToValue={(option, value) => option?.id === value.id}
+              options={(proveedores? proveedores:[])}
+              renderInput={params => <TextField {...params} label='Razon Social' />}
             />
 
-             <Field
-            as={Autocomplete}
-            size={'small'}
-            label='Razon Social'
-            title="Seleccione un proveedor."
-            disablePortal
-            required
-            style={{ width: '230px', display: 'inline-flex' }}
-            onChange={(event, newValue) => {
-              setTypeInForm(newValue);
-              setFieldValue('empresa', newValue);
-            }}
-            value={typeInForm}
-            getOptionLabel={option => option?.razonSocial}
-            isOptionEqualToValue={(option, value) => option?.id === value.id}
-            options={(proveedores? proveedores:[])}
-            renderInput={params => <TextField {...params} label='Razon Social' />}
-          />
+              <Field
+                as={TextField}
+                title="Cargar número completo de la factura."
+                label='Numero'
+                type='float'
+                required     
+                maxLength={11}         
+                size="small"
+                sx={{ width: '20ch' }}
+    
+                name='numero'
+                onChange={event => onlyNumbers(event, setFieldValue, 'numero')}
+              />             
 
-            <Field
-              as={TextField}
-              title="Cargar número completo de la factura."
-              label='Numero'
-              type='float'
-              required     
-              maxLength={11}         
-              size="small"
-              sx={{ width: '20ch' }}
-  
-              name='numero'
-              onChange={event => onlyNumbers(event, setFieldValue, 'numero')}
-            /> 
+            &nbsp;&nbsp;
+            <Hidden  smUp={( !verCheckBlue)} >        
+                <FormControlLabel 
+                  control={ <Checkbox  id={'blue'}  name={'blue'}             
+                  onChange={(event) => onlyCheck(event, setFieldValue, 'blue', chkblue, setChkblue)}
+                  /> }   label="Blue"  />
+            </Hidden>
+            <Hidden  smUp={( !verCheckBlueDis)} >        
+                <FormControlLabel 
+                  control={ <Checkbox  disabled defaultChecked id={'blue'}  name={'blue2'}
+                  /> }   label="Blue"  />
+            </Hidden>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-          <Field
-            as={TextField}
-            label='Monto'
-            title="Monto total, solo numeros."
-            required
-            maxLength={9}
-            type='float'
-            size="small"
-            sx={{ width: '20ch' }}
-            name='montoTotal'
-            onChange={event => onlyNumbers(event, setFieldValue, 'montoTotal')}
-          />
+              <Button type="submit" disabled={isSubmitting}>
+                Agregar
+              </Button>            
+                
+              </Grid>
+              <Grid item md={12}> 
 
-          &nbsp;&nbsp;
-          <Hidden  smUp={( !verCheckBlue)} >        
-              <FormControlLabel 
-                control={ <Checkbox  id={'blue'}  name={'blue'}             
-                onChange={(event) => onlyCheck(event, setFieldValue, 'blue', chkblue, setChkblue)}
-                /> }   label="Blue"  />
-          </Hidden>
-          <Hidden  smUp={( !verCheckBlueDis)} >        
-              <FormControlLabel 
-                control={ <Checkbox  disabled defaultChecked id={'blue'}  name={'blue2'}
-                /> }   label="Blue"  />
-          </Hidden>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <Field
+                  as={TextField}
+                  label='Neto'
+                  title="Monto , solo numeros."
+                  required
+                  maxLength={9}
+                  type='float'
+                  size="small"
+                  style={{ width: '180px', display: 'inline-flex' }}
+                  name='neto'
+                  onChange={event => onlyNumbers(event, setFieldValue, 'neto')}
+                />       
+                <Field
+                  as={TextField}
+                  label='Iva'
+                  title="Iva, solo numeros."                  
+                  maxLength={9}
+                  type='float'
+                  size="small"
+                  style={{ width: '180px', display: 'inline-flex' }}
+                  name='iva'
+                  onChange={event => onlyNumbers(event, setFieldValue, 'iva')}
+                />  
+                    <Field
+                  as={TextField}
+                  label='Percepciones'
+                  title="Percepciones, solo numeros."                  
+                  maxLength={9}
+                  type='float'
+                  size="small"
+                  style={{ width: '230px', display: 'inline-flex' }}
+                  name='percepciones'
+                  onChange={event => onlyNumbers(event, setFieldValue, 'percepciones')}
+                />            
+                
+              </Grid>
 
-            <Button type="submit" disabled={isSubmitting}>
-              Agregar
-            </Button>
+            </Grid>    
+
+            
 
             <Box sx={{ width: '100%' }}>
             <Collapse in={open}>

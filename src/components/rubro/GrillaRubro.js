@@ -1,7 +1,9 @@
+import * as React from 'react';
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
+import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
@@ -11,10 +13,11 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'rubro',
     headerName: 'Rubro',
-    width: 170,
-    editable: true,
+    width: 260,
+    editable: false,
     headerAlign: 'center',
-    align: 'center',
+    align: 'left',
+    renderCell: IrDetalleOP_1
   },
 
   {
@@ -26,8 +29,6 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     renderCell: ({ row: { deleteId } }) => (
       <DeleteIcon
         onClick={e => {
-          // console.log('e', e);
-          // console.log('deleteId', deleteId);
           setRowIdToDelete(deleteId);
           setIsPromptOpen(true);
         }}
@@ -41,7 +42,6 @@ export function GrillaRubro({ idSociety }) {
   const [rowIdToDelete, setRowIdToDelete] = useState();
 
   const navigate = useNavigate();
-  // console.log(rowIdToDelete);
 
   const {
     data: rubroInformation,
@@ -65,7 +65,6 @@ export function GrillaRubro({ idSociety }) {
       onSettled: () => queryClient.invalidateQueries(['rubro', idSociety]),
     }
   );
-  // eliminate(1);
 
   const { mutate: modifyData } = useMutation(
     async ({ field, id, value }) =>
@@ -77,12 +76,10 @@ export function GrillaRubro({ idSociety }) {
       onMutate: async ({ field, id, value }) => {
         await queryClient.cancelQueries(['rubro', idSociety]);
         const prevData = queryClient.getQueryData(['rubro', idSociety]);
-        // console.log('prevData', prevData);
         const newData = [
           ...prevData.filter(rubro => rubro.id !== id),
           { ...prevData.find(rubro => rubro.id === id), [field]: value },
         ];
-        // console.log('newData', newData);
         queryClient.setQueryData(['rubro', idSociety], newData);
         return prevData;
       },
@@ -90,6 +87,35 @@ export function GrillaRubro({ idSociety }) {
       onSettled: () => queryClient.invalidateQueries(['rubro', idSociety]),
     }
   );
+
+  const [sortModel, setSortModel] = React.useState([
+    {
+      field: 'rubro',
+      sort: 'asc',
+    },
+  ]);
+
+  const { mutate: irDetalle } = useMutation(
+    async rubro =>    
+      navigate(`./${rubro.id}/Subrubros-${rubro.rubro}`)
+      
+  );
+
+
+  const onSort = (newSort) => {
+
+    if(newSort.length === 0){
+      newSort.push(sortModel[0]);
+      if(sortModel[0]?.sort === 'asc'){
+        newSort[0].sort = 'desc';
+      }else{
+        newSort[0].sort = 'asc';
+      }
+    }
+    setSortModel(newSort);    
+  };
+
+  const [pageSize, setPageSize] = useState(25);
 
   if (isLoading) {
     return 'Cargando...';
@@ -104,15 +130,20 @@ export function GrillaRubro({ idSociety }) {
             id: rubro.id,
             rubro: rubro.rubro,
             deleteId: rubro.id,
+            onIrDetalle: () => irDetalle(rubro),  
           }))}
           onCellEditCommit={modifyData}
-          onRowDoubleClick={a => {
-          // console.log(a);
-           return IrASubrubro(a);
-         }}
-        compone
+        
           columns={columns(setIsPromptOpen, setRowIdToDelete)}
-          pageSize={25}
+          
+          sortModel={sortModel}
+          onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
+       
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          pagination
+
           disableSelectionOnClick
           autoHeight
           scrollbarSize
@@ -122,15 +153,22 @@ export function GrillaRubro({ idSociety }) {
         />
       </div>
     );
-    function IrASubrubro(params) {
-      navigate(`./${params.row.id}/Subrubros-${params.row.rubro}`);
-    }
+
 }
 
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarExport />
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport csvOptions={{ fields: ['rubro'] }} />
     </GridToolbarContainer>
   );
 }
+
+function IrDetalleOP_1(params) {
+  const sendRow = params.row.onIrDetalle;  
+  const rubro = params.row.rubro;
+  return <Button onClick={sendRow} >{rubro}  </Button>;
+} 

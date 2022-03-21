@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
 import { Button } from '@mui/material';
@@ -14,7 +14,7 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
 
   {
     field: 'id',
-    headerName: '',
+    headerName: 'Id',
     width: 55,
     editable: false,
     headerAlign: 'center',
@@ -33,10 +33,8 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     field: 'tipo', // campo en grilla
     headerName: 'Tipo de Comp.',
     width: 170,
-    // type: 'singleSelect',
     editable: false,
     renderCell: ({ value }) => value.descripcion, // a visualizar
-    // renderEditCell: props => <ComboBoxFon fondos_s={fondos_s} props={props} />,
     headerAlign: 'center',
   },
   {
@@ -46,7 +44,6 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     editable: false,
     headerAlign: 'center',
     align: 'left',
-    /*renderCell: IrDetalleOP_1,*/
   }, 
   {
     field: 'empresa',
@@ -66,6 +63,39 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     field: 'montoTotal',
     headerName: 'Monto',
     width: 130,
+    editable: false,
+    headerAlign: 'center',
+    align: 'right',
+
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
+    field: 'neto',
+    headerName: 'Neto',
+    width: 120,
+    editable: false,
+    headerAlign: 'center',
+    align: 'right',
+
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
+    field: 'iva',
+    headerName: 'IVA',
+    width: 110,
+    editable: false,
+    headerAlign: 'center',
+    align: 'right',
+
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
+    field: 'percepciones',
+    headerName: 'Percepciones',
+    width: 110,
     editable: false,
     headerAlign: 'center',
     align: 'right',
@@ -94,13 +124,12 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     width: 110,
     editable: acceso,
     headerAlign: 'center',
-    /*renderCell:  ({ row: { link } }) => (
-      <a href={ link }  rel="noreferrer" target="_blank" >{ link }</a>)*/
   },
   {
-    field: 'link2',
+    field: 'ver',
     headerName: '',
     width: 20,
+    sortable: false,
     editable: false,
     headerAlign: 'center',
     renderCell:  ({ row: { link } }) => (
@@ -122,6 +151,7 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     field: 'diasVTO',
     headerName: 'Días VTO',
     width: 140,
+    filterable: false,
     editable: acceso,
     type: 'singleSelect',
     valueOptions: [0,1,2,3,4,5,6,7,10,14,15,20,21,28,30,40,50,60,70,80,90,100,120,150]
@@ -131,6 +161,8 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     headerName: 'VTO',
     width: 155,
     type: 'date',
+    sortable: false,
+    filterable: false,
     editable: false,
     headerAlign: 'center',
     align: 'center',
@@ -216,7 +248,6 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
       onSettled: () => queryClient.invalidateQueries(['factura', idSociety]),
     }
   );
-  // eliminate(1);
 
   const { mutate: modifyData } = useMutation(
     
@@ -285,7 +316,28 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
 
   }
 
-  
+  const [sortModel, setSortModel] = React.useState([
+    {
+      field: 'fechaIngreso',
+      sort: 'desc',
+    },
+  ]);
+
+  const onSort = (newSort) => {
+
+    if(newSort.length === 0){
+      newSort.push(sortModel[0]);
+      if(sortModel[0]?.sort === 'asc'){
+        newSort[0].sort = 'desc';
+      }else{
+        newSort[0].sort = 'asc';
+      }
+    }
+    setSortModel(newSort);    
+  };
+
+  const [pageSize, setPageSize] = useState(25);
+
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
@@ -297,34 +349,43 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
         <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
         <DataGrid
           rows={facturaInformation.filter(element =>filtrar(element, filtComp, filtFide, filtRS)).map(factura => ({
+           
             id: factura?.id,
-            fideicomiso: (factura?.fideicomisos? factura?.fideicomisos[0]?.nombre:''),
-            empresaId: factura?.empresaId,
-            empresa:(factura?.empresas? factura?.empresas[0]?.razonSocial:''),
             blue: factura?.blue,
+            tipo: tipos?.find(tipo => tipo.id === factura.tipo)?.descripcion,
+            fideicomiso: (factura?.fideicomisos? factura?.fideicomisos[0]?.nombre:''),            
+            empresa:(factura?.empresas? factura?.empresas[0]?.razonSocial:''),           
             numero: factura?.numero,
-            // tipo: factura?.tipo,
-            tipo: {
-              id: factura.tipo,
-              descripcion: tipos?.find(tipo => tipo.id === factura.tipo)?.descripcion,
-            },
-            es_ajuste: factura?.es_ajuste,
-            link: factura?.link,
-            link2: factura?.link,
             montoTotal: parseInt(factura.tipo)===2? (-1 * factura.montoTotal):factura.montoTotal, //factura?.montoTotal,
-            moneda: factura?.moneda,
+            neto: parseInt(factura.tipo)===2? (-1 * factura.neto):factura.neto,
+            iva: parseInt(factura.tipo)===2? (-1 * factura.iva):factura.iva,
+            percepciones: parseInt(factura.tipo)===2? (-1 * factura.percepciones):factura.percepciones,
+            moneda: factura?.moneda,       
+            es_ajuste: factura?.es_ajuste,
             fechaIngreso: factura?.fechaIngreso,
             diasVTO: factura?.diasVTO, 
             fechaVTO: factura?.fechaVTO,  
             OPnumero : (factura?.OP? factura?.OP?.numero:''),
             estadoOP:(factura?.OP? estados[factura?.OP?.estado]?.descripcion:''),
+
+            link: factura?.link,
+            ver: factura?.link,
+            empresaId: factura?.empresaId,
             deleteId: factura?.id,
             onIrDetalle: () => irDetalle(factura),  
 
           }))}OPs
           onCellEditCommit={modifyData}
           columns={columns(verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete)}
-          pageSize={25}
+          
+          sortModel={sortModel}
+          onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
+       
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          pagination
+
           disableSelectionOnClick
           autoHeight
           scrollbarSize
@@ -339,10 +400,15 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarExport />
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport csvOptions={{ fields: [ 'id', 'tipo', 'fideicomiso', 'empresa', 'numero', 'montoTotal', 'neto', 'iva', 'percepciones', 'moneda', 'es_ajuste'
+ ,'fechaIngreso', 'diasVTO', 'fechaVTO', 'OPnumero', 'estadoOP'] }} />
     </GridToolbarContainer>
   );
 }
+
 
 function fFechaVTO(params) {
   let f = new Date(params.row.fechaIngreso)

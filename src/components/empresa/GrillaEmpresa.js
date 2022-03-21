@@ -106,7 +106,7 @@ export function GrillaEmpresa({ idSociety }) {
           },
         }))}
         columns={columns}
-        pageSize={25}
+        /*pageSize={25}*/
         disableSelectionOnClick
         autoHeight
         scrollbarSize

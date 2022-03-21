@@ -8,66 +8,8 @@ import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { mostrarFecha } from 'src/utils/utils';
 import { SocietyContext } from 'src/App';
-import clsx from "clsx";
-import { createTheme } from "@mui/material/styles";
-import { createStyles, makeStyles } from "@mui/styles";
+import { ProgressBar } from 'src/components/detalleOC/ProgressBar';
 
-const defaultTheme = createTheme();
-const useStyles = makeStyles(
-  (theme) =>
-    createStyles({
-      root: {
-        border: `1px solid ${theme.palette.divider}`,
-        position: "relative",
-        overflow: "hidden",
-        width: "100%",
-        height: 26,
-        borderRadius: 2
-      },
-      value: {
-        position: "absolute",
-        lineHeight: "24px",
-        width: "100%",
-        display: "flex",
-        justifyContent: "center"
-      },
-      bar: {
-        height: "100%",
-        "&.low": {
-          backgroundColor: "#f44336"
-        },
-        "&.medium": {
-          backgroundColor: "#efbb5aa3"
-        },
-        "&.high": {
-          backgroundColor: "#088208a3"
-        }
-      }
-    }),
-  { defaultTheme }
-);
-
-const ProgressBar = React.memo(function ProgressBar(props) {
-  const { value } = props;
-  const valueInPercent = value * 100;
-  const classes = useStyles();
-
-  return (
-    <div className={classes.root}>
-      <div
-        className={classes.value}
-      >{`${valueInPercent.toLocaleString()} %`}</div>
-      <div
-        className={clsx(classes.bar, {
-          low: valueInPercent < 30,
-          medium: valueInPercent >= 30 && valueInPercent <= 70,
-          high: valueInPercent > 70
-        })}
-        style={{ maxWidth: `${valueInPercent}%` }}
-      />
-    </div>
-  );
-});
 
 const columns = (acceso, total, setIsPromptOpen, setRowIdToDelete) => [
   
@@ -227,19 +169,19 @@ export function GrillaTareas({ OCId, loggedUser, formOC, refetch, moneda, totPag
       <div style={{ width: '100%' }}>
         <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >
 
-          <Grid item md={5}>
+          <Grid item md={4}>
             <Typography align="left" color="textPrimary" variant="h6">
                   
             </Typography>
           </Grid>                      
-          <Grid item md={3}>
+          <Grid item md={6}>
             <Typography align="right" color="textPrimary" variant="h5">
                   Total Contrato:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(totTareas)) + " " + moneda }
                   
             </Typography>
           </Grid>
           <Grid item md={2}>
-          <ProgressBar value={avance} />
+            <ProgressBar value={avance} />
           </Grid>
 
           <Grid item md={12}>
@@ -260,7 +202,7 @@ export function GrillaTareas({ OCId, loggedUser, formOC, refetch, moneda, totPag
               }))}
               onCellEditCommit={modifyData}
               columns={columns(acceso, moneda==='ARS'?formOC?.oc?.monto_ARS:formOC?.oc?.monto_USD,setIsPromptOpen, setRowIdToDelete)}
-              pageSize={25}
+              /*pageSize={25}*/
               disableSelectionOnClick
               autoHeight              
             />

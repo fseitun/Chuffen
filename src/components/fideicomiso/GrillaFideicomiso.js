@@ -1,16 +1,12 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
-// import { Delete as DeleteIcon } from '@mui/icons-material';
+import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { TextField, Autocomplete } from '@mui/material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
-// import { mostrarFecha } from 'src/utils/utils';
-// import { Uploader } from 'src/components/auxiliares/Uploader';
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
-//const columns = (color, setColor, id,  setNewLogoFlag, setIsPromptOpen, setRowIdToDelete) => [
 const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'nombre',
@@ -50,19 +46,10 @@ const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
         timeZone: 'UTC',
       }),
   },
-  /*
-  {
-    field: 'cloud',
-    headerName: 'Cloud',
-    editable: true,
-    width: 200,
-    headerAlign: 'center',
-    align: 'left',
-  },*/
-
   {
     field: 'logo',
     headerName: 'Logo',
+    sortable: false,
     width: 150,
     renderCell: passedData =>
       passedData.row.logo ? (
@@ -78,6 +65,7 @@ const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
     field: 'colorElegido',
     headerName: 'Color',
     width: 150,
+    sortable: false,
     editable: false,
     renderCell: ({ row: { colorElegido } }) => (
       <div style={{ width: '100%', height: '100%', background: colorElegido }}></div>
@@ -114,13 +102,9 @@ const colors = [
 export function GrillaFideicomiso({ idSociety }) {
 
   const [color, setColor] = useState(null);
-  //const [fechaInicio, setFechaInicio] = useState(null);
-  // const [newLogoFlag, setNewLogoFlag] = useState(false);
-  
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
-  // console.log(rowIdToDelete);
-
+  
   const {
     data: fideicomisoInformation,
     isLoading,
@@ -143,7 +127,6 @@ export function GrillaFideicomiso({ idSociety }) {
       onSettled: () => queryClient.invalidateQueries(['fideicomiso', idSociety]),
     }
   );
-  // eliminate(1);
 
   const { mutate: modifyData } = useMutation(
     async ({ field, id, value }) =>
@@ -155,12 +138,12 @@ export function GrillaFideicomiso({ idSociety }) {
       onMutate: async ({ field, id, value }) => {
         await queryClient.cancelQueries(['fideicomiso', idSociety]);
         const prevData = queryClient.getQueryData(['fideicomiso', idSociety]);
-        // console.log('prevData', prevData);
+
         const newData = [
           ...prevData.filter(fideicomiso => fideicomiso.id !== id),
           { ...prevData.find(fideicomiso => fideicomiso.id === id), [field]: value },
         ];
-        // console.log('newData', newData);
+
         queryClient.setQueryData(['fideicomiso', idSociety], newData);
         return prevData;
       },
@@ -169,6 +152,27 @@ export function GrillaFideicomiso({ idSociety }) {
     }
   );
 
+  const [sortModel, setSortModel] = React.useState([
+    {
+      field: 'nombre',
+      sort: 'asc',
+    },
+  ]);
+
+  const onSort = (newSort) => {
+
+    if(newSort.length === 0){
+      newSort.push(sortModel[0]);
+      if(sortModel[0]?.sort === 'asc'){
+        newSort[0].sort = 'desc';
+      }else{
+        newSort[0].sort = 'asc';
+      }
+    }
+    setSortModel(newSort);    
+  };
+
+  const [pageSize, setPageSize] = useState(25);
   
   if (isLoading) {
     return 'Cargando...';
@@ -190,10 +194,17 @@ export function GrillaFideicomiso({ idSociety }) {
             deleteId: fideicomiso.id,
           }))}
           onCellEditCommit={modifyData}
-          //columns={columns(color, setColor, idSociety?.id, setNewLogoFlag, setIsPromptOpen, setRowIdToDelete)}
           columns={columns(color, setColor, idSociety?.id, setIsPromptOpen, setRowIdToDelete)}
-          pageSize={25}
-          /* disableSelectionOnClick */
+          
+          sortModel={sortModel}
+          onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
+       
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          pagination
+
+          disableSelectionOnClick
           autoHeight
           scrollbarSize
           components={{
@@ -207,7 +218,10 @@ export function GrillaFideicomiso({ idSociety }) {
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarExport />
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport csvOptions={{ fields: ['nombre','fechaInicio','fechaFin'] }} />
     </GridToolbarContainer>
   );
 }
@@ -232,7 +246,7 @@ function ColorPicker({ color, setColor, colorOptions, originalColor }) {
       isOptionEqualToValue={(option, value) => option.label === value.label}
       renderInput={params => <TextField style={{ background: color?.css }} {...params} />}
       renderOption={(props, option, c) => {
-        // console.log(props, option, c);
+        
         return (
           <div {...props} style={{ background: option?.css }}>
             {option.label}

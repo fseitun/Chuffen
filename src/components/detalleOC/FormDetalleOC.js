@@ -1,82 +1,87 @@
-import { TextField, Button } from '@mui/material';
+import { useState } from 'react';
+import { TextField } from '@mui/material';
 import { useContext } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form } from 'formik';
 import { postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { SocietyContext } from 'src/App';
                 
-export function FormDetalleOC({ OCId, loggedUser, moneda, refetch  }) {
+export function FormDetalleOC({ OCId, formOC, loggedUser, moneda, refetch  }) {
+
   const idSociety = useContext(SocietyContext);
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
 
-  const { mutate: addOCItem } = useMutation(
-    OCItem => postMethod(`OCdetalle/agregar/${idSociety.id}`, OCItem),
-    {
-      onMutate: async OCItem => {
-        OCItem.creador = parseInt(loggedUser.id);
-        OCItem.OCId = parseInt(OCId);
-        OCItem.moneda = moneda;
-  
-        await queryClient.invalidateQueries(['OCdetalle', idSociety]);
-        const prevData = await queryClient.getQueryData(['OCdetalle', idSociety]);
-        const newData = [...prevData, { ...OCItem, id: new Date().getTime() }];
-        queryClient.setQueryData(['OCdetalle', idSociety], newData);
-        return prevData;
+  const [field, setField] = useState("");
 
-      },
-      onError: (err, id, context) => queryClient.setQueryData(['OCdetalle', idSociety], context),
-      onSettled: () => {
-        if(idSociety.id > 0) {
-          queryClient.invalidateQueries(['OCdetalle', idSociety])
+
+  const { mutate: modifyData } = useMutation(
+    async ({ field, id, value }) => await postMethod(`OC/modificar/1`, {id,[field]: value,}),
+    {
+      onMutate: async ({ field, id, value }) => {
+        await queryClient.cancelQueries(['OC', idSociety]);
+        const prevData = await queryClient.getQueryData(['OC', idSociety]);
+        if(prevData){
+          
+          const newData = [
+            ...prevData.filter(_OC => _OC.id !== id),
+            { ...prevData.find(_OC => _OC.id === id), [field]: value },
+          ];
+          queryClient.setQueryData(['OC', idSociety], newData);
+          
+          return prevData;
         }
-        refetch()        
-      }
+      },
+      onError: (err, id, context) => queryClient.setQueryData(['OC', idSociety], context),
+      onSettled: () => {if(idSociety.id > 0) {
+                        queryClient.invalidateQueries(['OCdetalle', idSociety])
+                      }
+                      refetch()} 
     }
   );
 
+  function onlyNumbers(event, field, setField, OCId) {
+   
+    event.preventDefault();
+    const { value } = event.target;   
+  
+    // const regex = /^\d{0,11}$/; // es numero sin decimales
+    const regex = /^\d{0,5}(\.\d{0,2})?$/;// es numero
+    var key = event.which || event.keyCode; // keyCode detection
+    var ctrl = event.ctrlKey ? event.ctrlKey : ((key === 17) ? true : false); // ctrl detection
+    if(event?.target?.name === field){ // Si el campo a grabar cambio
+      if (regex.test(value.toString()) || ctrl ) {
+        let id = OCId;
+        modifyData({ field, id, value });
+      }
+      setField("");
+    }
+  }
+
   return (
     <>
-      <Formik
-        initialValues={{
-          descripcion: '',
-          monto: '',
-        }}
-        onSubmit={async (values, { setSubmitting, resetForm }) => {
-          
-          addOCItem(values);
-          resetForm();
-          setSubmitting(false);
-          
-        }}
-      >
-        {({ isSubmitting, setFieldValue }) => (
+      <Formik>
+
+        {({ isSubmitting }) => (
           <Form>
 
-            <Field 
-              as={TextField} 
-              required 
-              size="small" 
-              label='Tarea' 
-              type='string' 
-              name='descripcion' 
-            />
+            <TextField  
+              size={'small'} 
+              sx={{ width: '20ch' }} 
+              label="CAC Base" 
+              type="number" 
+              key={formOC?.oc?.CACbase} 
+              defaultValue={formOC.oc?.CACbase}  
+              name="CACbase" 
+              onChange={event => setField('CACbase')} 
+              
+              onBlur={event => onlyNumbers(event, field, setField, OCId)}  
+              /* InputProps={{
+                     readOnly: (!acceso || (isConfirmOP===1)?true:false),
+                     }} */
+            />           
             
-            <Field
-              as={TextField}
-              required
-              label="Monto"
-              size="small"
-              type="float"
-              name="monto"
-              onChange={event => onlyNumbers(event, setFieldValue, 'monto')}
-            />        
-     
-
-            <Button type="submit" disabled={isSubmitting}>
-              Agregar
-            </Button>
           </Form>
         )}
       </Formik>
@@ -86,14 +91,4 @@ export function FormDetalleOC({ OCId, loggedUser, moneda, refetch  }) {
       />
     </>
   );
-}
-
-
-function onlyNumbers(event, setFieldValue, typeOfData) {
-  event.preventDefault();
-  const { value } = event.target;
-  const regex = /^\d{0,11}$/;
-  if (regex.test(value.toString())) {
-    setFieldValue(typeOfData, value.toString());
-  }
 }

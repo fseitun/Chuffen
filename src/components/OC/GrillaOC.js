@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useQueryClient, useMutation } from 'react-query';
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import { Box, Button} from '@mui/material';
@@ -25,7 +25,7 @@ const columns = (puedeEditar, setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'id',
     width: 120,
-    headerName: 'Num',
+    headerName: 'Id',
     renderCell: IrDetalleOP_0   
   },
 
@@ -62,7 +62,7 @@ const columns = (puedeEditar, setIsPromptOpen, setRowIdToDelete) => [
     field: 'descripcion1',
     width: 160,
     editable: puedeEditar,
-    headerName: 'Descri',
+    headerName: 'Descripción',
    
   },
   {
@@ -105,6 +105,8 @@ const columns = (puedeEditar, setIsPromptOpen, setRowIdToDelete) => [
     ),
   },
 ];
+
+
 
 
 // const apiServerUrl = process.env.REACT_APP_API_SERVER;
@@ -186,6 +188,28 @@ export function GrillaOC({ filtFide, filtRS, filtEst, idSociety, loggedUser, ocI
     }
   }
 
+  const [sortModel, setSortModel] = React.useState([
+    {
+      field: 'createdAt',
+      sort: 'desc',
+    },
+  ]);
+
+  const onSort = (newSort) => {
+
+    if(newSort.length === 0){
+      newSort.push(sortModel[0]);
+      if(sortModel[0]?.sort === 'asc'){
+        newSort[0].sort = 'desc';
+      }else{
+        newSort[0].sort = 'asc';
+      }
+    }
+    setSortModel(newSort);    
+  };
+
+  const [pageSize, setPageSize] = useState(25);
+  
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
@@ -228,16 +252,17 @@ export function GrillaOC({ filtFide, filtRS, filtEst, idSociety, loggedUser, ocI
         
         <DataGrid 
           rows={ocInformation.filter(element =>filtrar(element, filtFide, filtRS)).map(OC => ({
-            id: OC.id,    
-            // numero: OC.numero,
-            fideicomiso: OC.fideicomisos[0]?.nombre,
-            empresa: OC.empresas[0]?.razonSocial,
-            empresaId: OC.empresaId,
-            monto_ARS: OC.monto_ARS,
-            monto_USD: OC.monto_USD,
-            descripcion1: OC.descripcion1,
-            createdAt: OC.createdAt, 
-            deleteId: OC.id,
+            
+            id: OC.id,   
+            createdAt: OC?.createdAt,  
+            fideicomiso: OC?.fideicomisos[0]?.nombre,
+            empresa: OC?.empresas[0]?.razonSocial,
+            descripcion1: OC?.descripcion1,
+            monto_ARS: OC?.monto_ARS,
+            monto_USD: OC?.monto_USD,
+            
+            empresaId: OC?.empresaId,
+            deleteId: OC?.id,
 
             esEditable: () => (OC),
             onIrDetalle: () => irDetalle(OC),    
@@ -246,12 +271,17 @@ export function GrillaOC({ filtFide, filtRS, filtEst, idSociety, loggedUser, ocI
           onCellEditCommit={modifyData}
           columns={columns(puedeEditar, setIsPromptOpen, setRowIdToDelete)}
 
-          disableSelectionOnClick
-          /* checkboxSelection */
-          /* onSelectionModelChange={setSelectionModel} */
-               
+          sortModel={sortModel}
+          onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
+       
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          pagination
+
+          disableSelectionOnClick               
           autoHeight
-          density={'comfortable'}
+          
           scrollbarSize
           components={{
             Toolbar: CustomToolbar,
@@ -287,13 +317,13 @@ export function GrillaOC({ filtFide, filtRS, filtEst, idSociety, loggedUser, ocI
     );
 }
 
-
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-
-      <GridToolbarExport csvOptions={{ fields: ['createdAt', 'fideicomiso', 'numero','empresa','monto','moneda','RET_SUSS','RET_GAN','RET_IVA','fondos_','retencion', 'aprobado_obra', 'aprobado_adm', 'estado', 'fondos_', 'rubro', 'subrubro','descripcion'] }} />
-      
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport csvOptions={{ fields: ['id', 'createdAt', 'fideicomiso', 'empresa', 'descripcion1', 'monto_ARS', 'monto_USD'] }} />
     </GridToolbarContainer>
   );
 }
@@ -314,7 +344,7 @@ function IrDetalleOP_0(params) {
 
 
 function IrDetalleOC_1(params) {
-
+  
   const sendRow = params.row.onIrDetalle;
   const fideicomiso = params.row.fideicomiso;
   return <Button onClick={sendRow} >{fideicomiso}  </Button>;

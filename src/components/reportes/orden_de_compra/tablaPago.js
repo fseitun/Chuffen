@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Link, StyleSheet } from '@react-pdf/renderer';
+import {View, Text, StyleSheet } from '@react-pdf/renderer';
 import ItemPago from './itemPago';
 // import { mostrarFecha } from 'src/utils/utils';
 
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
      
       <View style={styles.rowf}>
             <Text style={[styles.col1,{ borderRightColor: dataOC?.oc? dataOC?.oc?.fideicomisos[0]?.color:'#ffffff' }]}>TOTALES</Text>
-            <Text style={styles.col2}>{Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(moneda==='ARS'? totARS:totUSD))}</Text>
+            <Text style={styles.col2}>{Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(moneda==='ARS'? (totARS-ajARS):(totUSD-ajUSD)))}</Text>
             <Text style={styles.col3}>{Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(moneda==='ARS'? ajARS:ajUSD))}</Text>
             <Text style={styles.col4}> </Text>
       </View>

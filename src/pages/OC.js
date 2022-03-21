@@ -26,6 +26,7 @@ export function OC({ idSociety, loggedUser }) {
     ['proveedores'],
     () => getMethod(`proveedor/listar/${idSociety.id}`));
 
+  
 
   const [filtFide, setFiltFide] = useState(-1);
   const [filtRS, setFiltRS] = useState(-1);

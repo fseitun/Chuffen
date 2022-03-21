@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import { NavLink as RouterLink, useNavigate } from 'react-router-dom';
 import { getMethod, postMethod} from 'src/utils/api';
@@ -20,15 +20,16 @@ const getHoverBackgroundColor = (color, mode) =>
 
 const columns = (tipo, setIsPromptOpen, setRowIdToDelete) => [
 
-  
   {
-    field: 'estadoOP',
-    headerName: 'Pendiente Obra',
+    field: 'estadoId',
+    headerName: 'Requiere autorizar en Obra',
     width: 70,
+    filterable: false,
+    sortable: false,
     hide: (tipo==='obra'),
     editable: false,
     headerAlign: 'center',
-    renderCell: ({ value }) => value?.id!==1?'' :<Avatar sx={{ bgcolor: '#39BC44' }} >Ob</Avatar>,
+    renderCell: ({ value }) => value!==1?'' :<Avatar sx={{ bgcolor: '#39BC44' }} >Ob</Avatar>,
   },
   {
     field: 'id',
@@ -38,7 +39,6 @@ const columns = (tipo, setIsPromptOpen, setRowIdToDelete) => [
     headerAlign: 'center',
     align: 'center',
     renderCell: IrDetalleOP_0
-
   }, 
   {
     field: 'createdAt',
@@ -50,7 +50,6 @@ const columns = (tipo, setIsPromptOpen, setRowIdToDelete) => [
     align: 'center',
     valueFormatter: ({ value }) => mostrarFecha(value),
   },
-
   {
     field: 'fideicomiso',
     headerName: 'Fideicomiso',
@@ -69,7 +68,6 @@ const columns = (tipo, setIsPromptOpen, setRowIdToDelete) => [
     align: 'right',
     renderCell: IrDetalleOP_2,    
   },
-
   {
     field: 'empresa',
     headerName: 'Razón Social',
@@ -90,7 +88,7 @@ const columns = (tipo, setIsPromptOpen, setRowIdToDelete) => [
   },
   {
     field: 'moneda',
-    headerName: '',
+    headerName: 'Moneda',
     editable: false,
     width: 50,
     headerAlign: 'center',
@@ -103,9 +101,19 @@ const columns = (tipo, setIsPromptOpen, setRowIdToDelete) => [
     editable: true,
   },
   {
+    field: 'estadoOP', // campo en grilla
+    headerName: 'Estado',
+    width: 150,
+    editable: false,
+    renderCell: ({ value }) => value.descripcion, // a visualizar
+    headerAlign: 'center',
+  },
+  {
     field: 'PriceCheckIcon',
     headerName: 'Autorizar',
     width: 155,
+    filterable: false,
+    sortable: false,
     headerAlign: 'center',
     align: 'center',
     renderCell: ({ row: { authId } }) => (
@@ -201,7 +209,7 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
       onSettled: () => queryClient.invalidateQueries(['OP' + tipo, idSociety]),
     }
   );
-
+  var estados = JSON.parse(localStorage.getItem("estados"));
   const [selectionModel, setSelectionModel] = useState([]);
 
   const [open, setOpen] = useState(false);
@@ -218,6 +226,28 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
 
   }
 
+  const [sortModel, setSortModel] = React.useState([
+    {
+      field: 'createdAt',
+      sort: 'desc',
+    },
+  ]);
+
+  const onSort = (newSort) => {
+
+    if(newSort.length === 0){
+      newSort.push(sortModel[0]);
+      if(sortModel[0]?.sort === 'asc'){
+        newSort[0].sort = 'desc';
+      }else{
+        newSort[0].sort = 'asc';
+      }
+    }
+    setSortModel(newSort);    
+  };
+
+  const [pageSize, setPageSize] = useState(25);
+
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
@@ -231,47 +261,62 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
           sx={{
             height: 400,
             width: 1,
-          
-            '& .super-app-theme--true': {
+          // Confirmada
+            '& .color_x_estado-conf': {
               bgcolor: (theme) =>
               getBackgroundColor(theme.palette.success.main, theme.palette.mode),
             '&:hover': {
               bgcolor: (theme) =>
                 getHoverBackgroundColor(
                   theme.palette.success.main,
-                  theme.palette.mode,
-                ),
+                  theme.palette.mode,),},
             },
-            },
-            '& .super-app-theme--otra': {
+            // para autorizar
+            '& .color_x_estado-auth': {
               bgcolor: (theme) =>
                 getBackgroundColor(theme.palette.error.main, theme.palette.mode),
               '&:hover': {
                 bgcolor: (theme) =>
-                  getHoverBackgroundColor(theme.palette.error.main, theme.palette.mode),
-              },
+                  getHoverBackgroundColor(theme.palette.error.main, theme.palette.mode),},
             },
+            // anulada
+            '& .color_x_estado-anulado': {
+              bgcolor: (theme) =>
+                getBackgroundColor(theme.palette.text.primary, theme.palette.mode),
+              '&:hover': {
+                bgcolor: (theme) =>
+                  getHoverBackgroundColor(theme.palette.text.primary, theme.palette.mode),},
+            },
+               // para pagar
+               '& .color_x_estado-parap': {
+                bgcolor: (theme) =>
+                  getBackgroundColor(theme.palette.warning.light, theme.palette.mode),
+                '&:hover': {
+                  bgcolor: (theme) =>
+                    getHoverBackgroundColor(theme.palette.warning.light, theme.palette.mode),},
+              },
+            
           }}
-        > 
+        >    
 
         <DataGrid
           rows={opInformation.filter(element =>filtrar(element, tipo)).map(OP => ({
+            estadoId: OP.estadoOP,
             id: OP.id,  
+            createdAt: OP.createdAt,
+            fideicomiso: OP.fideicomisos[0].nombre,
             numero: OP.numero,
             empresa: OP.empresas[0].razonSocial,
-            empresaId: OP.empresaId,
             monto: OP.monto,
             moneda: OP.moneda,   
-            formaPago: OP.formaPago,      
-            fideicomiso: OP.fideicomisos[0].nombre,          
+            formaPago: OP.formaPago,   
+            estadoOP: estados?.find(estado => estado.id === OP.estadoOP)?.descripcion,
+            
+            empresaId: OP.empresaId,
             apr_obra: (OP.auth_obra[0]?OP.auth_obra[0].usuarios[0].user:''),
             apr_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
             authOBRA: (OP.authOBRA? true: false),
-            createdAt: OP.createdAt,
             authId: OP.id,
-            estadoOP: {
-              id: OP.estadoOP,
-            },
             blue: OP.blue,
             confirmada: OP.confirmada===0? false: true,
             onIrDetalle: () => irDetalle(OP),   
@@ -279,17 +324,23 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
           onCellEditCommit={modifyData}
           columns={columns(tipo, setIsPromptOpen, setRowIdToDelete)}
 
+          sortModel={sortModel}
+          onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
+       
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          pagination
+
           checkboxSelection
           onSelectionModelChange={setSelectionModel}
-
-          pageSize={25}        
           autoHeight
           scrollbarSize
           components={{
             Toolbar: CustomToolbar,
           }}
 
-          getRowClassName={(params) => `super-app-theme--${params.row.authOBRA}`}
+          getRowClassName={(params) => `color_x_estado-${params.row.confirmada?'conf':params.row.estadoOP?.id===6? 'anulado':params.row.estadoOP?.id===2? 'parap':params.row.estadoOP?.id===1||params.row.estadoOP?.id===4? 'auth':'regular'}`}
 
         >
 
@@ -335,19 +386,22 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarExport />
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport csvOptions={{ fields: ['id', 'createdAt', 'fideicomiso', 'numero', 'empresa', 'monto', 'moneda', 'formaPago', 'estadoOP'] }} />
     </GridToolbarContainer>
   );
 }
 
+
 function auth_seleccionados(selectionModel, idSociety, tipo, loggedUser, authFila, setOpen) {
   let err = false;
   let rowIdToDelete = 0;
-  // console.log(selectionModel.length, idSociety.id, tipo, loggedUser.id);
+
   for (let i = 0; i < selectionModel.length ; i++) {
     try {      
 
-      // console.log(22222, selectionModel[i]);
       rowIdToDelete = selectionModel[i];
       authFila(({rowIdToDelete, tipo, loggedUser}));
 
@@ -366,27 +420,6 @@ function auth_seleccionados(selectionModel, idSociety, tipo, loggedUser, authFil
   }
 
 }
-
-/*
-
-  const { mutate: authFila } = useMutation(
-    async id =>
-      await postMethod(`autorizacion/agregar/${idSociety?.id}`, {
-
-        opid : id,
-        documento: 'op',
-        tipoAutorizacion: tipo,
-        creador: loggedUser.id
-
-      }),
-    {
-      onSuccess: async () =>
-        await queryClient.refetchQueries(['OP' + tipo, idSociety]),
-    }
-
-  );
-
-*/
 
 
 function IrDetalleOP_0(params) {

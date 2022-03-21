@@ -1,6 +1,7 @@
+import * as React from 'react';
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { Typography } from '@mui/material';
@@ -99,6 +100,28 @@ export function GrillaCuentaBanco({ idSociety }) {
     }
   );
 
+  const [sortModel, setSortModel] = React.useState([
+    {
+      field: 'cuentaBanco',
+      sort: 'asc',
+    },
+  ]);
+
+  const onSort = (newSort) => {
+
+    if(newSort.length === 0){
+      newSort.push(sortModel[0]);
+      if(sortModel[0]?.sort === 'asc'){
+        newSort[0].sort = 'desc';
+      }else{
+        newSort[0].sort = 'asc';
+      }
+    }
+    setSortModel(newSort);    
+  };
+
+  const [pageSize, setPageSize] = useState(25);
+
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
@@ -108,6 +131,7 @@ export function GrillaCuentaBanco({ idSociety }) {
       <div style={{ width: '100%' }}>
         <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
         <DataGrid
+          sortModel={sortModel}
           rows={cuentaBancoInformation.map(cuentabanco => ({
             id: cuentabanco.id,
             cuentaBanco: cuentabanco.cuentaBanco,
@@ -115,10 +139,16 @@ export function GrillaCuentaBanco({ idSociety }) {
             deleteId: cuentabanco.id,
           }))}
           onCellEditCommit={modifyData}
-        
-        compone
+      
           columns={columns(setIsPromptOpen, setRowIdToDelete)}
-          pageSize={25}
+          
+          onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
+       
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          pagination
+
           disableSelectionOnClick
           autoHeight
          
@@ -141,7 +171,10 @@ export function GrillaCuentaBanco({ idSociety }) {
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarExport />
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport csvOptions={{ fields: ['cuentaBanco', 'descripcionLarga'] }} />
     </GridToolbarContainer>
   );
 }
