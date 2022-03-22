@@ -243,7 +243,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                           </Typography> 
                       </Hidden>
 
-                      <Hidden  smUp={(!acceso || (iniEstado.id!==3)  || (isConfirmOP===1)?true:false)} >
+                      <Hidden  smUp={(!acceso || (iniEstado?.id!==3)  || (isConfirmOP===1)?true:false)} >
 
                                                     
                            <Typography align="right" color="blue" variant="h5">                      

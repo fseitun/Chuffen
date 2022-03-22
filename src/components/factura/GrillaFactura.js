@@ -400,7 +400,7 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarColumnsButton />
+      
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
       <GridToolbarExport csvOptions={{ fields: [ 'id', 'tipo', 'fideicomiso', 'empresa', 'numero', 'montoTotal', 'neto', 'iva', 'percepciones', 'moneda', 'es_ajuste'

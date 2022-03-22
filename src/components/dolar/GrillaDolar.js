@@ -180,7 +180,7 @@ export function GrillaDolar() {
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarColumnsButton />
+      
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
       <GridToolbarExport csvOptions={{ fields: ['fecha', 'BCRA','blue', 'mep'] }} />

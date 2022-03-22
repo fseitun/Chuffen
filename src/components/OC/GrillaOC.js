@@ -320,7 +320,7 @@ export function GrillaOC({ filtFide, filtRS, filtEst, idSociety, loggedUser, ocI
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarColumnsButton />
+      
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
       <GridToolbarExport csvOptions={{ fields: ['id', 'createdAt', 'fideicomiso', 'empresa', 'descripcion1', 'monto_ARS', 'monto_USD'] }} />

@@ -155,7 +155,7 @@ export function GrillaSubRubro({ idSociety, idRubro }) {
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarColumnsButton />
+      
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
       <GridToolbarExport csvOptions={{ fields: ['subRubro'] }} />

@@ -171,7 +171,7 @@ export function GrillaCuentaBanco({ idSociety }) {
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarColumnsButton />
+      
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
       <GridToolbarExport csvOptions={{ fields: ['cuentaBanco', 'descripcionLarga'] }} />

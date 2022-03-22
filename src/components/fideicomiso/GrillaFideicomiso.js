@@ -218,7 +218,7 @@ export function GrillaFideicomiso({ idSociety }) {
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarColumnsButton />
+      
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
       <GridToolbarExport csvOptions={{ fields: ['nombre','fechaInicio','fechaFin'] }} />

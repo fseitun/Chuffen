@@ -27,13 +27,14 @@ var miOP={};
 var fa={};
 var idSociedad=0;
 
-const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
+const columns = (colVisibles, verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
   
   {
     field: 'id',
     headerName: 'Id',
     width: 55,
     editable: false,
+    hide: colVisibles?.find(i => i.c === 'id').h,
     headerAlign: 'center',
     align: 'center',
     renderCell: IrDetalleOP_0
@@ -42,9 +43,9 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
   {
     field: 'blue',
     headerName: 'Blue',
-    hide: !verColumnBlue,
     width: 70,
     editable: false,
+    hide: (!verColumnBlue && colVisibles?.find(i => i.c === 'blue').h),    
     headerAlign: 'center',
     renderCell: ({ value }) => value===0?'' :<Avatar sx={{ bgcolor: '#3944BC' }} >B</Avatar>,
   },
@@ -55,6 +56,7 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     width: 120,
     type: 'date',
     editable: false,
+    hide: colVisibles?.find(i => i.c === 'createdAt').h,
     headerAlign: 'center',
     align: 'center',
     valueFormatter: ({ value }) => new Date(value).toLocaleDateString('es-AR', { timeZone: 'UTC' }),
@@ -64,6 +66,7 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     headerName: 'Fideicomiso',
     width: 160,
     editable: false,
+    hide: colVisibles?.find(i => i.c === 'fideicomiso').h,
     headerAlign: 'center',
     align: 'center',
     renderCell: IrDetalleOP_1,
@@ -73,6 +76,7 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     headerName: 'Numero',
     width: 130,
     editable: false,
+    hide: colVisibles?.find(i => i.c === 'numero').h,
     headerAlign: 'center',
     align: 'right',
     renderCell: IrDetalleOP_2,    
@@ -82,14 +86,16 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     headerName: 'Razón Social',
     width: 170,
     editable: false,
+    hide: colVisibles?.find(i => i.c === 'empresa').h,
     headerAlign: 'center',
     align: 'center',
-  },  
+  },
   {
     field: 'monto',
     headerName: 'Monto',
     width: 130,
     editable: false,
+    hide: colVisibles?.find(i => i.c === 'monto').h,
     headerAlign: 'center',
     align: 'right',
     valueFormatter: ({ value }) =>
@@ -100,24 +106,25 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     headerName: '',
     width: 70,
     editable: false,
+    hide: colVisibles?.find(i => i.c === 'moneda').h,
     headerAlign: 'center',
     align: 'left',    
   },
   {
-    field: 'estadoOP', // campo en grilla
+    field: 'estadoOP',
     headerName: 'Estado',
     width: 150,
     editable: puedeEditar,
-    // renderCell: ({ value }) => value.descripcion, // a visualizar
+    hide: colVisibles?.find(i => i.c === 'estadoOP').h,
     renderEditCell: props => <ComboBoxEst estados={estados} props={props} />,
     headerAlign: 'center',
   },
   {
-    field: 'estadoRET', // campo en grilla
+    field: 'estadoRET',
     headerName: 'Retenciones',
     width: 150,
     editable: puedeEditar,
-    // renderCell: ({ value }) => value.descripcion, // a visualizar
+    hide: colVisibles?.find(i => i.c === 'estadoRET').h,
     renderEditCell: props => <ComboBoxRet retenciones={retenciones} props={props} />,
     headerAlign: 'center',
   },
@@ -128,6 +135,7 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     sortable: false,
     filterable: false,
     editable: false,
+    hide: colVisibles?.find(i => i.c === 'facturas').h,
     headerAlign: 'center',
     align: 'center',
     renderCell: ({ row: { misFacturas }}) => misFacturas?.map(({numero}) => numero)?.join(', '), 
@@ -136,7 +144,7 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     field: 'RET_GAN',
     headerName: 'GAN',
     width: 120,
-    hide: true,
+    hide: colVisibles?.find(i => i.c === 'RET_GAN').h,
     editable: puedeEditar,
     headerAlign: 'center',
     align: 'right',
@@ -146,9 +154,9 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
   {
     field: 'RET_IVA',
     headerName: 'IVA',
-    width: 120,
-    hide: true,
+    width: 120,    
     editable: puedeEditar,
+    hide: colVisibles?.find(i => i.c === 'RET_IVA').h,
     headerAlign: 'center',
     align: 'right',
     valueFormatter: ({ value }) =>
@@ -157,9 +165,9 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
   {
     field: 'RET_SUSS',
     headerName: 'SUSS',
-    width: 120,
-    hide: true,
+    width: 120,    
     editable: puedeEditar,
+    hide: colVisibles?.find(i => i.c === 'RET_SUSS').h,
     headerAlign: 'center',
     align: 'right',
     valueFormatter: ({ value }) =>
@@ -168,44 +176,35 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
   {
     field: 'apr_obra',
     headerName: 'Ap. Obra',
-    //sortable: false,
-    //filterable: false,
     width: 140,
     headerAlign: 'center',
+    hide: colVisibles?.find(i => i.c === 'apr_obra').h,
     align: 'center',
     renderCell: NonObraAuthRow,
   },
   {
     field: 'apr_adm',
-    headerName: 'Ap. ADM',   
-    //sortable: false,
-    //filterable: false,
+    headerName: 'Ap. ADM',
     width: 140,
     headerAlign: 'center',
+    hide: colVisibles?.find(i => i.c === 'apr_adm').h,
     align: 'center',
     renderCell: NonAdmAuthRow,
   },
-  /*{
-    field: 'estado',
-    hide: true,
-  },*/
   {
     field: 'formaPago',
     headerName: 'Forma Pago',
     width: 160,
     editable: false,
+    hide: colVisibles?.find(i => i.c === 'formaPago').h,
   },
-  /*{
-    field: 'fondos_',
-    hide: true,
-  },*/
   {
-    field: 'fondos', // campo en grilla
+    field: 'fondos',
     headerName: 'Fondos',
     width: 150,
     type: 'singleSelect',
-    editable: puedeEditar, //props.row.confirmada,
-    // renderCell: ({ value }) => value.descripcion, // a visualizar
+    editable: puedeEditar,
+    hide: colVisibles?.find(i => i.c === 'fondos').h,
     renderEditCell: props => <ComboBoxFon fondos_s={fondos_s} props={props} />,
     headerAlign: 'center',
   },
@@ -213,23 +212,21 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
   {
     field: 'rubroId',
     headerName: 'Rubro',
-    width: 140,
-    hide: true,
-    editable: false,
-    //renderCell: ({ value }) => value.nombre,
-    // renderEditCell: props => <ComboBox rubros={rubros} props={props} />,
+    width: 140,    
+    editable: puedeEditar,
+    hide: colVisibles?.find(i => i.c === 'rubroId').h,    
     headerAlign: 'center',
+    renderEditCell: props => <ComboBox rubros={rubros} props={props} />
   },
 
   {
     field: 'subrubroId',
     headerName: 'Sub Rubro',
-    width: 140,
-    hide: true,
-    editable: false,
-    // renderCell: ({ value }) => value.nombre,
-    // renderEditCell: props => <ComboBoxSub subRubros={subRubros} props={props} />,
+    width: 140,    
+    editable: puedeEditar,
+    hide: colVisibles?.find(i => i.c === 'subrubroId').h,
     headerAlign: 'center',
+    renderEditCell: props => <ComboBoxSub subRubros={subRubros} props={props} />
   },  
 
   {
@@ -237,6 +234,7 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     headerName: 'Detalle',
     width: 140,
     editable: puedeEditar,
+    hide: colVisibles?.find(i => i.c === 'descripcion').h,
     headerAlign: 'center',
     align: 'center',    
   }, 
@@ -245,6 +243,7 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     headerName: 'Generar',
     width: 140,
     headerAlign: 'center',
+    hide: colVisibles?.find(i => i.c === 'archivada').h,
     align: 'center',
     renderCell: DescargarPDF,
   },
@@ -253,6 +252,7 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     headerName: 'Enviar',
     width: 90,
     headerAlign: 'center',
+    hide: colVisibles?.find(i => i.c === 'enviada').h,
     align: 'center',
     renderCell: EnviarMail,
   },
@@ -262,28 +262,13 @@ const columns = (verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen,
     type: 'boolean',
     width: 120,
     editable: false,
+    hide: colVisibles?.find(i => i.c === 'confirmada').h,
     headerAlign: 'center',
   },
-  /*{
-    field: 'aprobado_obra',
-    hide: true,
-  },
-  {
-    field: 'aprobado_adm',
-    hide: true,
-  },*/
-  /*{
-    field: 'subrubro',
-    hide: true,
-  },
-  {
-    field: 'rubro',
-    hide: true,
-  },  */
   {
     field: 'deleteIcon',
     headerName: ' ',
-    hide: !puedeEditar,
+    hide: (!puedeEditar && colVisibles?.find(i => i.c === 'deleteIcon').h),
     width: 50,
     headerAlign: 'center',
     align: 'center',
@@ -512,6 +497,45 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
 
   }
 
+  
+  var colDefaultVisibles = [
+    {c:'id',  h:false},
+    {c:'blue',  h:false},
+    {c:'createdAt',  h:false},
+    {c:'fideicomiso',  h:false},
+    {c:'numero',  h:false},
+    {c:'empresa',  h:false},
+    {c:'monto',  h:false},
+    {c:'moneda',  h:false},
+    {c:'estadoOP',  h:false},
+    {c:'estadoRET',  h:false},
+    {c:'facturas',  h:false},
+    {c:'RET_GAN',  h:true},
+    {c:'RET_IVA',  h:true},
+    {c:'RET_SUSS',  h:true},
+    {c:'apr_obra',  h:false},
+    {c:'apr_adm',  h:false},
+    {c:'formaPago',  h:false},
+    {c:'fondos',  h:false},
+    {c:'rubroId',  h:true},
+    {c:'subrubroId',  h:true},
+    {c:'descripcion',  h:false},
+    {c:'archivada',  h:false},
+    {c:'enviada',  h:false},
+    {c:'confirmada',  h:false},
+    {c:'deleteIcon',  h:false}];
+
+  const [colVisibles, setColVisibles] = useState(colDefaultVisibles);
+
+  const change = (col) => { 
+    let cols = colVisibles;
+    let foundIndex = cols?.findIndex(item => item.c === col.field);
+    if(foundIndex>-1){
+      cols[foundIndex] = {c:col.field,  h:!col.isVisible};
+      setColVisibles(cols);
+    }
+  };
+
   const [sortModel, setSortModel] = React.useState([
     {
       field: 'createdAt',
@@ -592,6 +616,7 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
         
         <DataGrid 
           rows={opInformation.filter(element =>filtrar(element, filtFide, filtRS, filtEst)).map(OP => ({
+            
             id: OP.id,    
             blue: OP.blue,
             createdAt: OP.createdAt,
@@ -607,39 +632,22 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
             descripcion: OP.descripcion,
             archivada: OP.archivada,
             enviada: OP.enviada,
-            confirmada: OP.confirmada===0? false: true,
-
-
-            
+            confirmada: OP.confirmada===0? false: true,           
                    
             RET_SUSS: OP.RET_SUSS,
             RET_GAN: OP.RET_GAN,
             RET_IVA: OP.RET_IVA,
-            // rubroId: OP.rubroId,  
-            // empresaId: OP.empresaId,           
-            /*rubroID: {
-              id: OP.rubroId,
-              nombre: rubros?.find(rubro => rubro.id === OP.rubroId)?.rubro,
-            },
-            subrubroID: {
-              id: OP.subrubroId,
-              nombre: subRubros?.find(subRubro => subRubro.id === OP.subRubroId)?.subRubro,
-            }, */
             apr_obra: (OP.auth_obra[0]?OP.auth_obra[0].usuarios[0].user:''),
             apr_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
             filtroRubroID: OP.rubroId,
             acceso: accesoOP,
             deleteId: OP.id,
-            /* para exportar*/
-            // retencion: retenciones?.find(retencion => retencion.id === OP.estadoRET)?.descripcion,
             aprobado_obra: (OP.auth_obra[0]?OP.auth_obra[0].usuarios[0].user:''),
             aprobado_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
-            // estado: estados?.find(estado => estado.id === OP.estadoOP)?.descripcion,
-            // fondos_: fondos_s?.find(fondos => fondos.id === OP.fondos)?.descripcion,  
             formaPago: OP.formaPago,          
             rubroId: rubros?.find(rubro => rubro.id === OP.rubroId)?.rubro,
-            //// rubroID: rubros?.find(rubro => rubro.id === proveedor.rubroId)?.rubro,
-            subrubroId: subRubros?.find(subRubro => subRubro.id === OP.subRubroId)?.subRubro,     
+            subrubroId: subRubros?.find(subRubro => subRubro.id === OP.subRubroId)?.subRubro,
+            Color_estadoOP: OP.estadoOP,     
             onAuthObra: () => nonAuthObra(OP),
             onAuthAdm: () => nonAuthAdm(OP),
             onEnviar: () => enviarCorreo(OP),
@@ -649,11 +657,12 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
             
           }))}
           onCellEditCommit={modifyData}
-          columns={columns(verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete)}
+          columns={columns(colVisibles, verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete)}
           
           sortModel={sortModel}
           onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
-       
+          onColumnVisibilityChange={(model) => change(model)}
+
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[10, 25, 50, 100]}
@@ -672,7 +681,7 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
             Toolbar: CustomToolbar,
           }}
 
-          getRowClassName={(params) => `color_x_estado-${params.row.confirmada?'conf':params.row.estadoOP?.id===6? 'anulado':params.row.estadoOP?.id===2? 'parap':params.row.estadoOP?.id===1||params.row.estadoOP?.id===4? 'auth':'regular'}`}
+          getRowClassName={(params) => `color_x_estado-${params.row.confirmada?'conf':params.row.Color_estadoOP===6? 'anulado':params.row.Color_estadoOP===2? 'parap':params.row.Color_estadoOP===1||params.row.Color_estadoOP===4? 'auth':'regular'}`}
           
           
         >      
@@ -803,7 +812,7 @@ function CustomToolbar() {
 
 function IrDetalleOP_0(params) {
 
-  let path = `${params.row.id}/${params.row.createdAt}/${params.row.empresaId}/${params.row.numero}/${params.row.fideicomiso}/${params.row.estadoOP?.id}/${params.row.apr_adm===''? 'null':params.row.apr_adm}/${params.row.apr_obra===''? 'null':params.row.apr_obra}/${params.row.confirmada? 1:0}/${params.row.blue}/OP Detalle`;
+  let path = `${params.row.id}/${params.row.createdAt}/${params.row.empresaId}/${params.row.numero}/${params.row.fideicomiso}/${params.row.Color_estadoOP}/${params.row.apr_adm===''? 'null':params.row.apr_adm}/${params.row.apr_obra===''? 'null':params.row.apr_obra}/${params.row.confirmada? 1:0}/${params.row.blue}/OP Detalle`;
   
   return <Button
           component={RouterLink}
@@ -828,7 +837,7 @@ function IrDetalleOP_2(params) {
   return <Button onClick={sendRow} >{numero}  </Button>;
 } 
 
-/*
+
 function ComboBox({ rubros, props }) {
   const { id, api, field } = props;
 
@@ -898,7 +907,7 @@ function ComboBoxSub({ subRubros, props }, params) {
       renderInput={params => <TextField {...params} label="subRubro" />}
     />
   );
-}*/
+}
 
 function ComboBoxRet({ retenciones, props }) {
   const { id, api, field } = props;

@@ -174,7 +174,7 @@ export function GrillaCac({ idSociety }) {
     function CustomToolbar() {
       return (
         <GridToolbarContainer>
-          <GridToolbarColumnsButton />
+          
           <GridToolbarFilterButton />
           <GridToolbarDensitySelector />
           <GridToolbarExport csvOptions={{ fields: ['fecha', 'estimado','definitivo'] }} />

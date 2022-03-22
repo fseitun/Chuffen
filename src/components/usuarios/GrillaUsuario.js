@@ -255,7 +255,7 @@ function ComboBox({ roles, props }) {
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarColumnsButton />
+      
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
       <GridToolbarExport csvOptions={{ fields: ['user', 'mail', 'rolId'] }} />

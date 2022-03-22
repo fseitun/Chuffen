@@ -311,7 +311,8 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
             moneda: OP.moneda,   
             formaPago: OP.formaPago,   
             estadoOP: estados?.find(estado => estado.id === OP.estadoOP)?.descripcion,
-            
+            Color_estadoOP: OP.estadoOP,
+
             empresaId: OP.empresaId,
             apr_obra: (OP.auth_obra[0]?OP.auth_obra[0].usuarios[0].user:''),
             apr_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
@@ -340,7 +341,7 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
             Toolbar: CustomToolbar,
           }}
 
-          getRowClassName={(params) => `color_x_estado-${params.row.confirmada?'conf':params.row.estadoOP?.id===6? 'anulado':params.row.estadoOP?.id===2? 'parap':params.row.estadoOP?.id===1||params.row.estadoOP?.id===4? 'auth':'regular'}`}
+          getRowClassName={(params) => `color_x_estado-${params.row.confirmada?'conf':params.row.Color_estadoOP===6? 'anulado':params.row.Color_estadoOP===2? 'parap':params.row.Color_estadoOP===1||params.row.Color_estadoOP===4? 'auth':'regular'}`}
 
         >
 
@@ -386,7 +387,7 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarColumnsButton />
+      
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
       <GridToolbarExport csvOptions={{ fields: ['id', 'createdAt', 'fideicomiso', 'numero', 'empresa', 'monto', 'moneda', 'formaPago', 'estadoOP'] }} />
@@ -424,7 +425,7 @@ function auth_seleccionados(selectionModel, idSociety, tipo, loggedUser, authFil
 
 function IrDetalleOP_0(params) {
  
-  let path = `${params.row.id}/${params.row.createdAt}/${params.row.empresaId}/${params.row.numero}/${params.row.fideicomiso}/${params.row.estadoOP?.id}/${params.row.apr_adm===''? 'null':params.row.apr_adm}/${params.row.apr_obra===''? 'null':params.row.apr_obra}/${params.row.confirmada? 1:0}/${params.row.blue}/OP Detalle`;
+  let path = `${params.row.id}/${params.row.createdAt}/${params.row.empresaId}/${params.row.numero}/${params.row.fideicomiso}/${params.row.Color_estadoOP}/${params.row.apr_adm===''? 'null':params.row.apr_adm}/${params.row.apr_obra===''? 'null':params.row.apr_obra}/${params.row.confirmada? 1:0}/${params.row.blue}/OP Detalle`;
   
   return <Button
           component={RouterLink}
