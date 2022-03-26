@@ -25,8 +25,9 @@ import { CuentaBanco } from 'src/pages/CuentaBanco';
 // *** Maestros *********************************
 import { Usuarios } from 'src/pages/Usuarios';
 import { Proveedores } from 'src/pages/Proveedores';
-import { Persona } from 'src/pages/Persona';
-import { Empresa } from 'src/pages/Empresa';
+import { Fiduciantes } from 'src/pages/Fiduciantes';
+//import { Persona } from 'src/pages/Persona';
+//import { Empresa } from 'src/pages/Empresa';
 
 // *** Fide *********************************
 import { Fideicomiso } from 'src/pages/Fideicomiso';
@@ -96,9 +97,8 @@ export default function App() {
                 />
               </Route>
 
-              <Route path="empresa" element={<Empresa idSociety={idSociety}  loggedUser={loggedUser}  />} />
-              <Route path="persona" element={<Persona idSociety={idSociety}  loggedUser={loggedUser}  />} />
-
+              <Route path="fiduciantes" element={<Fiduciantes idSociety={idSociety}  loggedUser={loggedUser}  />} />
+              
               <Route path="factura">
                 <Route path="" element={<Factura idSociety={idSociety} loggedUser={loggedUser} />} />
                 <Route
@@ -156,7 +156,7 @@ export default function App() {
               <Route path="fideicomiso">
                 <Route path="" element={<Fideicomiso idSociety={idSociety}  loggedUser={loggedUser}  />} />
                 <Route
-                  path=":nombreFideicomiso"
+                  path=":fideicomisoId/:nombre"
                   element={<DetalleFideicomiso idSociety={idSociety}   loggedUser={loggedUser}  />}
                 />
               </Route>

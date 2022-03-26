@@ -9,6 +9,8 @@ import {
   ListAlt,
   CreditCard,
   Construction,
+  Business,
+  PeopleAlt,
   /*MonetizationOn,
   Business,
   PeopleAlt,
@@ -63,26 +65,17 @@ export const sideBarOptions = [
     acceso: 'fideicomiso',
   },
   {
+    path: 'fiduciantes',
+    icon: PeopleAlt,
+    title: 'Fiduciantes',
+    acceso: 'fiduciante',
+  },
+  {
     path: 'rubro',
     icon: MenuBook,
     title: 'Rubros',
     acceso: 'rubro',
   },
-
-/*
-  {
-    path: 'empresa',
-    icon: Business,
-    title: 'Empresa',
-  },*/
-  /*
-  {
-    path: 'persona',
-    icon: PeopleAlt,
-    title: 'Personas',
-  },*/
-  
-
   {
     path: 'cac',
     icon: TrendingUp,

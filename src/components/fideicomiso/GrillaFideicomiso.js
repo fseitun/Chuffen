@@ -2,9 +2,11 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
-import { TextField, Autocomplete } from '@mui/material';
+import { TextField, Autocomplete, Button } from '@mui/material';
+// import { useNavigate } from 'react-router-dom';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
+import { NavLink as RouterLink } from 'react-router-dom';
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
 const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
@@ -14,6 +16,7 @@ const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
     width: 200,
     headerAlign: 'center',
     align: 'left',
+    renderCell: IrDetalleOP_0
   },
   {
     field: 'fechaInicio',
@@ -104,7 +107,8 @@ export function GrillaFideicomiso({ idSociety }) {
   const [color, setColor] = useState(null);
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
-  
+  //const navigate = useNavigate();
+
   const {
     data: fideicomisoInformation,
     isLoading,
@@ -151,6 +155,10 @@ export function GrillaFideicomiso({ idSociety }) {
       onSettled: () => queryClient.invalidateQueries(['fideicomiso', idSociety]),
     }
   );
+/*
+  function IrAFideicomiso(params) {
+    navigate(`./${params.row.nombre}`);
+  }*/
 
   const [sortModel, setSortModel] = React.useState([
     {
@@ -213,7 +221,24 @@ export function GrillaFideicomiso({ idSociety }) {
         />
       </div>
     );
+
+ 
 }
+
+function IrDetalleOP_0(params) {
+  // navigate(`./${params.row.nombre}`);
+  let path = `./${params.row.id}/${params.row.nombre}`;
+  
+  return <Button
+          component={RouterLink}
+          sx={{color: 'primary.main',}}
+          to={path}
+        >
+          <span>{ params.row.nombre }</span>
+        </Button>
+
+} 
+
 
 function CustomToolbar() {
   return (
@@ -225,6 +250,8 @@ function CustomToolbar() {
     </GridToolbarContainer>
   );
 }
+
+
 
 
 function ColorPicker({ color, setColor, colorOptions, originalColor }) {

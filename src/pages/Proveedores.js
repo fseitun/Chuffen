@@ -1,10 +1,13 @@
 import { Container, Box, Hidden } from '@mui/material';
 import { Helmet } from 'react-helmet';
 
-import { FormProveedor } from 'src/components/proveedores/FormProveedor';
-import { GrillaProveedor } from 'src/components/proveedores/GrillaProveedor';
+import { FormEmpresa } from 'src/components/empresa/FormEmpresa';
+import { GrillaEmpresa } from 'src/components/empresa/GrillaEmpresa';
 
 export function Proveedores({ idSociety, loggedUser }) {
+
+  const tipo = 0; // 1 = Fiduciantes  0 = Proveedores
+
   return (
     <>
       <Helmet>
@@ -18,13 +21,13 @@ export function Proveedores({ idSociety, loggedUser }) {
         }}
       >
         <Container maxWidth={false}>
-          <Hidden smUp={(loggedUser?.['rol.factura'] ==='vista')} >
+          <Hidden smUp={(loggedUser['rol.proveedor'] ==='vista')} >
             <Box sx={{ pt: 3 }}>
-              <FormProveedor idSociety={idSociety} loggedUser={loggedUser} />
+              <FormEmpresa idSociety={idSociety} loggedUser={loggedUser} tipo={tipo} />
             </Box>
           </Hidden> 
           <Box sx={{ pt: 3 }}>
-            <GrillaProveedor idSociety={idSociety} loggedUser={loggedUser}/>
+            <GrillaEmpresa idSociety={idSociety} loggedUser={loggedUser} tipo={tipo} />
           </Box>
         </Container>
       </Box>

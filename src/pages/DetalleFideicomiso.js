@@ -9,7 +9,7 @@ import { getMethod } from 'src/utils/api';
 export function DetalleFideicomiso({ idSociety, loggedUser }) {
 
   const { fideicomisoId, nombre } = useParams();
-
+  console.log(1111, fideicomisoId, nombre);
   const{
       data: dataFide,
       isLoading,
@@ -38,38 +38,16 @@ export function DetalleFideicomiso({ idSociety, loggedUser }) {
 
   return (  
             <Container >
-
-              <Box sx={{ pt: 3 }}>
-                <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >                                
-                  <Grid item md={2.2}>
-                    <Typography align="left" color="textPrimary" variant="h4">
-                      {nombre}
-                    </Typography>
-                  </Grid>
-                  <Grid item md={7}>
-                      <Typography align="left" color="textPrimary" variant="h4">
-                          &nbsp;
-                      </Typography>
-                  </Grid>
-                  <Grid item md={2.8}>
-                        <Typography align="right" color="textPrimary" variant="h5">
-                          {mostrarFechaMesTXT(dataFide?.fide?.createdAt)}
-                        </Typography>
-                  </Grid>
-                </Grid>
-              </Box>
-
+             
               <Box  sx={{ pt: 3 }}>
-
-                  <TabDetalleFide
-                        fideicomisoId={fideicomisoId}
-                        loggedUser={loggedUser}
-                        dataFide={dataFide}
-                        isLoading={isLoading}
-                        error={error}
-                        refetch={refetch}
-                      />
-
+                <TabDetalleFide
+                  fideicomisoId={fideicomisoId}
+                  loggedUser={loggedUser}
+                  dataFide={dataFide}
+                  isLoading={isLoading}
+                  error={error}
+                  refetch={refetch}
+                />
               </Box>  
 
             </Container>    

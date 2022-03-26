@@ -80,7 +80,11 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
           
             setIsPromptOpen(true);
           }else{
-            let tot = parseFloat(values.neto) + parseFloat(values.neto?values.iva:0) + parseFloat(values.iva?values.percepciones:0);
+            
+            let tot = parseFloat(values.neto)
+            if(values.iva){tot +=parseFloat(values.iva);}
+            if(values.percepciones){tot +=parseFloat(values.percepciones);}
+
             addFactura({
               numero: values.numero,
               neto: values.neto,
