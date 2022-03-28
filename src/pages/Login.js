@@ -63,6 +63,32 @@ export function Login({ setLoggedUser, setIdSociety }) {
   ];
   localStorage.setItem("estados", JSON.stringify(estados));
 
+  const tipoProductos = [  
+    { id: 0, descripcion: '-' },
+    { id: 1, descripcion: 'UF' },
+    { id: 2, descripcion: 'Cod. Nom.' },
+    { id: 3, descripcion: 'Cochera' },
+    { id: 4, descripcion: 'Cochera Moto' },
+    { id: 5, descripcion: 'Baulera' },
+    { id: 6, descripcion: 'Local' },
+    { id: 7, descripcion: 'Lote' },
+    { id: 8, descripcion: 'Casa' },
+    { id: 9, descripcion: 'Bungalo' },
+  ];
+  localStorage.setItem("tipoProductos", JSON.stringify(tipoProductos));
+
+  
+
+
+
+
+
+
+
+
+
+
+
   const retenciones = [  
     { id: 0, descripcion: '-' },
     { id: 1, descripcion: 'No aplican' },
@@ -126,7 +152,7 @@ export function Login({ setLoggedUser, setIdSociety }) {
             onSubmit={async (values, actions) => {
               if (await userCheck(idSociety.id, values.email, values.password, setLoggedUser)) {
 
-                navigate(`/${societyName}`, { replace: true });
+                navigate(`/${societyName}/DashBoard`, { replace: true });
               } else {
                 setIsAlertOpen('flex');
                 actions.resetForm();

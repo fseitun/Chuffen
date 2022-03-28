@@ -127,7 +127,7 @@ const columns = (puedeEditar, tipo, rubros, subRubros, setIsPromptOpen, setRowId
     headerAlign: 'center',
     align: 'center',
     renderCell: ({ row: { deleteId, esProveedor, esFiduciante } }) => (
-      esProveedor===1&&tipo===1||esFiduciante===1&&tipo===0? "":<DeleteIcon
+      (esProveedor===1&&tipo===1)||(esFiduciante===1&&tipo===0)? "":<DeleteIcon
         onClick={e => {
           setRowIdToDelete(deleteId);
           setIsPromptOpen(true);

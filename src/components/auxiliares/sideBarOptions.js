@@ -9,7 +9,7 @@ import {
   ListAlt,
   CreditCard,
   Construction,
-  Business,
+  // Business,
   PeopleAlt,
   /*MonetizationOn,
   Business,

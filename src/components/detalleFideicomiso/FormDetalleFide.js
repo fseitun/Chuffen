@@ -1,91 +1,46 @@
 import { useState } from 'react';
 import { TextField, Button, Autocomplete } from '@mui/material';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
-import { getMethod, postMethod } from 'src/utils/api';
+import { postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 
                 
-export function FormDetalleFide({ idSociety, loggedUser, tipo }) {
+export function FormDetalleFide({ idSociety, loggedUser, fideicomisoId, refetch }) {
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
-  const [typeInForm, setTypeInForm] = useState(null);
+  const [tipoInForm, setTipoInForm] = useState(null);
 
-  const typesOfProducts = [ 
-        {
-          id: 7,
-          descripcion: 'UF',
-          codigo: 1,
-          descripcionLarga: 'Unidad funcional',
-        },
-        {
-          id: 8,
-          descripcion: 'Cod. Nom.',
-          codigo: 2,
-          descripcionLarga: 'Código de nomenclatura',
-        },
-        {
-          id: 9,
-          descripcion: 'Cochera',
-          codigo: 3,
-          descripcionLarga: 'Cochera Auto',
-        },
-        {
-          id: 10,
-          descripcion: 'Cochera Moto',
-          codigo: 4,
-          descripcionLarga: 'Cochera Moto',
-        },
-        {
-          id: 11,
-          descripcion: 'Baulera',
-          codigo: 5,
-          descripcionLarga: 'Baulera',
-        },
-        {
-          id: 12,
-          descripcion: 'Local',
-          codigo: 6,
-          descripcionLarga: 'Local comercial',
-        },
-        {
-          id: 13,
-          descripcion: 'Lote',
-          codigo: 7,
-          descripcionLarga: 'Lote, terreno',
-        },
-        {
-          id: 14,
-          descripcion: 'Casa',
-          codigo: 8,
-          descripcionLarga: 'Casa',
-        },
-        {
-          id: 15,
-          descripcion: 'Bungalo',
-          codigo: 9,
-          descripcionLarga: 'Bungalo',
-        },
-      ];
+  var tipoProductos = JSON.parse(localStorage.getItem("tipoProductos"));
+
+
     
   const { mutate: addProducto } = useMutation(
     newProducto => postMethod(`producto/agregar/${idSociety.id}`, newProducto),
     {
       onMutate: async newProducto => {
-        if(tipo===1){
-          newProducto.esFiduciante = 1;
-        }else{
-          newProducto.esProveedor = 1;
-        }
+       //  console.log(newProducto, idSociety);
+       //  let aa = newProducto.id;
+        newProducto.fideicomisoId = parseInt(fideicomisoId);
         newProducto.creador = loggedUser.id;
+        // newProducto.tipo = newProducto?.tipo?.id;
+        newProducto.tipo = tipoInForm;
+        console.log(22, newProducto)
+        // newProducto.tipo = newProducto?.tipo?.id;
+        
         await queryClient.invalidateQueries(['producto', idSociety]);
         const prevData = await queryClient.getQueryData(['producto', idSociety]);
-        const newData = [...prevData, { ...newProducto, id: new Date().getTime()}];
-        queryClient.setQueryData(['producto', idSociety], newData);
+        /*const newData = [...prevData, { ...newProducto, id: new Date().getTime()}];
+        queryClient.setQueryData(['producto', idSociety], newData);*/
         return prevData;
       },
       onError: (err, id, context) => queryClient.setQueryData(['producto', idSociety], context),
-      onSettled: () => queryClient.invalidateQueries(['producto', idSociety]),
+      onSettled: () => {
+        if(idSociety.id > 0) {
+          queryClient.invalidateQueries(['producto', idSociety])
+        }
+        refetch()        
+      }
     }
   );
 
@@ -93,11 +48,12 @@ export function FormDetalleFide({ idSociety, loggedUser, tipo }) {
     <>
       <Formik
         initialValues={{
-          razonSocial: '',
-          CUIT: '',
+          codigo: '',
+          tipo: '',
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           // check cuit
+          console.log(1111, values, idSociety);
           addProducto(values);
           resetForm();
           setSubmitting(false);
@@ -113,25 +69,10 @@ export function FormDetalleFide({ idSociety, loggedUser, tipo }) {
             type="string"
             maxLength={40}
             size={'small'}
-            name="code"
+            name="codigo"
           />
 
-          <Field
-            as={Autocomplete}
-            size={'small'}
-            label="Tipo"
-            //disablePortal
-            style={{ width: '230px', display: 'inline-flex' }}
-            onChange={(event, newValue) => {
-              setTypeInForm(newValue);
-              setFieldValue('type', newValue);
-            }}
-            value={typeInForm}
-            getOptionLabel={option => option.descripcion}
-            isOptionEqualToValue={(option, value) => option.descripcion === value.descripcion}
-            options={typesOfProducts}
-            renderInput={params => <TextField {...params} label="Tipo" />}
-          />
+    
 
           <Field
             as={TextField}
@@ -154,13 +95,4 @@ export function FormDetalleFide({ idSociety, loggedUser, tipo }) {
       />
     </>
   );
-}
-
-function onlyNumbers(event, setFieldValue, typeOfData) {
-  event.preventDefault();
-  const { value } = event.target;
-  const regex = /^\d{0,11}$/;
-  if (regex.test(value.toString())) {
-    setFieldValue(typeOfData, value.toString());
-  }
 }

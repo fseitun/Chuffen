@@ -49,7 +49,7 @@ export default function DashboardNavbar({
   return (
     <AppBar elevation={0}>
       <Toolbar>
-        <Link to="/">
+        <Link to={"DashBoard"} >
           <Logo idSociety={idSociety} />
         </Link>
         <div style={{ marginLeft: 50, fontSize: 24 }}>

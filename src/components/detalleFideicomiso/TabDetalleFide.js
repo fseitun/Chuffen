@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Tab} from '@mui/material';
-//import { PrincipalDetalleFide } from 'src/components/detalleFideicomiso/PrincipalDetalleFide';
-import { FiltroDetalleFide } from 'src/components/detalleFideicomiso/FiltroDetalleFide';
+// import { PrincipalDetalleFide } from 'src/components/detalleFideicomiso/PrincipalDetalleFide';
+// import { FiltroDetalleFide } from 'src/components/detalleFideicomiso/FiltroDetalleFide';
 import { FormDetalleFide } from 'src/components/detalleFideicomiso/FormDetalleFide';
 import { GrillaDetalleFide } from 'src/components/detalleFideicomiso/GrillaDetalleFide';
 
 
-export function TabDetalleFide({ fideicomisoId,  loggedUser, dataFide, isLoading, error, refetch}) {
+export function TabDetalleFide({ idSociety, fideicomisoId,  loggedUser, dataFide, isLoading, error, refetch}) {
 
   const [value, setValue] = React.useState('1');
 
@@ -34,6 +34,7 @@ export function TabDetalleFide({ fideicomisoId,  loggedUser, dataFide, isLoading
             <TabPanel value="1">
               <Box sx={{ pt: 3 }}>
                 <FormDetalleFide
+                  idSociety={idSociety}
                   fideicomisoId={fideicomisoId}
                   loggedUser={loggedUser}
                   dataFide={dataFide}
@@ -41,6 +42,17 @@ export function TabDetalleFide({ fideicomisoId,  loggedUser, dataFide, isLoading
                   error={error}
                   refetch={refetch}
                 />
+                   <Box sx={{ pt: 3 }}>
+                <GrillaDetalleFide
+                  idSociety={idSociety}
+                  fideicomisoId={fideicomisoId}
+                  loggedUser={loggedUser}
+                  dataFide={dataFide}
+                  isLoading={isLoading}
+                  error={error}
+                  refetch={refetch}
+                />
+              </Box>  
               </Box>           
             </TabPanel>
            

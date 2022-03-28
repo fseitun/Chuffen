@@ -24,7 +24,7 @@ export function OC({ idSociety, loggedUser }) {
 
   const { data: proveedores } = useQuery(
     ['proveedores'],
-    () => getMethod(`proveedor/listar/${idSociety.id}`));
+    () => getMethod(`empresa/listar/${idSociety.id}/0`));
 
   
 

@@ -10,6 +10,7 @@ import theme from 'src/theme';
 
 import DashboardLayout from 'src/components/auxiliares/DashboardLayout';
 import MainLayout from 'src/components/auxiliares/MainLayout';
+import { DashBoard } from 'src/pages/DashBoard';
 import { Login } from 'src/pages/Login';
 import NotFound from 'src/pages/NotFound';
 import { useAuth } from 'src/utils/useAuth';
@@ -26,8 +27,6 @@ import { CuentaBanco } from 'src/pages/CuentaBanco';
 import { Usuarios } from 'src/pages/Usuarios';
 import { Proveedores } from 'src/pages/Proveedores';
 import { Fiduciantes } from 'src/pages/Fiduciantes';
-//import { Persona } from 'src/pages/Persona';
-//import { Empresa } from 'src/pages/Empresa';
 
 // *** Fide *********************************
 import { Fideicomiso } from 'src/pages/Fideicomiso';
@@ -86,6 +85,7 @@ export default function App() {
                 />
               }
             >
+              <Route path="dashboard" element={<DashBoard idSociety={idSociety} loggedUser={loggedUser}  />} />
               <Route path="dolar" element={<Dolar idSociety={idSociety} loggedUser={loggedUser}  />} />
               <Route path="cac" element={<Cac idSociety={idSociety}  loggedUser={loggedUser}  />} />
               
@@ -175,6 +175,7 @@ export default function App() {
                 />
               }
             />
+
             <Route path=":societyName" element={<Navigate to="login" />} />
             <Route path="*" element={<Navigate to="/" />} />
           </MainLayout>
