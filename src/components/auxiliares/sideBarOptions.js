@@ -5,6 +5,9 @@ import {
   People,
   MenuBook,
   Apartment,
+  // HandshakeOutlinedIcon, 
+  // DashboardCustomizeIcon,
+  //LocalAtmIcon,
   /*Assignment,*/
   ListAlt,
   CreditCard,
@@ -17,6 +20,9 @@ import {
   Schema,
   AssignmentTurnedIn,*/
 } from '@mui/icons-material';
+import DashboardCustomizeOutlinedIcon from '@mui/icons-material/DashboardCustomizeOutlined';
+import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 
 export const sideBarOptions = [
   {
@@ -52,6 +58,25 @@ export const sideBarOptions = [
     title: 'OCs',
     acceso: 'orden_compra',
   },
+  {
+    path: 'contrato',
+    icon: HandshakeOutlinedIcon,
+    title: 'Contratos',
+    acceso: 'contrato',
+  },
+  {
+    path: 'cuotas',
+    icon: DashboardCustomizeOutlinedIcon,
+    title: 'Cuotas',
+    acceso: 'cuotas',
+  },
+  {
+    path: 'cobros',
+    icon: LocalAtmIcon,
+    title: 'Cobros',
+    acceso: 'cobros',
+  },
+
   {
     path: 'proveedores',
     icon: LocalShipping,

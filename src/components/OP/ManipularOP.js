@@ -7,26 +7,49 @@ import { postMethod } from 'src/utils/api';
 
 export function ManipularOP({ idSociety, loggedUser, fideicomisos, proveedores, ddfacturas, ddfacturasBlue  }) {
 
-  var verCheckBlue = false;
-  if(loggedUser?.['rol.factura'] ==='total'){verCheckBlue = true;}
-  const [chkblue, setChkblue] = useState(true);
 
   const queryClient = useQueryClient();
 
+  var verCheckBlue = false;
+  if(loggedUser?.['rol.op'] ==='total'){verCheckBlue = true;}
+
+
   const { mutate: addOP } = useMutation(
-    newData => postMethod(`OP/agregar/${idSociety.id}`, newData),
+    newOP => postMethod(`OP/agregar/${idSociety.id}`, newOP),
     {
-      onSuccess: async () =>
-        await queryClient.refetchQueries(['OP', idSociety])
+      onMutate: async newOP => {
+        
+        await queryClient.invalidateQueries(['OP', idSociety]);
+        const prevData = await queryClient.getQueryData(['OP', idSociety]);
+        const newData = [...prevData, { ...newOP, id: new Date().getTime() }];
+        queryClient.setQueryData(['OP', idSociety], newData);
+        return prevData;
+      },
+      onError: (err, id, context) => queryClient.setQueryData(['OP', idSociety], context),
+      onSettled: () => queryClient.invalidateQueries(['OP', idSociety]),
     }
   );
-
 
   const [fideInForm, setFideInForm] = useState(null);
   const [rsInForm, setRsInForm] = useState(null);
   const [factInForm, setFactInForm] = useState(null);  
   const [open, setOpen] = useState(false);
+
   
+  let verCheckBlueDis = false;
+  // let iniNumber = '';
+  let iniBlue = true;
+  let alwaysBlue = false;
+  if(loggedUser?.['rol.op'] ==='blue'){
+    // iniNumber = n
+    iniBlue = false;
+    verCheckBlueDis = true;
+    verCheckBlue = false;
+    alwaysBlue = true;
+  }
+  const [chkblue, setChkblue] = useState(iniBlue);
+
+
   return (
     <Formik
       initialValues={{
@@ -37,22 +60,24 @@ export function ManipularOP({ idSociety, loggedUser, fideicomisos, proveedores, 
 
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        
-        addOP({
+        if(values.fideicomiso.id > 0 && values.empresa.id > 0 && values.factura.id >0 && fideInForm.id > 0 && rsInForm.id > 0 && factInForm.id > 0 ){
+          addOP({
 
-          fideicomisoId: values.fideicomiso.id,
-          empresaId: values.empresa.id,
-          rubroId: values.empresa.rubroId,
-          subRubroId: values.empresa.subrubroId,
-          facturaId: values.factura.id,
-          blue: !chkblue? 1:0,
-          creador: loggedUser.id ,
-                    
-        });
-        
-        //resetForm();
-        setOpen(true);
-        setSubmitting(false);
+            fideicomisoId: values.fideicomiso.id,
+            empresaId: values.empresa.id,
+            rubroId: values.empresa.rubroId,
+            subRubroId: values.empresa.subrubroId,
+            facturaId: values.factura.id,
+            // blue: !chkblue? 1:0,
+            blue: !chkblue? 1:(alwaysBlue? 1:0),
+            creador: loggedUser.id ,
+                      
+          });
+          
+          //resetForm();
+          setOpen(true);
+          setSubmitting(false);
+        }else{console.log("no entro", values.fideicomiso.id, values.empresa.id, values.factura.id, fideInForm.id, rsInForm.id, factInForm.id);}
       }}>
       {({ isSubmitting, setFieldValue }) => (
         <Form>
@@ -60,6 +85,7 @@ export function ManipularOP({ idSociety, loggedUser, fideicomisos, proveedores, 
           <Field
             as={Autocomplete}
             size={'small'}
+            required
             label='Fideicomiso'
             disablePortal
             style={{ width: '230px', display: 'inline-flex' }}
@@ -79,10 +105,12 @@ export function ManipularOP({ idSociety, loggedUser, fideicomisos, proveedores, 
             as={Autocomplete}
             size={'small'}
             label='Razon Social'
+            required
             disablePortal
             style={{ width: '230px', display: 'inline-flex' }}
             onChange={(event, newValue) => {
               setRsInForm(newValue);
+              setFactInForm(null);
               setFieldValue('empresa', newValue);
             }}
             value={rsInForm}
@@ -133,13 +161,17 @@ export function ManipularOP({ idSociety, loggedUser, fideicomisos, proveedores, 
             onChange={(event) => onlyCheck(event, setFieldValue, 'blue', chkblue, setChkblue)}
             /> }   label="Blue"  />
           </Hidden>
+          <Hidden  smUp={( !verCheckBlueDis)} >        
+                <FormControlLabel 
+                  control={ <Checkbox  disabled defaultChecked id={'blue'}  name={'blue2'}
+                  /> }   label="Blue"  />
+          </Hidden>
+
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
           <Button id='bagregar' variant="text" type='submit' disabled={isSubmitting}>
             Agregar
-          </Button>
-
-        
+          </Button>        
 
           <Box sx={{ width: '100%' }}>
             <Collapse in={open}>

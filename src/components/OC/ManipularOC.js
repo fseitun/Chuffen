@@ -20,7 +20,6 @@ export function ManipularOC({ idSociety, loggedUser, fideicomisos, proveedores  
 
   const [fideInForm, setFideInForm] = useState(null);
   const [rsInForm, setRsInForm] = useState(null);
-  // const [factInForm, setFactInForm] = useState(null);  
   const [open, setOpen] = useState(false);
   
   return (
@@ -43,7 +42,6 @@ export function ManipularOC({ idSociety, loggedUser, fideicomisos, proveedores  
                     
         });
         
-        //resetForm();
         setOpen(true);
         setSubmitting(false);
       }}>
@@ -94,15 +92,9 @@ export function ManipularOC({ idSociety, loggedUser, fideicomisos, proveedores  
             name='descripcion' 
           />
 
-          
-
-        
-
           <Button id='bagregar' variant="text" type='submit' disabled={isSubmitting}>
             Agregar
-          </Button>
-
-        
+          </Button>        
 
           <Box sx={{ width: '100%' }}>
             <Collapse in={open}>

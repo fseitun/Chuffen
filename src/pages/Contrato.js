@@ -2,10 +2,10 @@ import React from 'react'
 import { useParams } from 'react-router-dom';
 import { Container, Box } from '@mui/material';
 import { useQuery } from 'react-query';
-import { TabDetalleFide } from 'src/components/detalleFideicomiso/TabDetalleFide';
+import { TabContrato } from 'src/components/contrato/TabContrato';
 import { getMethod } from 'src/utils/api';
 
-export function DetalleFideicomiso({ idSociety, loggedUser }) {
+export function Contrato({ idSociety, loggedUser }) {
 
   const { fideicomisoId } = useParams();
   const{
@@ -28,7 +28,7 @@ export function DetalleFideicomiso({ idSociety, loggedUser }) {
             <Container >
              
               <Box  sx={{ pt: 3 }}>
-                <TabDetalleFide
+                <TabContrato
                   idSociety={idSociety}
                   fideicomisoId={fideicomisoId}
                   loggedUser={loggedUser}

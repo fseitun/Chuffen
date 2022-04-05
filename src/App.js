@@ -33,12 +33,10 @@ import { Fideicomiso } from 'src/pages/Fideicomiso';
 import { DetalleFideicomiso } from 'src/pages/DetalleFideicomiso';
 
 // *** Contrato *********************************
-//import { Contratos } from 'src/pages/Contratos';
-//import { ContratoAlta } from 'src/pages/ContratoAlta';
-//import { Cobros } from 'src/pages/Cobros';
-//import { Cuotas } from 'src/pages/Cuotas';
-//import { DetalleContrato } from 'src/pages/DetalleContrato';
-//import { ContratoVista } from 'src/pages/ContratoVista';
+import { Contrato } from 'src/pages/Contrato';
+import { Cobros } from 'src/pages/Cobros';
+import { Cuotas } from 'src/pages/Cuotas';
+import { DetalleContrato } from 'src/pages/DetalleContrato';
 
 // *** Pagos *********************************
 import { OP } from 'src/pages/OP';
@@ -88,6 +86,17 @@ export default function App() {
               <Route path="dashboard" element={<DashBoard idSociety={idSociety} loggedUser={loggedUser}  />} />
               <Route path="dolar" element={<Dolar idSociety={idSociety} loggedUser={loggedUser}  />} />
               <Route path="cac" element={<Cac idSociety={idSociety}  loggedUser={loggedUser}  />} />
+
+              <Route path="contrato">
+                <Route path="" element={<Contrato idSociety={idSociety} loggedUser={loggedUser} />} />
+                <Route
+                  path=":contratoId/:page"
+                  element={<DetalleContrato idSociety={idSociety} loggedUser={loggedUser} />}
+                />
+              </Route>
+
+              <Route path="cobros" element={<Cobros idSociety={idSociety}  loggedUser={loggedUser}  />} />
+              <Route path="cuotas" element={<Cuotas idSociety={idSociety}  loggedUser={loggedUser}  />} />
               
               <Route path="OC">
                 <Route path="" element={<OC idSociety={idSociety} loggedUser={loggedUser} />} />

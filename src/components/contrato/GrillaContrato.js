@@ -1,55 +1,44 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { useQueryClient, useMutation } from 'react-query';
+import { Button} from '@mui/material';
+import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
-import { postMethod, deleteMethod } from 'src/utils/api';
+import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
+import { NavLink as RouterLink } from 'react-router-dom';
 
 const columns = (puedeEditar, setIsPromptOpen, setRowIdToDelete) => [
   {
-    field: 'codigo',
-    headerName: 'Código',
-    width: 140,
+    field: 'id',
+    headerName: 'Id',
+    width: 55,
     editable: false,
     headerAlign: 'center',
-    align: 'center',
+    renderCell: IrDetalleOP_0
   },
   {
-    field: 'tipo',
-    headerName: 'Tipo',
-    width: 140,
+    field: 'nombre',
+    headerName: 'Nombre',
+    width: 155,
+    editable: puedeEditar,
+    headerAlign: 'center',
+    renderCell: IrDetalleOP_1
+  },
+  {
+    field: 'fideicomiso',
+    headerName: 'Fideicomiso',
+    width: 160,
     editable: false,
     headerAlign: 'center',
-    align: 'center',
-  },
-  
+    align: 'left',
+  }, 
   {
-    field: 'metros',
-    headerName: 'Metros',
-    type: 'number',
-    width: 130,
-    editable: true,
+    field: 'fiduciante',
+    headerName: 'Fiduciante',
+    width: 170,
+    editable: false,
     headerAlign: 'center',
-    align: 'right',
-  },
-
-  {
-    field: 'precioULT',
-    type: 'number',
-    headerName: 'Precio',
-    width: 150,
-    editable: true,
-    headerAlign: 'center',
-    align: 'right',
-  },
-  {
-    field: 'descripcion',
-    headerName: 'Descri',
-    width: 150,
-    editable: true,
-    headerAlign: 'center',
-    align: 'right',
   },
  
   {
@@ -71,35 +60,38 @@ const columns = (puedeEditar, setIsPromptOpen, setRowIdToDelete) => [
 ];
 
 
-export function GrillaDetalleFide({idSociety, loggedUser, dataFide, isLoading, error, refetch, fideicomisoId }) {
+export function GrillaContrato({idSociety, loggedUser }) {
   
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
 
-  var tipoProductos = JSON.parse(localStorage.getItem("tipoProductos"));
+  const {
+    data: dataContrato,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery(['contrato', idSociety], () => getMethod(`contrato/listar/${idSociety.id}/0`));
+
 
   var puedeEditar = true;
-  const acceso = loggedUser?.['rol.fidu'];
+  const acceso = loggedUser?.['rol.contrato'];
   if( acceso ==='vista'){puedeEditar =false}
 
   const queryClient = useQueryClient();
 
   const { mutate: eliminate } = useMutation(
-    async idProducto => await deleteMethod(`producto/eliminar/${idSociety.id}`, { id: idProducto }),
+    async idContrato => await deleteMethod(`contrato/eliminar/${idSociety.id}`, { id: idContrato }),
     {
-      onMutate: async idProducto => {
-        await queryClient.cancelQueries(['producto', idSociety]);
+      onMutate: async idContrato => {
+        await queryClient.cancelQueries(['contrato', idSociety]);
         
-        const prevData = queryClient.getQueryData(['producto', idSociety]);
-        /*
-        const newData = prevData.filter(producto => producto.id !== idProducto);
-        queryClient.setQueryData(['producto', idSociety], newData);*/
+        const prevData = queryClient.getQueryData(['contrato', idSociety]);
         return prevData;
       },
-      onError: (err, idProducto, context) => queryClient.setQueryData(['producto', idSociety], context),
+      onError: (err, idContrato, context) => queryClient.setQueryData(['contrato', idSociety], context),
       onSettled: () => {
         if(idSociety.id > 0) {
-          queryClient.invalidateQueries(['producto', idSociety])
+          queryClient.invalidateQueries(['contrato', idSociety])
         }
         refetch()        
       }
@@ -109,29 +101,29 @@ export function GrillaDetalleFide({idSociety, loggedUser, dataFide, isLoading, e
   const { mutate: modifyData } = useMutation(
     async ({ field, id, value }) =>
     
-      await postMethod(`producto/modificar/${idSociety.id}`, {
+      await postMethod(`contrato/modificar/${idSociety.id}`, {
         id,
         [field]: value,
       }), 
     {
       onMutate: async ({ field, id, value }) => {
         console.log(field, id, value, idSociety);
-        await queryClient.cancelQueries(['producto', idSociety]);
-        const prevData = queryClient.getQueryData(['producto', idSociety]);
+        await queryClient.cancelQueries(['contrato', idSociety]);
+        const prevData = queryClient.getQueryData(['contrato', idSociety]);
         /*
         // console.log('prevData', prevData);
         const newData = [
-          ...prevData.filter(producto => producto.id !== id),
-          { ...prevData.find(producto => producto.id === id), [field]: value },
+          ...prevData.filter(contrato => contrato.id !== id),
+          { ...prevData.find(contrato => contrato.id === id), [field]: value },
         ];
         // console.log('newData', newData);
-        queryClient.setQueryData(['producto', idSociety], newData);*/
+        queryClient.setQueryData(['contrato', idSociety], newData);*/
         return prevData;
       },
-      onError: (err, id, context) => queryClient.setQueryData(['producto', idSociety], context),
+      onError: (err, id, context) => queryClient.setQueryData(['contrato', idSociety], context),
       onSettled: () => {
         if(idSociety.id > 0) {
-          queryClient.invalidateQueries(['producto', idSociety])
+          queryClient.invalidateQueries(['contrato', idSociety])
         }
         refetch()        
       }
@@ -140,8 +132,8 @@ export function GrillaDetalleFide({idSociety, loggedUser, dataFide, isLoading, e
 
   const [sortModel, setSortModel] = React.useState([
     {
-      field: 'codigo',
-      sort: 'asc',
+      field: 'id',
+      sort: 'desc',
     },
   ]);
 
@@ -169,14 +161,12 @@ export function GrillaDetalleFide({idSociety, loggedUser, dataFide, isLoading, e
       <div style={{ width: '100%' }}>
         <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
         <DataGrid
-          rows={dataFide?.item.map(producto => ({
-            id: producto?.id,
-            codigo: producto?.codigo,
-            metros: producto?.metros,
-            precioULT: producto?.precioULT,
-            tipo: tipoProductos?.find(t => t.id === producto.tipo)?.descripcion,
-            descripcion: producto?.descripcion,
-            deleteId: producto?.id,
+          rows={dataContrato?.map(contrato => ({
+            id: contrato?.id,
+            nombre: contrato?.nombre,
+            fideicomiso: (contrato?.fideicomisos? contrato?.fideicomisos[0]?.nombre:''),            
+            fiduciante:(contrato?.empresaId>0? contrato?.empresas[0]?.razonSocial:contrato?.personas? contrato?.personas[0]?.nombre:""), 
+            deleteId: contrato?.id,
           }))}
           onCellEditCommit={modifyData}
           columns={columns(puedeEditar, setIsPromptOpen, setRowIdToDelete)}
@@ -210,3 +200,31 @@ function CustomToolbar() {
     </GridToolbarContainer>
   );
 }
+
+function IrDetalleOP_0(params) {
+
+  let path = `${params.row.id}/Detalle Contrato`;
+  
+  return <Button
+          component={RouterLink}
+          sx={{color: 'primary.main',}}
+          to={path}
+        >
+          <span>{ params.row.id }</span>
+        </Button>
+
+} 
+
+function IrDetalleOP_1(params) {
+
+  let path = `${params.row.id}/Detalle Contrato`;
+  
+  return <Button
+          component={RouterLink}
+          sx={{color: 'primary.main',}}
+          to={path}
+        >
+          <span>{ params.row.nombre }</span>
+        </Button>
+
+} 

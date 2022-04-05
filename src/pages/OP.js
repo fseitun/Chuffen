@@ -10,7 +10,7 @@ import { getMethod } from 'src/utils/api';
 export function OP({ idSociety, loggedUser }) {
 
   var blue = 0;
-  if(loggedUser?.['rol.op'] ==='total'){blue= -1;}
+  if(loggedUser?.['rol.op'] ==='total' || loggedUser?.['rol.op'] ==='blue'){blue= -1;}
 
   const {
     data: opInformation,

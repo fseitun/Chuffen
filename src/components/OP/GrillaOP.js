@@ -102,6 +102,17 @@ const columns = (colVisibles, verColumnBlue, puedeEditar, rubros, subRubros, set
     new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
   {
+    field: 'neto',
+    headerName: 'Neto',
+    width: 130,
+    editable: false,
+    hide: colVisibles?.find(i => i.c === 'neto').h,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
     field: 'moneda',
     headerName: '',
     width: 70,
@@ -300,7 +311,7 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
 
   var blue = 0;
   var verColumnBlue = false;
-  if(loggedUser?.['rol.op'] ==='total'){blue= -1; verColumnBlue = true;}  
+  if(loggedUser?.['rol.op'] ==='total' || loggedUser?.['rol.op'] ==='blue'){blue= -1; verColumnBlue = true;}  
 
   const navigate = useNavigate();
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
@@ -423,11 +434,12 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
     async el =>
       await postMethod(`OP/enviarMail/${idSociety?.id}`, {
 
-        mailTo : idSociety?.mailOP,
+        mailTo : el.fideicomisos[0]?.mailOP, //idSociety?.mailOP,
         mailaccount : idSociety?.mailaccount,
         mailfromname : idSociety?.mailfromname,
         mailConstructora : idSociety?.mailConstructora,
-        fideicomiso : el.fideicomisos[0]?.nombre,        
+        fideicomiso : el.fideicomisos[0]?.nombre,
+        //fideicomiso : el.fideicomisos[0]?.,        
         razonSocial : el.empresas[0]?.razonSocial,
         enviar_OP_auto : el.empresas[0]?.enviar_OP_auto,
         numero : el.numero,
@@ -506,6 +518,7 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
     {c:'numero',  h:false},
     {c:'empresa',  h:false},
     {c:'monto',  h:false},
+    {c:'neto',  h:false},
     {c:'moneda',  h:false},
     {c:'estadoOP',  h:false},
     {c:'estadoRET',  h:false},
@@ -617,37 +630,39 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
         <DataGrid 
           rows={opInformation.filter(element =>filtrar(element, filtFide, filtRS, filtEst)).map(OP => ({
             
-            id: OP.id,    
-            blue: OP.blue,
-            createdAt: OP.createdAt,
-            fideicomiso: OP.fideicomisos[0]?.nombre,
-            numero: OP.numero,
-            empresa: OP.empresas[0]?.razonSocial,
-            monto: OP.monto, 
-            moneda: OP.moneda,   
+            id: OP?.id,    
+            blue: OP?.blue,
+            createdAt: OP?.createdAt,
+            fideicomiso: OP?.fideicomisos? OP.fideicomisos[0]?.nombre:'',
+            numero: OP?.numero,
+            empresa: OP?.empresas? OP?.empresas[0]?.razonSocial:'',
+            monto: OP?.monto, 
+            neto: OP?.neto, 
+            moneda: OP?.moneda,   
             estadoOP: estados?.find(estado => estado.id === OP.estadoOP)?.descripcion,
             estadoRET: retenciones?.find(retencion => retencion.id === OP.estadoRET)?.descripcion,
             misFacturas: grfacturas?.filter(factura => factura?.OPId === OP.id),
-            fondos: fondos_s?.find(fondos => fondos.id === OP.fondos)?.descripcion,
-            descripcion: OP.descripcion,
-            archivada: OP.archivada,
-            enviada: OP.enviada,
-            confirmada: OP.confirmada===0? false: true,           
+            fondos: fondos_s?.find(fondos => fondos?.id === OP.fondos)?.descripcion,
+            descripcion: OP?.descripcion,
+            archivada: OP?.archivada,
+            enviada: OP?.enviada,
+            confirmada: OP?.confirmada===0? false: true,           
                    
-            RET_SUSS: OP.RET_SUSS,
-            RET_GAN: OP.RET_GAN,
-            RET_IVA: OP.RET_IVA,
-            apr_obra: (OP.auth_obra[0]?OP.auth_obra[0].usuarios[0].user:''),
-            apr_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
-            filtroRubroID: OP.rubroId,
+            RET_SUSS: OP?.RET_SUSS,
+            RET_GAN: OP?.RET_GAN,
+            RET_IVA: OP?.RET_IVA,
+            apr_obra: OP?.auth_obra? (OP.auth_obra[0]? (OP.auth_obra[0].usuarios? (OP.auth_obra[0].usuarios[0].user):''):''):'',
+            apr_adm: OP?.auth_adm? (OP.auth_adm[0]? (OP.auth_adm[0].usuarios? (OP.auth_adm[0].usuarios[0].user):''):''):'',
+            filtroRubroID: OP?.rubroId,
             acceso: accesoOP,
-            deleteId: OP.id,
-            aprobado_obra: (OP.auth_obra[0]?OP.auth_obra[0].usuarios[0].user:''),
-            aprobado_adm: (OP.auth_adm[0]?OP.auth_adm[0].usuarios[0].user:''),
-            formaPago: OP.formaPago,          
-            rubroId: rubros?.find(rubro => rubro.id === OP.rubroId)?.rubro,
-            subrubroId: subRubros?.find(subRubro => subRubro.id === OP.subRubroId)?.subRubro,
-            Color_estadoOP: OP.estadoOP,     
+            deleteId: OP?.id,
+            aprobado_obra: OP?.auth_obra? (OP.auth_obra[0]? (OP.auth_obra[0].usuarios? (OP.auth_obra[0].usuarios[0].user):''):''):'',
+            aprobado_adm: OP?.auth_adm? (OP.auth_adm[0]? (OP.auth_adm[0].usuarios? (OP.auth_adm[0].usuarios[0].user):''):''):'',
+            
+            formaPago: OP?.formaPago,          
+            rubroId: rubros?.find(rubro => rubro?.id === OP?.rubroId)?.rubro,
+            subrubroId: subRubros?.find(subRubro => subRubro?.id === OP?.subRubroId)?.subRubro,
+            Color_estadoOP: OP?.estadoOP,     
             onAuthObra: () => nonAuthObra(OP),
             onAuthAdm: () => nonAuthAdm(OP),
             onEnviar: () => enviarCorreo(OP),
@@ -749,7 +764,7 @@ async function getOPs(arr, idSociety, setOpen) {
             let generado = await getPdfBlob_2(NewDocument, miOP.id, miOP?.fideicomisos[0]?.nombre, miOP.numero, miOP?.empresas[0]?.razonSocial, idSociety);
             console.log(generado);  
             if(generado){
-              enviarCorreo_2(miOP.id, miOP?.fideicomisos[0]?.nombre, miOP.numero, miOP.empresas[0]?.razonSocial, miOP.empresas[0]?.enviar_OP_auto, idSociety)
+              enviarCorreo_2(miOP.id, miOP?.fideicomisos[0]?.nombre, miOP.numero, miOP.empresas[0]?.razonSocial, miOP.empresas[0]?.enviar_OP_auto, idSociety, miOP?.fideicomisos[0]?.mailOP)
               setOpen(true);
               
             }
@@ -779,14 +794,14 @@ async function getPdfBlob_2(NewDocument, idOP, fideicomiso, numero, nom_empresa,
   return !!rta
 }
 
-async function enviarCorreo_2(idOP, fideicomiso, numero, razonSocial, enviar_OP_auto, idSociety){
+async function enviarCorreo_2(idOP, fideicomiso, numero, razonSocial, enviar_OP_auto, idSociety, mailOP){
 
   let rta = await postMethod(`OP/enviarMail/${idSociety?.id}`, {
 
-    mailTo : idSociety?.mailOP,
-    mailaccount : idSociety?.mailaccount,
+    mailTo : mailOP,// mail al contador por fideicomiso
+    mailaccount : idSociety?.mailaccount,// desde donde se envia el correo
     mailfromname : idSociety?.mailfromname,
-    mailConstructora : idSociety?.mailConstructora,
+    mailConstructora : idSociety?.mailConstructora,// cuando copia a la contructora
     fideicomiso : fideicomiso,        
     razonSocial : razonSocial,
     enviar_OP_auto : enviar_OP_auto,

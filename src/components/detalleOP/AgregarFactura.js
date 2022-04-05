@@ -14,10 +14,11 @@ export function AgregarFactura({ idSociety, fideicomisoId, empresaId, OPId, refe
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
   
-  const { data: facturas } = useQuery(
+  const { data: facturasCombo } = useQuery(
     ['facturas'],
-    () => getMethod(`factura/listar/${idSociety.id}/opid/0/${blue}`));
+    () => getMethod(`factura/listarCombo/${idSociety.id}/opid/0/${blue}`));
 
+  
   const { mutate: addFactura } = useMutation(
     async factura =>
       await postMethod(`factura/modificar/${idSociety.id}`, 
@@ -69,7 +70,7 @@ export function AgregarFactura({ idSociety, fideicomisoId, empresaId, OPId, refe
               value={typeInForm}
               getOptionLabel={option => option.numero}
               isOptionEqualToValue={(option, value) => option.id === value.id}
-              options={facturas? facturas?.filter(factura => factura?.fideicomisoId === parseInt(fideicomisoId) && factura?.empresaId === parseInt(empresaId)):[]}
+              options={facturasCombo? facturasCombo?.filter(factura => factura?.fideicomisoId === parseInt(fideicomisoId) && factura?.empresaId === parseInt(empresaId)):[]}
               renderInput={params => <TextField {...params} label='Número Factura' />}
             />
             

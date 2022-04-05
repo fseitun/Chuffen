@@ -24,10 +24,15 @@
         ]
     },
     "dependencies": {
+        "@date-io/date-fns": "^2.13.1",
+        "@date-io/dayjs": "^2.13.1",
+        "@date-io/luxon": "^2.13.1",
+        "@date-io/moment": "^2.13.1",
         "@emotion/react": "^11.4.1",
         "@emotion/styled": "^11.3.0",
         "@material-ui/data-grid": "^4.0.0-alpha.37",
-        "@mui/icons-material": "^5.0.1",
+        "@material-ui/pickers": "^3.3.10",
+        "@mui/icons-material": "^5.5.1",
         "@mui/lab": "^5.0.0-alpha.48",
         "@mui/material": "^5.0.6",
         "@mui/styles": "^5.0.1",

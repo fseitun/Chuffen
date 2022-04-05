@@ -8,7 +8,7 @@ export function isValidDate(d) {
   return !isNaN(f.getTime());
 }
 
-// Devuelve CUIT con formato 20-44.123.225-8
+// Devuelve CUIT con formato 20-44123225-8
 export function mostrarCUIT(value) {
   try {
     value = value.split('');
@@ -47,6 +47,20 @@ export function mostrarFechaMesTXT(fecha) {
 // entra date
 // Devuelve un string con formato YYYY-MM-DD
 export function yearMonthDayString(fecha) {
+
+  if(fecha ===undefined || fecha ===null){
+    return null
+  }else{
+    return `${fecha.getFullYear(fecha)}-${(1 + fecha.getMonth(fecha)).toString().padStart(2, '0')}-${fecha
+      .getDate(fecha)
+      .toString()
+      .padStart(2, '0')}`;
+  } 
+}
+
+// entra date
+// Devuelve un string con formato YYYY-MM-DD
+export function date_to_YYYYMMDD(fecha) {
 
   if(fecha ===undefined || fecha ===null){
     return null

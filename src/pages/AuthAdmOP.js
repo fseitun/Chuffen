@@ -4,6 +4,7 @@ import { GrillaOpAuth } from 'src/components/OP/GrillaOpAuth';
 
 export function AuthAdmOP({ idSociety, loggedUser }) {
   return (
+    
     <>
       <Helmet>
         <title>OP's | TSF Desarrollos</title>

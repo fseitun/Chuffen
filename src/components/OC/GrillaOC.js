@@ -78,7 +78,7 @@ const columns = (puedeEditar, setIsPromptOpen, setRowIdToDelete) => [
 
   {
     field: 'monto_USD',
-    headerName: 'Tot UDS',
+    headerName: 'Tot USD',
     width: 130,
     editable: false,
     headerAlign: 'center',

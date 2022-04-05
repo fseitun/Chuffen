@@ -44,6 +44,28 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
   {
+    field: 'materiales',
+    headerName: 'Materiales',
+    width: 150,
+    editable: true,
+    headerAlign: 'center',
+    align: 'right',
+    preProcessEditCellProps: onlyNumbers,
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
+    field: 'manodeobra',
+    headerName: 'Mano de Obra',
+    width: 180,
+    editable: true,
+    headerAlign: 'center',
+    align: 'right',
+    preProcessEditCellProps: onlyNumbers,
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
     field: 'deleteIcon',
     headerName: ' ',
     width: 50,
@@ -148,6 +170,8 @@ export function GrillaCac({ idSociety }) {
             fecha: cac.fecha,
             estimado: cac.estimado,
             definitivo: cac.definitivo,
+            materiales: cac.materiales,
+            manodeobra: cac.manodeobra,
             deleteId: cac.id,
           }))}
           onCellEditCommit={modifyData}

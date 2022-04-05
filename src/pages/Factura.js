@@ -7,6 +7,7 @@ import { FormFactura } from 'src/components/factura/FormFactura';
 import { FiltroFactura } from 'src/components/factura/FiltroFactura';
 import { GrillaFactura } from 'src/components/factura/GrillaFactura';
 
+
 export function Factura({ idSociety , loggedUser}) {
 
   const [filtComp, setFiltComp] = useState(-1);
@@ -45,6 +46,7 @@ export function Factura({ idSociety , loggedUser}) {
             fideicomisos={fideicomisos}  setFiltComp={setFiltComp} setFiltFide={setFiltFide} setFiltRS={setFiltRS}  proveedores={proveedores}
             />
           </Box>
+    
           <Box sx={{ pt: 3 }}>
             <GrillaFactura idSociety={idSociety} loggedUser={loggedUser}
             filtComp={filtComp} filtFide={filtFide} filtRS={filtRS}  />

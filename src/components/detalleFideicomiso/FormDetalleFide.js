@@ -13,20 +13,15 @@ export function FormDetalleFide({ idSociety, loggedUser, fideicomisoId, refetch 
 
   var tipoProductos = JSON.parse(localStorage.getItem("tipoProductos"));
 
-
+  //const [rsInForm, setRsInForm] = useState(null);
     
   const { mutate: addProducto } = useMutation(
     newProducto => postMethod(`producto/agregar/${idSociety.id}`, newProducto),
     {
       onMutate: async newProducto => {
-       //  console.log(newProducto, idSociety);
-       //  let aa = newProducto.id;
         newProducto.fideicomisoId = parseInt(fideicomisoId);
         newProducto.creador = loggedUser.id;
-        // newProducto.tipo = newProducto?.tipo?.id;
-        newProducto.tipo = tipoInForm;
         console.log(22, newProducto)
-        // newProducto.tipo = newProducto?.tipo?.id;
         
         await queryClient.invalidateQueries(['producto', idSociety]);
         const prevData = await queryClient.getQueryData(['producto', idSociety]);
@@ -49,13 +44,13 @@ export function FormDetalleFide({ idSociety, loggedUser, fideicomisoId, refetch 
       <Formik
         initialValues={{
           codigo: '',
-          tipo: '',
+          descripcion: '',
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
-          // check cuit
-          console.log(1111, values, idSociety);
+
+          values.tipo = values._tipo.id;
           addProducto(values);
-          resetForm();
+          // resetForm();
           setSubmitting(false);
           
         }}
@@ -66,21 +61,40 @@ export function FormDetalleFide({ idSociety, loggedUser, fideicomisoId, refetch 
             <Field
             as={TextField}
             label="Código"
+            key="codigo"
             type="string"
             maxLength={40}
             size={'small'}
             name="codigo"
           />
 
-    
+          <Field
+            as={Autocomplete}
+            size={'small'}
+            label='Tipo'
+            required
+            disablePortal
+            style={{ width: '230px', display: 'inline-flex' }}
+            onChange={(event, newValue) => {
+              setTipoInForm(newValue);
+              //setFactInForm(null);
+              setFieldValue('_tipo', newValue);
+            }}
+            value={tipoInForm}
+            getOptionLabel={option => option.descripcion}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            options={(tipoProductos? tipoProductos:[])}
+            renderInput={params => <TextField {...params} label='Tipo' />}
+          />
 
           <Field
             as={TextField}
-            size={'small'}
-            label="Descripcion"
+            label="Descripción"
+            key="descripcion"
             type="string"
-            maxLength={100}
-            name="description"
+            // maxLength={40}
+            size={'small'}
+            name="descripcion"
           />
 
             <Button type="submit" disabled={isSubmitting}>

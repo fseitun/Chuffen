@@ -152,7 +152,8 @@ export function GrillaEmpresa({ loggedUser, idSociety, tipo }) {
   }
   if( acceso ==='vista'){puedeEditar =false}
 
-
+  var categorias = JSON.parse(localStorage.getItem("categorias"));
+  var condicion_de_IVA = JSON.parse(localStorage.getItem("condicion_de_IVA"));
 
   const {
     data: empresaInformation,
@@ -253,12 +254,17 @@ export function GrillaEmpresa({ loggedUser, idSociety, tipo }) {
             telefono: empresa?.telefono,
             CBU: empresa?.CBU,
             banco: empresa?.banco,
-            nroCuenta: empresa?.nroCuenta, 
-            
+            nroCuenta: empresa?.nroCuenta,
             esProveedor: empresa?.esProveedor,
             esFiduciante: empresa?.esFiduciante,
-
             enviar_OP_auto: empresa?.enviar_OP_auto,
+            esRetSUSS: empresa?.esRetSUSS===0? false: true,
+            esRetIVA: empresa?.esRetIVA===0? false: true,
+            categoria: categorias?.find(i => i.id === empresa.categoria)?.descripcion,
+            categoria: empresa?.categoria,
+            condIVA: condicion_de_IVA?.find(i => i.id === empresa.condIVA)?.descripcion,
+            ganancias: empresa?.ganancias===0? false: true,
+
             deleteId: empresa?.id,
           }))}
           onCellEditCommit={modifyData}

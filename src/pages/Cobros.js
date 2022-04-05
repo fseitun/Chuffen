@@ -1,14 +1,13 @@
-import React from 'react';
+import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
-import { Box, Container } from '@mui/material';
-// import { ManipularFideicomiso } from 'src/components/fideicomiso/ManipularFideicomiso';
-// import { GrillaFideicomiso } from 'src/components/fideicomiso/GrillaFideicomiso';
+import { FormRubro } from 'src/components/rubro/FormRubro';
+import { GrillaRubro } from 'src/components/rubro/GrillaRubro';
 
-export function Cobros({ idSociety }) {
+export function Cobros({ idSociety, loggedUser}) {
   return (
     <>
       <Helmet>
-        <title>Cobros | {idSociety?.nombre ?? ''}</title>
+        <title>Rubro | {idSociety?.nombre ?? ''}</title>
       </Helmet>
       <Box
         sx={{
@@ -17,7 +16,14 @@ export function Cobros({ idSociety }) {
           py: 3,
         }}
       >
-        <Container></Container>
+        <Container maxWidth={false}>
+          <Box sx={{ pt: 3 }}>
+            <FormRubro idSociety={idSociety} loggedUser={loggedUser} />
+          </Box>
+          <Box sx={{ pt: 3 }}>
+            <GrillaRubro idSociety={idSociety} loggedUser={loggedUser} />
+          </Box>
+        </Container>
       </Box>
     </>
   );

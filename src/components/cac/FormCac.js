@@ -34,6 +34,8 @@ export function FormCac({ idSociety, loggedUser }) {
           fecha: new Date(),
           estimado: '',
           definitivo: '',
+          materiales: '',
+          manodeobra: '',
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           values.fecha = dateToStringWithDayEqualToOne(values.fecha);
@@ -52,6 +54,7 @@ export function FormCac({ idSociety, loggedUser }) {
               label="Estimado"
               required
               type="float"
+              style={{ width: '140px'}}
               size="small"
               maxLength={4}
               name="estimado"
@@ -63,8 +66,29 @@ export function FormCac({ idSociety, loggedUser }) {
               required
               type="float"
               size="small"
+              style={{ width: '140px'}}
               name="definitivo"
               onChange={event => onlyNumbers(event, setFieldValue, 'definitivo')}
+            />
+            <Field
+              as={TextField}
+              label="Materiales"
+              required
+              type="float"
+              size="small"
+              style={{ width: '140px'}}
+              name="materiales"
+              onChange={event => onlyNumbers(event, setFieldValue, 'materiales')}
+            />
+            <Field
+              as={TextField}
+              label="Mano de obra"
+              required
+              type="float"
+              size="small"
+              style={{ width: '140px'}}
+              name="manodeobra"
+              onChange={event => onlyNumbers(event, setFieldValue, 'manodeobra')}
             />
             <Button type="submit" disabled={isSubmitting}>
               Agregar

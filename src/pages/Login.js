@@ -77,18 +77,6 @@ export function Login({ setLoggedUser, setIdSociety }) {
   ];
   localStorage.setItem("tipoProductos", JSON.stringify(tipoProductos));
 
-  
-
-
-
-
-
-
-
-
-
-
-
   const retenciones = [  
     { id: 0, descripcion: '-' },
     { id: 1, descripcion: 'No aplican' },
@@ -113,7 +101,40 @@ export function Login({ setLoggedUser, setIdSociety }) {
   localStorage.setItem("tipos", JSON.stringify(tipos));
 
 
-  const formaPagos = "-,Cheque,Débito automático,Echeq,Efectivo ARS,Efectivo USD,Retenciones,Transferencia ARS,Transferencia USD,Otra";
+  const categorias = [
+    { id: 31, descripcion: 'Alquileres o Arrendamientos de bienes' },  
+    { id: 78, descripcion: 'Enajenamiento de bienes mueble' },
+    { id: 94, descripcion: 'Enajenacion de bienes mueble' },
+    { id: 116, descripcion: 'Profesionales liberales' },
+  ];
+  localStorage.setItem("categorias", JSON.stringify(tipos));
+
+  const condicion_de_IVA = [
+    { id: 0, descripcion: '-' },  
+    { id: 1, descripcion: 'IVA Responsable Inscripto' },
+    { id: 4, descripcion: 'IVA Sujeto Exent' },
+    { id: 5, descripcion: 'Consumidor Final' },
+    { id: 6, descripcion: 'Responsable Monotributol' },
+    { id: 7, descripcion: 'Sujeto No Categorizadol' },
+    { id: 8, descripcion: 'Proveedor del Exterior' },
+
+    { id: 9, descripcion: 'Proveedor del Exterior' },
+    { id: 10, descripcion: 'Proveedor del Exterior' },
+    { id: 13, descripcion: 'Proveedor del Exterior' },
+    { id: 15, descripcion: 'Proveedor del Exterior' },
+    { id: 16, descripcion: 'Proveedor del Exterior' },
+
+
+
+
+  ];
+  localStorage.setItem("condicion_de_IVA", JSON.stringify(tipos));
+
+
+
+
+
+  const formaPagos = "-,Cheque,Cheque a tercero,Débito automático,Echeq,Efectivo ARS,Efectivo USD,Retenciones,Transferencia ARS,Transferencia USD,Otra";
   localStorage.setItem("formaPagos", formaPagos); 
 
   /****************************************************/

@@ -51,7 +51,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
   let f = new Date();
   let n = "" + yearMonthDayNum(f) + "01";
 
-  if(loggedUser?.['rol.descripcion'] ==='blue'){
+  if(loggedUser?.['rol.factura'] ==='blue'){
     iniNumber = n
     iniBlue = false;
     verCheckBlueDis = true;
