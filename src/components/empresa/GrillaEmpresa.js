@@ -1,18 +1,19 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { Autocomplete, TextField } from '@mui/material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { mostrarCUIT } from 'src/utils/utils';
 
-const columns = (puedeEditar, tipo, rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
+const columns = (colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'razonSocial',
     headerName: 'Razón Social',
     width: 170,
+    hide: colVisibles?.find(i => i.c === 'razonSocial').h,
     editable: puedeEditar,
     headerAlign: 'center',
   },
@@ -20,6 +21,7 @@ const columns = (puedeEditar, tipo, rubros, subRubros, setIsPromptOpen, setRowId
     field: 'CUIT',
     headerName: 'CUIT',
     width: 130,
+    hide: colVisibles?.find(i => i.c === 'CUIT').h,
     // editable: true,
     headerAlign: 'center',
     valueFormatter: ({ value }) => mostrarCUIT(value),
@@ -28,6 +30,7 @@ const columns = (puedeEditar, tipo, rubros, subRubros, setIsPromptOpen, setRowId
     field: 'telefono',
     headerName: 'Teléfono',
     width: 140,
+    hide: colVisibles?.find(i => i.c === 'telefono').h,
     editable: puedeEditar,
     headerAlign: 'center',
     valueFormatter: ({ value }) => {
@@ -43,6 +46,7 @@ const columns = (puedeEditar, tipo, rubros, subRubros, setIsPromptOpen, setRowId
     field: 'mail',
     headerName: 'Mail',
     width: 150,
+    hide: colVisibles?.find(i => i.c === 'mail').h,
     editable: puedeEditar,
     headerAlign: 'center',
   },
@@ -51,7 +55,7 @@ const columns = (puedeEditar, tipo, rubros, subRubros, setIsPromptOpen, setRowId
     headerName: 'CBU',
     width: 200,
     editable: puedeEditar,
-    hide: (tipo===1),
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'CBU').h,
     headerAlign: 'center',
   },
   {
@@ -59,7 +63,7 @@ const columns = (puedeEditar, tipo, rubros, subRubros, setIsPromptOpen, setRowId
     headerName: 'Banco',
     width: 120,
     editable: puedeEditar,
-    hide: (tipo===1),
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'banco').h,
     headerAlign: 'center',
   },
   {
@@ -67,7 +71,7 @@ const columns = (puedeEditar, tipo, rubros, subRubros, setIsPromptOpen, setRowId
     headerName: '# Cuenta',
     width: 140,
     editable: puedeEditar,
-    hide: (tipo===1),
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'nroCuenta').h,
     headerAlign: 'center',
   },
 
@@ -76,9 +80,9 @@ const columns = (puedeEditar, tipo, rubros, subRubros, setIsPromptOpen, setRowId
     headerName: 'Rubro',
     width: 140,
     editable: puedeEditar,
-    hide: (tipo===1),
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'rubroId').h,
     // renderCell: ({ value }) => value.nombre,
-    renderEditCell: props => <ComboBox rubros={rubros} props={props} />,
+    renderEditCell: props => <ComboBoxRu rubros={rubros} props={props} />,
     headerAlign: 'center',
   },
 
@@ -87,7 +91,7 @@ const columns = (puedeEditar, tipo, rubros, subRubros, setIsPromptOpen, setRowId
     headerName: 'Sub Rubro',
     width: 140,
     editable: puedeEditar,
-    hide: (tipo===1),
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'subrubroId').h,
     // renderCell: ({ value }) => value.nombre,
     renderEditCell: props => <ComboBoxSub subRubros={subRubros} props={props} />,
     headerAlign: 'center',
@@ -96,9 +100,9 @@ const columns = (puedeEditar, tipo, rubros, subRubros, setIsPromptOpen, setRowId
     field: 'enviar_OP_auto',
     headerName: 'Enviar',
     type: 'boolean',
-    width: 50,
+    width: 120,
     editable: puedeEditar,
-    hide: (tipo===1),
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'enviar_OP_auto').h,
     headerAlign: 'center',
   },
   {
@@ -107,7 +111,7 @@ const columns = (puedeEditar, tipo, rubros, subRubros, setIsPromptOpen, setRowId
     type: 'boolean',
     width: 160,
     editable: puedeEditar,
-    hide: (tipo===0),
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'esProveedor').h,
     headerAlign: 'center',
   },
   {
@@ -116,7 +120,53 @@ const columns = (puedeEditar, tipo, rubros, subRubros, setIsPromptOpen, setRowId
     type: 'boolean',
     width: 160,
     editable: puedeEditar,
-    hide: (tipo===1),
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'esFiduciante').h,
+    headerAlign: 'center',
+  },
+  {
+    field: 'esRetSUSS',
+    headerName: 'Ret SUSS',
+    type: 'boolean',
+    width: 160,
+    editable: puedeEditar,
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'esRetSUSS').h,
+    headerAlign: 'center',
+  },
+  {
+    field: 'esRetIVA',
+    headerName: 'Ret IVA',
+    type: 'boolean',
+    width: 160,
+    editable: puedeEditar,
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'esRetIVA').h,
+    headerAlign: 'center',
+  },
+
+  {
+    field: 'categoria',
+    headerName: 'Categoria',
+    width: 200,
+    editable: puedeEditar,
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'categoria').h,
+    renderEditCell: props => <ComboBox listItems={categorias} label={"Categoria"} props={props} />,
+    headerAlign: 'center',
+  },
+  {
+    field: 'ganancias',
+    headerName: 'Ganancias',
+    type: 'boolean',
+    width: 160,
+    editable: puedeEditar,
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'ganancias').h,
+    headerAlign: 'center',
+  },
+  {
+    field: 'condIVA',
+    headerName: 'Cond. IVA',
+    width: 200,
+    editable: puedeEditar,
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'condIVA').h,
+    renderEditCell: props => <ComboBox listItems={condicion_de_IVA} label={"Condicion frente a IVA"} props={props} />,
     headerAlign: 'center',
   },
   {
@@ -211,6 +261,48 @@ export function GrillaEmpresa({ loggedUser, idSociety, tipo }) {
     }
   );
 
+  var colDefaultVisibles = [];
+
+  if(tipo===1){
+    colDefaultVisibles = [
+        {c:'razonSocial',  h:false},
+        {c:'CUIT',  h:false},
+        {c:'telefono',  h:false},
+        {c:'mail',  h:false},
+        ];
+  }else{   
+    colDefaultVisibles = [
+        {c:'razonSocial',  h:false},
+        {c:'CUIT',  h:false},
+        {c:'telefono',  h:false},
+        {c:'mail',  h:false},    
+        {c:'CBU',  h:false},
+        {c:'banco',  h:false},
+        {c:'nroCuenta',  h:false},
+        {c:'rubroId',  h:false},
+        {c:'subrubroId',  h:false},
+        {c:'enviar_OP_auto',  h:false},
+        {c:'esProveedor',  h:false},
+        {c:'esFiduciante',  h:false},
+        {c:'esRetSUSS',  h:false},
+        {c:'esRetIVA',  h:false},
+        {c:'categoria',  h:false},
+        {c:'ganancias',  h:false},
+        {c:'condIVA',  h:false},
+      ];
+  }
+  const [colVisibles, setColVisibles] = useState(colDefaultVisibles);
+
+  const change = (col) => { 
+    let cols = colVisibles;
+    let foundIndex = cols?.findIndex(item => item.c === col.field);
+    if(foundIndex>-1){
+      cols[foundIndex] = {c:col.field,  h:!col.isVisible};
+      setColVisibles(cols);
+    }
+  };
+
+
   const [sortModel, setSortModel] = React.useState([
     {
       field: 'razonSocial',
@@ -258,20 +350,22 @@ export function GrillaEmpresa({ loggedUser, idSociety, tipo }) {
             esProveedor: empresa?.esProveedor,
             esFiduciante: empresa?.esFiduciante,
             enviar_OP_auto: empresa?.enviar_OP_auto,
+            
             esRetSUSS: empresa?.esRetSUSS===0? false: true,
             esRetIVA: empresa?.esRetIVA===0? false: true,
             categoria: categorias?.find(i => i.id === empresa.categoria)?.descripcion,
-            categoria: empresa?.categoria,
+            //categoria: empresa?.categoria,
             condIVA: condicion_de_IVA?.find(i => i.id === empresa.condIVA)?.descripcion,
             ganancias: empresa?.ganancias===0? false: true,
 
             deleteId: empresa?.id,
           }))}
           onCellEditCommit={modifyData}
-          columns={columns(puedeEditar, tipo, rubros, subRubros, setIsPromptOpen, setRowIdToDelete)}
+          columns={columns(colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, rubros, subRubros, setIsPromptOpen, setRowIdToDelete)}
           
           sortModel={sortModel}
           onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
+          onColumnVisibilityChange={(model) => change(model)}
        
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
@@ -292,7 +386,7 @@ export function GrillaEmpresa({ loggedUser, idSociety, tipo }) {
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      
+      <GridToolbarColumnsButton />
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
       <GridToolbarExport csvOptions={{ fields: ['razonSocial', 'CUIT', 'mail', 'telefono', 'CBU', 'banco', 'nroCuenta','rubroId','subrubroId'] }} />
@@ -300,7 +394,7 @@ function CustomToolbar() {
   );
 }
 
-function ComboBox({ rubros, props }) {
+function ComboBoxRu({ rubros, props }) {
   const { id, api, field } = props;
 
   rubros = [
@@ -375,3 +469,38 @@ function ComboBoxSub({ subRubros, props }, params) {
   );
 }
 
+//Recibe un listItems que es un OBJ con id y descrpcion
+//
+function ComboBox({ listItems, label, props }) {
+  const { id, api, field } = props;
+
+  listItems = [
+    ...listItems,
+    {
+      descripcion: '',
+    },
+  ];
+  const [selectedRet, setSelectedRol] = useState({
+    descripcion: '',
+  });
+
+  return (
+    <Autocomplete
+      value={selectedRet}
+      onChange={async (event, newValue) => {        
+        setSelectedRol(newValue);    
+        if(newValue?.id){
+          api.setEditCellValue({ id, field, value: newValue.id }, event);
+          await props.api.commitCellChange({ id, field });
+          api.setCellMode(id, field, 'view');
+        }
+      }}
+      id="combo-box-demo"
+      options={listItems}
+      isOptionEqualToValue={(op, val) => op.descripcion === val.descripcion}
+      getOptionLabel={option => option.descripcion}
+      sx={{ width: 300 }}
+      renderInput={params => <TextField {...params} label={label} />}
+    />
+  );
+}

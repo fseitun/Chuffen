@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from 'react';
 import { useQueryClient, useMutation } from 'react-query';
 import esLocale from 'date-fns/locale/es';
@@ -6,7 +7,6 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DatePicker, LocalizationProvider } from '@mui/lab';
 import { Typography, RadioGroup, Radio, IconButton, Collapse, Box, Grid, FormControlLabel, TextField, Button, Hidden, Checkbox, Autocomplete, Alert } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import React from 'react';
 import { usePrompt } from 'src/utils/usePrompt';
 import { date_to_YYYYMMDD } from 'src/utils/utils'; 
 import { postMethod, getMethod} from 'src/utils/api';
@@ -152,7 +152,7 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           let d = date_to_YYYYMMDD(valuef); 
-          if (valuef) {
+          if (!valuef) {
             setIsPromptOpen(true);
           } else{
                        
@@ -191,8 +191,7 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
                         size={'small'}
                         label='Fideicomiso'
                         title="Seleccione un fideicomiso."
-                        disablePortal
-                        
+                        disablePortal                        
                         style={{ width: '330px', display: 'inline-flex' }}
                         onChange={(event, newValue) => {
                           setFideInForm(newValue);
@@ -220,8 +219,7 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
                         size={'small'}
                         label='Persona'
                         title="Seleccione una Persona."
-                        disablePortal
-                        
+                        disablePortal                        
                         style={{ width: '330px', display: 'inline-flex' }}
                         onChange={(event, newValue) => {
                           setFiduInForm(newValue);
@@ -240,8 +238,7 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
                         size={'small'}
                         label='Empresa'
                         title="Seleccione una Empresa."
-                        disablePortal
-                        
+                        disablePortal                        
                         style={{ width: '330px', display: 'inline-flex' }}
                         onChange={(event, newValue) => {
                           setFiduInForm(newValue);
@@ -357,11 +354,7 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
                         <DatePicker
                           mask={maskMap[locale]}
                           value={valuef}
-                          // views={['year', 'month']}
                           label='Adhesion'
-                          // name='adhesion'
-                          // required     
-                          // size="small"
                           onChange={(newValue) => setValuef(newValue)}
                           renderInput={(params) => <TextField required size="small" {...params} />}
                         />

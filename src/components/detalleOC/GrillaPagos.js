@@ -147,24 +147,42 @@ export function GrillaPagos({ OCId, loggedUser, formOC, isLoading, error, moneda
   var verLink = false;
   if(loggedUser?.['rol.op'] !=='no'){verLink = true;} 
 
-  function buscarCAC(fechaOP){
+  function buscarCAC(fechaOP, CACtipo){
           
-    // console.log(formOC?.oc.CACbase, fechaOP?.slice(0, 7), yyyy + "-" + mm, CACs[0]?.fecha?.slice(0, 7)); 
-    let rta = CACs?.find(cac => cac.fecha.slice(0, 7) === fechaOP?.slice(0, 7))?.definitivo;
+    let rta = 0.0;
+    if(CACtipo==="Construción"){
+      rta = CACs?.find(cac => cac.fecha.slice(0, 7) === fechaOP?.slice(0, 7))?.definitivo;
+    }else if(CACtipo==="Materiales"){
+      rta = CACs?.find(cac => cac.fecha.slice(0, 7) === fechaOP?.slice(0, 7))?.materiales;
+    }else if(CACtipo==="Mano de Obra"){
+      rta = CACs?.find(cac => cac.fecha.slice(0, 7) === fechaOP?.slice(0, 7))?.manodeobra;
+    }
+
     if(!rta){// si no encuenta una CAC definitivo, busco el mes anterior
       let d = new Date(fechaOP.slice(0, 10) + " " + fechaOP.slice(12, 5));
       
       d.setMonth(d.getMonth() - 1)
-      rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.definitivo;
-      if(!rta){// si no encuenta una CAC definitivo, busco el mes anterior
-        d.setMonth(d.getMonth() - 1)
+
+      if(CACtipo==="Construción"){
         rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.definitivo;
-        if(!rta){  
-         rta = 0;
-        } 
+      }else if(CACtipo==="Materiales"){
+        rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.materiales;
+      }else if(CACtipo==="Mano de Obra"){
+        rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.manodeobra;
+      }
+
+      if(!rta){// si no encuenta una CAC definitivo, busco el mes anterior
+        d.setMonth(d.getMonth() - 1)        
+
+        if(CACtipo==="Construción"){
+          rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.definitivo;
+        }else if(CACtipo==="Materiales"){
+          rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.materiales;
+        }else if(CACtipo==="Mano de Obra"){
+          rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.manodeobra;
+        }
       }
     }
-
     return rta;
   }
 
@@ -215,8 +233,8 @@ export function GrillaPagos({ OCId, loggedUser, formOC, isLoading, error, moneda
                 ajuste: item.ajuste,
                 estado: estados?.find(estado => estado.id === item.estadoOP)?.descripcion,
                 createdAt: item.createdAt,
-                CACop: buscarCAC(item?.createdAt),
-                teorico: (1 - (formOC?.oc?.CACbase / buscarCAC(item?.createdAt))) * (item.monto - item.ajuste),
+                CACop: buscarCAC(item?.createdAt,formOC.oc?.CACtipo),
+                teorico: (1 - (formOC?.oc?.CACbase / buscarCAC(item?.createdAt, formOC.oc?.CACtipo))) * (item.monto - item.ajuste),
                 confirmada: item.confirmada,
                 blue: item.blue,
                 authADM: item.authADM,

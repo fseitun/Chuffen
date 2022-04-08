@@ -1,14 +1,15 @@
 import React from 'react';
-import { Page, Document, Image } from '@react-pdf/renderer';
+import { Page, Document } from '@react-pdf/renderer';
+// import { Image } from '@react-pdf/renderer';
 /*
 import TablaFacturas from './tablaFacturas';
 import TablaTEC from './tablaTEC';
 import TablaADM from './tablaADM';
 import TablaCompra from './tablaCompra';*/
-import TablaTarea from './tablaTarea';
-import TablaPago from './tablaPago';
+//import TablaTarea from './tablaTarea';
+//import TablaPago from './tablaPago';
 import {Text, View, StyleSheet } from '@react-pdf/renderer';
-import { mostrarFecha } from 'src/utils/utils';
+//import { mostrarFecha } from 'src/utils/utils';
 
 
 const styles = StyleSheet.create({

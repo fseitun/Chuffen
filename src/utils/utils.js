@@ -46,21 +46,8 @@ export function mostrarFechaMesTXT(fecha) {
 
 // entra date
 // Devuelve un string con formato YYYY-MM-DD
+
 export function yearMonthDayString(fecha) {
-
-  if(fecha ===undefined || fecha ===null){
-    return null
-  }else{
-    return `${fecha.getFullYear(fecha)}-${(1 + fecha.getMonth(fecha)).toString().padStart(2, '0')}-${fecha
-      .getDate(fecha)
-      .toString()
-      .padStart(2, '0')}`;
-  } 
-}
-
-// entra date
-// Devuelve un string con formato YYYY-MM-DD
-export function date_to_YYYYMMDD(fecha) {
 
   if(fecha ===undefined || fecha ===null){
     return null
@@ -129,6 +116,49 @@ export function onlyNumbers(event, setFieldValue, typeOfData) {
     setFieldValue(typeOfData, value.toString());
   }
 }
+
+
+
+
+// *******************************************************************
+// entra date
+// Devuelve un string con formato YYYY-MM-DD  ...yearMonthDayNum
+export function date_to_YYYYMMDD(fecha) {
+
+  if(fecha ===undefined || fecha ===null){
+    return null
+  }else{
+    return `${fecha.getFullYear(fecha)}-${(1 + fecha.getMonth(fecha)).toString().padStart(2, '0')}-${fecha
+      .getDate(fecha)
+      .toString()
+      .padStart(2, '0')}`;
+  } 
+}
+
+// entra base de datos
+// Devuelve un string con formato 24/5/2021
+export function DB_to_DDMMAAAA(fecha) {
+
+  
+  if(fecha ===undefined || fecha ===null){
+    return null
+  }else{
+    return new Date(fecha).toLocaleDateString('es-AR', { timeZone: 'UTC' });
+  }
+}
+
+// entra base de datos
+// Devuelve un Date para un picker
+export function DB_to_date(fecha) {
+
+  
+  if(fecha ===undefined || fecha ===null){
+    return null
+  }else{
+    return new Date(fecha);
+  }
+}
+
 
 /*
 var d = new Date(year, month, day);

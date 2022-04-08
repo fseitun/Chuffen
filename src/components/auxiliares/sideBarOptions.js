@@ -5,21 +5,13 @@ import {
   People,
   MenuBook,
   Apartment,
-  // HandshakeOutlinedIcon, 
-  // DashboardCustomizeIcon,
-  //LocalAtmIcon,
-  /*Assignment,*/
   ListAlt,
   CreditCard,
   Construction,
-  // Business,
   PeopleAlt,
-  /*MonetizationOn,
-  Business,
-  PeopleAlt,
-  Schema,
-  AssignmentTurnedIn,*/
+  
 } from '@mui/icons-material';
+import ListIcon from '@mui/icons-material/List';
 import DashboardCustomizeOutlinedIcon from '@mui/icons-material/DashboardCustomizeOutlined';
 import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
@@ -31,21 +23,18 @@ export const sideBarOptions = [
     title: 'OPs',
     acceso: 'oppago',
   },
-
   {
     path: 'AuthAdmOP',
     icon: CreditCard,
     title: 'OPs Auth ADM',
     acceso: 'AuthAdmOP',
   },
-
   {
     path: 'AuthObraOP',
     icon: CreditCard,
     title: 'OPs Auth Obra',
     acceso: 'AuthObraOP',
   },
-
   {
     path: 'factura',
     icon: ListAlt,
@@ -76,7 +65,6 @@ export const sideBarOptions = [
     title: 'Cobros',
     acceso: 'cobros',
   },
-
   {
     path: 'proveedores',
     icon: LocalShipping,
@@ -96,10 +84,10 @@ export const sideBarOptions = [
     acceso: 'fiduciante',
   },
   {
-    path: 'rubro',
-    icon: MenuBook,
-    title: 'Rubros',
-    acceso: 'rubro',
+    path: 'banco',
+    icon: AttachMoney,
+    title: 'Bancos',
+    acceso: 'banco',
   },
   {
     path: 'cac',
@@ -108,19 +96,23 @@ export const sideBarOptions = [
     acceso: 'cac',
   },
   {
+    path: 'categoria',
+    icon: ListIcon,
+    title: 'Categoria',
+    acceso: 'categoria',
+  },
+  {
     path: 'dolar',
     icon: AttachMoney,
     title: 'Dólar',
     acceso: 'dolar',
   },
-
   {
-    path: 'banco',
-    icon: AttachMoney,
-    title: 'Bancos',
-    acceso: 'banco',
+    path: 'rubro',
+    icon: MenuBook,
+    title: 'Rubros',
+    acceso: 'rubro',
   },
-
   {
     path: 'usuarios',
     icon: People,

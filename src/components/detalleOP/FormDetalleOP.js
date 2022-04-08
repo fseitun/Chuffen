@@ -222,9 +222,7 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                       disablePortal
                       style={{ width: '325px', display: 'inline-flex' }}
                       
-                      onChange={(event, newValue) => {
-                        // setTypeInForm(newValue);
-                       // newValue? setFieldValue('estadoOP', newValue):false;                        
+                      onChange={(event, newValue) => {                      
                         onlyNumbers2(event, setFieldValue, setIniEstado, refetch, 'estadoOP', idSociety.id, OPId, 0, newValue)
                       }}
                       value={iniEstado}

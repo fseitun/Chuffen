@@ -27,8 +27,6 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     renderCell: ({ row: { deleteId } }) => (
       <DeleteIcon
         onClick={e => {
-          // console.log('e', e);
-          // console.log('deleteId', deleteId);
           setRowIdToDelete(deleteId);
           setIsPromptOpen(true);
         }}
@@ -40,8 +38,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
 export function GrillaSubRubro({ idSociety, idRubro }) {
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
-  // console.log(rowIdToDelete);
-
+  
   const {
     data: subrubroInformation,
     isLoading,
@@ -64,8 +61,7 @@ export function GrillaSubRubro({ idSociety, idRubro }) {
       onSettled: () => queryClient.invalidateQueries(['subrubro', idSociety]),
     }
   );
-  // eliminate(1);
-
+  
   const { mutate: modifyData } = useMutation(
     async ({ field, id, value }) =>
       await postMethod(`subrubro/modificar/${idSociety.id}`, {
@@ -76,12 +72,12 @@ export function GrillaSubRubro({ idSociety, idRubro }) {
       onMutate: async ({ field, id, value }) => {
         await queryClient.cancelQueries(['subrubro', idSociety]);
         const prevData = queryClient.getQueryData(['subrubro', idSociety]);
-        // console.log('prevData', prevData);
+    
         const newData = [
           ...prevData.filter(subrubro => subrubro.id !== id),
           { ...prevData.find(subrubro => subrubro.id === id), [field]: value },
         ];
-        // console.log('newData', newData);
+
         queryClient.setQueryData(['subrubro', idSociety], newData);
         return prevData;
       },

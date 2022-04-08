@@ -50,6 +50,14 @@ const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
       }),
   },
   {
+    field: 'mailOP',
+    headerName: 'Mail Contador',
+    width: 200,
+    editable: true,
+    headerAlign: 'center',
+    align: 'left',
+  },
+  {
     field: 'logo',
     headerName: 'Logo',
     sortable: false,
@@ -199,6 +207,7 @@ export function GrillaFideicomiso({ idSociety }) {
             colorElegido: fideicomiso.color,
             logo: fideicomiso.logo,
             cloud: fideicomiso.cloud,
+            mailOP: fideicomiso.mailOP,
             deleteId: fideicomiso.id,
           }))}
           onCellEditCommit={modifyData}

@@ -74,6 +74,7 @@ export function TabOC({ OCId,  idSociety, loggedUser, formOC, isLoading, error, 
                           totPagos={totPagosARS}
                           totAjuste={totAjusteARS}
                           moneda={'ARS'}
+                          CACs={CACs}
                     />
                   </Box>
                   <Box sx={{ pt: 3 }}>
@@ -122,6 +123,7 @@ export function TabOC({ OCId,  idSociety, loggedUser, formOC, isLoading, error, 
                           totPagos={totPagosUSD}
                           totAjuste={totAjusteUSD}
                           moneda={'USD'}
+                          CACs={CACs}
                     />
                   </Box>
                   <Box sx={{ pt: 3 }}>

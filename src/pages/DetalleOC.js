@@ -48,6 +48,7 @@ export function DetalleOC({ idSociety, loggedUser }) {
     var totPagosUSD = 0.0 ;
     var totAjusteARS = 0.0 ;
     var totAjusteUSD = 0.0 ;
+    
     for(var i = 0; i < formOC?.pago.length; i++){
           if(formOC?.pago[i].OC_moneda ==='ARS'){
             totPagosARS +=parseFloat(formOC?.pago[i].monto);

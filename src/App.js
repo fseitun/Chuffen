@@ -19,6 +19,7 @@ import { useAuth } from 'src/utils/useAuth';
 import { Dolar } from 'src/pages/Dolar';
 import { Cac } from 'src/pages/Cac';
 import { Rubro } from 'src/pages/Rubro';
+import { Categoria } from 'src/pages/Categoria';
 import { SubRubro } from 'src/pages/SubRubro';
 import { Banco } from 'src/pages/Banco';
 import { CuentaBanco } from 'src/pages/CuentaBanco';
@@ -95,6 +96,7 @@ export default function App() {
                 />
               </Route>
 
+              <Route path="categoria" element={<Categoria idSociety={idSociety}  loggedUser={loggedUser}  />} />
               <Route path="cobros" element={<Cobros idSociety={idSociety}  loggedUser={loggedUser}  />} />
               <Route path="cuotas" element={<Cuotas idSociety={idSociety}  loggedUser={loggedUser}  />} />
               

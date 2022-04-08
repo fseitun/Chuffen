@@ -100,14 +100,10 @@ export function Login({ setLoggedUser, setIdSociety }) {
   ];
   localStorage.setItem("tipos", JSON.stringify(tipos));
 
-
-  const categorias = [
-    { id: 31, descripcion: 'Alquileres o Arrendamientos de bienes' },  
-    { id: 78, descripcion: 'Enajenamiento de bienes mueble' },
-    { id: 94, descripcion: 'Enajenacion de bienes mueble' },
-    { id: 116, descripcion: 'Profesionales liberales' },
-  ];
-  localStorage.setItem("categorias", JSON.stringify(tipos));
+  const {data: categorias} = useQuery(['categoria', idSociety], () => 
+    getMethod(`categoria/listarCombo/${idSociety.id}`)
+  ); 
+  localStorage.setItem("categorias", JSON.stringify(categorias));
 
   const condicion_de_IVA = [
     { id: 0, descripcion: '-' },  
@@ -117,18 +113,12 @@ export function Login({ setLoggedUser, setIdSociety }) {
     { id: 6, descripcion: 'Responsable Monotributol' },
     { id: 7, descripcion: 'Sujeto No Categorizadol' },
     { id: 8, descripcion: 'Proveedor del Exterior' },
-
-    { id: 9, descripcion: 'Proveedor del Exterior' },
-    { id: 10, descripcion: 'Proveedor del Exterior' },
-    { id: 13, descripcion: 'Proveedor del Exterior' },
-    { id: 15, descripcion: 'Proveedor del Exterior' },
-    { id: 16, descripcion: 'Proveedor del Exterior' },
-
-
-
-
-  ];
-  localStorage.setItem("condicion_de_IVA", JSON.stringify(tipos));
+    { id: 9, descripcion: 'Cliente del Exterior' },
+    { id: 10, descripcion: 'IVA Liberado - Ley Nº 19.640' },
+    { id: 13, descripcion: 'Monotributista Social' },
+    { id: 15, descripcion: 'IVA No Alcanzado' },
+    { id: 16, descripcion: 'Monotributista Trabajador Independiente Promovido'},];
+  localStorage.setItem("condicion_de_IVA", JSON.stringify(condicion_de_IVA));
 
 
 

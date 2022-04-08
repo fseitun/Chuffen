@@ -9,7 +9,7 @@ import { usePrompt } from 'src/utils/usePrompt';
 import { mostrarFecha } from 'src/utils/utils';
 import { SocietyContext } from 'src/App';
 import { ProgressBar } from 'src/components/detalleOC/ProgressBar';
-
+import { date_to_YYYYMMDD } from 'src/utils/utils';
 
 const columns = (acceso, total, setIsPromptOpen, setRowIdToDelete) => [
   
@@ -17,7 +17,7 @@ const columns = (acceso, total, setIsPromptOpen, setRowIdToDelete) => [
     field: 'numero',
     headerName: '',
     width: 50,
-    editable: true,
+    editable: acceso,
     headerAlign: 'center',
   },
 
@@ -91,7 +91,8 @@ const columns = (acceso, total, setIsPromptOpen, setRowIdToDelete) => [
   },
 ];
 
-export function GrillaTareas({ OCId, loggedUser, formOC, refetch, moneda, totPagos, totAjuste}) {
+
+export function GrillaTareas({ OCId, loggedUser, formOC, refetch, moneda, totPagos, totAjuste, CACs}) {
   const idSociety = useContext(SocietyContext);
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
@@ -126,6 +127,46 @@ export function GrillaTareas({ OCId, loggedUser, formOC, refetch, moneda, totPag
       }
     }
   );
+
+  function buscarCAC(fechaOP, CACtipo){
+          
+    let rta = 0.0;
+    if(CACtipo==="Construción"){
+      rta = CACs?.find(cac => cac.fecha.slice(0, 7) === fechaOP?.slice(0, 7))?.definitivo;
+    }else if(CACtipo==="Materiales"){
+      rta = CACs?.find(cac => cac.fecha.slice(0, 7) === fechaOP?.slice(0, 7))?.materiales;
+    }else if(CACtipo==="Mano de Obra"){
+      rta = CACs?.find(cac => cac.fecha.slice(0, 7) === fechaOP?.slice(0, 7))?.manodeobra;
+    }
+
+    if(!rta){// si no encuenta una CAC definitivo, busco el mes anterior
+
+      let d = new Date(fechaOP.slice(0, 10) + " " + fechaOP.slice(12, 5));
+      
+      d.setMonth(d.getMonth() - 1)
+
+      if(CACtipo==="Construción"){
+        rta = CACs?.find(cac => cac.fecha.slice(0, 7) === date_to_YYYYMMDD(d).slice(0, 7))?.definitivo;
+      }else if(CACtipo==="Materiales"){
+        rta = CACs?.find(cac => cac.fecha.slice(0, 7) === date_to_YYYYMMDD(d).slice(0, 7))?.materiales;
+      }else if(CACtipo==="Mano de Obra"){
+        rta = CACs?.find(cac => cac.fecha.slice(0, 7) === date_to_YYYYMMDD(d).slice(0, 7))?.manodeobra;
+      }
+
+      if(!rta){// si no encuenta una CAC definitivo, busco el mes anterior
+        d.setMonth(d.getMonth() - 1)        
+
+        if(CACtipo==="Construción"){
+          rta = CACs?.find(cac => cac.fecha.slice(0, 7) === date_to_YYYYMMDD(d).slice(0, 7))?.definitivo;
+        }else if(CACtipo==="Materiales"){
+          rta = CACs?.find(cac => cac.fecha.slice(0, 7) === date_to_YYYYMMDD(d).slice(0, 7))?.materiales;
+        }else if(CACtipo==="Mano de Obra"){
+          rta = CACs?.find(cac => cac.fecha.slice(0, 7) === date_to_YYYYMMDD(d).slice(0, 7))?.manodeobra;
+        }
+      }
+    }
+    return rta;
+  }
 
   const { mutate: modifyData } = useMutation(
     async ({ field, id, value }) =>
@@ -162,26 +203,49 @@ export function GrillaTareas({ OCId, loggedUser, formOC, refetch, moneda, totPag
     return `Hubo un error: ${error.message}`;
   } else
     var totTareas = (moneda==='ARS'?formOC?.oc?.monto_ARS:formOC?.oc?.monto_USD);
+    var saldo = totTareas + totAjuste - totPagos;
     var avance = (totPagos-totAjuste) / totTareas;
+
+    var ajuste_del_saldo = (1 - (formOC?.oc?.CACbase / buscarCAC(formOC.oc?.fechaIni, formOC.oc?.CACtipo))) * (saldo);
+
     if(!avance){avance=0.0};
 
     return (
       <div style={{ width: '100%' }}>
         <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >
 
-          <Grid item md={4}>
-            <Typography align="left" color="textPrimary" variant="h6">
-                  
-            </Typography>
+          <Grid item md={8}>
+             <Typography align="right" color="textWarning" variant="h5">
+               Total Contrato:
+             </Typography>
           </Grid>                      
-          <Grid item md={6}>
-            <Typography align="right" color="textPrimary" variant="h5">
-                  Total Contrato:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(totTareas)) + " " + moneda }
+          <Grid item md={2}>
+             <Typography align="right" color="textWarning" variant="h5">
+                  { Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(totTareas)) + " " + moneda }
                   
             </Typography>
           </Grid>
           <Grid item md={2}>
             <ProgressBar value={avance} />
+          </Grid>
+
+          <Grid item md={8}>
+            <Typography align="right" color="textWarning" variant="h5">
+             Saldo{moneda==='ARS'? " + Ajuste CAC":""}:
+            </Typography>
+          </Grid>                      
+          <Grid item md={2}>
+          <Typography align="right" color="textWarning" variant="h5">
+                  
+                  { Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Math.round(Number(saldo)*100)/100) + " " + moneda }
+            </Typography>
+          </Grid>
+          <Grid item md={2}>
+            <Typography align="left" color="textPrimary" variant="h5">
+              &nbsp;&nbsp;{moneda==='ARS'? "+":""}&nbsp;&nbsp;
+
+              { moneda==='ARS'? Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Math.round(Number(ajuste_del_saldo)*100)/100) + " " + moneda:"" }
+            </Typography>
           </Grid>
 
           <Grid item md={12}>

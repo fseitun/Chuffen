@@ -1,13 +1,22 @@
+import React from 'react';
 import { useState } from 'react';
-import { TextField } from '@mui/material';
+import { TextField, MenuItem, Grid } from '@mui/material';
+import esLocale from 'date-fns/locale/es';
 import { useContext } from 'react';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import { DatePicker, LocalizationProvider } from '@mui/lab';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form } from 'formik';
 import { postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { SocietyContext } from 'src/App';
-                
-export function FormDetalleOC({ OCId, formOC, loggedUser, moneda, refetch  }) {
+import { date_to_YYYYMMDD, DB_to_date } from 'src/utils/utils'; 
+// (fecha)
+
+export function FormDetalleOC({ OCId, formOC, loggedUser, refetch  }) {
+
+  var acceso = true;
+  if(loggedUser?.['rol.oc'] ==='vista'){acceso =false}
 
   const idSociety = useContext(SocietyContext);
   const { Prompt } = usePrompt();
@@ -41,7 +50,23 @@ export function FormDetalleOC({ OCId, formOC, loggedUser, moneda, refetch  }) {
     }
   );
 
-  function onlyNumbers(event, field, setField, OCId) {
+  function save(event, field, id, isNumber, isDate) {
+    
+    if(isNumber){ // si es un campo de tipo numero
+      onlyNumbers(event, field, id);
+    }else{
+      if(isDate){ // si es un picker de fecha
+        setValuef(event);
+        const value = date_to_YYYYMMDD(event) + " 03:00"; 
+        modifyData({ field, id, value });
+      }else{  
+        const { value } = event.target;
+        modifyData({ field, id, value });
+      }
+    }
+}
+
+  function onlyNumbers(event, field, id) {
    
     event.preventDefault();
     const { value } = event.target;   
@@ -52,12 +77,35 @@ export function FormDetalleOC({ OCId, formOC, loggedUser, moneda, refetch  }) {
     var ctrl = event.ctrlKey ? event.ctrlKey : ((key === 17) ? true : false); // ctrl detection
     if(event?.target?.name === field){ // Si el campo a grabar cambio
       if (regex.test(value.toString()) || ctrl ) {
-        let id = OCId;
+        //let id = OCId;
         modifyData({ field, id, value });
-      }
-      setField("");
+      }      
     }
   }
+
+  
+  const CACtipos = [
+    {
+      value: 'Construción',
+      label: 'Construción',
+    },
+    {
+      value: 'Materiales',
+      label: 'Materiales',
+    },
+    {
+      value: 'Mano de Obra',
+      label: 'Mano de Obra',
+    },
+  ];
+
+  const locale = 'es';
+  const localeMap = {es: esLocale};  
+  const maskMap = {es: '__/__/____'};
+  let d = DB_to_date(formOC?.oc?.fechaIni); 
+  console.log(2222, d)
+  const [valuef, setValuef] = React.useState(d);
+
 
   return (
     <>
@@ -65,23 +113,59 @@ export function FormDetalleOC({ OCId, formOC, loggedUser, moneda, refetch  }) {
 
         {({ isSubmitting }) => (
           <Form>
+            <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >                  
 
-            <TextField  
-              size={'small'} 
-              sx={{ width: '20ch' }} 
-              label="CAC Base" 
-              type="number" 
-              key={formOC?.oc?.CACbase} 
-              defaultValue={formOC.oc?.CACbase}  
-              name="CACbase" 
-              onChange={event => setField('CACbase')} 
-              
-              onBlur={event => onlyNumbers(event, field, setField, OCId)}  
-              /* InputProps={{
-                     readOnly: (!acceso || (isConfirmOP===1)?true:false),
-                     }} */
-            />           
-            
+              <Grid item md={5}>   
+
+                <TextField  
+                  size={'small'} 
+                  sx={{ width: '20ch' }} 
+                  label="Tipo de CAC" 
+                  style={{ width: '215px', display: 'inline-flex' }}
+                  select
+                  disabled={!acceso}
+                  key={formOC?.oc?.CACtipo} 
+                  defaultValue={formOC.oc?.CACtipo}  
+                  name="CACtipo" 
+                  onChange={event => save(event, 'CACtipo', OCId, false, false)}       
+                >
+                    {CACtipos.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                </TextField>
+  
+                <TextField  
+                  size={'small'} 
+                  sx={{ width: '20ch' }} 
+                  label="CAC Base" 
+                  type="number" 
+                  disabled={!acceso}
+                  style={{ width: '215px', display: 'inline-flex' }}
+                  key={formOC?.oc?.CACbase} 
+                  defaultValue={formOC.oc?.CACbase}  
+                  name="CACbase" 
+                  onChange={event => setField('CACbase')}               
+                  onBlur={event => save(event, field, OCId, true, false)}  
+        
+                />        
+              </Grid> 
+              <Grid item md={2}> 
+                <LocalizationProvider dateAdapter={AdapterDateFns} locale={localeMap[locale]}>
+                  
+                      <DatePicker
+                        mask={maskMap[locale]}
+                        value={valuef}
+                        disabled={!acceso}
+                        label='Fecha'
+                        onChange={(newValue) => save(newValue, 'fechaIni', OCId, false, true)}
+                        renderInput={(params) => <TextField required size="small" {...params} />}
+                      />
+                  
+                </LocalizationProvider>
+              </Grid>
+            </Grid>  
           </Form>
         )}
       </Formik>

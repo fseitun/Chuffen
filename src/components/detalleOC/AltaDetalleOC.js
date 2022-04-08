@@ -59,6 +59,7 @@ export function AltaDetalleOC({ OCId, loggedUser, moneda, refetch  }) {
               as={TextField} 
               required 
               size="small" 
+              style={{ width: '215px', display: 'inline-flex' }}
               label='Tarea' 
               type='string' 
               name='descripcion' 
@@ -68,13 +69,14 @@ export function AltaDetalleOC({ OCId, loggedUser, moneda, refetch  }) {
               as={TextField}
               required
               label="Monto"
+              style={{ width: '215px', display: 'inline-flex' }}
               size="small"
               type="float"
               name="monto"
               onChange={event => onlyNumbers(event, setFieldValue, 'monto')}
             />        
      
-
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <Button type="submit" disabled={isSubmitting}>
               Agregar
             </Button>

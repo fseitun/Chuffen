@@ -214,6 +214,7 @@ export function GrillaOC({ filtFide, filtRS, filtEst, idSociety, loggedUser, ocI
     return 'Cargando...';
   } else if (error) {
     return `Hubo un error: ${error.message}`;
+    
   } else
     
     return (
@@ -253,10 +254,10 @@ export function GrillaOC({ filtFide, filtRS, filtEst, idSociety, loggedUser, ocI
         <DataGrid 
           rows={ocInformation.filter(element =>filtrar(element, filtFide, filtRS)).map(OC => ({
             
-            id: OC.id,   
+            id: OC?.id,   
             createdAt: OC?.createdAt,  
-            fideicomiso: OC?.fideicomisos[0]?.nombre,
-            empresa: OC?.empresas[0]?.razonSocial,
+            fideicomiso: OC?.fideicomisos? OC?.fideicomisos[0]?.nombre:"",
+            empresa: OC?.empresas? OC?.empresas[0]?.razonSocial:"",
             descripcion1: OC?.descripcion1,
             monto_ARS: OC?.monto_ARS,
             monto_USD: OC?.monto_USD,

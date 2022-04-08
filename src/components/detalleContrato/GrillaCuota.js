@@ -1,15 +1,13 @@
 import * as React from 'react';
 import { useState, useContext } from 'react';
-import { useQuery, useQueryClient, useMutation } from 'react-query';
+import { useQueryClient, useMutation } from 'react-query';
 import { Typography, Grid } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
-import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
+import { postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { mostrarFecha } from 'src/utils/utils';
 import { SocietyContext } from 'src/App';
-import { ProgressBar } from 'src/components/detalleOC/ProgressBar';
-
 
 const columns = (acceso, total, setIsPromptOpen, setRowIdToDelete) => [
   
@@ -96,14 +94,6 @@ export function GrillaCuota({ loggedUser, dataContrato, isLoading, error, refetc
 
   var acceso = true;
   if(loggedUser?.['rol.contrato'] ==='vista'){acceso =false}
-  
-  /*
-  const {
-    data: detalle,
-    isLoading,
-    error,
-  } = useQuery(['OCdetalle', idSociety], () => getMethod(`OCdetalle/listar/${idSociety.id}/${OCId}`));
-*/
 
   const queryClient = useQueryClient();
 
@@ -161,23 +151,7 @@ export function GrillaCuota({ loggedUser, dataContrato, isLoading, error, refetc
   } else if (error) {
     return `Hubo un error: ${error.message}`;
   } else
-  var ss =33; 
-  /*
-    var totTareas = (moneda==='ARS'?dataContrato?.oc?.monto_ARS:dataContrato?.oc?.monto_USD);
-    var avance = (totPagos-totAjuste) / totTareas;
-    if(!avance){avance=0.0};*/
-
-
- /*   <Grid item md={6}>
-    <Typography align="right" color="textPrimary" variant="h5">
-          Total Contrato:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(totTareas)) + " " + moneda }
-          
-    </Typography>
-  </Grid>
-  <Grid item md={2}>
-    <ProgressBar value={avance} />
-  </Grid>*/
-
+  
 
     return (
       <div style={{ width: '100%' }}>
