@@ -598,12 +598,18 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                                   
                   </Grid>  
                   <Grid item md={2}>
-                        <TextField  name="monto1" size={'small'}sx={{ width: '20ch' }} label="Monto" type="float"  key={formOP?.OPpago.monto1}  defaultValue={formOP?.OPpago.monto1}  onChange={event => onlyNumbers(event, setFieldValue, refetch, 'monto1', idSociety.id, OPId, 1, 0, null)}
-                             inputProps={{readOnly: (!acceso || (isConfirmOP===1)?true:false), min: 0, style: { textAlign: 'center' }}}
-                             /*InputProps={{
-                              readOnly: (!acceso || (isConfirmOP===1)?true:false),
-                  
-                            }}*/ />                  
+                    <TextField  
+                      size={'small'}
+                      sx={{ width: '20ch' }}
+                      label="Monto" type="float"  
+                      key={formOP?.OPpago.monto1}  
+                      defaultValue={formOP?.OPpago.monto1}
+                      name="monto1"      
+                      onChange={event => setFlagField('monto1')}  
+                      onBlur={event => onlyNumbers3(event, setFieldValue, refetch, 'monto1', idSociety.id, OPId, 1, 0,null,flagField)} 
+                      inputProps={{readOnly: (!acceso || (isConfirmOP===1)?true:false), min: 0, style: { textAlign: 'center' }}}
+                    />
+                                      
                   </Grid>
 
                   <Grid item md={2}>
@@ -708,11 +714,17 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                                   
                   </Grid>  
                   <Grid item md={2}>
-                        <TextField  name="monto2" size={'small'}sx={{ width: '20ch' }} label="Monto" type="float"  key={formOP?.OPpago.monto2}  defaultValue={formOP?.OPpago.monto2}   onChange={event => onlyNumbers(event, setFieldValue, refetch, 'monto2', idSociety.id, OPId, 1, 0, null)}
-                            inputProps={{readOnly: (!acceso || (isConfirmOP===1)?true:false), min: 0, style: { textAlign: 'center' }}}
-                            /*InputProps={{
-                              readOnly: (!acceso || (isConfirmOP===1)?true:false),
-                            }}*/ />                  
+                    <TextField  
+                        size={'small'}
+                        sx={{ width: '20ch' }}
+                        label="Monto" type="float"  
+                        key={formOP?.OPpago.monto2}  
+                        defaultValue={formOP?.OPpago.monto2}
+                        name="monto2"      
+                        onChange={event => setFlagField('monto2')}  
+                        onBlur={event => onlyNumbers3(event, setFieldValue, refetch, 'monto2', idSociety.id, OPId, 1, 0,null,flagField)} 
+                        inputProps={{readOnly: (!acceso || (isConfirmOP===1)?true:false), min: 0, style: { textAlign: 'center' }}}
+                      />              
                   </Grid>
 
                   <Grid item md={2}>
@@ -815,11 +827,17 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                                   
                   </Grid>  
                   <Grid item md={2}>
-                        <TextField  name="monto3" size={'small'}sx={{ width: '20ch' }} label="Monto" type="float"  key={formOP?.OPpago.monto3}  defaultValue={formOP?.OPpago.monto3}   onChange={event => onlyNumbers(event, setFieldValue, refetch, 'monto3', idSociety.id, OPId, 1, 0, null)}
-                            inputProps={{readOnly: (!acceso || (isConfirmOP===1)?true:false), min: 0, style: { textAlign: 'center' }}}
-                            /*InputProps={{
-                              readOnly: (!acceso || (isConfirmOP===1)?true:false),
-                            }}*/ />                  
+                    <TextField  
+                        size={'small'}
+                        sx={{ width: '20ch' }}
+                        label="Monto" type="float"  
+                        key={formOP?.OPpago.monto3}  
+                        defaultValue={formOP?.OPpago.monto3}
+                        name="monto3"      
+                        onChange={event => setFlagField('monto3')}  
+                        onBlur={event => onlyNumbers3(event, setFieldValue, refetch, 'monto3', idSociety.id, OPId, 1, 0,null,flagField)} 
+                        inputProps={{readOnly: (!acceso || (isConfirmOP===1)?true:false), min: 0, style: { textAlign: 'center' }}}
+                      />               
                   </Grid>
 
                   <Grid item md={2}>
@@ -921,11 +939,17 @@ export function FormDetalleOP({ idSociety, OPId, loggedUser, estadoOP, confirmad
                                   
                   </Grid>  
                   <Grid item md={2}>
-                        <TextField  name="monto4" size={'small'}sx={{ width: '20ch' }} label="Monto" type="float"  key={formOP?.OPpago.monto4}  defaultValue={formOP?.OPpago.monto4}   onChange={event => onlyNumbers(event, setFieldValue, refetch, 'monto4', idSociety.id, OPId, 1, 0, null)}
-                            inputProps={{readOnly: (!acceso || (isConfirmOP===1)?true:false), min: 0, style: { textAlign: 'center' }}}
-                            /*InputProps={{
-                              readOnly: (!acceso || (isConfirmOP===1)?true:false),
-                            }}*/ />                  
+                    <TextField  
+                        size={'small'}
+                        sx={{ width: '20ch' }}
+                        label="Monto" type="float"  
+                        key={formOP?.OPpago.monto4}  
+                        defaultValue={formOP?.OPpago.monto4}
+                        name="monto4"      
+                        onChange={event => setFlagField('monto4')}  
+                        onBlur={event => onlyNumbers3(event, setFieldValue, refetch, 'monto4', idSociety.id, OPId, 1, 0,null,flagField)} 
+                        inputProps={{readOnly: (!acceso || (isConfirmOP===1)?true:false), min: 0, style: { textAlign: 'center' }}}
+                      />                
                   </Grid>
 
                   <Grid item md={10}>
@@ -982,7 +1006,7 @@ function onlyNumbers3(event, setFieldValue, refetch, typeOfData, idSociety, OPId
     
     event.preventDefault();
     const { value } = event.target;
-    const regex = /^\d{0,7}(\.\d{0,2})?$/;
+    const regex = /^\d{0,9}(\.\d{0,2})?$/;
     // console.log(regex.test(value.toString()));
     
     if(value!==undefined){
@@ -1015,7 +1039,7 @@ function onlyNumbers(event, setFieldValue, refetch, typeOfData, idSociety, OPId,
   
   event.preventDefault();
   const { value } = event.target;
-  const regex = /^\d{0,7}(\.\d{0,2})?$/;
+  const regex = /^\d{0,9}(\.\d{0,2})?$/;
   
   if(value!==undefined){
     if (regex.test(value.toString())) {
