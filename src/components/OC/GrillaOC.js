@@ -171,20 +171,24 @@ export function GrillaOC({ filtFide, filtRS, filtEst, idSociety, loggedUser, ocI
   const [open, setOpen] = useState(false);
 
   function filtrar(element, filtFide, filtRS){
-        
-    if(filtFide === -1 && filtRS === -1 ){
-      return true;
-    }
+    
+    if(element.id>0 && element.empresaId>0 && element.fideicomisoId>0){
+      if(filtFide === -1 && filtRS === -1 ){
+        return true;
+      }
 
-    if(filtFide > -1 && filtRS === -1 ){//fide
-      if(element.fideicomisoId===filtFide){return true;}else{return false;}
-    }
+      if(filtFide > -1 && filtRS === -1 ){//fide
+        if(element.fideicomisoId===filtFide){return true;}else{return false;}
+      }
 
-    if(filtFide === -1 && filtRS > -1 ){// proveedor
-      if(element.empresaId===filtRS){return true;}else{return false;}    }
+      if(filtFide === -1 && filtRS > -1 ){// proveedor
+        if(element.empresaId===filtRS){return true;}else{return false;}    }
 
-    if(filtFide > -1 && filtRS > -1 ){
-      if(element.fideicomisoId===filtFide && element.empresaId===filtRS){return true;}else{return false;}
+      if(filtFide > -1 && filtRS > -1 ){
+        if(element.fideicomisoId===filtFide && element.empresaId===filtRS){return true;}else{return false;}
+      }
+    }else{
+      return false;
     }
   }
 
@@ -261,7 +265,8 @@ export function GrillaOC({ filtFide, filtRS, filtEst, idSociety, loggedUser, ocI
             descripcion1: OC?.descripcion1,
             monto_ARS: OC?.monto_ARS,
             monto_USD: OC?.monto_USD,
-            
+
+            fideicomisoId: OC?.fideicomisoId,
             empresaId: OC?.empresaId,
             deleteId: OC?.id,
 

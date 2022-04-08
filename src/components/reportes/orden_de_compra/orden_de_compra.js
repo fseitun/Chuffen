@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
                       
                         <View style={{width: dataOC? (80 + '%'):'25%' }} >
                           <Image style={[styles.logo, {backgroundColor: dataOC?.oc? dataOC?.oc?.fideicomisos[0]?.color3:'#FFFFFF' }]}
-                               src={{ uri: `${apiServerUrl}/sociedades/${idSociedad}/${dataOC?.oc? dataOC?.oc?.fideicomisos[0]?.logo:'logo.png'}` , method: "GET", headers: { "Cache-Control": "no-cache" }, body: "" }} /> 
+                               src={{ uri: `${apiServerUrl}/sociedades/${idSociedad}/${dataOC?.oc? dataOC?.oc?.fideicomisos[0]?.logo:'logo.png'}` , method: "GET", body: "" }} /> 
                         </View>
 
                     </View>

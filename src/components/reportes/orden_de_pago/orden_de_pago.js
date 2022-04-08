@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
                     <View style={{flexDirection: 'row',marginLeft: '0',marginRight: '0'}} >
                         <Text style={[styles.reportTitleFide, {width: (dataOP? 100 - dataOP?.fideicomisos[0]?.ancho_logo + '%':'75%'), color: dataOP?.fideicomisos[0]?.color}]}>{dataOP?.fideicomisos[0]?.titulo}</Text>
                         <View style={{width: dataOP? (dataOP?.fideicomisos[0]?.ancho_logo + '%'):'25%' }} >
-                        <Image style={[styles.logo, {backgroundColor: dataOP? dataOP?.fideicomisos[0]?.color3:'#FFFFFF' }]} src={{ uri: `${apiServerUrl}/sociedades/${idSociedad}/${dataOP? dataOP?.fideicomisos[0]?.logo:'logo.png'}` , method: "GET", headers: { "Cache-Control": "no-cache" }, body: "" }} />                   
+                        <Image style={[styles.logo, {backgroundColor: dataOP? dataOP?.fideicomisos[0]?.color3:'#FFFFFF' }]} src={{ uri: `${apiServerUrl}/sociedades/${idSociedad}/${dataOP? dataOP?.fideicomisos[0]?.logo:'logo.png'}` , method: "GET", body: "" }} />                   
                         </View>
                     </View>
 
