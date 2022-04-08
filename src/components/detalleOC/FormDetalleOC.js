@@ -26,7 +26,7 @@ export function FormDetalleOC({ OCId, formOC, loggedUser, refetch  }) {
 
 
   const { mutate: modifyData } = useMutation(
-    async ({ field, id, value }) => await postMethod(`OC/modificar/1`, {id,[field]: value,}),
+    async ({ field, id, value }) => await postMethod(`OC/modificar/${idSociety.id}`, {id,[field]: value,}),
     {
       onMutate: async ({ field, id, value }) => {
         await queryClient.cancelQueries(['OC', idSociety]);
