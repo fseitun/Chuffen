@@ -9,6 +9,8 @@ import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { mostrarFecha } from 'src/utils/utils';
 import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { TiposContext, EstadosContext} from 'src/App';
 
 const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
 
@@ -205,7 +207,7 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
 ];
 
 // por ahora se inicializa en el login
-var estados = JSON.parse(localStorage.getItem("estados"));
+// /// /// var estados = useContext(EstadosContext);
 
 export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUser }) {
   
@@ -213,7 +215,9 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
   
-  var tipos = JSON.parse(localStorage.getItem("tipos"));
+  //var tipos = JSON.parse(localStorage.getItem("tipos"));
+  var estados = useContext(EstadosContext);
+  var tipos = useContext(TiposContext);
   var blue = 0;
   var verColumnBlue = false;
   

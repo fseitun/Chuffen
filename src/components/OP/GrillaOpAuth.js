@@ -11,6 +11,9 @@ import { Box, Button, IconButton, Collapse, Alert, Avatar} from '@mui/material';
 import 'react-toastify/dist/ReactToastify.css';
 import CloseIcon from '@mui/icons-material/Close';
 import { darken, lighten } from '@mui/material/styles';
+import { useContext } from 'react';
+import { EstadosContext} from 'src/App';
+
 
 const getBackgroundColor = (color, mode) =>
   mode === 'dark' ? darken(color, 0.6) : lighten(color, 0.6);
@@ -131,12 +134,13 @@ const columns = (tipo, setIsPromptOpen, setRowIdToDelete) => [
 
 
 // por ahora se inicializa en el login
-var formaPagos =[];
+// var formaPagos = useContext(FormaPagosContext).split(",");
+/*
 if(localStorage.getItem("formaPagos")){
   formaPagos = localStorage.getItem("formaPagos").split(",")
 }else{  
   formaPagos[0] ="Otra";
-}
+}*/
 
 export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
   
@@ -209,7 +213,7 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
       onSettled: () => queryClient.invalidateQueries(['OP' + tipo, idSociety]),
     }
   );
-  var estados = JSON.parse(localStorage.getItem("estados"));
+  var estados = useContext(EstadosContext);
   const [selectionModel, setSelectionModel] = useState([]);
 
   const [open, setOpen] = useState(false);

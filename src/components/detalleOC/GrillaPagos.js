@@ -5,6 +5,10 @@ import { mostrarFecha } from 'src/utils/utils';
 import { NavLink as RouterLink } from 'react-router-dom';
 import { ProgressBar } from 'src/components/detalleOC/ProgressBar';
 import { yearMonthDayString } from 'src/utils/utils';
+import { useContext } from 'react';
+import { EstadosContext} from 'src/App';
+
+
 
 const columns = (verLink, moneda) => [  
 
@@ -142,7 +146,7 @@ const columns = (verLink, moneda) => [
 export function GrillaPagos({ OCId, loggedUser, formOC, isLoading, error, moneda, totPagos, totAjuste, CACs}) {
   // const idSociety = useContext(SocietyContext);
   const detalle = formOC?.pago;
-  var estados = JSON.parse(localStorage.getItem("estados"));
+  var estados = useContext(EstadosContext);
 
   var verLink = false;
   if(loggedUser?.['rol.op'] !=='no'){verLink = true;} 

@@ -9,6 +9,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import React from 'react';
 import { usePrompt } from 'src/utils/usePrompt';
 import { yearMonthDayNum } from 'src/utils/utils'; 
+import { useContext } from 'react';
+import { TiposContext} from 'src/App';
 
 export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores}) {
 
@@ -35,8 +37,8 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
     }
   );
 
-  var tipos = JSON.parse(localStorage.getItem("tipos"));
-
+  //var tipos = JSON.parse(localStorage.getItem("tipos"));
+  var tipos = useContext(TiposContext);
 
   const [tipoInForm, setTipoInForm] = useState({id: 0, descripcion: 'Factura'});
   const [fideInForm, setFideInForm] = useState(null);

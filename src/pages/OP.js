@@ -6,8 +6,12 @@ import { FiltroOP } from 'src/components/OP/FiltroOP';
 import { GrillaOP } from 'src/components/OP/GrillaOP';
 import { useQuery } from 'react-query';
 import { getMethod } from 'src/utils/api';
+import { useContext } from 'react';
+import { SocietyContext } from 'src/App';
 
-export function OP({ idSociety, loggedUser }) {
+export function OP({ loggedUser }) {
+
+  const idSociety = useContext(SocietyContext);
 
   var blue = 0;
   if(loggedUser?.['rol.op'] ==='total' || loggedUser?.['rol.op'] ==='blue'){blue= -1;}
@@ -42,6 +46,7 @@ export function OP({ idSociety, loggedUser }) {
   const [filtFide, setFiltFide] = useState(-1);
   const [filtRS, setFiltRS] = useState(-1);
   const [filtEst, setFiltEst] = useState(-1);
+  const [filtTerm, setFiltTerm] = useState(true);
   
   return (
     <>
@@ -63,13 +68,13 @@ export function OP({ idSociety, loggedUser }) {
 
           <Box sx={{ pt: 3 }}>
             <FiltroOP idSociety={idSociety}  loggedUser={loggedUser} 
-            fideicomisos={fideicomisos}  setFiltFide={setFiltFide} setFiltRS={setFiltRS} setFiltEst={setFiltEst} proveedores={proveedores} ddfacturas={ddfacturas} ddfacturasBlue={ddfacturasBlue}
+            fideicomisos={fideicomisos}  setFiltFide={setFiltFide} setFiltRS={setFiltRS} setFiltEst={setFiltEst} filtTerm={filtTerm} setFiltTerm={setFiltTerm} proveedores={proveedores} ddfacturas={ddfacturas} ddfacturasBlue={ddfacturasBlue}
             />
           </Box>
 
 
           <Box sx={{ pt: 3 }}>
-            <GrillaOP idSociety={idSociety}  loggedUser={loggedUser} opInformation={opInformation} filtFide={filtFide} filtRS={filtRS} filtEst={filtEst}  isLoading={isLoading}  error={error} />
+            <GrillaOP idSociety={idSociety}  loggedUser={loggedUser} opInformation={opInformation} filtTerm={filtTerm} filtFide={filtFide} filtRS={filtRS} filtEst={filtEst}   isLoading={isLoading}  error={error} />
           </Box>
         </Container>
       </Box>

@@ -9,14 +9,18 @@ import RepOp from "src/components/reportes/orden_de_pago/orden_de_pago";
 import { AgregarFactura } from 'src/components/detalleOP/AgregarFactura';
 import { FormDetalleOP } from 'src/components/detalleOP/FormDetalleOP';
 import { GrillaDetalleOP } from 'src/components/detalleOP/GrillaDetalleOP';
+import { FormRetenciones } from 'src/components/detalleOP/FormRetenciones';
+
 import { mostrarFechaMesTXT } from 'src/utils/utils';
 import { getMethod, postMethod } from 'src/utils/api';
+
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
 export function DetalleOP({ idSociety, loggedUser }) {
 
   const [verPDF, setVerPDF] = React.useState(false);
+  const [verRetenciones, setVerRetenciones] = React.useState(false);
   const { idOP, fecha, empresaId, numero, fideicomiso, estadoOP, auth_adm, auth_obra, confirmada, blue } = useParams();
 
   const id = idSociety.id;
@@ -52,9 +56,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
     }, 300);
   }
 
-  function facturasCargadas(fa){
-      if(fa){return { item: fa};}else{return null}
-  }
+
 
   function nomPdfCargado(obj, numero, fideicomiso){
     
@@ -66,14 +68,23 @@ export function DetalleOP({ idSociety, loggedUser }) {
     }else{return "-"}
   }
 
-  function cargadas(obj){
-    if(obj){return obj;}else{return null}
+  function cargadas(obj, i){
+    
+    if(obj && i==="op"){
+      return obj;
+    }else if(obj && i==="f"){
+      return { item: obj};
+    }else if(obj && i==="b"){
+      return { bancos: obj};
+    }else if(obj && i==="c"){
+      return { cuentasBanco: obj};
+    }else{return null}
   }
 
   // es el reporte .pdf
   const NewDocument = () => {
     return (
-      <RepOp dataOP={cargadas(formOP?.op)} dataFacturas={facturasCargadas(formOP?.item)} apiServerUrl={apiServerUrl} idSociedad={id} />
+      <RepOp dataOP={cargadas(formOP?.op,"op")} bancos={formOP?.bancos} cuentasBanco={formOP?.cuentasBanco}  dataFacturas={cargadas(formOP?.item,"f")} apiServerUrl={apiServerUrl} idSociedad={id} />
     )
   }
 
@@ -154,7 +165,20 @@ export function DetalleOP({ idSociety, loggedUser }) {
           justifyContent: "flex-end",
         }}
       >
+        <Hidden  smUp={( loggedUser?.["rol.op"]==="vista")} >
         
+            <Box  mt={2} sx={{ pt: 1 }}>
+              <Button
+              /*variant="info"*/
+              onClick={() => {
+                setVerRetenciones(!verRetenciones);
+              }}
+            >
+              {verRetenciones ? "Ocultar Retenciones" : "Retenciones"}
+            </Button>
+            </Box>
+
+        </Hidden>
         <Hidden  smUp={( verAuthBoton("obra", (formOP?.auth_obra? (formOP?.auth_obra[0]?.usuarios? formOP?.auth_obra[0]?.usuarios:auth_obra):auth_obra), loggedUser?.["rol.descripcion"]))} >
         
           <Box  mt={2} sx={{ pt: 1 }}>
@@ -192,6 +216,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
             Autorizar en Obra
             </Button>
           </Box>
+
         </Hidden>
         <Hidden  smUp={( verAuthBoton("adm", (formOP?.auth_adm? (formOP?.auth_adm[0]?.usuarios? formOP?.auth_adm[0]?.usuarios:auth_adm):auth_adm), loggedUser?.["rol.descripcion"]))} >
           <Box  mt={2} sx={{ pt: 1 }}>
@@ -233,7 +258,9 @@ export function DetalleOP({ idSociety, loggedUser }) {
             </Button>      
           </Box>
         </Hidden>
+
         <Box mt={2} sx={{ pt: 1 }}>
+
           <Button
             /*variant="info"*/
             onClick={() => {
@@ -244,7 +271,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
           </Button>
 
           <PDFDownloadLink
-            document={isLoading===false? <RepOp dataOP={cargadas(formOP?.op)} dataFacturas={facturasCargadas(formOP?.item)} apiServerUrl={apiServerUrl} idSociedad={id} />:null }
+            document={isLoading===false? <RepOp dataOP={cargadas(formOP?.op,"op")} bancos={formOP?.bancos} cuentasBanco={formOP?.cuentasBanco}  dataFacturas={cargadas(formOP?.item,"f")} apiServerUrl={apiServerUrl} idSociedad={id} />:null }
 
             fileName={nomPdfCargado(formOP?.op, numero, fideicomiso)}
           >
@@ -264,10 +291,21 @@ export function DetalleOP({ idSociety, loggedUser }) {
                   
         {verPDF ? (
           <PDFViewer style={{ width: "100%", height: "90vh" }}>
-            <RepOp dataOP={cargadas(formOP?.op)} dataFacturas={facturasCargadas(formOP?.item)} apiServerUrl={apiServerUrl} idSociedad={id} />
+            <RepOp dataOP={cargadas(formOP?.op,"op")} bancos={formOP?.bancos} cuentasBanco={formOP?.cuentasBanco}  dataFacturas={cargadas(formOP?.item,"f")} apiServerUrl={apiServerUrl} idSociedad={id} />
           </PDFViewer>
-        ) : 
-    
+        ) : verRetenciones ? (
+
+          <FormRetenciones
+            OPId={idOP}
+            fecha={fecha}
+            fideicomisoId={formOP?.op?.fideicomisoId}
+            empresaId={empresaId}
+            idSociety={idSociety}
+            refetch={refetch}
+            loggedUser={loggedUser}
+          />
+
+        ) :
         <Box sx={{backgroundColor: 'background.default',minHeight: '100%',py: 3,}} >
           <Container >
 
@@ -348,6 +386,9 @@ export function DetalleOP({ idSociety, loggedUser }) {
                 error={error}
                 empresaId={empresaId}
                 fideicomiso={fideicomiso}
+                _bancos={formOP?.bancos}
+                _cuentasbanco={formOP?.cuentasBanco}
+
                 refetch={refetch}
 
               />

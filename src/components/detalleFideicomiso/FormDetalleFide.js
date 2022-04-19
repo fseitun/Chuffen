@@ -4,14 +4,17 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
+import { useContext } from 'react';
+import { TipoProductosContext} from 'src/App';
+ 
 
-                
 export function FormDetalleFide({ idSociety, loggedUser, fideicomisoId, refetch }) {
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
   const [tipoInForm, setTipoInForm] = useState(null);
 
-  var tipoProductos = JSON.parse(localStorage.getItem("tipoProductos"));
+  //var tipoProductos = JSON.parse(localStorage.getItem("tipoProductos"));
+  var tipoProductos = useContext(TipoProductosContext);
 
   //const [rsInForm, setRsInForm] = useState(null);
     

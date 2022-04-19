@@ -5,6 +5,8 @@ import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarFilterBut
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
+import { useContext } from 'react';
+import { TipoProductosContext} from 'src/App';
 
 const columns = (puedeEditar, setIsPromptOpen, setRowIdToDelete) => [
   {
@@ -76,7 +78,8 @@ export function GrillaDetalleFide({idSociety, loggedUser, dataFide, isLoading, e
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
 
-  var tipoProductos = JSON.parse(localStorage.getItem("tipoProductos"));
+  // var tipoProductos = JSON.parse(localStorage.getItem("tipoProductos"));
+  var tipoProductos = useContext(TipoProductosContext);
 
   var puedeEditar = true;
   const acceso = loggedUser?.['rol.fidu'];

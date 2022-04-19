@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { TextField, Autocomplete } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 
+
 export function FiltroOC({setFiltFide, setFiltRS, setFiltEst, idSociety, loggedUser,  fideicomisos, proveedores, ddfacturas, ddfacturasBlue  }) {
 
-  // var estados = JSON.parse(localStorage.getItem("estados"));
+
   
   const [fideInForm, setFideInForm] = useState(null);
   const [rsInForm, setRsInForm] = useState(null);
-  // const [estadoInForm, setEstadoInForm] = useState(null);  
+
 
   function filterOC(campo, newValue){
 

@@ -5,6 +5,8 @@ import { Delete } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { postMethod } from 'src/utils/api';
+import { useContext } from 'react';
+import { TiposContext} from 'src/App';
 
 // const columns = [
 const columns = (puedeEditar, verEliminar) => [
@@ -92,8 +94,8 @@ const columns = (puedeEditar, verEliminar) => [
 export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaData, facturas, isLoading, error, refetch }) {
   
   const queryClient = useQueryClient();
-  var tipos = JSON.parse(localStorage.getItem("tipos"));
-
+  //var tipos = JSON.parse(localStorage.getItem("tipos"));
+  var tipos = useContext(TiposContext);
   var puedeEditar = true;
   const accesoOP = loggedUser?.['rol.op'];
 

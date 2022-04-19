@@ -13,17 +13,8 @@ const apiServerUrl = process.env.REACT_APP_API_SERVER;
 export function Login({ setLoggedUser, setIdSociety }) {
 
   const idSociety = useContext(SocietyContext);
-  //const queryClient = useQueryClient();
   let { societyName } = useParams();
   const navigate = useNavigate();
-
-  // localStorage.clear();
-  
-  localStorage.setItem("loggedUserInfo", null);
-  localStorage.setItem("bs", null);
-  localStorage.setItem("co", null);
-  localStorage.setItem("estados", null);
-  localStorage.setItem("formaPagos", null);
 
   const [isAlertOpen, setIsAlertOpen] = useState('none');
 
@@ -35,7 +26,7 @@ export function Login({ setLoggedUser, setIdSociety }) {
   /****************************************************/
   /*************** deuda tecnica **********************/
   /****************************************************/
-
+/*
   const { data: bancos } = useQuery(['bancos', idSociety], () =>
     getMethod(`banco/listar/${idSociety.id}`)
   );
@@ -45,87 +36,13 @@ export function Login({ setLoggedUser, setIdSociety }) {
     getMethod(`cuentabanco/listar/${idSociety.id}/0`)
   );  
   localStorage.setItem("co", JSON.stringify(cuentasbanco));
-/*
-  const { data: CAC } = useQuery(['CAC', idSociety], () =>
-    getMethod(`CAC/listar/${idSociety.id}`)
-  );
-  localStorage.setItem("CAC", JSON.stringify(CAC));
 */
-  const estados = [  
-    { id: 0, descripcion: '-' },
-    { id: 1, descripcion: 'Para autorizar en Obra' },
-    { id: 2, descripcion: 'Para pagar' },
-    { id: 3, descripcion: 'Pagada' },
-    { id: 4, descripcion: 'Para autorizar Admin. Central' },
-    { id: 5, descripcion: 'Pagado Parcial' },
-    { id: 6, descripcion: 'Anulado' },
-    { id: 7, descripcion: 'Cargada en Banco' },
-  ];
-  localStorage.setItem("estados", JSON.stringify(estados));
 
-  const tipoProductos = [  
-    { id: 0, descripcion: '-' },
-    { id: 1, descripcion: 'UF' },
-    { id: 2, descripcion: 'Cod. Nom.' },
-    { id: 3, descripcion: 'Cochera' },
-    { id: 4, descripcion: 'Cochera Moto' },
-    { id: 5, descripcion: 'Baulera' },
-    { id: 6, descripcion: 'Local' },
-    { id: 7, descripcion: 'Lote' },
-    { id: 8, descripcion: 'Casa' },
-    { id: 9, descripcion: 'Bungalo' },
-  ];
-  localStorage.setItem("tipoProductos", JSON.stringify(tipoProductos));
+  //const {data: categorias} = useQuery(['categoria', idSociety], () => 
+  //  getMethod(`categoria/listarCombo/${idSociety.id}`)
+  //); 
+  //localStorage.setItem("categorias", JSON.stringify(categorias));
 
-  const retenciones = [  
-    { id: 0, descripcion: '-' },
-    { id: 1, descripcion: 'No aplican' },
-    { id: 2, descripcion: 'OK' },
-    { id: 3, descripcion: 'Pendiente' },
-  ];
-  localStorage.setItem("retenciones", JSON.stringify(retenciones));
-  
-  const fondos_s = [
-    { id: 0, descripcion: '-' },  
-    { id: 1, descripcion: 'No cargado' },
-    { id: 2, descripcion: 'OK cargado' },
-  ];
-  localStorage.setItem("fondos_s", JSON.stringify(fondos_s));
-
-  const tipos = [
-    { id: 0, descripcion: 'Factura' },  
-    { id: 1, descripcion: 'Nota débito' },
-    { id: 2, descripcion: 'Nota crédito' },
-    { id: 3, descripcion: 'Boleta Pago' },
-  ];
-  localStorage.setItem("tipos", JSON.stringify(tipos));
-
-  const {data: categorias} = useQuery(['categoria', idSociety], () => 
-    getMethod(`categoria/listarCombo/${idSociety.id}`)
-  ); 
-  localStorage.setItem("categorias", JSON.stringify(categorias));
-
-  const condicion_de_IVA = [
-    { id: 0, descripcion: '-' },  
-    { id: 1, descripcion: 'IVA Responsable Inscripto' },
-    { id: 4, descripcion: 'IVA Sujeto Exent' },
-    { id: 5, descripcion: 'Consumidor Final' },
-    { id: 6, descripcion: 'Responsable Monotributol' },
-    { id: 7, descripcion: 'Sujeto No Categorizadol' },
-    { id: 8, descripcion: 'Proveedor del Exterior' },
-    { id: 9, descripcion: 'Cliente del Exterior' },
-    { id: 10, descripcion: 'IVA Liberado - Ley Nº 19.640' },
-    { id: 13, descripcion: 'Monotributista Social' },
-    { id: 15, descripcion: 'IVA No Alcanzado' },
-    { id: 16, descripcion: 'Monotributista Trabajador Independiente Promovido'},];
-  localStorage.setItem("condicion_de_IVA", JSON.stringify(condicion_de_IVA));
-
-
-
-
-
-  const formaPagos = "-,Cheque,Cheque a tercero,Débito automático,Echeq,Efectivo ARS,Efectivo USD,Retenciones,Transferencia ARS,Transferencia USD,Otra";
-  localStorage.setItem("formaPagos", formaPagos); 
 
   /****************************************************/
   /****************************************************/

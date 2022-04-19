@@ -8,6 +8,8 @@ import TablaPie from './tablaPie';
 import {Text, View, StyleSheet } from '@react-pdf/renderer';
 import { mostrarFecha } from 'src/utils/utils';
 
+// import { bancos, cuentasbanco} from 'src/App';
+
 const styles = StyleSheet.create({
     page: {
         fontFamily: 'Helvetica',
@@ -66,38 +68,43 @@ const styles = StyleSheet.create({
     },
 
   });
-
+/*
   var arr_id = [];
   var arr_banco = [];
   var arr_cid = [];
-  var arr_cuenta = [];
+  var arr_cuenta = [];*/
   
-  if(JSON.parse(localStorage.getItem("bs"))){
+  // var bancos = useContext(BancosContext);
+  // var cuentasbanco = useContext(CuentasBancoContext);
 
-    var bancos = JSON.parse(localStorage.getItem("bs"));
-    var banco_en_blanco = {id:0, banco:"", descripcionLarga:"" };
-    bancos.push(banco_en_blanco);
+  /*
+    if(bancos){
 
-
-    for (var i = 0; i < bancos.length; i++) {
-        arr_id.push(bancos[i].id);
-        arr_banco.push(bancos[i].banco);
-    }   
-
-    var cuentasbanco = JSON.parse(localStorage.getItem("co"));  
-    var cuenta_en_blanco = {id: 0,  bancoId: 0,  cuentaBanco: "",  descripcionLarga: "",  bancos: [{banco: ""}]};
-    cuentasbanco.push(cuenta_en_blanco);
+        // var bancos = JSON.parse(localStorage.getItem("bs"));
+        var banco_en_blanco = {id:0, banco:"", descripcionLarga:"" };
+        bancos.push(banco_en_blanco);
 
 
-    for (var j= 0; j < cuentasbanco.length; j++) {
-        arr_cid.push(cuentasbanco[j].id);
-        arr_cuenta.push(cuentasbanco[j].cuentaBanco);
-    } 
+        for (var i = 0; i < bancos.length; i++) {
+            arr_id.push(bancos[i].id);
+            arr_banco.push(bancos[i].banco);
+        }   
+    }
+    if(cuentasbanco){
+        // var cuentasbanco = JSON.parse(localStorage.getItem("co"));  
+        var cuenta_en_blanco = {id: 0,  bancoId: 0,  cuentaBanco: "",  descripcionLarga: "",  bancos: [{banco: ""}]};
+        cuentasbanco.push(cuenta_en_blanco);
 
-  }
+
+        for (var j= 0; j < cuentasbanco.length; j++) {
+            arr_cid.push(cuentasbanco[j].id);
+            arr_cuenta.push(cuentasbanco[j].cuentaBanco);
+        } 
+
+    }*/
   
 
-  const orden_de_pago = ({dataOP, dataFacturas, apiServerUrl, idSociedad}) => (
+  const orden_de_pago = ({dataOP, bancos, cuentasBanco, dataFacturas, apiServerUrl, idSociedad}) => (
 
             <Document >
                 <Page size="A4" style={styles.page}> 
@@ -152,9 +159,11 @@ const styles = StyleSheet.create({
 
                     <View >
                         <Text style={styles.subreportTitle}>PAGO</Text>                       
-                    </View>                   
-                    <TablaPagos dataOP={dataOP} arr_id={arr_id} arr_banco={arr_banco} arr_cid={arr_cid} arr_cuenta={arr_cuenta} />
+                    </View>  
 
+                    <TablaPagos dataOP={dataOP} bancos={bancos} cuentasBanco={cuentasBanco} />
+                 
+                   
                     <TablaPie dataOP={dataOP} />
 
                 </Page>

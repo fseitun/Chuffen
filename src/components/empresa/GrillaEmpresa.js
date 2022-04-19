@@ -7,6 +7,8 @@ import { Autocomplete, TextField } from '@mui/material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { mostrarCUIT } from 'src/utils/utils';
+import { useContext } from 'react';
+import { CondicionIVAContext, CategoriasContext} from 'src/App';
 
 const columns = (colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
   {
@@ -27,29 +29,65 @@ const columns = (colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, r
     valueFormatter: ({ value }) => mostrarCUIT(value),
   },
   {
-    field: 'telefono',
-    headerName: 'Teléfono',
+    field: 'rubroId',
+    headerName: 'Rubro',
     width: 140,
-    hide: colVisibles?.find(i => i.c === 'telefono').h,
     editable: puedeEditar,
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'rubroId').h,
+    // renderCell: ({ value }) => value.nombre,
+    renderEditCell: props => <ComboBoxRu rubros={rubros} props={props} />,
     headerAlign: 'center',
-    valueFormatter: ({ value }) => {
-      if (value) {
-        value = value.split('');
-        value.splice(2, 0, '-');
-        value.splice(7, 0, '-');
-        return value.join('');
-      }
-    },
+  },
+
+  {
+    field: 'condIVA',
+    headerName: 'Cond. IVA',
+    width: 200,
+    editable: puedeEditar,
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'condIVA').h,
+    renderEditCell: props => <ComboBox listItems={condicion_de_IVA} label={"Condicion frente a IVA"} props={props} />,
+    headerAlign: 'center',
+  },
+
+  {
+    field: 'ganancias',
+    headerName: 'Ganancias',
+    type: 'boolean',
+    width: 160,
+    editable: puedeEditar,
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'ganancias').h,
+    headerAlign: 'center',
+  },
+
+  {
+    field: 'categoria',
+    headerName: 'Categoria',
+    width: 200,
+    editable: puedeEditar,
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'categoria').h,
+    renderEditCell: props => <ComboBox listItems={categorias} label={"Categoria"} props={props} />,
+    headerAlign: 'center',
+  },
+
+  {
+    field: 'esRetSUSS',
+    headerName: 'Ret SUSS',
+    type: 'boolean',
+    width: 160,
+    editable: puedeEditar,
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'esRetSUSS').h,
+    headerAlign: 'center',
   },
   {
-    field: 'mail',
-    headerName: 'Mail',
-    width: 150,
-    hide: colVisibles?.find(i => i.c === 'mail').h,
+    field: 'esRetIVA',
+    headerName: 'Ret IVA',
+    type: 'boolean',
+    width: 160,
     editable: puedeEditar,
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'esRetIVA').h,
     headerAlign: 'center',
   },
+
   {
     field: 'CBU',
     headerName: 'CBU',
@@ -76,15 +114,32 @@ const columns = (colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, r
   },
 
   {
-    field: 'rubroId',
-    headerName: 'Rubro',
+    field: 'telefono',
+    headerName: 'Teléfono',
     width: 140,
+    hide: colVisibles?.find(i => i.c === 'telefono').h,
     editable: puedeEditar,
-    hide: (tipo===1) || colVisibles?.find(i => i.c === 'rubroId').h,
-    // renderCell: ({ value }) => value.nombre,
-    renderEditCell: props => <ComboBoxRu rubros={rubros} props={props} />,
+    headerAlign: 'center',
+    valueFormatter: ({ value }) => {
+      if (value) {
+        value = value.split('');
+        value.splice(2, 0, '-');
+        value.splice(7, 0, '-');
+        return value.join('');
+      }
+    },
+  },
+  {
+    field: 'mail',
+    headerName: 'Mail',
+    width: 150,
+    hide: colVisibles?.find(i => i.c === 'mail').h,
+    editable: puedeEditar,
     headerAlign: 'center',
   },
+
+
+
 
   {
     field: 'subrubroId',
@@ -123,52 +178,7 @@ const columns = (colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, r
     hide: (tipo===1) || colVisibles?.find(i => i.c === 'esFiduciante').h,
     headerAlign: 'center',
   },
-  {
-    field: 'esRetSUSS',
-    headerName: 'Ret SUSS',
-    type: 'boolean',
-    width: 160,
-    editable: puedeEditar,
-    hide: (tipo===1) || colVisibles?.find(i => i.c === 'esRetSUSS').h,
-    headerAlign: 'center',
-  },
-  {
-    field: 'esRetIVA',
-    headerName: 'Ret IVA',
-    type: 'boolean',
-    width: 160,
-    editable: puedeEditar,
-    hide: (tipo===1) || colVisibles?.find(i => i.c === 'esRetIVA').h,
-    headerAlign: 'center',
-  },
-
-  {
-    field: 'categoria',
-    headerName: 'Categoria',
-    width: 200,
-    editable: puedeEditar,
-    hide: (tipo===1) || colVisibles?.find(i => i.c === 'categoria').h,
-    renderEditCell: props => <ComboBox listItems={categorias} label={"Categoria"} props={props} />,
-    headerAlign: 'center',
-  },
-  {
-    field: 'ganancias',
-    headerName: 'Ganancias',
-    type: 'boolean',
-    width: 160,
-    editable: puedeEditar,
-    hide: (tipo===1) || colVisibles?.find(i => i.c === 'ganancias').h,
-    headerAlign: 'center',
-  },
-  {
-    field: 'condIVA',
-    headerName: 'Cond. IVA',
-    width: 200,
-    editable: puedeEditar,
-    hide: (tipo===1) || colVisibles?.find(i => i.c === 'condIVA').h,
-    renderEditCell: props => <ComboBox listItems={condicion_de_IVA} label={"Condicion frente a IVA"} props={props} />,
-    headerAlign: 'center',
-  },
+  
   {
     field: 'deleteIcon',
     headerName: ' ',
@@ -202,8 +212,10 @@ export function GrillaEmpresa({ loggedUser, idSociety, tipo }) {
   }
   if( acceso ==='vista'){puedeEditar =false}
 
-  var categorias = JSON.parse(localStorage.getItem("categorias"));
-  var condicion_de_IVA = JSON.parse(localStorage.getItem("condicion_de_IVA"));
+  //var categorias = JSON.parse(localStorage.getItem("categorias"));
+  var categorias = useContext(CategoriasContext);
+  //var condicion_de_IVA = JSON.parse(localStorage.getItem("condicion_de_IVA"));
+  var condicion_de_IVA = useContext(CondicionIVAContext);
 
   const {
     data: empresaInformation,
@@ -272,23 +284,28 @@ export function GrillaEmpresa({ loggedUser, idSociety, tipo }) {
         ];
   }else{   
     colDefaultVisibles = [
+
         {c:'razonSocial',  h:false},
         {c:'CUIT',  h:false},
-        {c:'telefono',  h:false},
-        {c:'mail',  h:false},    
+        {c:'rubroId',  h:false}, 
+        {c:'condIVA',  h:false},
+        {c:'ganancias',  h:false},
+        {c:'categoria',  h:false},
+        {c:'esRetSUSS',  h:false},
+        {c:'esRetIVA',  h:false},       
+
         {c:'CBU',  h:false},
         {c:'banco',  h:false},
         {c:'nroCuenta',  h:false},
-        {c:'rubroId',  h:false},
-        {c:'subrubroId',  h:false},
+        {c:'telefono',  h:false},
+        {c:'mail',  h:false},  
+            
         {c:'enviar_OP_auto',  h:false},
-        {c:'esProveedor',  h:false},
-        {c:'esFiduciante',  h:false},
-        {c:'esRetSUSS',  h:false},
-        {c:'esRetIVA',  h:false},
-        {c:'categoria',  h:false},
-        {c:'ganancias',  h:false},
-        {c:'condIVA',  h:false},
+
+        {c:'esProveedor',  h:true},
+        {c:'esFiduciante',  h:true},  
+        {c:'subrubroId',  h:true}, 
+
       ];
   }
   const [colVisibles, setColVisibles] = useState(colDefaultVisibles);

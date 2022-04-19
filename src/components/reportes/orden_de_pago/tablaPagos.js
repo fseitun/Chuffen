@@ -6,8 +6,6 @@ const styles = StyleSheet.create({
 
   container: {
       flexDirection: 'row',
-      //borderBottomColor: '#bff0fd',
-      //backgroundColor: '#bff0fd',
       borderBottomWidth: 1,
       alignItems: 'center',
       height: 21,
@@ -20,7 +18,6 @@ const styles = StyleSheet.create({
 
   row: {
     flexDirection: 'row',
-    // borderBottomColor: '#bff0fd',
     borderBottomWidth: 1,
     alignItems: 'center',
     height: 21,
@@ -30,27 +27,23 @@ const styles = StyleSheet.create({
   col1: {
       width: '16%',
       textAlign: 'left',
-      //borderRightColor: bcolor,
       borderRightWidth: 1,
       paddingLeft: 5,
   },
   col2: {
       width: '20%',
-      //borderRightColor: '#bff0fd',
       borderRightWidth: 1,
       textAlign: 'left',
       paddingLeft: 5,
   },
   col3: {
       width: '20%',
-      //borderRightColor: '#bff0fd', son 2
       borderRightWidth: 1,
       textAlign: 'left',
       paddingLeft: 5,
   },
   col4: {
     width: '12%',
-    //borderRightColor: '#bff0fd',
     borderRightWidth: 1,
     textAlign: 'center',
     paddingLeft: 5,
@@ -72,7 +65,6 @@ const styles = StyleSheet.create({
   descriptionf: {
     width: '88%',
     textAlign: 'right',
-    //borderRightColor: '#bff0fd',
     borderRightWidth: 1,
     paddingRight: 8,
   },
@@ -84,7 +76,7 @@ const styles = StyleSheet.create({
 });
 
 
-  const tablaPagos = ({dataOP, arr_id, arr_banco, arr_cid, arr_cuenta}) => (
+  const tablaPagos = ({dataOP, bancos, cuentasBanco}) => (
     <View style={{ flexDirection: 'row',flexWrap: 'wrap', marginTop: 8, borderWidth: 1, borderColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff', }}>
        
       <View /* Encabezado*/   
@@ -100,8 +92,8 @@ const styles = StyleSheet.create({
 
       <View style={[styles.row, { borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]} >
       <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.modo1}</Text>
-        <Text style={[styles.col1, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {arr_banco[arr_id.indexOf(dataOP?.OPpago?.banco1)]}</Text>
-        <Text style={[styles.col2, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {arr_cuenta[arr_cid.indexOf(dataOP?.OPpago?.nro1)]}</Text>
+        <Text style={[styles.col1, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.banco1>0? bancos? bancos?.find(i => i.id === parseInt(dataOP?.OPpago?.banco1)).banco:"" :""}</Text>
+        <Text style={[styles.col2, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.nro1>0? cuentasBanco? cuentasBanco?.find(i => i.id === parseInt(dataOP?.OPpago?.nro1)).cuentaBanco:"" :""}</Text>
         <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> <Link src={dataOP?.OPpago?.descri1} >{dataOP?.OPpago?.descri1? " ver.. -":''}</Link>{" " + dataOP?.OPpago?.descri12? dataOP?.OPpago?.descri12:""}</Text>
         <Text style={[styles.col4, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {mostrarFecha(dataOP?.OPpago?.fecha1)}</Text>            
         <Text style={styles.col5}>{dataOP?.OPpago?.monto1? Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(dataOP?.OPpago?.monto1)):""}</Text>
@@ -109,8 +101,8 @@ const styles = StyleSheet.create({
 
       <View style={[styles.row, { borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]} >
       <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.modo2}</Text>
-        <Text style={[styles.col1, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {arr_banco[arr_id.indexOf(dataOP?.OPpago?.banco2)]}</Text>
-        <Text style={[styles.col2, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {arr_cuenta[arr_cid.indexOf(dataOP?.OPpago?.nro2)]}</Text>
+        <Text style={[styles.col1, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.banco2>0? bancos? bancos?.find(i => i.id === parseInt(dataOP?.OPpago?.banco2)).banco:"" :""}</Text>
+        <Text style={[styles.col2, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.nro2>0? cuentasBanco? cuentasBanco?.find(i => i.id === parseInt(dataOP?.OPpago?.nro2)).cuentaBanco:"" :""}</Text>
         <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> <Link src={dataOP?.OPpago?.descri2} >{dataOP?.OPpago?.descri2? " ver.. -":''}</Link>{" " + dataOP?.OPpago?.descri22? dataOP?.OPpago?.descri22:""}</Text>
         <Text style={[styles.col4, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {mostrarFecha(dataOP?.OPpago?.fecha2)}</Text>            
         <Text style={styles.col5}>{dataOP?.OPpago?.monto2? Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(dataOP?.OPpago?.monto2)):""}</Text>
@@ -118,8 +110,8 @@ const styles = StyleSheet.create({
 
       <View style={[styles.row, { borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]} >
       <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.modo3}</Text>
-        <Text style={[styles.col1, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {arr_banco[arr_id.indexOf(dataOP?.OPpago?.banco3)]}</Text>
-        <Text style={[styles.col2, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {arr_cuenta[arr_cid.indexOf(dataOP?.OPpago?.nro3)]}</Text>
+        <Text style={[styles.col1, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.banco3>0? bancos? bancos?.find(i => i.id === parseInt(dataOP?.OPpago?.banco3)).banco:"" :""}</Text>
+        <Text style={[styles.col2, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.nro3>0? cuentasBanco? cuentasBanco?.find(i => i.id === parseInt(dataOP?.OPpago?.nro3)).cuentaBanco:"" :""}</Text>
         <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> <Link src={dataOP?.OPpago?.descri3} >{dataOP?.OPpago?.descri3? " ver.. -":''}</Link>{" " + dataOP?.OPpago?.descri32? dataOP?.OPpago?.descri32:""}</Text>
         <Text style={[styles.col4, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {mostrarFecha(dataOP?.OPpago?.fecha3)}</Text>            
         <Text style={styles.col5}>{dataOP?.OPpago?.monto3? Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(dataOP?.OPpago?.monto3)):""}</Text>
@@ -127,12 +119,14 @@ const styles = StyleSheet.create({
 
       <View style={[styles.row, { borderBottomColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]} >
       <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.modo4}</Text>
-        <Text style={[styles.col1, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {arr_banco[arr_id.indexOf(dataOP?.OPpago?.banco4)]}</Text>
-        <Text style={[styles.col2, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {arr_cuenta[arr_cid.indexOf(dataOP?.OPpago?.nro4)]}</Text>
+        <Text style={[styles.col1, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.banco4>0? bancos? bancos?.find(i => i.id === parseInt(dataOP?.OPpago?.banco4)).banco:"" :""}</Text>
+        <Text style={[styles.col2, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {dataOP?.OPpago?.nro4>0? cuentasBanco? cuentasBanco?.find(i => i.id === parseInt(dataOP?.OPpago?.nro4)).cuentaBanco:"" :""}</Text>
         <Text style={[styles.col3, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> <Link src={dataOP?.OPpago?.descri4} >{dataOP?.OPpago?.descri4? " ver.. -":''}</Link>{" " + dataOP?.OPpago?.descri42? dataOP?.OPpago?.descri42:""}</Text>
         <Text style={[styles.col4, { borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}> {mostrarFecha(dataOP?.OPpago?.fecha4)}</Text>            
         <Text style={styles.col5}>{dataOP?.OPpago?.monto4? Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(dataOP?.OPpago?.monto4)):""}</Text>
-      </View>   
+      </View> 
+
+  
 
       <View style={styles.rowf}>
             <Text style={[styles.descriptionf,{ borderRightColor: dataOP? dataOP?.fideicomisos[0]?.color:'#ffffff' }]}>TOTAL</Text>

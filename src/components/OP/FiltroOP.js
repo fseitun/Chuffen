@@ -1,18 +1,18 @@
 import { useState } from 'react';
-import { TextField, Autocomplete } from '@mui/material';
+import { TextField, Autocomplete, FormControlLabel, FormGroup, Checkbox } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 
-export function FiltroOP({setFiltFide, setFiltRS, setFiltEst, idSociety, loggedUser,  fideicomisos, proveedores, ddfacturas, ddfacturasBlue  }) {
+export function FiltroOP({setFiltFide, setFiltRS, setFiltEst, filtTerm, setFiltTerm, idSociety, loggedUser,  fideicomisos, proveedores, ddfacturas, ddfacturasBlue  }) {
 
   var estados = JSON.parse(localStorage.getItem("estados"));
   
   const [fideInForm, setFideInForm] = useState(null);
   const [rsInForm, setRsInForm] = useState(null);
-  const [estadoInForm, setEstadoInForm] = useState(null);  
+  const [estadoInForm, setEstadoInForm] = useState(null); 
+ 
 
   function filterOP(campo, newValue){
 
-    // let arr = filt;
     let id = -1
     if(newValue?.id){
       id = newValue.id;
@@ -23,7 +23,7 @@ export function FiltroOP({setFiltFide, setFiltRS, setFiltEst, idSociety, loggedU
     if(campo ==='estado'){setFiltEst(id);}
 
   }  
-  
+ 
   return (
     <Formik
       initialValues={{
@@ -94,6 +94,16 @@ export function FiltroOP({setFiltFide, setFiltRS, setFiltEst, idSociety, loggedU
             options={(estados? estados:[])}
             renderInput={params => <TextField variant="standard" {...params} label='Filtrar por Estado' />}
           />
+
+          <FormGroup>
+          
+            <FormControlLabel 
+              control={ <Checkbox defaultChecked  id={'chkTerminados'}  name={'chkTerminados'}             
+              onChange={(event) => setFiltTerm(!filtTerm)}
+              /> }   label="Ocultar finalizados"  />
+
+          </FormGroup>
+
         
         </Form>
       )}

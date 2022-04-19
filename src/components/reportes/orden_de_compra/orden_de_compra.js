@@ -75,29 +75,6 @@ const styles = StyleSheet.create({
   var arr_cid = [];
   var arr_cuenta = [];
   
-  if(JSON.parse(localStorage.getItem("bs"))){
-
-    var bancos = JSON.parse(localStorage.getItem("bs"));
-    var banco_en_blanco = {id:0, banco:"", descripcionLarga:"" };
-    bancos.push(banco_en_blanco);
-
-
-    for (var i = 0; i < bancos.length; i++) {
-        arr_id.push(bancos[i].id);
-        arr_banco.push(bancos[i].banco);
-    }   
-
-    var cuentasbanco = JSON.parse(localStorage.getItem("co"));  
-    var cuenta_en_blanco = {id: 0,  bancoId: 0,  cuentaBanco: "",  descripcionLarga: "",  bancos: [{banco: ""}]};
-    cuentasbanco.push(cuenta_en_blanco);
-
-
-    for (var j= 0; j < cuentasbanco.length; j++) {
-        arr_cid.push(cuentasbanco[j].id);
-        arr_cuenta.push(cuentasbanco[j].cuentaBanco);
-    } 
-
-  }
   
 
   const orden_de_compra = ({dataOC, apiServerUrl, idSociedad, moneda, totARS, totUSD, ajARS, ajUSD}) => (

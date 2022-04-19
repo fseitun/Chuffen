@@ -2,11 +2,13 @@
   import { useState } from 'react';
   import { TextField, Autocomplete } from '@mui/material';
   import { Formik, Form, Field } from 'formik';
-  
+  import { useContext } from 'react';
+  import { TiposContext} from 'src/App';
+
   export function FiltroFactura({setFiltComp, setFiltFide, setFiltRS, idSociety, fideicomisos, proveedores}) {
   
-    var tipos = JSON.parse(localStorage.getItem("tipos"));
-    
+    //var tipos = JSON.parse(localStorage.getItem("tipos"));
+    var tipos = useContext(TiposContext);
     const [fideInForm, setFideInForm] = useState(null);
     const [rsInForm, setRsInForm] = useState(null);
     const [compInForm, setCompInForm] = useState(null);  

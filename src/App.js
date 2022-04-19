@@ -51,19 +51,70 @@ import { OC } from 'src/pages/OC';
 import { DetalleOC } from 'src/pages/DetalleOC';
 //import { Certificado } from 'src/pages/Certificado';
 
+import { getMethod } from 'src/utils/api';
+import { useQuery } from 'react-query';
+
 export const SocietyContext = createContext({});
+
+export const EstadosContext = createContext({});
+export const FormaPagosContext = createContext({});
+export const RetencionesContext = createContext({});
+export const FondosContext = createContext({});
+export const TiposContext = createContext({});
+export const CondicionIVAContext = createContext({});
+export const TipoProductosContext = createContext({});
+export const CategoriasContext = createContext({});
+
 dotenv.config();
 
 export default function App() {
   const { loggedUser, setLoggedUser } = useAuth();
+  //const [idSociety, setIdSociety] = useState(()
+ 
+ 
+
+    
   const [idSociety, setIdSociety] = useState(() => {
     const localStorageIdSociety = localStorage.getItem('idSociety');
     return localStorageIdSociety ? JSON.parse(localStorageIdSociety) : null;
   });
 
+  const { data: estados } = useQuery(['estados', idSociety], () =>
+    getMethod(`listasOP/listarEstados/${idSociety.id}`)
+  );
+  const { data: formaPagos } = useQuery(['formaPagos', idSociety], () =>
+    getMethod(`listasOP/listarFormaPagos/${idSociety.id}`)
+  );
+  const { data: retenciones } = useQuery(['retenciones', idSociety], () =>
+  getMethod(`listasOP/listarRetenciones/${idSociety.id}`)
+  );
+  const { data: fondos } = useQuery(['fondos', idSociety], () =>
+  getMethod(`listasOP/listarFondos/${idSociety.id}`)
+  );
+  const { data: tipos } = useQuery(['tipos', idSociety], () =>
+  getMethod(`listasOP/listarTipos/${idSociety.id}`)
+  );
+  const { data: condicion_de_IVA } = useQuery(['condicion_de_IVA', idSociety], () =>
+  getMethod(`listasOP/listarCondicion_de_IVA/${idSociety.id}`)
+  );
+  const { data: tipoProductos } = useQuery(['tipoProductos', idSociety], () =>
+  getMethod(`listasFidu/listarTipoProductos/${idSociety.id}`)
+  );
+  const {data: categorias} = useQuery(['categoria', idSociety], () => 
+    getMethod(`categoria/listarCombo/${idSociety.id}`)
+  ); 
+
   return (
 
     <SocietyContext.Provider value={idSociety}>
+    <EstadosContext.Provider value={estados}>
+    <FormaPagosContext.Provider value={formaPagos} >
+    <RetencionesContext.Provider value={retenciones}>
+    <FondosContext.Provider value={fondos}>
+    <TiposContext.Provider value={tipos}>
+    <CondicionIVAContext.Provider value={condicion_de_IVA}>
+    <TipoProductosContext.Provider value={tipoProductos}>
+    <CategoriasContext.Provider value={categorias}>
 
     
     <ThemeProvider theme={theme}>
@@ -84,70 +135,13 @@ export default function App() {
                 />
               }
             >
+              
+              
               <Route path="dashboard" element={<DashBoard idSociety={idSociety} loggedUser={loggedUser}  />} />
               <Route path="dolar" element={<Dolar idSociety={idSociety} loggedUser={loggedUser}  />} />
               <Route path="cac" element={<Cac idSociety={idSociety}  loggedUser={loggedUser}  />} />
-
-              <Route path="contrato">
-                <Route path="" element={<Contrato idSociety={idSociety} loggedUser={loggedUser} />} />
-                <Route
-                  path=":contratoId/:page"
-                  element={<DetalleContrato idSociety={idSociety} loggedUser={loggedUser} />}
-                />
-              </Route>
-
-              <Route path="categoria" element={<Categoria idSociety={idSociety}  loggedUser={loggedUser}  />} />
-              <Route path="cobros" element={<Cobros idSociety={idSociety}  loggedUser={loggedUser}  />} />
-              <Route path="cuotas" element={<Cuotas idSociety={idSociety}  loggedUser={loggedUser}  />} />
-              
-              <Route path="OC">
-                <Route path="" element={<OC idSociety={idSociety} loggedUser={loggedUser} />} />
-                <Route
-                  path=":idOC/:page"
-                  element={<DetalleOC idSociety={idSociety} loggedUser={loggedUser} />}
-                />
-              </Route>
-
-              <Route path="fiduciantes" element={<Fiduciantes idSociety={idSociety}  loggedUser={loggedUser}  />} />
-              
-              <Route path="factura">
-                <Route path="" element={<Factura idSociety={idSociety} loggedUser={loggedUser} />} />
-                <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
-                  element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
-                />
-              </Route>
-
-              <Route path="OP">
-                <Route path="" element={<OP idSociety={idSociety} loggedUser={loggedUser} />} />
-                <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
-                  element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
-                />
-              </Route>
-
-              <Route path="AuthAdmOP">
-                <Route path="" element={<AuthAdmOP idSociety={idSociety}  loggedUser={loggedUser} />}  />
-                <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
-                  element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
-                />
-              </Route>
-
-              <Route path="AuthObraOP">
-                <Route path="" element={<AuthObraOP idSociety={idSociety}  loggedUser={loggedUser} />}  />
-                <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
-                  element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
-                />
-              </Route>
-
-
-              
-              <Route path="proveedores" element={<Proveedores idSociety={idSociety}   loggedUser={loggedUser} />} />
               <Route path="usuarios" element={<Usuarios idSociety={idSociety}  loggedUser={loggedUser}  />} />
-              
-              <Route path="rubro"> 
+             <Route path="rubro"> 
                 <Route path="" element={<Rubro idSociety={idSociety} loggedUser={loggedUser} />} />
                 <Route
                   path=":idRubro/:rubro"
@@ -155,6 +149,72 @@ export default function App() {
                 />
               </Route>
 
+              
+              
+              
+              
+              
+              
+              
+              <Route path="contrato">
+                <Route path="" element={<Contrato idSociety={idSociety} loggedUser={loggedUser} />} />
+                <Route
+                  path=":contratoId/:page"
+                  element={<DetalleContrato idSociety={idSociety} loggedUser={loggedUser} />}
+                />
+              </Route>
+              <Route path="cobros" element={<Cobros idSociety={idSociety}  loggedUser={loggedUser}  />} />
+              <Route path="cuotas" element={<Cuotas idSociety={idSociety}  loggedUser={loggedUser}  />} />
+              <Route path="categoria" element={<Categoria idSociety={idSociety}  loggedUser={loggedUser}  />} />
+              <Route path="OC">
+                <Route path="" element={<OC idSociety={idSociety} loggedUser={loggedUser} />} />
+                <Route
+                  path=":idOC/:page"
+                  element={<DetalleOC idSociety={idSociety} loggedUser={loggedUser} />}
+                />
+              </Route>
+              <Route path="fiduciantes" element={<Fiduciantes idSociety={idSociety}  loggedUser={loggedUser}  />} />
+              <Route path="fideicomiso">
+                <Route path="" element={<Fideicomiso idSociety={idSociety}  loggedUser={loggedUser}  />} />
+                <Route
+                  path=":fideicomisoId/:nombre"
+                  element={<DetalleFideicomiso idSociety={idSociety}   loggedUser={loggedUser}  />}
+                />
+              </Route>
+              
+              
+              
+              
+              
+              <Route path="factura">
+                <Route path="" element={<Factura idSociety={idSociety} loggedUser={loggedUser} />} />
+                <Route
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
+                  element={<DetalleOP idSociety={idSociety} formaPagos={formaPagos} loggedUser={loggedUser} />}
+                />
+              </Route>
+              <Route path="OP">
+                <Route path="" element={<OP idSociety={idSociety} loggedUser={loggedUser} />} />
+                <Route
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
+                  element={<DetalleOP idSociety={idSociety} formaPagos={formaPagos}  loggedUser={loggedUser} />}
+                />
+              </Route>
+              <Route path="AuthAdmOP">
+                <Route path="" element={<AuthAdmOP idSociety={idSociety}  formaPagos={formaPagos}  loggedUser={loggedUser} />}  />
+                <Route
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
+                  element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
+                />
+              </Route>
+              <Route path="AuthObraOP">
+                <Route path="" element={<AuthObraOP idSociety={idSociety} formaPagos={formaPagos}   loggedUser={loggedUser} />}  />
+                <Route
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
+                  element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
+                />
+              </Route>
+              <Route path="proveedores" element={<Proveedores idSociety={idSociety}   loggedUser={loggedUser} />} />
               <Route path="banco"> 
                 <Route path="" element={<Banco idSociety={idSociety} loggedUser={loggedUser} />} />
                 <Route
@@ -164,13 +224,9 @@ export default function App() {
               </Route>
 
               
-              <Route path="fideicomiso">
-                <Route path="" element={<Fideicomiso idSociety={idSociety}  loggedUser={loggedUser}  />} />
-                <Route
-                  path=":fideicomisoId/:nombre"
-                  element={<DetalleFideicomiso idSociety={idSociety}   loggedUser={loggedUser}  />}
-                />
-              </Route>
+              
+
+
               <Route path="*" element={<NotFound />} />
             </Route>
             
@@ -193,6 +249,17 @@ export default function App() {
         )}
       </Routes>
     </ThemeProvider>
+
+    
+    </CategoriasContext.Provider>
+    </TipoProductosContext.Provider>
+    </CondicionIVAContext.Provider>
+    </TiposContext.Provider>
+    </FondosContext.Provider>    
+    </RetencionesContext.Provider>
+    </FormaPagosContext.Provider>
+    </EstadosContext.Provider>
     </SocietyContext.Provider>
+    
     
   )}

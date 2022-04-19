@@ -15,6 +15,9 @@ import { PDFDownloadLink, pdf } from "@react-pdf/renderer";
 import RepOp from "src/components/reportes/orden_de_pago/orden_de_pago";
 import { darken, lighten } from '@mui/material/styles';
 import { NavLink as RouterLink } from 'react-router-dom';
+import { useContext } from 'react';
+import { EstadosContext, RetencionesContext, FondosContext} from 'src/App';
+
 
 const getBackgroundColor = (color, mode) =>
   mode === 'dark' ? darken(color, 0.6) : lighten(color, 0.6);
@@ -27,7 +30,7 @@ var miOP={};
 var fa={};
 var idSociedad=0;
 
-const columns = (colVisibles, verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
+const columns = (colVisibles, estados, retenciones, fondos_s, verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
   
   {
     field: 'id',
@@ -294,16 +297,18 @@ const columns = (colVisibles, verColumnBlue, puedeEditar, rubros, subRubros, set
   },
 ];
 
-// por ahora se inicializa en el login
-var estados = JSON.parse(localStorage.getItem("estados"));
-var retenciones = JSON.parse(localStorage.getItem("retenciones"));
-var fondos_s = JSON.parse(localStorage.getItem("fondos_s"));
+
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
-export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opInformation, isLoading, error}) {
+export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, loggedUser, opInformation, isLoading, error}) {
   
   idSociedad = idSociety.id;
   var result = {};
+
+  // por ahora se inicializa en el login
+  var estados = useContext(EstadosContext);
+  var retenciones = useContext(RetencionesContext);
+  var fondos_s =  useContext(FondosContext); 
 
   var puedeEditar = true;
   const accesoOP = loggedUser?.['rol.op'];
@@ -476,36 +481,41 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
 
   const [open, setOpen] = useState(false);
 
-  function filtrar(element, filtFide, filtRS, filtEst){
-
+  function filtrar(element, filtFide, filtRS, filtEst, filtTerm){
+    var rta = false;
     if(filtFide === -1 && filtRS === -1 && filtEst === -1){
-      return true;
+      rta = true;
     }
 
     if(filtFide > -1 && filtRS === -1 && filtEst === -1){//fide
-      if(element.fideicomisoId===filtFide){return true;}else{return false;}
+      if(element.fideicomisoId===filtFide){rta = true;}//else{rta = false;}
     }
     if(filtFide === -1 && filtRS > -1 && filtEst === -1){// proveedor
 
-      if(element.empresaId===filtRS){return true;}else{return false;}
+      if(element.empresaId===filtRS){rta = true;}//else{rta = false;}
     }
     if(filtFide === -1 && filtRS === -1 && filtEst > -1){//estado
-      if(element.estadoOP===filtEst){return true;}else{return false;}
+      if(element.estadoOP===filtEst){rta = true;}//else{rta = false;}
     }
 
     if(filtFide > -1 && filtRS > -1 && filtEst === -1){
-      if(element.fideicomisoId===filtFide && element.empresaId===filtRS){return true;}else{return false;}
+      if(element.fideicomisoId===filtFide && element.empresaId===filtRS){rta = true;}//else{rta = false;}
     }
     if(filtFide > -1 && filtRS === -1 && filtEst > -1){
-      if(element.fideicomisoId===filtFide && element.estadoOP===filtEst){return true;}else{return false;}
+      if(element.fideicomisoId===filtFide && element.estadoOP===filtEst){rta = true;}//else{rta = false;}
     }
     if(filtFide === -1 && filtRS > -1 && filtEst > -1){
-      if(element.empresaId===filtRS && element.estadoOP===filtEst){return true;}else{return false;}
+      if(element.empresaId===filtRS && element.estadoOP===filtEst){rta = true;}//else{rta = false;}
     }
     if(filtFide > -1 && filtRS > -1 && filtEst > -1){
-      if(element.fideicomisoId===filtFide && element.empresaId===filtRS && element.estadoOP===filtEst){return true;}else{return false;}
+      if(element.fideicomisoId===filtFide && element.empresaId===filtRS && element.estadoOP===filtEst){rta = true;}//else{rta = false;}
     }
-
+    
+    // filtrar terminados
+    if(element.confirmada===1 && element.archivada && element.enviada && filtTerm){
+      rta = false;
+    }
+    return rta;
 
   }
 
@@ -628,7 +638,7 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
         >         
         
         <DataGrid 
-          rows={opInformation.filter(element =>filtrar(element, filtFide, filtRS, filtEst)).map(OP => ({
+          rows={opInformation.filter(element =>filtrar(element, filtFide, filtRS, filtEst, filtTerm)).map(OP => ({
             
             id: OP?.id,    
             blue: OP?.blue,
@@ -672,7 +682,7 @@ export function GrillaOP({ filtFide, filtRS, filtEst, idSociety, loggedUser, opI
             
           }))}
           onCellEditCommit={modifyData}
-          columns={columns(colVisibles, verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete)}
+          columns={columns(colVisibles, estados, retenciones, fondos_s, verColumnBlue, puedeEditar, rubros, subRubros, setIsPromptOpen, setRowIdToDelete)}
           
           sortModel={sortModel}
           onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}

@@ -201,6 +201,7 @@ export function ManipularOP({ idSociety, loggedUser, fideicomisos, proveedores, 
   );
 }
 
+
 function onlyCheck(event, setFieldValue, typeOfData, chkblue, setChkblue) {
   event.preventDefault();
   

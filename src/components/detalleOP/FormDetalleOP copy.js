@@ -272,9 +272,6 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, OPId, loggedU
                       Estado:&nbsp;&nbsp;&nbsp;
                     </Typography>
                   </Grid>     
-                  
-
-
                   <Grid item md={4}>                  
                     <Field
                       as={Autocomplete}
@@ -415,6 +412,20 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, OPId, loggedU
                         </Typography>
                   </Grid>
 
+               
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                   <Grid item md={12}>
                   &nbsp;
@@ -497,7 +508,6 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, OPId, loggedU
                   &nbsp;
                   </Grid>
 
-
                   <Grid item md={12}>
                   &nbsp;
                   </Grid>
@@ -560,13 +570,11 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, OPId, loggedU
                           value={formOP?.OPpago.modo1}
                           getOptionLabel={option => option}
                           isOptionEqualToValue={(option, value) => option === value}
-                          options={formaPagos? formaPagos:[]}
+                          options={formaPagos}
                           renderInput={params => <TextField {...params} label='Modo' />}
                           
                         />            
                   </Grid> 
-                  
-                  
                   <Grid item md={2}>
 
                     <Field
@@ -675,10 +683,10 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, OPId, loggedU
 
                             onlyNumbers(event, setFieldValue, refetch, 'modo2', idSociety.id, OPId, 1, newValue, formOP)
                           }}
-                          value={formOP?.OPpago.modo2}
+                          value={formOP?.OPpago.modo2 || formaPagos[0]}
                           getOptionLabel={option => option}
                           isOptionEqualToValue={(option, value) => option === value}
-                          options={formaPagos? formaPagos:[]}
+                          options={formaPagos}
                           renderInput={params => <TextField {...params} label='Modo' />}
                           
                         />            
@@ -790,10 +798,10 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, OPId, loggedU
 
                             onlyNumbers(event, setFieldValue, refetch, 'modo3', idSociety.id, OPId, 1, newValue, formOP)
                           }}
-                          value={formOP?.OPpago.modo3}
+                          value={formOP?.OPpago.modo3 || formaPagos[0]}
                           getOptionLabel={option => option}
                           isOptionEqualToValue={(option, value) => option === value}
-                          options={formaPagos? formaPagos:[]}
+                          options={formaPagos}
                           renderInput={params => <TextField {...params} label='Modo' />}
                           
                         />            
@@ -903,10 +911,10 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, OPId, loggedU
 
                             onlyNumbers(event, setFieldValue, refetch, 'modo4', idSociety.id, OPId, 1, newValue, formOP)
                           }}
-                          value={formOP?.OPpago.modo4}
+                          value={formOP?.OPpago.modo4 || formaPagos[0]}
                           getOptionLabel={option => option}
                           isOptionEqualToValue={(option, value) => option === value}
-                          options={formaPagos? formaPagos:[]}
+                          options={formaPagos}
                           renderInput={params => <TextField {...params} label='Modo' />}
                           
                         />            
@@ -1002,11 +1010,6 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, OPId, loggedU
                         inputProps={{readOnly: (!acceso || (isConfirmOP===1)?true:false), min: 0, style: { textAlign: 'center' }}}
                       />                
                   </Grid>
-
-
-
-
-                  
 
                   <Grid item md={10}>
                                   
