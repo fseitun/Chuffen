@@ -63,7 +63,7 @@ export const FondosContext = createContext({});
 export const TiposContext = createContext({});
 export const CondicionIVAContext = createContext({});
 export const TipoProductosContext = createContext({});
-export const CategoriasContext = createContext({});
+export const CategoriasComboContext = createContext({});
 
 dotenv.config();
 
@@ -79,6 +79,7 @@ export default function App() {
     return localStorageIdSociety ? JSON.parse(localStorageIdSociety) : null;
   });
 
+  
   const { data: estados } = useQuery(['estados', idSociety], () =>
     getMethod(`listasOP/listarEstados/${idSociety.id}`)
   );
@@ -100,9 +101,10 @@ export default function App() {
   const { data: tipoProductos } = useQuery(['tipoProductos', idSociety], () =>
   getMethod(`listasFidu/listarTipoProductos/${idSociety.id}`)
   );
-  const {data: categorias} = useQuery(['categoria', idSociety], () => 
+  const {data: categoriasCombo} = useQuery(['categoriaCombo', idSociety], () => 
     getMethod(`categoria/listarCombo/${idSociety.id}`)
   ); 
+
 
   return (
 
@@ -114,7 +116,7 @@ export default function App() {
     <TiposContext.Provider value={tipos}>
     <CondicionIVAContext.Provider value={condicion_de_IVA}>
     <TipoProductosContext.Provider value={tipoProductos}>
-    <CategoriasContext.Provider value={categorias}>
+    <CategoriasComboContext.Provider value={categoriasCombo}>
 
     
     <ThemeProvider theme={theme}>
@@ -251,7 +253,7 @@ export default function App() {
     </ThemeProvider>
 
     
-    </CategoriasContext.Provider>
+    </CategoriasComboContext.Provider>
     </TipoProductosContext.Provider>
     </CondicionIVAContext.Provider>
     </TiposContext.Provider>

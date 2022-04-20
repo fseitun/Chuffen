@@ -27,6 +27,10 @@ export function DetalleOP({ idSociety, loggedUser }) {
   
   const buttonAdmRef = useRef();  
 
+  const {data: categorias} = useQuery(['categoria', idSociety], () => 
+    getMethod(`categoria/listar/${idSociety.id}`)
+  ); 
+
   const{
       data: formOP,
       isLoading,
@@ -296,11 +300,15 @@ export function DetalleOP({ idSociety, loggedUser }) {
         ) : verRetenciones ? (
 
           <FormRetenciones
+            idSociety={idSociety}
             OPId={idOP}
             fecha={fecha}
-            fideicomisoId={formOP?.op?.fideicomisoId}
+            fideicomiso={fideicomiso}
+            formOP={formOP?.op}
             empresaId={empresaId}
-            idSociety={idSociety}
+            facturas={formOP?.item}
+            categorias={categorias}
+            error={error}
             refetch={refetch}
             loggedUser={loggedUser}
           />
@@ -363,11 +371,9 @@ export function DetalleOP({ idSociety, loggedUser }) {
                 fecha={fecha}
                 empresaId={empresaId}
                 idSociety={idSociety}
-
                 facturas={formOP?.item}
                 isLoading={isLoading}
                 error={error}
-
                 refetch={refetch}
                 loggedUser={loggedUser}
               />
@@ -427,7 +433,6 @@ function verAuthBoton(tipo, auth, rol_usuario){
   }  
 
   return rta;
-
 
 }
 

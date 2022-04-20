@@ -46,6 +46,16 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     
   },
   {
+    field: 'regimen',
+    headerName: 'Régimen',
+    width: 200,
+    editable: true,
+    headerAlign: 'center',
+    align: 'left',
+     
+    
+  },
+  {
     field: 'inscriptos',
     headerName: 'Inscriptos %',
     width: 180,
@@ -191,6 +201,7 @@ export function GrillaCategoria({ idSociety }) {
             codigo: categoria.codigo,
             anexo: categoria.anexo,
             concepto: categoria.concepto,
+            regimen: categoria.regimen,
             inscriptos: categoria.inscriptos,
             noInscriptos: categoria.noInscriptos,
             noInscrptoResto: categoria.noInscrptoResto,

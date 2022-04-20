@@ -8,7 +8,7 @@ import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { mostrarCUIT } from 'src/utils/utils';
 import { useContext } from 'react';
-import { CondicionIVAContext, CategoriasContext} from 'src/App';
+import { CondicionIVAContext, CategoriasComboContext} from 'src/App';
 
 const columns = (colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
   {
@@ -213,7 +213,7 @@ export function GrillaEmpresa({ loggedUser, idSociety, tipo }) {
   if( acceso ==='vista'){puedeEditar =false}
 
   //var categorias = JSON.parse(localStorage.getItem("categorias"));
-  var categorias = useContext(CategoriasContext);
+  var categorias = useContext(CategoriasComboContext);
   //var condicion_de_IVA = JSON.parse(localStorage.getItem("condicion_de_IVA"));
   var condicion_de_IVA = useContext(CondicionIVAContext);
 
