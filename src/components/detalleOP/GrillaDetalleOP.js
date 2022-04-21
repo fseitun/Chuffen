@@ -94,7 +94,6 @@ const columns = (puedeEditar, verEliminar) => [
 export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaData, facturas, isLoading, error, refetch }) {
   
   const queryClient = useQueryClient();
-  //var tipos = JSON.parse(localStorage.getItem("tipos"));
   var tipos = useContext(TiposContext);
   var puedeEditar = true;
   const accesoOP = loggedUser?.['rol.op'];

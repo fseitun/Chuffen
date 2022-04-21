@@ -207,22 +207,22 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
 ];
 
 // por ahora se inicializa en el login
-// /// /// var estados = useContext(EstadosContext);
 
 export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUser }) {
   
   const navigate = useNavigate();
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
-  
-  //var tipos = JSON.parse(localStorage.getItem("tipos"));
+
   var estados = useContext(EstadosContext);
   var tipos = useContext(TiposContext);
   var blue = 0;
+  var onlyBlue = false;
   var verColumnBlue = false;
   
   if(loggedUser?.['rol.factura'] ==='total'){blue= -1; verColumnBlue = true;}
-  if(loggedUser?.['rol.descripcion'] ==='blue'){blue= -1; verColumnBlue = true;}
+  if(loggedUser?.['rol.descripcion'] ==='blue'){blue= -1; verColumnBlue = true; onlyBlue= true;}
+  //if(loggedUser?.['rol.descripcion'] ==='blue'){onlyBlue= -1; verColumnBlue = true;}
 
 
 
@@ -288,8 +288,11 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
 
   );
 
-  function filtrar(element, filtComp, filtFide, filtRS){
+  function filtrar(element, filtComp, filtFide, filtRS, onlyBlue){
 
+    if(onlyBlue && element.blue !== 1){
+      return false;
+    }
     if(filtFide === -1 && filtRS === -1 && filtComp === -1){
       return true;
     }
@@ -352,7 +355,7 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
       <div style={{ width: '100%' }}>
         <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
         <DataGrid
-          rows={facturaInformation.filter(element =>filtrar(element, filtComp, filtFide, filtRS)).map(factura => ({
+          rows={facturaInformation.filter(element =>filtrar(element, filtComp, filtFide, filtRS, onlyBlue)).map(factura => ({
            
             id: factura?.id,
             blue: factura?.blue,

@@ -24,9 +24,10 @@ const columns = (verLink, moneda) => [
   {
     field: 'avanceARS',
     headerName: 'Monto Contrato',
-    width: 180,
+    width: 170,
     hide: (moneda==='USD'),
     editable: false,
+    sortable: false,
     headerAlign: 'center',
     align: 'right',
 
@@ -36,8 +37,9 @@ const columns = (verLink, moneda) => [
   {
     field: 'avanceUSD',
     headerName: 'Monto Contrato',
-    width: 180,
+    width: 170,
     hide: (moneda==='ARS'),
+    sortable: false,
     editable: false,
     headerAlign: 'center',
     align: 'right',
@@ -48,8 +50,9 @@ const columns = (verLink, moneda) => [
   {
     field: 'ajuste',
     headerName: 'Mayor Costo',
-    width: 180,
+    width: 170,
     editable: false,
+    sortable: false,
     headerAlign: 'center',
     align: 'right',
 
@@ -92,8 +95,8 @@ const columns = (verLink, moneda) => [
   {
     field: 'estado',
     headerName: 'Estado',
-    width: 170,
-    hide: true, //(moneda==='USD'),
+    width: 145,
+    hide: false, //(moneda==='USD'),
     editable: false,
     headerAlign: 'center',
     align: 'center',
@@ -102,7 +105,7 @@ const columns = (verLink, moneda) => [
   {
     field: 'createdAt',
     headerName: 'Fecha',
-    width: 150,
+    width: 140,
     editable: false,
     type: 'date',
     headerAlign: 'center',
@@ -203,14 +206,14 @@ export function GrillaPagos({ OCId, loggedUser, formOC, isLoading, error, moneda
       <div style={{ width: '100%' }}>
         <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >
 
-          <Grid item md={4}>
+          <Grid item md={12}>
             <Typography align="left" color="textPrimary" variant="h6">
                   
             </Typography>
           </Grid>                      
-          <Grid item md={3}>
+          <Grid item md={7}>
             <Typography align="right" color="textWarning" variant="h5">
-                Monto Contrato:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(totPagos-totAjuste)) + " " + moneda }
+                Monto Contrato (netos):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(totPagos-totAjuste)) + " " + moneda }
                   
             </Typography>           
           </Grid>
@@ -235,6 +238,7 @@ export function GrillaPagos({ OCId, loggedUser, formOC, isLoading, error, moneda
                 avanceUSD: item.moneda==='ARS'? ((item.monto - item.ajuste)/item.cotizacion_usd): (item.monto - item.ajuste),
                 moneda: item.moneda,
                 ajuste: item.ajuste,
+                estadoOP: item.estadoOP,
                 estado: estados?.find(estado => estado.id === item.estadoOP)?.descripcion,
                 createdAt: item.createdAt,
                 CACop: buscarCAC(item?.createdAt,formOC.oc?.CACtipo),

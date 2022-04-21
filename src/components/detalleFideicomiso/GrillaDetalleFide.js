@@ -78,7 +78,6 @@ export function GrillaDetalleFide({idSociety, loggedUser, dataFide, isLoading, e
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
 
-  // var tipoProductos = JSON.parse(localStorage.getItem("tipoProductos"));
   var tipoProductos = useContext(TipoProductosContext);
 
   var puedeEditar = true;

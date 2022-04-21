@@ -4,7 +4,7 @@ import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Button, TextField, Avatar, Autocomplete, Hidden} from '@mui/material';
+import { Box, Button, Typography, Grid, TextField, Avatar, Autocomplete, Hidden} from '@mui/material';
 import { IconButton, Collapse, Alert } from '@mui/material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { ToastContainer, toast } from 'react-toastify';
@@ -317,6 +317,8 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
   var blue = 0;
   var verColumnBlue = false;
   if(loggedUser?.['rol.op'] ==='total' || loggedUser?.['rol.op'] ==='blue'){blue= -1; verColumnBlue = true;}  
+  var onlyBlue = false;
+  if(loggedUser?.['rol.descripcion'] ==='blue'){onlyBlue= true;}
 
   const navigate = useNavigate();
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
@@ -481,7 +483,7 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
 
   const [open, setOpen] = useState(false);
 
-  function filtrar(element, filtFide, filtRS, filtEst, filtTerm){
+  function filtrar(element, filtFide, filtRS, filtEst, filtTerm, onlyBlue){
     var rta = false;
     if(filtFide === -1 && filtRS === -1 && filtEst === -1){
       rta = true;
@@ -510,11 +512,17 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
     if(filtFide > -1 && filtRS > -1 && filtEst > -1){
       if(element.fideicomisoId===filtFide && element.empresaId===filtRS && element.estadoOP===filtEst){rta = true;}//else{rta = false;}
     }
+
+    
+    if(onlyBlue && element.blue !== 1){
+      rta = false;
+    }
     
     // filtrar terminados
     if(element.confirmada===1 && element.archivada && element.enviada && filtTerm){
       rta = false;
     }
+
     return rta;
 
   }
@@ -635,10 +643,19 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
               },
             
           }}
-        >         
+        >  
+
+        <Typography align="left" color="textSecondary" variant="h6">
+          Rojo: Para autorizar,&nbsp; 
+          Amarilla: Para pagar,&nbsp; 
+          Verde: Pagada y confirmada,&nbsp; 
+          Blanca: ..Otros estados&nbsp;
+          | Ocultas: Pagada, confirmada, generada y enviada
+        </Typography> 
+               
         
         <DataGrid 
-          rows={opInformation.filter(element =>filtrar(element, filtFide, filtRS, filtEst, filtTerm)).map(OP => ({
+          rows={opInformation.filter(element =>filtrar(element, filtFide, filtRS, filtEst, filtTerm, onlyBlue)).map(OP => ({
             
             id: OP?.id,    
             blue: OP?.blue,

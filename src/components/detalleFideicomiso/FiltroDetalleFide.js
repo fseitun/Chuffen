@@ -8,7 +8,6 @@
   
   export function FiltroDetalleFide({setFiltComp, setFiltFide, setFiltRS, idSociety, fideicomisos, proveedores}) {
   
-    //var tipos = JSON.parse(localStorage.getItem("tipos"));
     var tipos = useContext(TiposContext);
     const [fideInForm, setFideInForm] = useState(null);
     const [rsInForm, setRsInForm] = useState(null);

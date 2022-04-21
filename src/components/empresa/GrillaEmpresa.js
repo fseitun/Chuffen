@@ -212,9 +212,7 @@ export function GrillaEmpresa({ loggedUser, idSociety, tipo }) {
   }
   if( acceso ==='vista'){puedeEditar =false}
 
-  //var categorias = JSON.parse(localStorage.getItem("categorias"));
   var categorias = useContext(CategoriasComboContext);
-  //var condicion_de_IVA = JSON.parse(localStorage.getItem("condicion_de_IVA"));
   var condicion_de_IVA = useContext(CondicionIVAContext);
 
   const {

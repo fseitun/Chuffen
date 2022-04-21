@@ -13,10 +13,8 @@ export function FormDetalleFide({ idSociety, loggedUser, fideicomisoId, refetch 
   const queryClient = useQueryClient();
   const [tipoInForm, setTipoInForm] = useState(null);
 
-  //var tipoProductos = JSON.parse(localStorage.getItem("tipoProductos"));
   var tipoProductos = useContext(TipoProductosContext);
 
-  //const [rsInForm, setRsInForm] = useState(null);
     
   const { mutate: addProducto } = useMutation(
     newProducto => postMethod(`producto/agregar/${idSociety.id}`, newProducto),

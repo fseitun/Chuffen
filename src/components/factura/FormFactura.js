@@ -37,7 +37,6 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
     }
   );
 
-  //var tipos = JSON.parse(localStorage.getItem("tipos"));
   var tipos = useContext(TiposContext);
 
   const [tipoInForm, setTipoInForm] = useState({id: 0, descripcion: 'Factura'});

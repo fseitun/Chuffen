@@ -133,15 +133,6 @@ const columns = (tipo, setIsPromptOpen, setRowIdToDelete) => [
 ];
 
 
-// por ahora se inicializa en el login
-// var formaPagos = useContext(FormaPagosContext).split(",");
-/*
-if(localStorage.getItem("formaPagos")){
-  formaPagos = localStorage.getItem("formaPagos").split(",")
-}else{  
-  formaPagos[0] ="Otra";
-}*/
-
 export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
   
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
