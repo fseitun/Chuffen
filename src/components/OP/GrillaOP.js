@@ -660,8 +660,10 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
             id: OP?.id,    
             blue: OP?.blue,
             createdAt: OP?.createdAt,
+            fideicomisoId: OP?.fideicomisoId,
             fideicomiso: OP?.fideicomisos? OP.fideicomisos[0]?.nombre:'',
             numero: OP?.numero,
+            empresaId: OP?.empresaId,
             empresa: OP?.empresas? OP?.empresas[0]?.razonSocial:'',
             monto: OP?.monto, 
             neto: OP?.neto, 
@@ -854,7 +856,7 @@ function CustomToolbar() {
 
 function IrDetalleOP_0(params) {
 
-  let path = `${params.row.id}/${params.row.createdAt}/${params.row.empresaId}/${params.row.numero}/${params.row.fideicomiso}/${params.row.Color_estadoOP}/${params.row.apr_adm===''? 'null':params.row.apr_adm}/${params.row.apr_obra===''? 'null':params.row.apr_obra}/${params.row.confirmada? 1:0}/${params.row.blue}/OP Detalle`;
+  let path = `${params.row.id}/${params.row.createdAt}/${params.row.empresaId}/${params.row.numero}/${params.row.fideicomisoId}/${params.row.fideicomiso}/${params.row.Color_estadoOP}/${params.row.apr_adm===''? 'null':params.row.apr_adm}/${params.row.apr_obra===''? 'null':params.row.apr_obra}/${params.row.confirmada? 1:0}/${params.row.blue}/OP Detalle`;
   
   return <Button
           component={RouterLink}

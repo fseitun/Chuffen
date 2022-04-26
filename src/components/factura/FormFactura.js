@@ -104,8 +104,9 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
             if(values.percepciones){tot +=parseFloat(values.percepciones);}
             if(values.IIBB_CABA){tot +=parseFloat(values.IIBB_CABA);}
             if(values.IIBB_BSAS){tot +=parseFloat(values.IIBB_BSAS);}
+            if(values.no_gravados_exentos){tot +=parseFloat(values.no_gravados_exentos);}
 
-            console.log(11111, esBlue, values.numeroBlue);
+            // console.log(11111, esBlue, values.numeroBlue);
             addFactura({
               numero: !esBlue? values.numero:values.numeroBlue,
               neto: values.neto,
@@ -114,6 +115,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
               percepciones: !esBlue? values.tipo.id===2? (-1 * values.percepciones):values.percepciones:0,
               IIBB_CABA: !esBlue? values.tipo.id===2? (-1 * values.IIBB_CABA):values.IIBB_CABA: 0,
               IIBB_BSAS: !esBlue? values.tipo.id===2? (-1 * values.IIBB_BSAS):values.IIBB_BSAS: 0,
+              no_gravados_exentos: !esBlue? values.tipo.id===2? (-1 * values.no_gravados_exentos):values.no_gravados_exentos: 0,
               montoTotal: values.tipo.id===2? (-1 * tot):tot,
               fechaIngreso: values.fechaIngreso,
               tipo: values.tipo.id,              
@@ -142,7 +144,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                 title="Tipo de comprobante"
                 disablePortal
                 required
-                style={{ width: '180px', display: 'inline-flex' }}
+                style={{ width: '160px', display: 'inline-flex' }}
                 onChange={(event, newValue) => {
                   setTipoInForm(newValue);
                   setFieldValue('tipo', newValue);
@@ -182,7 +184,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                 title="Seleccione un fideicomiso."
                 disablePortal
                 required
-                style={{ width: '180px', display: 'inline-flex' }}
+                style={{ width: '170px', display: 'inline-flex' }}
                 onChange={(event, newValue) => {
                   setFideInForm(newValue);
                   setFieldValue('fideicomiso', newValue);
@@ -231,7 +233,8 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                 required     
                 maxLength={11}         
                 size="small"
-                sx={{ width: '25ch'}}
+                style={{ width: '160px'}}
+                // sx={{ width: '25ch'}}
     
                 name='numero'
                 
@@ -270,7 +273,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
             </Hidden>
                     
 
-            &nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <Hidden  smUp={( !verCheckBlue)} >        
                 <FormControlLabel 
                   control={ <Checkbox  id={'blue'}  name={'blue'}             
@@ -299,7 +302,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                   maxLength={9}
                   type='float'
                   size="small"
-                  style={{ width: '180px', display: 'inline-flex' }}
+                  style={{ width: '160px', display: 'inline-flex' }}
                   name='neto'
                   onChange={event => onlyNumbers(event, setFieldValue, 'neto')}
                 />       
@@ -310,7 +313,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                   maxLength={9}
                   type='float'
                   size="small"
-                  style={{ width: '180px', display: 'inline-flex' }}
+                  style={{ width: '160px', display: 'inline-flex' }}
                   name='iva'
                   onChange={event => onlyNumbers(event, setFieldValue, 'iva')}
                 />  
@@ -322,7 +325,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                     maxLength={9}
                     type='float'
                     size="small"
-                    style={{ width: '170px', display: 'inline-flex' }}
+                    style={{ width: '160px', display: 'inline-flex' }}
                     name='percepciones'
                     onChange={event => onlyNumbers(event, setFieldValue, 'percepciones')}
                   />  
@@ -333,7 +336,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                     maxLength={9}
                     type='float'
                     size="small"
-                    style={{ width: '170px', display: 'inline-flex' }}
+                    style={{ width: '160px', display: 'inline-flex' }}
                     name='IIBB_CABA'
                     onChange={event => onlyNumbers(event, setFieldValue, 'IIBB_CABA')}
                   />  
@@ -344,10 +347,21 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                     maxLength={9}
                     type='float'
                     size="small"
-                    style={{ width: '170px', display: 'inline-flex' }}
+                    style={{ width: '160px', display: 'inline-flex' }}
                     name='IIBB_BSAS'
                     onChange={event => onlyNumbers(event, setFieldValue, 'IIBB_BSAS')}
-                  />        
+                  />      
+                                           <Field
+                    as={TextField}
+                    label='No gravado'
+                    title="No gravado, solo numeros."                  
+                    maxLength={9}
+                    type='float'
+                    size="small"
+                    style={{ width: '160px', display: 'inline-flex' }}
+                    name='no_gravados_exentos'
+                    onChange={event => onlyNumbers(event, setFieldValue, 'no_gravados_exentos')}
+                  />     
                 </Hidden>
               </Grid>
 
