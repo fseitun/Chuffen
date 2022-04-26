@@ -87,15 +87,18 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
     regimenGAN = categoria?.regimen;
 
 
-  }else{
+  }else if(categoria?.codigo){
+
     regimenGAN = categoria?.regimen;
-    codigo = categoria.codigo;
+    codigo = categoria?.codigo;
     netoAcumMes = parseFloat(acumulado?.netoAcumMes) + parseFloat(formOP?.neto);
     retAcumMes = parseFloat(acumulado?.netoGAN_Mes);
     retencionGAN = ((netoAcumMes - minSujRet) * categoria.inscriptos / 100) - retAcumMes;
     if(retencionGAN<0){retencionGAN = 0.0;} 
     msgRetencion = "" + retencionGAN;
 
+  }else{
+    regimenGAN = "ERROR: FALTA CONFIGURAR LA CATEGORIA DEL PROVEEDOR ";
   }
   var condIVA_Id = parseInt(formOP? formOP?.empresas[0].condIVA:0);
   var condicion_frente_al_iva = condIVA?.find(i => i.id === condIVA_Id).descripcion;
