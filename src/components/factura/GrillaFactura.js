@@ -40,6 +40,13 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     headerAlign: 'center',
   },
   {
+    field: 'letra', // campo en grilla
+    headerName: 'Letra',
+    width: 55,
+    editable: false,
+    headerAlign: 'center',
+  },
+  {
     field: 'fideicomiso',
     headerName: 'Fideicomiso',
     width: 160,
@@ -50,6 +57,14 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'empresa',
     headerName: 'Razon Social',
+    width: 170,
+    editable: false,
+    headerAlign: 'center',
+  },
+  {
+    field: 'cuit',
+    headerName: 'CUIT',
+    hide: true,
     width: 170,
     editable: false,
     headerAlign: 'center',
@@ -95,8 +110,30 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
   {
-    field: 'percepciones',
-    headerName: 'Percepciones',
+    field: 'percepcionesIVA',
+    headerName: 'Percepciones IVA',
+    width: 110,
+    editable: false,
+    headerAlign: 'center',
+    align: 'right',
+
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
+    field: 'IIBB_CABA',
+    headerName: 'IIBB CABA',
+    width: 110,
+    editable: false,
+    headerAlign: 'center',
+    align: 'right',
+
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
+    field: 'IIBB_BSAS',
+    headerName: 'IIBB BsAs',
     width: 110,
     editable: false,
     headerAlign: 'center',
@@ -110,6 +147,14 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     headerName: '',
     width: 50,
     editable: acceso,
+    headerAlign: 'center',
+  },
+  {
+    field: 'no_gravados_exentos',
+    headerName: 'Exentos',
+    type: 'boolean',
+    width: 150,
+    editable: true,
     headerAlign: 'center',
   },
   {
@@ -179,6 +224,7 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     headerAlign: 'center',
     renderCell: IrDetalleOP_1,
   },
+  
   {
     field: 'estadoOP',
     headerName: 'Estado OP',
@@ -222,10 +268,7 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
   
   if(loggedUser?.['rol.factura'] ==='total'){blue= -1; verColumnBlue = true;}
   if(loggedUser?.['rol.descripcion'] ==='blue'){blue= -1; verColumnBlue = true; onlyBlue= true;}
-  //if(loggedUser?.['rol.descripcion'] ==='blue'){onlyBlue= -1; verColumnBlue = true;}
-
-
-
+  
   var acceso = true;
   if(loggedUser?.['rol.factura'] ==='vista'){acceso =false}
 
@@ -257,11 +300,9 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
     
     async ({ field, id, value }) =>
       ( 
-     
-
       await postMethod(`factura/modificar/${idSociety.id}`, {
         id,
-        [field]: field==='es_ajuste'? (value?1:0):value,
+        [field]: field==='es_ajuste' || 'no_gravados_exentos'? (value?1:0):value,
       })
       ),
       
@@ -284,7 +325,7 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
 
   const { mutate: irDetalle } = useMutation(
     async el =>    
-      navigate(`./${el?.OP?.id}/${el?.OP?.createdAt}/${el.empresaId}/${el?.OP?.numero}/${el.fideicomisos?.nombre}/${el?.OP.estadoOP}/${el?.OP?.authADM}/${el?.OP.authOBRA}/${el?.OP?.confirmada}/${el?.OPs?.blue}/OP Detalle`)
+      navigate(`./${el?.OP?.id}/${el?.OP?.createdAt}/${el.empresaId}/${el?.OP?.numero}/${el.fideicomisoId}/${el?.fideicomisos[0]?.nombre}/${el?.OP?.estadoOP}/${el?.OP?.authADM}/${el?.OP.authOBRA}/${el?.OP?.confirmada}/${el?.OP?.blue}/OP Detalle`)
 
   );
 
@@ -360,21 +401,26 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
             id: factura?.id,
             blue: factura?.blue,
             tipo: tipos?.find(tipo => tipo.id === factura.tipo)?.descripcion,
-            fideicomiso: (factura?.fideicomisos? factura?.fideicomisos[0]?.nombre:''),            
+            letra: factura?.letra,
+            fideicomisoId: factura?.fideicomisoId,
+            fideicomiso: (factura?.fideicomisos? factura?.fideicomisos[0]?.nombre:''),
+            cuit:(factura?.empresas? factura?.empresas[0]?.cuit:''),            
             empresa:(factura?.empresas? factura?.empresas[0]?.razonSocial:''),           
             numero: factura?.numero,
             montoTotal: parseInt(factura.tipo)===2? (-1 * factura.montoTotal):factura.montoTotal, //factura?.montoTotal,
             neto: parseInt(factura.tipo)===2? (-1 * factura.neto):factura.neto,
             iva: parseInt(factura.tipo)===2? (-1 * factura.iva):factura.iva,
-            percepciones: parseInt(factura.tipo)===2? (-1 * factura.percepciones):factura.percepciones,
+            percepcionesIVA: parseInt(factura.tipo)===2? (-1 * factura.percepciones):factura.percepciones,
+            IIBB_CABA: parseInt(factura.tipo)===2? (-1 * factura.IIBB_CABA):factura.IIBB_CABA,
+            IIBB_BSAS: parseInt(factura.tipo)===2? (-1 * factura.IIBB_BSAS):factura.IIBB_BSAS,
             moneda: factura?.moneda,       
             es_ajuste: factura?.es_ajuste,
+            no_gravados_exentos: factura?.no_gravados_exentos,
             fechaIngreso: factura?.fechaIngreso,
             diasVTO: factura?.diasVTO, 
             fechaVTO: factura?.fechaVTO,  
             OPnumero : (factura?.OP? factura?.OP?.numero:''),
-            estadoOP:(factura?.OP? estados[factura?.OP?.estado]?.descripcion:''),
-
+            estadoOP: estados? estados[factura?.OP?.estadoOP]?.descripcion:'',
             link: factura?.link,
             ver: factura?.link,
             empresaId: factura?.empresaId,
@@ -410,8 +456,8 @@ function CustomToolbar() {
       
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
-      <GridToolbarExport csvOptions={{ fields: [ 'id', 'tipo', 'fideicomiso', 'empresa', 'numero', 'montoTotal', 'neto', 'iva', 'percepciones', 'moneda', 'es_ajuste'
- ,'fechaIngreso', 'diasVTO', 'fechaVTO', 'OPnumero', 'estadoOP'] }} />
+      <GridToolbarExport csvOptions={{ fields: [ 'id', 'tipo', 'letra','fideicomiso', 'empresa', 'cuit','numero', 'montoTotal', 'neto', 'iva', 'percepcionesIVA', 'IIBB_CABA','IIBB_BSAS','moneda', 'no_gravados_exentos', 'es_ajuste'
+ ,'fechaIngreso', 'fechaVTO', 'OPnumero', 'estadoOP'] }} />
     </GridToolbarContainer>
   );
 }

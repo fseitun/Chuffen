@@ -5,7 +5,6 @@ import { Helmet } from 'react-helmet';
 import { Formik } from 'formik';
 import { getMethod } from 'src/utils/api';
 import { postMethod } from 'src/utils/api';
-import { useQuery } from 'react-query';
 import { SocietyContext } from 'src/App';
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER;

@@ -8,13 +8,11 @@ import { postMethod, getMethod} from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { isValidDate, yearMonthDayString } from 'src/utils/utils'; 
 import { NavLink as RouterLink } from 'react-router-dom';
-// import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useContext } from 'react';
 import { EstadosContext, RetencionesContext, FormaPagosContext, FondosContext} from 'src/App';
-import { SignalCellularNullSharp } from '@mui/icons-material';
 
 
-export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, OPId, loggedUser, estadoOP, confirmada, formOP, isLoading, error, refetch, empresaId, fideicomiso}) {
+export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRetIVA, retSUSS, setRetSUSS, OPId, loggedUser, estadoOP, confirmada, formOP, isLoading, error, refetch, empresaId, fideicomiso}) {
   
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
@@ -33,7 +31,6 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, OPId, loggedU
       }
     );
 
-  console.log(222, useContext(EstadosContext));
 
   var estados = useContext(EstadosContext);
   var retenciones = useContext(RetencionesContext);  
@@ -104,6 +101,7 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, OPId, loggedU
   const [flagField, setFlagField] = useState("");
 
   const [monedaOC, setMonedaOC] = useState(formOP?.OC_moneda);
+  //const [conceptoSUSS, setConceptoSUSS] = useState(formOP?.conceptoSUSS);
 
   const bancos = [
     ..._bancos
@@ -117,7 +115,17 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, OPId, loggedU
   
   var verBotonDesconfirmar = (loggedUser['rol.op'] ==='total' && (isConfirmOP===1))? false:true;
   var verBotonOC = (loggedUser['rol.oc'] !=='no' )? false:true;
-   
+
+
+  var verRetGAN = (formOP?.empresas[0].esRetIVA ===1)? true:false;
+  if(loggedUser['rol.op'] ==='vista' || loggedUser['rol.op'] ==='blue'){
+    verRetGAN = false;
+  }
+  var verRetSUSS = (formOP?.empresas[0].esRetSUSS ===1)? true:false;
+  if(loggedUser['rol.op'] ==='vista' || loggedUser['rol.op'] ==='blue'){
+    verRetSUSS = false;
+  }
+
 
 
   if (isLoading) {
@@ -456,9 +464,30 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, OPId, loggedU
                       }}
                   />
                   </Grid>
-                  <Grid item md={6}>
+                  <Grid item md={1}>
+                  </Grid>
+                  <Grid item md={5}>
+                   <Hidden  smUp={!verRetGAN} >
+                  
+                            <RadioGroup
+                                row
+                                aria-labelledby="demo-row-radio-buttons-group-label"
+                                key={"retIVA"}
+                                // defaultValue={formOP?.OC_moneda}                                
+                                onChange={event => setRetIVA(event.target.value)}
+                                name="row-radio-buttons-group"
+                                    >
+                                      <FormControlLabel value={998} control={<Radio />} label="Clase 'M' 100%" />
+                                      <FormControlLabel value={999} control={<Radio />} label="Operación sujeto Ret. 50%" />
+
+                            </RadioGroup>
+                    
+
+
+                      </Hidden>                   
                   </Grid>   
 
+                  
                   <Grid item md={2}>
                   </Grid>               
                   <Grid item md={2}>
@@ -475,8 +504,29 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, OPId, loggedU
                       }}
                   />
                   </Grid>
-                  <Grid item md={6}>
-                  </Grid> 
+                  <Grid item md={1}>
+                  </Grid>
+                  <Grid item md={5}>
+                   <Hidden  smUp={!verRetSUSS} >
+                  
+                            <RadioGroup
+                                row
+                                aria-labelledby="demo-row-radio-buttons-group-label"
+                                key={formOP?.conceptoSUSS}
+                                // defaultValue={formOP?.OC_moneda}     
+                                defaultValue={formOP?.conceptoSUSS}                                
+                                onChange={event => onlyNumbers4(event, setFieldValue, null, refetch, 'conceptoSUSS', idSociety.id, OPId, 1, 0)}
+
+                                // onChange={event => setRetSUSS(event.target.value)}
+                                name="row2-radio-buttons-group"
+                                    >
+                                      <FormControlLabel value={996} control={<Radio />} label="Ingenieria" />
+                                      <FormControlLabel value={997} control={<Radio />} label="Arquitectura" />
+                                      <FormControlLabel value={0} control={<Radio />} label="No aplica" />
+
+                            </RadioGroup>
+                      </Hidden>                   
+                  </Grid>  
 
 
                   <Grid item md={2}>
@@ -1082,10 +1132,12 @@ function onlyNumbers3(event, setFieldValue, refetch, typeOfData, idSociety, OPId
   }
 }
 
-function onlyNumbers4(event, setFieldValue, setMonedaOC, refetch, typeOfData, idSociety, OPId, flagPago, valorCombo, formOP){
+function onlyNumbers4(event, setFieldValue, setRadio, refetch, typeOfData, idSociety, OPId, flagPago, valorCombo, formOP){
 
     const { value } = event.target;
-    setMonedaOC(value);
+    if(setRadio){
+      setRadio(value);
+    }
     handleModification(event, setFieldValue, refetch, typeOfData, idSociety, OPId, flagPago, valorCombo, formOP);
 
 }

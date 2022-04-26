@@ -83,8 +83,9 @@ const columns = (colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, r
     headerName: 'Ret IVA',
     type: 'boolean',
     width: 160,
+    hide: true, 
     editable: puedeEditar,
-    hide: (tipo===1) || colVisibles?.find(i => i.c === 'esRetIVA').h,
+    // hide: (tipo===1) || colVisibles?.find(i => i.c === 'esRetIVA').h,
     headerAlign: 'center',
   },
 

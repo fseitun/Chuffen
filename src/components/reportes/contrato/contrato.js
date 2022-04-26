@@ -71,10 +71,11 @@ const styles = StyleSheet.create({
 
   });
 
+  /*
   var arr_id = [];
   var arr_banco = [];
   var arr_cid = [];
-  var arr_cuenta = [];
+  var arr_cuenta = [];*/
   
 
   

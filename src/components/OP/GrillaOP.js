@@ -4,7 +4,7 @@ import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarColumnsButton, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
-import { Box, Button, Typography, Grid, TextField, Avatar, Autocomplete, Hidden} from '@mui/material';
+import { Box, Button, Typography, TextField, Avatar, Autocomplete, Hidden} from '@mui/material';
 import { IconButton, Collapse, Alert } from '@mui/material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { ToastContainer, toast } from 'react-toastify';
@@ -343,7 +343,7 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
 
     async el => await  getMethod(`op/mostrar/${idSociety.id}/${el.id}`),
       {onSettled: (el) => { /*queryClient.refetchQueries(['formOP', idSociety]);*/
-      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisos[0]?.nombre}/${el.estadoOP}/${el?.auth_adm[0]?.usuarios[0]?.user}/${el?.auth_obra[0]?.usuarios[0]?.user}/${el.confirmada}/${el.blue}/OP Detalle`)}
+      navigate(`./${el.id}/${el.createdAt}/${el.empresaId}/${el.numero}/${el.fideicomisoId}/${el.fideicomisos[0]?.nombre}/${el.estadoOP}/${el?.auth_adm[0]?.usuarios[0]?.user}/${el?.auth_obra[0]?.usuarios[0]?.user}/${el.confirmada}/${el.blue}/OP Detalle`)}
     }
     
   );

@@ -232,6 +232,7 @@ export function GrillaPagos({ OCId, loggedUser, formOC, isLoading, error, moneda
               rows={detalle.filter(item => item.OC_moneda === moneda).map(item => ({
                 id: item.id,
                 numero: item.numero,
+                fideicomisoId: item.fideicomisoId,
                 montoOP: (item.monto - item.ajuste),
                 cotizacion_usd: item.cotizacion_usd,
                 avanceARS: (item.monto - item.ajuste),
@@ -268,7 +269,7 @@ export function GrillaPagos({ OCId, loggedUser, formOC, isLoading, error, moneda
 function IrDetalleOP_0(params) {
 
 
-  let path = `../../op/${params.row.id}/${params.row.createdAt}/${params.row.empresaId}/${params.row.numero}/${params.row.fideicomiso}/${params.row.estadoOP}/${params.row.authADM}/${params.row.authOBRA}/${params.row.confirmada}/${params.row.blue}/OP Detalle`;
+  let path = `../../op/${params.row.id}/${params.row.createdAt}/${params.row.empresaId}/${params.row.numero}/${params.row.fideicomisoId}/${params.row.fideicomiso}/${params.row.estadoOP}/${params.row.authADM}/${params.row.authOBRA}/${params.row.confirmada}/${params.row.blue}/OP Detalle`;
   
   if(params.row.blue === 0 || params.row.rol === 'manager'){
     return <Button

@@ -59,6 +59,7 @@
         "react-dropzone": "^11.4.2",
         "react-feather": "^2.0.8",
         "react-helmet": "^6.1.0",
+        "react-input-mask": "^2.0.4",
         "react-moment": "^1.1.1",
         "react-perfect-scrollbar": "^1.5.8",
         "react-query": "^3.19.1",

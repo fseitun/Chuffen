@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Box, Typography, Grid, Button, Hidden } from '@mui/material';
 import { Helmet } from 'react-helmet';
@@ -21,12 +21,19 @@ export function DetalleOP({ idSociety, loggedUser }) {
 
   const [verPDF, setVerPDF] = React.useState(false);
   const [verRetenciones, setVerRetenciones] = React.useState(false);
-  const { idOP, fecha, empresaId, numero, fideicomiso, estadoOP, auth_adm, auth_obra, confirmada, blue } = useParams();
+  const { idOP, fideicomisoId, fecha, empresaId, numero, fideicomiso, estadoOP, auth_adm, auth_obra, confirmada, blue } = useParams();
 
   const id = idSociety.id;
   
   const buttonAdmRef = useRef();  
+  
+  let f = new Date();
+  // let fideicomisoId = 1;
 
+  const {data: acumulado} = useQuery(['acumulado', idSociety], () => 
+    getMethod(`op/acumulado/${idSociety.id}/${idOP}/${empresaId}/${fideicomisoId}/${(f.getMonth() + 1)}/${f.getFullYear()}`)
+  ); 
+  
   const {data: categorias} = useQuery(['categoria', idSociety], () => 
     getMethod(`categoria/listar/${idSociety.id}`)
   ); 
@@ -49,7 +56,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
     formData.append('id', idOP);
     formData.append('fideicomiso', fideicomiso);
     formData.append('numero', numero);    
-    postMethod(`op/modificar/${idSociety.id}`, formData);
+    postMethod(`op/modificar/1`, formData);
     
   }
 
@@ -169,7 +176,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
           justifyContent: "flex-end",
         }}
       >
-        <Hidden  smUp={( loggedUser?.["rol.op"]==="vista")} >
+        <Hidden  smUp={( loggedUser?.["rol.op"]==="vista" || parseInt(blue)===1)} >
         
             <Box  mt={2} sx={{ pt: 1 }}>
               <Button
@@ -297,16 +304,15 @@ export function DetalleOP({ idSociety, loggedUser }) {
           <PDFViewer style={{ width: "100%", height: "90vh" }}>
             <RepOp dataOP={cargadas(formOP?.op,"op")} bancos={formOP?.bancos} cuentasBanco={formOP?.cuentasBanco}  dataFacturas={cargadas(formOP?.item,"f")} apiServerUrl={apiServerUrl} idSociedad={id} />
           </PDFViewer>
-        ) : verRetenciones ? (
+        ) : verRetenciones ? (      
 
           <FormRetenciones
-            idSociety={idSociety}
-            OPId={idOP}
-            fecha={fecha}
+            idSociety={idSociety} 
+            OPId={idOP}       
+            fecha={fecha}           
             fideicomiso={fideicomiso}
-            formOP={formOP?.op}
-            empresaId={empresaId}
-            facturas={formOP?.item}
+            formOP={formOP?.op} 
+            acumulado={acumulado}
             categorias={categorias}
             error={error}
             refetch={refetch}
@@ -379,6 +385,8 @@ export function DetalleOP({ idSociety, loggedUser }) {
               />
             </Box>
 
+  
+
             <Box  sx={{ pt: 3 }}>
               <FormDetalleOP
 
@@ -386,6 +394,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
                 estadoOP={estadoOP}
                 confirmada={confirmada}
                 idSociety={idSociety}
+               
                 loggedUser={loggedUser}
                 formOP={formOP?.op}
                 isLoading={isLoading}

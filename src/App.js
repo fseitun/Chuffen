@@ -191,28 +191,28 @@ export default function App() {
               <Route path="factura">
                 <Route path="" element={<Factura idSociety={idSociety} loggedUser={loggedUser} />} />
                 <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomisoId/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
                   element={<DetalleOP idSociety={idSociety} formaPagos={formaPagos} loggedUser={loggedUser} />}
                 />
               </Route>
               <Route path="OP">
                 <Route path="" element={<OP idSociety={idSociety} loggedUser={loggedUser} />} />
                 <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomisoId/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
                   element={<DetalleOP idSociety={idSociety} formaPagos={formaPagos}  loggedUser={loggedUser} />}
                 />
               </Route>
               <Route path="AuthAdmOP">
                 <Route path="" element={<AuthAdmOP idSociety={idSociety}  formaPagos={formaPagos}  loggedUser={loggedUser} />}  />
                 <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomisoId/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
                   element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
                 />
               </Route>
               <Route path="AuthObraOP">
                 <Route path="" element={<AuthObraOP idSociety={idSociety} formaPagos={formaPagos}   loggedUser={loggedUser} />}  />
                 <Route
-                  path=":idOP/:fecha/:empresaId/:numero/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
+                  path=":idOP/:fecha/:empresaId/:numero/:fideicomisoId/:fideicomiso/:estadoOP/:auth_adm/:auth_obra/:confirmada/:blue/:page"
                   element={<DetalleOP idSociety={idSociety} loggedUser={loggedUser} />}
                 />
               </Route>

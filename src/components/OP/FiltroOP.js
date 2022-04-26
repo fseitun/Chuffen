@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TextField, Autocomplete, FormControlLabel, FormGroup, Checkbox, Grid, Typography } from '@mui/material';
+import { TextField, Autocomplete, FormControlLabel, FormGroup, Checkbox } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import { useContext } from 'react';
 import { EstadosContext} from 'src/App';
