@@ -5,6 +5,8 @@ import { isNumberUsedDig } from 'src/utils/utils';
 import { IconButton, Collapse, Box, Grid, FormControlLabel, TextField, Button, Hidden, Checkbox, Autocomplete, Alert } from '@mui/material';
 import { postMethod } from 'src/utils/api';
 import CloseIcon from '@mui/icons-material/Close';
+import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import React from 'react';
 import { usePrompt } from 'src/utils/usePrompt';
 import { yearMonthDayNum } from 'src/utils/utils'; 
@@ -90,7 +92,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
           if(esBlue){// si es blue
             num = values.numeroBlue;
           }
-          console.log(num, values.numeroBlue, 888);
+          
           let existe = await isNumberUsedDig('factura', idSociety.id, values.empresa.id , num);
           
           if (existe || num ==='' || num === undefined) {
@@ -271,9 +273,11 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                 }
               </InputMask>
             </Hidden>
-                    
+            <Hidden  smUp={( esBlue)} >
+              <Field component={Picker} label="Fecha Emisión" type="date" name="fechaIngreso" />
+            </Hidden>
 
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <Hidden  smUp={( !verCheckBlue)} >        
                 <FormControlLabel 
                   control={ <Checkbox  id={'blue'}  name={'blue'}             
@@ -285,11 +289,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                   control={ <Checkbox  disabled defaultChecked id={'blue'}  name={'blue2'}
                   /> }   label="Blue"  />
             </Hidden>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-              <Button type="submit" disabled={isSubmitting}>
-                Agregar
-              </Button>            
+                       
                 
               </Grid>
               <Grid item md={12}> 
@@ -363,6 +363,11 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                     onChange={event => onlyNumbers(event, setFieldValue, 'no_gravados_exentos')}
                   />     
                 </Hidden>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+              <Button type="submit" disabled={isSubmitting}>
+                Agregar
+              </Button> 
               </Grid>
 
             </Grid>    
@@ -443,6 +448,24 @@ function onlyCheck(event, setFieldValue, typeOfData, chkblue, setChkblue, setEsB
 
   }
   
+}
+
+function Picker({ field, form }) {
+  const { name, value } = field;
+  const { setFieldValue } = form;
+
+  return (
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <DesktopDatePicker
+        label="Fecha Emisión"
+        inputFormat="dd/MM/yyyy"
+        
+        value={value}
+        onChange={value => setFieldValue(name, value)}
+        renderInput={params => <TextField style={{ width: '160px'}} required size="small" {...params} />}
+      />
+    </LocalizationProvider>
+  );
 }
 
 

@@ -191,9 +191,21 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
   },
 
   {
-    field: 'fechaIngreso',
-    headerName: 'Fecha',
+    field: 'createdAt',
+    headerName: 'Fecha C.',
     width: 155,
+    type: 'date',
+    editable: false,
+    headerAlign: 'center',
+    align: 'center',
+    renderCell: fFechaC,
+    
+  },
+
+  {
+    field: 'fechaIngreso',
+    headerName: 'Fecha Emisión',
+    width: 175,
     type: 'date',
     editable: acceso,
     headerAlign: 'center',
@@ -426,6 +438,7 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
             fechaIngreso: factura?.fechaIngreso,
             diasVTO: factura?.diasVTO, 
             fechaVTO: factura?.fechaVTO,  
+            createdAt: factura?.createdAt,
             OPnumero : (factura?.OP? factura?.OP?.numero:''),
             estadoOP: estados? estados[factura?.OP?.estadoOP]?.descripcion:'',
             link: factura?.link,
@@ -464,7 +477,7 @@ function CustomToolbar() {
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
       <GridToolbarExport csvOptions={{ fields: [ 'id', 'tipo', 'letra','fideicomiso', 'empresa', 'cuit','numero', 'montoTotal', 'neto', 'iva', 'percepcionesIVA', 'IIBB_CABA','IIBB_BSAS','no_gravado', 'moneda', 'es_ajuste'
- ,'fechaIngreso', 'fechaVTO', 'OPnumero', 'estadoOP'] }} />
+ , 'createdAt','fechaIngreso', 'fechaVTO', 'OPnumero', 'estadoOP'] }} />
     </GridToolbarContainer>
   );
 }
@@ -494,6 +507,17 @@ function fFechaIngreso(params) {
   }
 
   return fechaIngreso;
+}
+
+function fFechaC(params) {
+  let fecha = null; 
+  if(params.row.createdAt){
+    fecha = mostrarFecha(params.row.createdAt);
+  }else{
+    fecha = '';
+  }
+
+  return fecha;
 }
 
 function IrDetalleOP_1(params) {

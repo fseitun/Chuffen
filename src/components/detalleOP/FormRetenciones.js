@@ -16,6 +16,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
 
+  console.log(acumulado);
   var retencionGAN = 0.0;
   var retencionIVA = 0.0;
   var retencionSUSS = 0.0;
@@ -50,7 +51,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
     }
   );
 
-
+  
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
@@ -71,7 +72,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
   var minSujRet = parseFloat(categoria?.inscriptosNoRet);
   var tasaIVA = categoria?.inscriptos;
   
-  if(acumulado?.letra ==="M" || acumulado?.no_gravados_exentos ===1){
+  if(acumulado?.letra ==="Mx" || acumulado?.letra ==="A_SUJ_RETx"){
     
     netoAcumMes = noAplica;
     retAcumMes = noAplica;
@@ -110,9 +111,9 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
 
   var porcentaje_a_retener = 0;
   
-  if(acumulado?.letra ==="M" || acumulado?.no_gravados_exentos ===1){
+  if(acumulado?.letra ==="M" || acumulado?.letra ==="A_SUJ_RET"){
     porcentaje_a_retener = 100;
-    if(acumulado?.no_gravados_exentos===1){
+    if(acumulado?.letra ==="A_SUJ_RET"){
       porcentaje_a_retener = 50;
     }
     retencionIVA = ( parseFloat(formOP?.iva) * porcentaje_a_retener / 100);
@@ -131,16 +132,17 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
   var tasaSUSS = 0.0;
 
   if(formOP?.empresas[0]?.esRetSUSS === 1){ // si hay que retener SUSS
-
+    // console.log(1111);
     if(formOP?.conceptoSUSS > 0){ // ARQ, ING o no aplicaS
-    
-     
+      
       suss = categorias?.find(c => c.codigo === formOP?.conceptoSUSS);
       minSujRetSUSS = parseFloat(suss?.inscriptosNoRet);
       netoAcumAnio = parseFloat(acumulado?.netoAcumAnio);
       
       tasaSUSS =  suss.inscriptos ;
+      console.log(22222, tasaSUSS, minSujRetSUSS);
       if((netoAcumAnio + parseFloat(formOP?.neto)) > minSujRetSUSS){
+        console.log(33333, tasaSUSS);
         retencionSUSS = parseFloat(formOP?.neto) * suss.inscriptos /100 ;
         msgSUSS = Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(retencionSUSS)) + " $";
       }else{
@@ -151,10 +153,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
     }
   }
 
- 
-
-  return ( 
-      
+  return (       
     
     <div id="MENU" style={{ minHeight: "100vh" }}>
   
@@ -364,6 +363,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
                 <Grid item md={12}>
                         <Button
                           /*variant="info"*/
+                          disabled={(loggedUser['rol.op'] ==='vista' || loggedUser['rol.op'] ==='blue' || formOP?.confirmada === 1)}
                           onClick={() => {
                             saveRET();
                           }}

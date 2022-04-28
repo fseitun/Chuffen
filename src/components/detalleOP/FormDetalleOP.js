@@ -37,8 +37,6 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
   var fondos_s = useContext(FondosContext);
   var formaPagos = useContext(FormaPagosContext);
 
-
-
 /****************************************/
 /****************************************/
 /****************************************/
@@ -123,6 +121,9 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
   }
   var verRetSUSS = (formOP?.empresas[0].esRetSUSS ===1)? true:false;
   if(loggedUser['rol.op'] ==='vista' || loggedUser['rol.op'] ==='blue'){
+    verRetSUSS = false;
+  }
+  if(formOP?.confirmada === 1){
     verRetSUSS = false;
   }
 
@@ -315,14 +316,14 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
 
                                                     
                            <Typography align="right" color="blue" variant="h5">                      
-                            <Switch  onChange={event => confirmarOP(event, setIsConfirmOP,'confirmada', idSociety.id, OPId, 0, 1)}  /> Confirmar
+                            <Switch  onChange={event => confirmarOP(event, setIsConfirmOP,'confirmada', idSociety.id, OPId, refetch, 0, 1)}  /> Confirmar
                           </Typography> 
                       </Hidden>
 
                       <Hidden  smUp={(verBotonDesconfirmar)} >
                       
                           <Typography align="right" color="blue" variant="h5">                      
-                            <Switch  defaultChecked onChange={event => confirmarOP(event, setIsConfirmOP,'confirmada', idSociety.id, OPId, 0, 0)}  /> Desconfirmar
+                            <Switch  defaultChecked onChange={event => confirmarOP(event, setIsConfirmOP,'confirmada', idSociety.id, OPId, refetch, 0, 0)}  /> Desconfirmar
                             </Typography> 
                           
                       </Hidden>
@@ -520,9 +521,10 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                                 // onChange={event => setRetSUSS(event.target.value)}
                                 name="row2-radio-buttons-group"
                                     >
-                                      <FormControlLabel value={996} control={<Radio />} label="Ingenieria" />
-                                      <FormControlLabel value={997} control={<Radio />} label="Arquitectura" />
-                                      <FormControlLabel value={0} control={<Radio />} label="No aplica" />
+                                      <FormControlLabel value={995} control={<Radio />} label="Seis(6.0%)" />
+                                      <FormControlLabel value={996} control={<Radio />} label="Ing.(1.2%)" />
+                                      <FormControlLabel value={997} control={<Radio />} label="Arq.(2.5%)" />
+                                      <FormControlLabel value={0} control={<Radio />} label="N/A" />
 
                             </RadioGroup>
                       </Hidden>                   
@@ -540,13 +542,9 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                         </Typography>
                   </Grid>
 
-
-
-
                   <Grid item md={6}>
                   &nbsp;
                   </Grid>
-
 
                   <Grid item md={12}>
                   &nbsp;
@@ -1059,13 +1057,26 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                   
 
                   <Grid item md={10}>
+
+                  <Typography align="right" color="textPrimary" variant="h5">
+                        
+                        Total:
+                        </Typography>      
+                        <Typography align="right" color="textSecondary" variant="h5">
+                        
+                        Saldo:
+                        </Typography>
                                   
                   </Grid>
                   <Grid item md={2}>
-                        <Typography align="center" color="textPrimary" variant="h5">
+                        <Typography align="right" color="textPrimary" variant="h5">
                         
-                        {Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number((Math.round(formOP?.OPpago.monto1 * 100)/100 + Math.round(formOP?.OPpago.monto2 * 100)/100 + Math.round(formOP?.OPpago.monto3 * 100)/100 + Math.round(formOP?.OPpago.monto4 * 100)/100)))}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        </Typography>                 
+                        {Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number((Math.round((parseFloat(formOP?.OPpago.monto1? formOP?.OPpago.monto1:0) + parseFloat(formOP?.OPpago.monto2? formOP?.OPpago.monto2:0) + parseFloat(formOP?.OPpago.monto3? formOP?.OPpago.monto3:0) + parseFloat(formOP?.OPpago.monto4? formOP?.OPpago.monto4:0))* 100)/100 )))}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </Typography>      
+                        <Typography align="right" color="textSecondary" variant="h5">
+                        
+                        {Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number((Math.round((parseFloat(formOP?.monto) - parseFloat(formOP?.OPpago.monto1? formOP?.OPpago.monto1:0) - parseFloat(formOP?.OPpago.monto2? formOP?.OPpago.monto2:0) - parseFloat(formOP?.OPpago.monto3? formOP?.OPpago.monto3:0) - parseFloat(formOP?.OPpago.monto4? formOP?.OPpago.monto4:0))* 100+.0000001)/100)))}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </Typography>            
                   </Grid>
 
                 </Grid> 
@@ -1221,7 +1232,7 @@ function handleModification(event, setFieldValue, refetch, typeOfData, idSociety
 
 }
 
-function confirmarOP(event, setIsConfirmOP, typeOfData, idSociety, OPId, flagPago, valor) {
+function confirmarOP(event, setIsConfirmOP, typeOfData, idSociety, OPId, refetch, flagPago, valor) {
   event.preventDefault();
 
   setIsConfirmOP(valor);
@@ -1234,6 +1245,12 @@ function confirmarOP(event, setIsConfirmOP, typeOfData, idSociety, OPId, flagPag
   }    
     
   postMethod(`op/modificar/${idSociety}`, newData);
+  setTimeout(() => {
+    if(refetch){
+      refetch();
+      console.log("refetch");
+    }
+  }, 2000)
 
 }
 
