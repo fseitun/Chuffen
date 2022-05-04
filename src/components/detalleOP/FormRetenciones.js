@@ -4,24 +4,29 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Helmet } from 'react-helmet';
 import { useQueryClient, useMutation } from 'react-query';
 import { useContext } from 'react';
-import { mostrarFechaMesTXT } from 'src/utils/utils';
+import { mostrarFechaMesTXT, txt_to_DDMMAAAA } from 'src/utils/utils';
 import { postMethod } from 'src/utils/api';
 import { CondicionIVAContext } from 'src/App';
 
+import { pdf } from "@react-pdf/renderer";
+import RepGAN from "src/components/reportes/certificados/GAN";
+// import { ClosedCaptionDisabledSharp } from '@mui/icons-material';
+// const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
-export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso, formOP, categorias, isLoading, error, refetch, loggedUser }) {
+export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso, formOP, certificado, categorias, isLoading, error, refetch, loggedUser }) {
 
   const condIVA = useContext(CondicionIVAContext);
   let noAplica = "NO APLICA (0 cero)";
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
 
-  console.log(acumulado);
   var retencionGAN = 0.0;
   var retencionIVA = 0.0;
   var retencionSUSS = 0.0;
 
-  const { mutate: saveRET } = useMutation(
+  //1- Guarda los valores de las retenciones en la OP
+  //2- LLama guardar_cert_en_server
+  const { mutate: saveRET_1_of_4 } = useMutation(
     
     async () =>
       ( 
@@ -46,12 +51,154 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
         if(idSociety.id > 0) {
           queryClient.invalidateQueries(['_op', idSociety])
         }
-        refetch()        
+        if(idSociety.id > 0) {
+          // createPDF_2_of_4()
+        }  
+        refetch(); // eliminar     
       }
     }
   );
 
+  const [dataGAN, setDataGAN] = useState({});
+  const [dataIVA, setDataIVA] = useState({});
+  const [dataSUSS, setDataSUSS] = useState({});
+
+  const GanDocument = () => {
+    return (
+      <RepGAN data={dataGAN} />
+    )
+  }
+
+  const IvaDocument = () => {
+    return (
+      <RepGAN data={dataIVA} />
+    )
+  }
+
+  const SUSSDocument = () => {
+    return (
+      <RepGAN data={dataSUSS} />
+    )
+  }
+
+  var categoriaGAN =  null;
+  var categoriaSUSS = null;
   
+  // En el clidk del boton "IMPACTAR VALORES"
+  // Paso 1: saveRET_1_of_4 graba en tabla OPs campos RET_GAN, RET_IVA, RET_SUSS
+  // Paso 2: createPDF_2_of_4 formData es el archivo y los parametros (usando el reporte de certificados)
+  // Paso 3: savePDF_3_of_4 guarda el pdf en sociedades/idcliente/certificados
+  // Paso 4: saveCERT_4_of_4 Si sube bien el pdf, en la tabla certificados se guarda el nombre del archivo
+
+  const createPDF_2_of_4 = async () =>   {
+
+    let nom, ret = "";
+
+    // GANANCIAS
+    // Si existe una retencion en Ganancias
+    if(retencionGAN > 0.1){ 
+      console.log(1111);     
+
+      let blobPdf = await pdf(GanDocument()).toBlob();
+      let formData = new FormData();
+      formData.append('file', blobPdf);
+      ret = "CERT_GAN_OP_";
+      nom = ret + + formOP?.numero + "_" + fideicomiso + "_" + formOP?.empresas[0]?.razonSocial + "_" + txt_to_DDMMAAAA(fecha);
+     
+      formData.append('path', `./sociedades/${idSociety.id}/certificados/`); // guarda archivo en carpeta
+      formData.append('fileName', nom);     
+
+      savePDF_3_of_4({formData});
+      
+    }
+
+    // IVA
+    // Si existe una retencion en Ganancias
+    if(retencionIVA > 0.1){ 
+      console.log(2222);
+      
+      // setDataIVA({saludar: "hola IVA"});
+      let blobPdf = await pdf(IvaDocument()).toBlob();
+      let formData = new FormData();
+      formData.append('file', blobPdf);
+      ret = "CERT_IVA_OP_";
+      nom = ret + + formOP?.numero + "_" + fideicomiso + "_" + formOP?.empresas[0]?.razonSocial + "_" + txt_to_DDMMAAAA(fecha);
+     
+      formData.append('path', `./sociedades/${idSociety.id}/certificados/`); // guarda archivo en carpeta
+      formData.append('fileName', nom);
+     
+      savePDF_3_of_4({formData});
+      
+    }
+
+    // SUSS
+    // Si existe una retencion en Ganancias
+    if(retencionSUSS > 0.1){ 
+      console.log(3333);
+      // setDataSUSS({saludar: "hola SUSS"});
+
+      let blobPdf = await pdf(SUSSDocument()).toBlob();
+      let formData = new FormData();
+      formData.append('file', blobPdf);
+      ret = "CERT_SUSS_OP_";
+      nom = ret + + formOP?.numero + "_" + fideicomiso + "_" + formOP?.empresas[0]?.razonSocial + "_" + txt_to_DDMMAAAA(fecha);
+     
+      formData.append('path', `./sociedades/${idSociety.id}/certificados/`); // guarda archivo en carpeta
+      formData.append('fileName', nom);
+     
+      savePDF_3_of_4({formData});
+      
+    }
+    
+  }
+
+  const { mutate: savePDF_3_of_4 } = useMutation(
+      async ({formData}) => 
+          await postMethod(`utilidades/uploadpdf/${idSociety.id}`, formData),          
+        {
+          onMutate: async ({ formData }) => {
+            await queryClient.cancelQueries(['pdfFile', idSociety]);
+            const prevData = queryClient.getQueryData(['pdfFile', idSociety]);
+            return prevData;
+          },
+          onError: (err, id, context) => queryClient.setQueryData(['pdfFile', idSociety], context),
+          onSettled: (fileName) => {
+            if(idSociety.id > 0) {
+              queryClient.invalidateQueries(['pdfFile', idSociety])
+            }
+            // guarda nombre del archivo en tabla certificados
+            saveCERT_4_of_4({data: {OPId: OPId, tipo:fileName.slice(5, 8), nombre: fileName, creador: loggedUser.id, id: certificado?.find(i => i.tipo === fileName.slice(5, 8))?.id}})
+          }
+        }     
+  );
+
+  // si existe lo modifica y sino lo crea
+  const { mutate: saveCERT_4_of_4 } = useMutation(
+    async ({data}) => 
+          certificado?.find(i => i.tipo === data.tipo)?.id > 0? await postMethod(`certificado/modificar/${idSociety.id}`, data):
+                                                                await postMethod(`certificado/agregar/${idSociety.id}`, data),          
+      {
+        onMutate: async ({ data }) => {
+          await queryClient.cancelQueries(['certificado', idSociety]);
+          const prevData = queryClient.getQueryData(['certificado', idSociety]);
+          return prevData;
+        },
+        onError: (err, id, context) => queryClient.setQueryData(['certificado', idSociety], context),
+        onSettled: () => {
+          if(idSociety.id > 0) {
+            queryClient.invalidateQueries(['certificado', idSociety])
+          }
+          refetch()
+        }
+      }     
+);
+  
+
+  
+
+
+  
+
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
@@ -67,10 +214,12 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
   var msgRetencion = "";
   
   var codigo = "";
-  var categoria = categorias?.find(c => c.id === formOP?.empresas[0].categoria);
+  categoriaGAN = categorias?.find(c => c.id === formOP?.empresas[0].categoria);
   
-  var minSujRet = parseFloat(categoria?.inscriptosNoRet);
-  var tasaIVA = categoria?.inscriptos;
+  var minSujRet = parseFloat(categoriaGAN?.inscriptosNoRet);
+  var tasaIVA = categoriaGAN?.inscriptos;
+
+
   
   if(acumulado?.letra ==="Mx" || acumulado?.letra ==="A_SUJ_RETx"){
     
@@ -81,22 +230,26 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
     tasaIVA = "sin dato";
     let cod = (acumulado?.letra ==="M")? 998:999;
 
-    categoria = categorias?.find(c => c.codigo === parseInt(cod)); 
-    tasaIVA = categoria?.inscriptos;
-    retencionGAN = categoria.inscriptos * formOP?.neto /100;
+    categoriaGAN = categorias?.find(c => c.codigo === parseInt(cod)); 
+    tasaIVA = categoriaGAN?.inscriptos;
+    retencionGAN = categoriaGAN.inscriptos * formOP?.neto /100;
     msgRetencion = "" + retencionGAN;
-    regimenGAN = categoria?.regimen;
+    regimenGAN = categoriaGAN?.regimen;
 
 
-  }else if(categoria?.codigo){
+  }else if(categoriaGAN?.codigo){
 
-    regimenGAN = categoria?.regimen;
-    codigo = categoria?.codigo;
+    regimenGAN = categoriaGAN?.regimen;
+    codigo = categoriaGAN?.codigo;
     netoAcumMes = parseFloat(acumulado?.netoAcumMes) + parseFloat(formOP?.neto);
     retAcumMes = parseFloat(acumulado?.netoGAN_Mes);
-    retencionGAN = ((netoAcumMes - minSujRet) * categoria.inscriptos / 100) - retAcumMes;
+    retencionGAN = ((netoAcumMes - minSujRet) * categoriaGAN.inscriptos / 100) - retAcumMes;
     if(retencionGAN<0){retencionGAN = 0.0;} 
     msgRetencion = "" + retencionGAN;
+
+    if(dataGAN?.saludar !== regimenGAN ){
+      setDataGAN({saludar: regimenGAN});
+    }
 
   }else{
     regimenGAN = "ERROR: FALTA CONFIGURAR LA CATEGORIA DEL PROVEEDOR ";
@@ -117,6 +270,10 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
       porcentaje_a_retener = 50;
     }
     retencionIVA = ( parseFloat(formOP?.iva) * porcentaje_a_retener / 100);
+    if(dataIVA?.saludar !== retencionIVA ){
+      setDataIVA({saludar: retencionIVA});
+    }
+
   }
 
 
@@ -124,7 +281,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
   // SUSS
   //*****************************
   
-  var suss = [];
+
   var msgSUSS = "";
   var netoAcumAnio = 0.0;
   
@@ -132,19 +289,23 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
   var tasaSUSS = 0.0;
 
   if(formOP?.empresas[0]?.esRetSUSS === 1){ // si hay que retener SUSS
-    // console.log(1111);
+    
     if(formOP?.conceptoSUSS > 0){ // ARQ, ING o no aplicaS
       
-      suss = categorias?.find(c => c.codigo === formOP?.conceptoSUSS);
-      minSujRetSUSS = parseFloat(suss?.inscriptosNoRet);
+      categoriaSUSS = categorias?.find(c => c.codigo === formOP?.conceptoSUSS);
+      minSujRetSUSS = parseFloat(categoriaSUSS?.inscriptosNoRet);
       netoAcumAnio = parseFloat(acumulado?.netoAcumAnio);
       
-      tasaSUSS =  suss.inscriptos ;
-      console.log(22222, tasaSUSS, minSujRetSUSS);
+      tasaSUSS =  categoriaSUSS.inscriptos ;
+      
       if((netoAcumAnio + parseFloat(formOP?.neto)) > minSujRetSUSS){
-        console.log(33333, tasaSUSS);
-        retencionSUSS = parseFloat(formOP?.neto) * suss.inscriptos /100 ;
+        
+        retencionSUSS = parseFloat(formOP?.neto) * categoriaSUSS.inscriptos /100 ;
         msgSUSS = Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(retencionSUSS)) + " $";
+
+        if(dataSUSS?.saludar !== retencionSUSS ){
+          setDataSUSS({saludar: retencionSUSS});
+        }
       }else{
         msgSUSS = retencionSUSS = 0.0;
       }
@@ -365,7 +526,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
                           /*variant="info"*/
                           disabled={(loggedUser['rol.op'] ==='vista' || loggedUser['rol.op'] ==='blue' || formOP?.confirmada === 1)}
                           onClick={() => {
-                            saveRET();
+                            saveRET_1_of_4();
                           }}
                         >
                           {"Impactar valores"}
@@ -411,9 +572,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
                   </Typography> 
                   <Typography align="left" color="textSecondary" variant="h6">
                     {acumulado?.factrurasMesGAN}
-                  </Typography> 
-  
-  
+                  </Typography>   
                 
                 </Grid> 
               

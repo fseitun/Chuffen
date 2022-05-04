@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { TextField, MenuItem, Grid } from '@mui/material';
+import { TextField, MenuItem, Grid, Hidden } from '@mui/material';
 import esLocale from 'date-fns/locale/es';
 import { useContext } from 'react';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
@@ -152,19 +152,23 @@ export function FormDetalleOC({ OCId, formOC, loggedUser, refetch  }) {
                 />        
               </Grid> 
               <Grid item md={2}> 
-                <LocalizationProvider dateAdapter={AdapterDateFns} locale={localeMap[locale]}>
-                  
-                      <DatePicker
-                        mask={maskMap[locale]}
-                        value={valuef}
-                        disabled={!acceso}
-                        label='Fecha'
-                        onChange={(newValue) => save(newValue, 'fechaIni', OCId, false, true)}
-                        renderInput={(params) => <TextField required size="small" {...params} />}
-                      />
-                  
-                </LocalizationProvider>
+                <Hidden  smUp={true} >
+                  <LocalizationProvider dateAdapter={AdapterDateFns} locale={localeMap[locale]}>
+                    
+                        <DatePicker
+                          mask={maskMap[locale]}
+                          value={valuef}
+                          disabled={!acceso}
+                          label='Fecha'
+                          onChange={(newValue) => save(newValue, 'fechaIni', OCId, false, true)}
+                          renderInput={(params) => <TextField required size="small" {...params} />}
+                        />
+                    
+                  </LocalizationProvider>
+                </Hidden> 
+
               </Grid>
+
             </Grid>  
           </Form>
         )}

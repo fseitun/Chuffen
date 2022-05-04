@@ -56,7 +56,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
     formData.append('id', idOP);
     formData.append('fideicomiso', fideicomiso);
     formData.append('numero', numero);    
-    postMethod(`op/modificar/1`, formData);
+    postMethod(`op/modificar/${idSociety.id}`, formData);
     
   }
 
@@ -66,8 +66,6 @@ export function DetalleOP({ idSociety, loggedUser }) {
       getPdfBlob();
     }, 300);
   }
-
-
 
   function nomPdfCargado(obj, numero, fideicomiso){
     
@@ -158,12 +156,13 @@ export function DetalleOP({ idSociety, loggedUser }) {
       }
   }
   
+
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
     return `Hubo un error: ${error.message}`;
   } else
-
+  console.log(formOP);
   return ( 
       
     
@@ -312,6 +311,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
             fecha={fecha}           
             fideicomiso={fideicomiso}
             formOP={formOP?.op} 
+            certificado={formOP?.certificado}
             acumulado={acumulado}
             categorias={categorias}
             error={error}

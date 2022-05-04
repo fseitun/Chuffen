@@ -117,8 +117,25 @@ export function onlyNumbers(event, setFieldValue, typeOfData) {
   }
 }
 
+// *******************************************************************
+// Devuelve un Date con formato 5 dic. 2021
+export function txt_to_DD_MMM_AAAA(fecha) {
+  let dd = new Date(fecha).getDate();
+  let mm = new Date(fecha).toLocaleDateString('es-AR', { timeZone: 'UTC',  month: 'short' });
+  let yyyy = new Date(fecha).getFullYear();
+  return dd + ' ' + mm + ' '  + yyyy;
+ 
+}
 
-
+// *******************************************************************
+// Devuelve un Date con formato 5 dic. 2021
+export function txt_to_DDMMAAAA(fecha) {
+  let dd = new Date(fecha).getDate();
+  let mm = new Date(fecha).getMonth();
+  let yyyy = new Date(fecha).getFullYear();
+  return dd + '-' + mm + '-'  + yyyy;
+ 
+}
 
 // *******************************************************************
 // entra date

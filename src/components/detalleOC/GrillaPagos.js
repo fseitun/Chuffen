@@ -157,29 +157,19 @@ export function GrillaPagos({ OCId, loggedUser, formOC, isLoading, error, moneda
   function buscarCAC(fechaOP, CACtipo){
           
     let rta = 0.0;
-    if(CACtipo==="Construción"){
-      rta = CACs?.find(cac => cac.fecha.slice(0, 7) === fechaOP?.slice(0, 7))?.definitivo;
-    }else if(CACtipo==="Materiales"){
-      rta = CACs?.find(cac => cac.fecha.slice(0, 7) === fechaOP?.slice(0, 7))?.materiales;
-    }else if(CACtipo==="Mano de Obra"){
-      rta = CACs?.find(cac => cac.fecha.slice(0, 7) === fechaOP?.slice(0, 7))?.manodeobra;
-    }
-
-    if(!rta){// si no encuenta una CAC definitivo, busco el mes anterior
-      let d = new Date(fechaOP.slice(0, 10) + " " + fechaOP.slice(12, 5));
-      
-      d.setMonth(d.getMonth() - 1)
-
+    if(fechaOP){
       if(CACtipo==="Construción"){
-        rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.definitivo;
+        rta = CACs?.find(cac => cac.fecha.slice(0, 7) === fechaOP?.slice(0, 7))?.definitivo;
       }else if(CACtipo==="Materiales"){
-        rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.materiales;
+        rta = CACs?.find(cac => cac.fecha.slice(0, 7) === fechaOP?.slice(0, 7))?.materiales;
       }else if(CACtipo==="Mano de Obra"){
-        rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.manodeobra;
+        rta = CACs?.find(cac => cac.fecha.slice(0, 7) === fechaOP?.slice(0, 7))?.manodeobra;
       }
 
       if(!rta){// si no encuenta una CAC definitivo, busco el mes anterior
-        d.setMonth(d.getMonth() - 1)        
+        let d = new Date(fechaOP.slice(0, 10) + " " + fechaOP.slice(12, 5));
+        
+        d.setMonth(d.getMonth() - 1)
 
         if(CACtipo==="Construción"){
           rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.definitivo;
@@ -187,6 +177,18 @@ export function GrillaPagos({ OCId, loggedUser, formOC, isLoading, error, moneda
           rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.materiales;
         }else if(CACtipo==="Mano de Obra"){
           rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.manodeobra;
+        }
+
+        if(!rta){// si no encuenta una CAC definitivo, busco el mes anterior
+          d.setMonth(d.getMonth() - 1)        
+
+          if(CACtipo==="Construción"){
+            rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.definitivo;
+          }else if(CACtipo==="Materiales"){
+            rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.materiales;
+          }else if(CACtipo==="Mano de Obra"){
+            rta = CACs?.find(cac => cac.fecha.slice(0, 7) === yearMonthDayString(d).slice(0, 7))?.manodeobra;
+          }
         }
       }
     }
