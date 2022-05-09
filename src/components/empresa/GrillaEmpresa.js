@@ -12,6 +12,15 @@ import { CondicionIVAContext, CategoriasComboContext} from 'src/App';
 
 const columns = (colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, rubros, subRubros, setIsPromptOpen, setRowIdToDelete) => [
   {
+    field: 'id',
+    headerName: 'id',
+    width: 60,
+    hide: colVisibles?.find(i => i.c === 'id').h,
+    editable: false,
+    headerAlign: 'center',
+  },
+
+  {
     field: 'razonSocial',
     headerName: 'Razón Social',
     width: 170,
@@ -24,7 +33,7 @@ const columns = (colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, r
     headerName: 'CUIT',
     width: 130,
     hide: colVisibles?.find(i => i.c === 'CUIT').h,
-    // editable: true,
+    editable: true,
     headerAlign: 'center',
     valueFormatter: ({ value }) => mostrarCUIT(value),
   },
@@ -162,6 +171,27 @@ const columns = (colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, r
     headerAlign: 'center',
   },
   {
+    field: 'actividad',
+    headerName: 'Actividad',
+    type: 'singleSelect',
+    valueOptions: ['limpieza', 'seguridad', 'otra'],
+    width: 150,
+    editable: puedeEditar,
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'actividad').h,
+    headerAlign: 'center',
+  },
+
+  {
+    field: 'domicilio',
+    headerName: 'Domicilio',
+    width: 200,
+    editable: puedeEditar,
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'actividad').h,
+    headerAlign: 'center',
+  },
+  
+  
+  {
     field: 'esProveedor',
     headerName: 'Es Provee.',
     type: 'boolean',
@@ -199,7 +229,7 @@ const columns = (colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, r
 ];
 
 
-export function GrillaEmpresa({ loggedUser, idSociety, tipo }) {
+export function GrillaEmpresa({ empresaInformation, isLoading, error, loggedUser, idSociety, filtRS, tipo }) {
   
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
@@ -216,12 +246,7 @@ export function GrillaEmpresa({ loggedUser, idSociety, tipo }) {
   var categorias = useContext(CategoriasComboContext);
   var condicion_de_IVA = useContext(CondicionIVAContext);
 
-  const {
-    data: empresaInformation,
-    isLoading,
-    error,
-  } = useQuery(['empresa', idSociety], () => getMethod(`empresa/listar/${idSociety.id}/${tipo}`));
-
+  
   const queryClient = useQueryClient();
 
   const { data: rubros } = useQuery(['rubros', idSociety], () =>
@@ -283,7 +308,7 @@ export function GrillaEmpresa({ loggedUser, idSociety, tipo }) {
         ];
   }else{   
     colDefaultVisibles = [
-
+        {c:'id',  h:false},
         {c:'razonSocial',  h:false},
         {c:'CUIT',  h:false},
         {c:'rubroId',  h:false}, 
@@ -300,7 +325,9 @@ export function GrillaEmpresa({ loggedUser, idSociety, tipo }) {
         {c:'mail',  h:false},  
             
         {c:'enviar_OP_auto',  h:false},
-
+        {c:'actividad',  h:false},
+        {c:'domicilio',  h:false},
+        
         {c:'esProveedor',  h:true},
         {c:'esFiduciante',  h:true},  
         {c:'subrubroId',  h:true}, 
@@ -318,13 +345,22 @@ export function GrillaEmpresa({ loggedUser, idSociety, tipo }) {
     }
   };
 
-
   const [sortModel, setSortModel] = React.useState([
     {
       field: 'razonSocial',
       sort: 'asc',
     },
   ]);
+
+  function filtrar(element, filtRS){    
+    
+    if(filtRS === -1){
+      return true;
+    }else{
+      if(element.id===filtRS){return true;}else{return false;}
+    }
+
+  }
 
   const onSort = (newSort) => {
 
@@ -350,12 +386,12 @@ export function GrillaEmpresa({ loggedUser, idSociety, tipo }) {
       <div style={{ width: '100%' }}>
         <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
         <DataGrid
-          rows={empresaInformation.map(empresa => ({
+          rows={empresaInformation.filter(element =>filtrar(element, filtRS)).map(empresa => ({
             id: empresa?.id,
             rubroId: rubros?.find(rubro => rubro.id === empresa.rubroId)?.rubro,
             rubro_filtro: empresa?.rubroId,
             subrubroId: subRubros?.find(subRubro => subRubro.id === empresa.subrubroId)?.subRubro,
-           
+            id: empresa?.id,
             razonSocial: empresa?.razonSocial,
             CUIT: empresa?.CUIT,
             mail: empresa?.mail,
@@ -366,7 +402,8 @@ export function GrillaEmpresa({ loggedUser, idSociety, tipo }) {
             esProveedor: empresa?.esProveedor,
             esFiduciante: empresa?.esFiduciante,
             enviar_OP_auto: empresa?.enviar_OP_auto,
-            
+            actividad: empresa?.actividad,
+            domicilio: empresa?.domicilio,
             esRetSUSS: empresa?.esRetSUSS===0? false: true,
             esRetIVA: empresa?.esRetIVA===0? false: true,
             categoria: categorias?.find(i => i.id === empresa.categoria)?.descripcion,

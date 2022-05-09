@@ -23,6 +23,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
   if(loggedUser?.['rol.factura'] ==='total'){/*blue= -1;*/ verCheckBlue = true;}
 
 
+
   const { mutate: addFactura } = useMutation(
     newFactura => postMethod(`factura/agregar/${idSociety.id}`, newFactura),
     {
@@ -39,9 +40,18 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
     }
   );
 
+  
+  const [msg, setMsg] = useState("");
+
   var letras = [{id:"A", descripcion:"A"},{id:"B", descripcion:"B"},{id:"C", descripcion:"C"},{id:"M", descripcion:"M"},{id:"A_SUJ_RET", descripcion:"A Ope. Sujeto a Retención"},{id:"-" , descripcion:"-"}];
+  var porcentajes_IVA = [{id:21, descripcion:"27,0%"},{id:21, descripcion:"27,0%"}, {id:17, descripcion:"17,0%"},{id:10.5, descripcion:"10,5%"},{id:5, descripcion:"5,0%"},{id:0, descripcion:"0,0%"}];
   var tipos = useContext(TiposContext);
 
+  const [porcentajeIVA, setPorcentajeIVA] = useState({id:0, descripcion:"0,0%"});
+  const [montoIVA, setMontoIVA] = useState(0);
+  const [montoNeto, setMontoNeto] = useState(null);
+  
+  
   const [tipoInForm, setTipoInForm] = useState({id: 0, descripcion: 'Factura'});
   const [fideInForm, setFideInForm] = useState(null);
   const [typeInForm, setTypeInForm] = useState(null);
@@ -50,7 +60,6 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
 
   let verCheckBlueDis = false;
   let iniNumber = '';
-  // var iniMask = "99999-99999999";
   let iniBlue = true;
   let alwaysBlue = false;  
 
@@ -88,15 +97,20 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
           if(values?.tipo === undefined){values.tipo = tipoInForm;}
           if(esBlue && values.numeroBlue === undefined){values.numeroBlue = iniNumber;}
   
-          let num = values.numero.slice(6, 13);
-          if(esBlue){// si es blue
+          let num = values.numero; //.slice(6, 13);
+          let simi = values.numero.slice(11, 14);
+          
+          if(esBlue){
+            simi = values.numeroBlue.slice(7, 10);
             num = values.numeroBlue;
           }
           
           let existe = await isNumberUsedDig('factura', idSociety.id, values.empresa.id , num);
+
+          let similar = await isNumberUsedDig('factura', idSociety.id, values.empresa.id , simi);
           
           if (existe || num ==='' || num === undefined) {
-            
+            setMsg("Ya existe ese número de factura para esa razon social.");
             setIsPromptOpen(true);
 
           }else{
@@ -108,7 +122,11 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
             if(values.IIBB_BSAS){tot +=parseFloat(values.IIBB_BSAS);}
             if(values.no_gravados_exentos){tot +=parseFloat(values.no_gravados_exentos);}
 
-            // console.log(11111, esBlue, values.numeroBlue);
+            if(similar){
+              setMsg("Cuidado, esta ingresando una factura terminada en: " + simi + " y existe una similar para ese proveedor.");
+              setIsPromptOpen(true);
+            }
+
             addFactura({
               numero: !esBlue? values.numero:values.numeroBlue,
               neto: values.neto,
@@ -119,6 +137,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
               IIBB_BSAS: !esBlue? values.tipo.id===2? (-1 * values.IIBB_BSAS):values.IIBB_BSAS: 0,
               no_gravados_exentos: !esBlue? values.tipo.id===2? (-1 * values.no_gravados_exentos):values.no_gravados_exentos: 0,
               montoTotal: values.tipo.id===2? (-1 * tot):tot,
+              porcentajeIVA: values.porcentajeIVA.id,
               fechaIngreso: values.fechaIngreso,
               tipo: values.tipo.id,              
               empresaId: values.empresa.id,
@@ -166,7 +185,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                     title={msgLetra}
                     disablePortal
                     required
-                    style={{ width: '80px', display: 'inline-flex' }}
+                    style={{ width: '100px', display: 'inline-flex' }}
                     onChange={(event, newValue) => {
                       setLetraInForm(newValue);
                       setFieldValue('letra', newValue);
@@ -186,7 +205,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                 title="Seleccione un fideicomiso."
                 disablePortal
                 required
-                style={{ width: '170px', display: 'inline-flex' }}
+                style={{ width: '160px', display: 'inline-flex' }}
                 onChange={(event, newValue) => {
                   setFideInForm(newValue);
                   setFieldValue('fideicomiso', newValue);
@@ -236,8 +255,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                 maxLength={11}         
                 size="small"
                 style={{ width: '160px'}}
-                // sx={{ width: '25ch'}}
-    
+  
                 name='numero'
                 
                 />
@@ -259,7 +277,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                 <TextField 
                 
                 title="Cargar número completo de la factura."
-                //label='Numero blue'
+                
                 type='float'
                 required     
                 maxLength={11}         
@@ -304,20 +322,54 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                   size="small"
                   style={{ width: '160px', display: 'inline-flex' }}
                   name='neto'
-                  onChange={event => onlyNumbers(event, setFieldValue, 'neto')}
+                  onChange={event => 
+                    {
+                      setMontoNeto(event.target.value);
+                      setMontoIVA(Math.round((parseFloat(event.target.value)?parseFloat(event.target.value)*parseFloat(porcentajeIVA.id):0))/100);
+                      onlyNumbers(event, setFieldValue, 'neto')
+                    }
+                  }
                 />       
-                <Field
-                  as={TextField}
-                  label='Iva'
-                  title="Iva, solo numeros."                  
-                  maxLength={9}
-                  type='float'
-                  size="small"
-                  style={{ width: '160px', display: 'inline-flex' }}
-                  name='iva'
-                  onChange={event => onlyNumbers(event, setFieldValue, 'iva')}
-                />  
+
+               
+
                 <Hidden  smUp={( esBlue)} >
+
+                  <Field
+                    as={Autocomplete}
+                    size={'small'}
+                    label='%'
+                    title="% IVA"
+                    disablePortal
+                    required
+                    style={{ width: '100px', display: 'inline-flex' }}
+                    onChange={(event, newValue) => {
+                      setPorcentajeIVA(newValue);
+                      // console.log(4444, newValue.id, montoNeto, ((newValue.id/100)) * parseFloat(montoNeto));
+                      setMontoIVA(Math.round(newValue.id * parseFloat(montoNeto))/100);
+                      setFieldValue('porcentajeIVA', newValue);
+                    }}
+                    value={porcentajeIVA}
+                    getOptionLabel={option => option?.descripcion}
+                    isOptionEqualToValue={(option, value) => option?.id === value.id}
+                    options={(porcentajes_IVA? porcentajes_IVA:[])}
+                    renderInput={params => <TextField {...params} label='% IVA' />}
+                  />
+
+                  <Field
+                    as={TextField}
+                    label='Iva'
+                    title="Iva, solo numeros."                  
+                    maxLength={9}
+                    type='float'
+                    size="small"
+                    value={montoIVA}
+                    style={{ width: '160px', display: 'inline-flex' }}
+                    name='iva'
+                    onChange={event => onlyNumbers(event, setFieldValue, 'iva')}
+                  />  
+              
+
                   <Field
                     as={TextField}
                     label='Percepciones IVA'
@@ -400,7 +452,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
         )}
       </Formik>
       <Prompt
-        message="Ya existe ese número de factura para esa razon social."
+        message={msg}
         ok
       />
     </>

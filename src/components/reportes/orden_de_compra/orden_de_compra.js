@@ -69,13 +69,6 @@ const styles = StyleSheet.create({
     },
 
   });
-/*
-  var arr_id = [];
-  var arr_banco = [];
-  var arr_cid = [];
-  var arr_cuenta = [];*/
-  
-  
 
   const orden_de_compra = ({dataOC, apiServerUrl, idSociedad, moneda, totARS, totUSD, ajARS, ajUSD}) => (
 

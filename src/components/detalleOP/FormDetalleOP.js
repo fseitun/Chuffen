@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
-import { Button, RadioGroup, Radio, FormControlLabel, TextField, Typography, Grid, Autocomplete, Hidden, Switch} from '@mui/material';
+import { Button, Tooltip, IconButton, RadioGroup, Radio, FormControlLabel, TextField, Typography, Grid, Autocomplete, Hidden, Switch} from '@mui/material';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { postMethod, getMethod} from 'src/utils/api';
@@ -10,10 +10,16 @@ import { isValidDate, yearMonthDayString } from 'src/utils/utils';
 import { NavLink as RouterLink } from 'react-router-dom';
 import { useContext } from 'react';
 import { EstadosContext, RetencionesContext, FormaPagosContext, FondosContext} from 'src/App';
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
+//import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
+import { saveAs } from "file-saver";
+import { useNavigate, useParams } from 'react-router-dom';
 
 
-export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRetIVA, retSUSS, setRetSUSS, OPId, loggedUser, estadoOP, confirmada, formOP, isLoading, error, refetch, empresaId, fideicomiso}) {
-  
+const apiServerUrl = process.env.REACT_APP_API_SERVER;
+
+export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRetIVA, certificado, retSUSS, setRetSUSS, OPId, loggedUser, estadoOP, confirmada, formOP, isLoading, error, refetch, empresaId, fideicomiso}) {
+  const navigate = useNavigate();
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
 
@@ -36,7 +42,15 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
   var retenciones = useContext(RetencionesContext);  
   var fondos_s = useContext(FondosContext);
   var formaPagos = useContext(FormaPagosContext);
+ 
+  const saveFile = (nombre, url) => {
+    let path = url + "sociedades/" + idSociety.id + "/certificados/" + nombre;  
+    saveAs(
+      path, nombre + ".pdf"
+    );
+  };
 
+ 
 /****************************************/
 /****************************************/
 /****************************************/
@@ -127,7 +141,7 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
     verRetSUSS = false;
   }
 
-
+  // console.log(5555, formOP);
 
   if (isLoading) {
     return 'Cargando...';
@@ -446,8 +460,22 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                       }}
                   />
                   </Grid>
-                  <Grid item md={6}>
+                  <Grid item md={1}>
+                      <Hidden  smUp={!(certificado?.find(i => i.tipo === 'GAN')?.id > 0 || formOP?.RET_GAN < 1 ) } >
+                      
+                      <Tooltip title="Descargar Certificado GAN"> 
+                        <IconButton color="inherit" onClick={() => {saveFile(certificado?.find(i => i.tipo === 'GAN')?.nombre, apiServerUrl)}} >
+                          <DownloadForOfflineIcon color="primary" />
+                        </IconButton>
+                      </Tooltip>
+                    </Hidden>
+                  </Grid>
+                  <Grid item md={5}>
                   </Grid> 
+
+
+
+
 
                   <Grid item md={2}>
                   </Grid>               
@@ -466,6 +494,14 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                   />
                   </Grid>
                   <Grid item md={1}>
+                      <Hidden  smUp={!(certificado?.find(i => i.tipo === 'IVA')?.id > 0  || formOP?.RET_IVA < 1 )} >
+                      
+                      <Tooltip title="Descargar Certificado IVA">
+                        <IconButton color="inherit" onClick={() => {saveFile(certificado?.find(i => i.tipo === 'IVA')?.nombre, apiServerUrl)}} >
+                          <DownloadForOfflineIcon color="primary" />
+                        </IconButton>
+                      </Tooltip>
+                    </Hidden>
                   </Grid>
                   <Grid item md={5}>
                    <Hidden  smUp={!verRetGAN} >
@@ -498,7 +534,8 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                       }}
                   />
                   </Grid>
-                  <Grid item md={2}>                                                                                                                                             
+                  <Grid item md={2}>                  
+
                   <TextField  size={'small'} sx={{ width: '20ch' }} label="Certificado SUSS"  key={formOP?.COMP_SUSS} defaultValue={formOP?.COMP_SUSS}  name="COMP_SUSS" onChange={event => handleModification(event, setFieldValue, refetch, 'COMP_SUSS', idSociety.id, OPId, 0, 0)} 
                        InputProps={{
                         readOnly: (!acceso || (isConfirmOP===1)?true:false),
@@ -506,6 +543,14 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                   />
                   </Grid>
                   <Grid item md={1}>
+                    <Hidden  smUp={!(certificado?.find(i => i.tipo === 'SUS')?.id > 0   || formOP?.RET_SUSS < 1 )} >
+                  
+                      <Tooltip title="Descargar Certificado SUSS">
+                        <IconButton color="inherit" onClick={() => {saveFile(certificado?.find(i => i.tipo === 'SUS')?.nombre, apiServerUrl)}} >
+                          <DownloadForOfflineIcon color="primary" />
+                        </IconButton>
+                      </Tooltip>
+                    </Hidden>
                   </Grid>
                   <Grid item md={5}>
                    <Hidden  smUp={!verRetSUSS} >
@@ -521,7 +566,7 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                                 // onChange={event => setRetSUSS(event.target.value)}
                                 name="row2-radio-buttons-group"
                                     >
-                                      <FormControlLabel value={995} control={<Radio />} label="Seis(6.0%)" />
+                                      <FormControlLabel value={995} control={<Radio />} label="Seg. & Limp." />
                                       <FormControlLabel value={996} control={<Radio />} label="Ing.(1.2%)" />
                                       <FormControlLabel value={997} control={<Radio />} label="Arq.(2.5%)" />
                                       <FormControlLabel value={0} control={<Radio />} label="N/A" />
@@ -1051,11 +1096,6 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                       />                
                   </Grid>
 
-
-
-
-                  
-
                   <Grid item md={10}>
 
                   <Typography align="right" color="textPrimary" variant="h5">
@@ -1095,17 +1135,16 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
 
 function onlyNumbers2(event, setFieldValue, setTypeInForm, refetch, typeOfData, idSociety, OPId, flagPago, newValue) {
   
-  // console.log(event.target);
   const { value } = event.target;
-  console.log(value, newValue?.id);
+  
   if(value===0){
-    console.log(11);
+    
     event.preventDefault();
-    // const { value } = event.target;
+  
     const regex = /^\d{0,7}(\.\d{0,2})?$/;
-    // console.log(regex.test(value.toString()));
+    
     if (regex.test(value.toString())) {
-      console.log(22, typeOfData);
+      
       setTypeInForm(newValue);
       setFieldValue(typeOfData, value.toString());
       handleModification(event, setFieldValue, refetch, typeOfData, idSociety, OPId, flagPago, newValue?.id, null);
@@ -1124,7 +1163,7 @@ function onlyNumbers3(event, setFieldValue, refetch, typeOfData, idSociety, OPId
     event.preventDefault();
     const { value } = event.target;
     const regex = /^\d{0,9}(\.\d{0,2})?$/;
-    // console.log(regex.test(value.toString()));
+    
     
     if(value!==undefined){
       if (regex.test(value.toString())) {

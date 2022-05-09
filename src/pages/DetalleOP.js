@@ -162,7 +162,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
   } else if (error) {
     return `Hubo un error: ${error.message}`;
   } else
-  console.log(formOP);
+  
   return ( 
       
     
@@ -397,6 +397,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
                
                 loggedUser={loggedUser}
                 formOP={formOP?.op}
+                certificado={formOP?.certificado}
                 isLoading={isLoading}
                 error={error}
                 empresaId={empresaId}

@@ -519,7 +519,7 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
     }
     
     // filtrar terminados
-    if(element.confirmada===1 && element.archivada && element.enviada && filtTerm){
+    if((element.confirmada===1 && element.archivada && element.enviada || element.estadoOP===6 ) && filtTerm){
       rta = false;
     }
 

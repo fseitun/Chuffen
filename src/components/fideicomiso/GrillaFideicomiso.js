@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { TextField, Autocomplete, Button } from '@mui/material';
-// import { useNavigate } from 'react-router-dom';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { NavLink as RouterLink } from 'react-router-dom';
@@ -56,6 +55,14 @@ const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
     editable: true,
     headerAlign: 'center',
     align: 'left',
+  },
+  {
+    field: 'empresaId',
+    headerName: 'Id',
+    width: 100,
+    editable: true,
+    headerAlign: 'center',
+    align: 'center',
   },
   {
     field: 'logo',
@@ -115,7 +122,6 @@ export function GrillaFideicomiso({ idSociety }) {
   const [color, setColor] = useState(null);
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
-  //const navigate = useNavigate();
 
   const {
     data: fideicomisoInformation,
@@ -163,10 +169,6 @@ export function GrillaFideicomiso({ idSociety }) {
       onSettled: () => queryClient.invalidateQueries(['fideicomiso', idSociety]),
     }
   );
-/*
-  function IrAFideicomiso(params) {
-    navigate(`./${params.row.nombre}`);
-  }*/
 
   const [sortModel, setSortModel] = React.useState([
     {
@@ -208,6 +210,7 @@ export function GrillaFideicomiso({ idSociety }) {
             logo: fideicomiso.logo,
             cloud: fideicomiso.cloud,
             mailOP: fideicomiso.mailOP,
+            empresaId: fideicomiso.empresaId,
             deleteId: fideicomiso.id,
           }))}
           onCellEditCommit={modifyData}
@@ -259,9 +262,6 @@ function CustomToolbar() {
     </GridToolbarContainer>
   );
 }
-
-
-
 
 function ColorPicker({ color, setColor, colorOptions, originalColor }) {
   useEffect(

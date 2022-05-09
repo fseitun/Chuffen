@@ -4,14 +4,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Helmet } from 'react-helmet';
 import { useQueryClient, useMutation } from 'react-query';
 import { useContext } from 'react';
-import { mostrarFechaMesTXT, txt_to_DDMMAAAA } from 'src/utils/utils';
+import { mostrarFechaMesTXT, txt_to_DDMMAAAA, date_to_YYYYMMDD, date_to_YYYYMMDD_s, formato_moneda } from 'src/utils/utils';
 import { postMethod } from 'src/utils/api';
 import { CondicionIVAContext } from 'src/App';
-
 import { pdf } from "@react-pdf/renderer";
-import RepGAN from "src/components/reportes/certificados/GAN";
-// import { ClosedCaptionDisabledSharp } from '@mui/icons-material';
-// const apiServerUrl = process.env.REACT_APP_API_SERVER;
+import RepCertificado from "src/components/reportes/certificados/certificado";
 
 export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso, formOP, certificado, categorias, isLoading, error, refetch, loggedUser }) {
 
@@ -52,32 +49,33 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
           queryClient.invalidateQueries(['_op', idSociety])
         }
         if(idSociety.id > 0) {
-          // createPDF_2_of_4()
+          createPDF_2_of_4()
         }  
         refetch(); // eliminar     
       }
     }
   );
 
+  var general = {};
   const [dataGAN, setDataGAN] = useState({});
   const [dataIVA, setDataIVA] = useState({});
   const [dataSUSS, setDataSUSS] = useState({});
 
   const GanDocument = () => {
     return (
-      <RepGAN data={dataGAN} />
+      <RepCertificado data={dataGAN} />
     )
   }
 
   const IvaDocument = () => {
     return (
-      <RepGAN data={dataIVA} />
+      <RepCertificado data={dataIVA} />
     )
   }
 
   const SUSSDocument = () => {
     return (
-      <RepGAN data={dataSUSS} />
+      <RepCertificado data={dataSUSS} />
     )
   }
 
@@ -96,14 +94,15 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
 
     // GANANCIAS
     // Si existe una retencion en Ganancias
-    if(retencionGAN > 0.1){ 
-      console.log(1111);     
+    if(retencionGAN > 0.1){    
 
       let blobPdf = await pdf(GanDocument()).toBlob();
       let formData = new FormData();
       formData.append('file', blobPdf);
       ret = "CERT_GAN_OP_";
-      nom = ret + + formOP?.numero + "_" + fideicomiso + "_" + formOP?.empresas[0]?.razonSocial + "_" + txt_to_DDMMAAAA(fecha);
+      let r = formOP?.empresas[0]?.razonSocial;
+      r = r.replace(/ /g,"_"); //returns my_name
+      nom = ret + + formOP?.numero + "_" + fideicomiso + "_" + r + "_" + txt_to_DDMMAAAA(fecha);
      
       formData.append('path', `./sociedades/${idSociety.id}/certificados/`); // guarda archivo en carpeta
       formData.append('fileName', nom);     
@@ -115,14 +114,17 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
     // IVA
     // Si existe una retencion en Ganancias
     if(retencionIVA > 0.1){ 
-      console.log(2222);
-      
+        
       // setDataIVA({saludar: "hola IVA"});
+
+
       let blobPdf = await pdf(IvaDocument()).toBlob();
       let formData = new FormData();
       formData.append('file', blobPdf);
       ret = "CERT_IVA_OP_";
-      nom = ret + + formOP?.numero + "_" + fideicomiso + "_" + formOP?.empresas[0]?.razonSocial + "_" + txt_to_DDMMAAAA(fecha);
+      let r = formOP?.empresas[0]?.razonSocial;
+      r = r.replace(/ /g,"_"); //returns my_name
+      nom = ret + + formOP?.numero + "_" + fideicomiso + "_" + r + "_" + txt_to_DDMMAAAA(fecha);
      
       formData.append('path', `./sociedades/${idSociety.id}/certificados/`); // guarda archivo en carpeta
       formData.append('fileName', nom);
@@ -141,7 +143,9 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
       let formData = new FormData();
       formData.append('file', blobPdf);
       ret = "CERT_SUSS_OP_";
-      nom = ret + + formOP?.numero + "_" + fideicomiso + "_" + formOP?.empresas[0]?.razonSocial + "_" + txt_to_DDMMAAAA(fecha);
+      let r = formOP?.empresas[0]?.razonSocial;
+      r = r.replace(/ /g,"_"); //returns my_name
+      nom = ret + + formOP?.numero + "_" + fideicomiso + "_" + r + "_" + txt_to_DDMMAAAA(fecha);
      
       formData.append('path', `./sociedades/${idSociety.id}/certificados/`); // guarda archivo en carpeta
       formData.append('fileName', nom);
@@ -194,14 +198,10 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
 );
   
 
-  
-
-
-  
-
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
+
     return `Hubo un error: ${error.message}`;
   } else
   
@@ -217,21 +217,21 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
   categoriaGAN = categorias?.find(c => c.id === formOP?.empresas[0].categoria);
   
   var minSujRet = parseFloat(categoriaGAN?.inscriptosNoRet);
-  var tasaIVA = categoriaGAN?.inscriptos;
+  var tasaGAN = categoriaGAN?.inscriptos + "%";
 
 
   
-  if(acumulado?.letra ==="Mx" || acumulado?.letra ==="A_SUJ_RETx"){
+  if(acumulado?.letra ==="M" || acumulado?.letra ==="A_SUJ_RET"){
     
     netoAcumMes = noAplica;
     retAcumMes = noAplica;
     codigo = noAplica;
     minSujRet = noAplica;
-    tasaIVA = "sin dato";
+    tasaGAN = "sin dato";
     let cod = (acumulado?.letra ==="M")? 998:999;
 
     categoriaGAN = categorias?.find(c => c.codigo === parseInt(cod)); 
-    tasaIVA = categoriaGAN?.inscriptos;
+    tasaGAN = categoriaGAN?.inscriptos;
     retencionGAN = categoriaGAN.inscriptos * formOP?.neto /100;
     msgRetencion = "" + retencionGAN;
     regimenGAN = categoriaGAN?.regimen;
@@ -241,18 +241,69 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
 
     regimenGAN = categoriaGAN?.regimen;
     codigo = categoriaGAN?.codigo;
-    netoAcumMes = parseFloat(acumulado?.netoAcumMes) + parseFloat(formOP?.neto);
-    retAcumMes = parseFloat(acumulado?.netoGAN_Mes);
-    retencionGAN = ((netoAcumMes - minSujRet) * categoriaGAN.inscriptos / 100) - retAcumMes;
-    if(retencionGAN<0){retencionGAN = 0.0;} 
-    msgRetencion = "" + retencionGAN;
 
-    if(dataGAN?.saludar !== regimenGAN ){
-      setDataGAN({saludar: regimenGAN});
+    if(categoriaGAN?.codigo===116){
+
+      netoAcumMes = noAplica;
+      retAcumMes = noAplica;
+      minSujRet = noAplica;
+      let neto = parseFloat(formOP?.neto);
+      let arrMonto = [];
+      let arrPor = [];
+      arrMonto = categoriaGAN?.escalaMonto.split(",");
+      arrPor = categoriaGAN?.escalaPorcentaje.split(",");
+      
+      let i = 0;
+      let esc1 = parseFloat(arrMonto[i+1]) * parseFloat(arrPor[i]) /100;
+      i ++;
+      let esc2 = esc1 + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
+      i ++;
+      let esc3 = esc2 + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
+      i ++;
+      let esc4 = esc3 + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
+      i ++;
+      let esc5 = esc4 + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
+      
+      i ++;
+      let esc6 = esc5 + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
+      
+      i ++;
+      let esc7 = esc6 + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
+      
+      tasaGAN = "Escala";
+  
+      if (parseFloat(arrMonto[7])< neto){
+        retencionGAN =  esc7 + (neto - parseFloat(arrMonto[7])) * parseFloat(arrPor[7])/100; 
+      }else if(parseFloat(arrMonto[6])< neto){
+        retencionGAN =  esc6 + (neto - parseFloat(arrMonto[6])) * parseFloat(arrPor[6])/100; 
+      }else if(parseFloat(arrMonto[5])< neto){
+        retencionGAN =  esc5 + (neto - parseFloat(arrMonto[5])) * parseFloat(arrPor[5])/100; 
+      }else if(parseFloat(arrMonto[4])< neto){
+        retencionGAN =  esc4 + (neto - parseFloat(arrMonto[4])) * parseFloat(arrPor[4])/100; 
+      }else if(parseFloat(arrMonto[3])< neto){
+        retencionGAN =  esc3 + (neto - parseFloat(arrMonto[3])) * parseFloat(arrPor[3])/100; 
+      }else if(parseFloat(arrMonto[2])< neto){
+        retencionGAN =  esc2 + (neto - parseFloat(arrMonto[2])) * parseFloat(arrPor[2])/100; 
+        // `console`.log(222, arrMonto[2], esc2, ((neto - parseFloat(arrMonto[2]) * parseFloat(arrPor[2]))  ));
+
+      }else if(parseFloat(arrMonto[1])< neto){
+        retencionGAN =  esc1 + (neto - parseFloat(arrMonto[1])) * parseFloat(arrPor[1])/100; 
+      }else{
+        retencionGAN =  (neto - parseFloat(arrMonto[0])) * parseFloat(arrPor[0])/100; 
+      }
+
+    }else{  
+      netoAcumMes = parseFloat(acumulado?.netoAcumMes) + parseFloat(formOP?.neto);
+      retAcumMes = parseFloat(acumulado?.netoGAN_Mes);
+      retencionGAN = ((netoAcumMes - minSujRet) * categoriaGAN.inscriptos / 100) - retAcumMes;
+      if(retencionGAN<0){retencionGAN = 0.0;} 
     }
 
+    msgRetencion = "" + retencionGAN;
+
+
   }else{
-    regimenGAN = "ERROR: FALTA CONFIGURAR LA CATEGORIA DEL PROVEEDOR ";
+    msgRetencion = "ERROR: FALTA CONFIGURAR LA CATEGORIA DEL PROVEEDOR ";
   }
   var condIVA_Id = parseInt(formOP? formOP?.empresas[0].condIVA:0);
   var condicion_frente_al_iva = condIVA?.find(i => i.id === condIVA_Id).descripcion;
@@ -264,9 +315,9 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
 
   var porcentaje_a_retener = 0;
   
-  if(acumulado?.letra ==="M" || acumulado?.letra ==="A_SUJ_RET"){
+  if(acumulado?.letra ==="M" || acumulado?.letra ==="A_SUJ_RET" || formOP?.empresas[0].actividad ==='limpieza' || formOP?.empresas[0].actividad ==='seguridad'){
     porcentaje_a_retener = 100;
-    if(acumulado?.letra ==="A_SUJ_RET"){
+    if(acumulado?.letra ==="A_SUJ_RET" || formOP?.empresas[0].actividad ==='limpieza' || formOP?.empresas[0].actividad ==='seguridad' ){
       porcentaje_a_retener = 50;
     }
     retencionIVA = ( parseFloat(formOP?.iva) * porcentaje_a_retener / 100);
@@ -313,6 +364,44 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
       msgSUSS = noAplica;
     }
   }
+
+  // ** data del reporte
+  let d = new Date();
+  
+  general = {
+    fecha: date_to_YYYYMMDD(d),      
+    agente: formOP?.fideicomisos[0]?.empresas[0]?.razonSocial,
+    agente_cuit: formOP?.fideicomisos[0]?.empresas[0]?.CUIT,
+    agente_dir: formOP?.fideicomisos[0]?.empresas[0]?.domicilio,
+    sujeto: formOP?.empresas[0]?.razonSocial,
+    sujeto_cuit: formOP?.empresas[0]?.CUIT,
+    sujeto_dir: formOP?.empresas[0]?.domicilio,
+  }
+  
+  if(certificado?.find(i => i.tipo === 'GAN')?.id > 0){
+
+    let nGan = ('00000' + certificado?.find(i => i.tipo === 'GAN')?.id).slice(-5);
+
+    let dGAN = {
+      general: general,
+      numero: date_to_YYYYMMDD_s(d) + "-" + nGan,
+      impuesto: "Impto. a las Ganancias",
+      regimen: codigo + " - " + regimenGAN.substring(0,60) ,
+      comp_origen: "Factura / Tique Nro." + "",
+      Fila1: "Neto gravado acumulado mensual: " + formato_moneda(netoAcumMes),
+      Fila2: "Retenciones acumuladas del mes: " + formato_moneda(retAcumMes),
+      Fila3: "Mínimo no sujeto a retención: " + formato_moneda(minSujRet),
+      Fila4: "Tasa: " + categoriaGAN.inscriptos + " %",
+      monto: retencionGAN,
+    }
+    // setDataGAN(dGAN);
+
+    if(dataGAN?.monto !== retencionGAN ){
+      setDataGAN(dGAN);
+    }
+  }
+  console.log(dataGAN);
+
 
   return (       
     
@@ -399,7 +488,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
                 <Grid item md={1}>&nbsp;</Grid>
                 <Grid item md={11}>
                   <Typography align="left" color="textPrimary" variant="h5">
-                        Tasa aplicable:&nbsp;{tasaIVA}%
+                        Tasa aplicable:&nbsp;{tasaGAN}
                   </Typography> 
                 </Grid>
 
@@ -440,6 +529,11 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
                 </Grid>         
                 <Grid item md={12}>
                   <Typography align="left" color="textPrimary" variant="h5">
+                        Actividad:&nbsp;{formOP?.empresas[0].actividad}
+                  </Typography> 
+                </Grid>
+                <Grid item md={12}>
+                  <Typography align="left" color="textPrimary" variant="h5">
                         Porcentaje a retener:&nbsp;{porcentaje_a_retener}%
                   </Typography> 
                 </Grid>
@@ -457,6 +551,9 @@ export function FormRetenciones({ idSociety, OPId, acumulado, fecha, fideicomiso
                   <Typography align="left" color="textSecondary" variant="h6">                 
                    IVA Resolucion AFIP 1575 (régimen particular Clase "M", Clase "A" "Operación sujeto a retención"), Calculo: % delMonto IVA
                   </Typography>   
+                  <Typography align="left" color="textSecondary" variant="h6">                 
+                   Sujetos pertenecientes a las actividades de Seguridad y Limpieza retienen IVA.
+                  </Typography>  
                 </Grid> 
 
                 <Grid item md={12}>

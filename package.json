@@ -43,6 +43,7 @@
         "chart.js": "^3.7.1",
         "date-fns": "^2.24.0",
         "dotenv": "^10.0.0",
+        "file-saver": "^2.0.5",
         "formik": "^2.2.9",
         "history": "^5.0.0",
         "html-to-pdfmake": "^2.3.6",

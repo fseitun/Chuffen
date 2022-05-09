@@ -99,6 +99,17 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
   {
+    field: 'porcentajeIVA',
+    headerName: '%IVA',
+    width: 110,
+    editable: false,
+    headerAlign: 'center',
+    align: 'center',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 1 }).format(Number(value)),
+
+  },
+  {
     field: 'iva',
     headerName: 'IVA',
     width: 110,
@@ -432,7 +443,8 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
             percepcionesIVA: parseInt(factura.tipo)===2? (-1 * factura.percepciones):factura.percepciones,
             IIBB_CABA: parseInt(factura.tipo)===2? (-1 * factura.IIBB_CABA):factura.IIBB_CABA,
             IIBB_BSAS: parseInt(factura.tipo)===2? (-1 * factura.IIBB_BSAS):factura.IIBB_BSAS,
-            moneda: factura?.moneda,       
+            moneda: factura?.moneda,   
+            porcentajeIVA: factura?.porcentajeIVA,       
             es_ajuste: factura?.es_ajuste,
             no_gravado: factura?.no_gravados_exentos,
             fechaIngreso: factura?.fechaIngreso,
@@ -476,7 +488,7 @@ function CustomToolbar() {
       
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
-      <GridToolbarExport csvOptions={{ fields: [ 'id', 'tipo', 'letra','fideicomiso', 'empresa', 'cuit','numero', 'montoTotal', 'neto', 'iva', 'percepcionesIVA', 'IIBB_CABA','IIBB_BSAS','no_gravado', 'moneda', 'es_ajuste'
+      <GridToolbarExport csvOptions={{ fields: [ 'id', 'tipo', 'letra','fideicomiso', 'empresa', 'cuit','numero', 'montoTotal', 'neto', 'porcentajeIVA', 'iva', 'percepcionesIVA', 'IIBB_CABA','IIBB_BSAS','no_gravado', 'moneda', 'es_ajuste'
  , 'createdAt','fechaIngreso', 'fechaVTO', 'OPnumero', 'estadoOP'] }} />
     </GridToolbarContainer>
   );

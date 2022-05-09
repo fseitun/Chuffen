@@ -1,7 +1,7 @@
 
 import { getMethod } from './api';
 // import moment from 'moment';
-const Qdigitos = process.env.REACT_APP_Q_DIGITOS_FACTURA;
+///const Qdigitos = process.env.REACT_APP_Q_DIGITOS_FACTURA;
 
 export function isValidDate(d) {
   let f = new Date(d);
@@ -15,7 +15,7 @@ export function mostrarCUIT(value) {
     value.splice(2, 0, '-');
     //value.splice(5, 0, '.');
     //value.splice(9, 0, '.');
-    value.splice(13, 0, '-');
+    value.splice(11, 0, '-');
     return value.join('');
   } catch (e) {
     console.log('hubo un error: ', e);
@@ -90,9 +90,9 @@ export async function isNumberUsedDig(endpoint, idSociety, empresaId, numero) {
 
   // let dig = process.env.Q_DIGITOS_COM_FACTURA;
   let num = "" + numero; 
-  if(num.length > parseInt(Qdigitos)){
-    num = num.slice(num.length - parseInt(Qdigitos));
-  } 
+  //if(num.length > parseInt(Qdigitos)){
+  //  num = num.slice(num.length - parseInt(Qdigitos));
+  //} 
   
   let url = `${endpoint}/checknumero/${idSociety}/${empresaId}/${num}`;
   let data = await getMethod(url);
@@ -139,13 +139,27 @@ export function txt_to_DDMMAAAA(fecha) {
 
 // *******************************************************************
 // entra date
-// Devuelve un string con formato YYYY-MM-DD  ...yearMonthDayNum
+// Devuelve un string con formato YYYY-MM-DD  con guion ...yearMonthDayNum
 export function date_to_YYYYMMDD(fecha) {
 
   if(fecha ===undefined || fecha ===null){
     return null
   }else{
     return `${fecha.getFullYear(fecha)}-${(1 + fecha.getMonth(fecha)).toString().padStart(2, '0')}-${fecha
+      .getDate(fecha)
+      .toString()
+      .padStart(2, '0')}`;
+  } 
+}
+
+// entra date
+// Devuelve un string con formato YYYY-MM-DD  sin barra ni guion
+export function date_to_YYYYMMDD_s(fecha) {
+
+  if(fecha ===undefined || fecha ===null){
+    return null
+  }else{
+    return `${fecha.getFullYear(fecha)}${(1 + fecha.getMonth(fecha)).toString().padStart(2, '0')}${fecha
       .getDate(fecha)
       .toString()
       .padStart(2, '0')}`;
@@ -176,8 +190,20 @@ export function DB_to_date(fecha) {
   }
 }
 
+// entra float o int y sale 99.000,20 
+export function formato_moneda(num) {
+
+    return Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(num));
+  
+}
+
+
+
+
 
 /*
+r = r.replace(/ /g,"_"); //returns my_name
+
 var d = new Date(year, month, day);
 d.setMonth(d.getMonth() + 8);
 

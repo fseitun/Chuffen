@@ -97,6 +97,24 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   },
 
   {
+    field: 'escalaMonto',
+    headerName: 'Escala Monto',
+    width: 220,
+    editable: true,
+    headerAlign: 'center',
+    align: 'left',
+  },
+
+  {
+    field: 'escalaPorcentaje',
+    headerName: 'Escala %',
+    width: 220,
+    editable: true,
+    headerAlign: 'center',
+    align: 'left',
+  },
+
+  {
     field: 'deleteIcon',
     headerName: ' ',
     width: 50,
@@ -206,6 +224,8 @@ export function GrillaCategoria({ idSociety }) {
             noInscriptos: categoria.noInscriptos,
             noInscrptoResto: categoria.noInscrptoResto,
             inscriptosNoRet: categoria.inscriptosNoRet,
+            escalaMonto: categoria.escalaMonto,
+            escalaPorcentaje: categoria.escalaPorcentaje,
             deleteId: categoria.id,
           }))}
           onCellEditCommit={modifyData}
