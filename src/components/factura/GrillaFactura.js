@@ -80,7 +80,7 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     field: 'montoTotal',
     headerName: 'Monto',
     width: 130,
-    editable: false,
+    editable: acceso,
     headerAlign: 'center',
     align: 'right',
 
@@ -113,7 +113,7 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     field: 'iva',
     headerName: 'IVA',
     width: 110,
-    editable: false,
+    editable: acceso,
     headerAlign: 'center',
     align: 'right',
 

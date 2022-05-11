@@ -44,7 +44,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
   const [msg, setMsg] = useState("");
 
   var letras = [{id:"A", descripcion:"A"},{id:"B", descripcion:"B"},{id:"C", descripcion:"C"},{id:"M", descripcion:"M"},{id:"A_SUJ_RET", descripcion:"A Ope. Sujeto a Retención"},{id:"-" , descripcion:"-"}];
-  var porcentajes_IVA = [{id:21, descripcion:"27,0%"},{id:21, descripcion:"27,0%"}, {id:17, descripcion:"17,0%"},{id:10.5, descripcion:"10,5%"},{id:5, descripcion:"5,0%"},{id:0, descripcion:"0,0%"}];
+  var porcentajes_IVA = [{id:21, descripcion:"21,0%"},{id:27, descripcion:"27,0%"}, {id:17, descripcion:"17,0%"},{id:10.5, descripcion:"10,5%"},{id:5, descripcion:"5,0%"},{id:0, descripcion:"0,0%"}];
   var tipos = useContext(TiposContext);
 
   const [porcentajeIVA, setPorcentajeIVA] = useState({id:0, descripcion:"0,0%"});
@@ -94,6 +94,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
 
+          
           if(values?.tipo === undefined){values.tipo = tipoInForm;}
           if(esBlue && values.numeroBlue === undefined){values.numeroBlue = iniNumber;}
   
@@ -104,19 +105,23 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
             simi = values.numeroBlue.slice(7, 10);
             num = values.numeroBlue;
           }
+          console.log(1111, values.numeroBlue);
           
           let existe = await isNumberUsedDig('factura', idSociety.id, values.empresa.id , num);
 
           let similar = await isNumberUsedDig('factura', idSociety.id, values.empresa.id , simi);
           
+   
           if (existe || num ==='' || num === undefined) {
+
             setMsg("Ya existe ese número de factura para esa razon social.");
             setIsPromptOpen(true);
 
           }else{
+            console.log(2222, values.numeroBlue);
             
-            let tot = parseFloat(values.neto)
-            if(values.iva){tot +=parseFloat(values.iva);}
+            let tot = parseFloat(values.neto);
+            if(montoIVA > 1){tot +=parseFloat(montoIVA);}
             if(values.percepciones){tot +=parseFloat(values.percepciones);}
             if(values.IIBB_CABA){tot +=parseFloat(values.IIBB_CABA);}
             if(values.IIBB_BSAS){tot +=parseFloat(values.IIBB_BSAS);}
@@ -130,18 +135,18 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
             addFactura({
               numero: !esBlue? values.numero:values.numeroBlue,
               neto: values.neto,
-              iva: values.tipo.id===2? (-1 * values.iva):values.iva,
+              iva: values.tipo.id===2? (-1 * montoIVA):montoIVA,
               letra: !esBlue? values.letra.id: "-",
               percepciones: !esBlue? values.tipo.id===2? (-1 * values.percepciones):values.percepciones:0,
               IIBB_CABA: !esBlue? values.tipo.id===2? (-1 * values.IIBB_CABA):values.IIBB_CABA: 0,
               IIBB_BSAS: !esBlue? values.tipo.id===2? (-1 * values.IIBB_BSAS):values.IIBB_BSAS: 0,
               no_gravados_exentos: !esBlue? values.tipo.id===2? (-1 * values.no_gravados_exentos):values.no_gravados_exentos: 0,
               montoTotal: values.tipo.id===2? (-1 * tot):tot,
-              porcentajeIVA: values.porcentajeIVA.id,
-              fechaIngreso: values.fechaIngreso,
+              porcentajeIVA: !esBlue? values.porcentajeIVA.id:0,
+              fechaIngreso: values.fechaIngreso, 
               tipo: values.tipo.id,              
-              empresaId: values.empresa.id,
-              fideicomisoId: values.fideicomiso.id,
+              empresaId: values?.empresa?.id,
+              fideicomisoId: values?.fideicomiso?.id,
               moneda: 'ARS',
               blue: values.blue==='on'? 1:(alwaysBlue? 1:0),
               creador: loggedUser.id

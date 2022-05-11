@@ -310,7 +310,8 @@ export function DetalleOP({ idSociety, loggedUser }) {
             OPId={idOP}       
             fecha={fecha}           
             fideicomiso={fideicomiso}
-            formOP={formOP?.op} 
+            item={formOP?.item} 
+            OP={formOP?.op} 
             certificado={formOP?.certificado}
             acumulado={acumulado}
             categorias={categorias}

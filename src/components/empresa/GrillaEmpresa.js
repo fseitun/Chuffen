@@ -391,7 +391,6 @@ export function GrillaEmpresa({ empresaInformation, isLoading, error, loggedUser
             rubroId: rubros?.find(rubro => rubro.id === empresa.rubroId)?.rubro,
             rubro_filtro: empresa?.rubroId,
             subrubroId: subRubros?.find(subRubro => subRubro.id === empresa.subrubroId)?.subRubro,
-            id: empresa?.id,
             razonSocial: empresa?.razonSocial,
             CUIT: empresa?.CUIT,
             mail: empresa?.mail,

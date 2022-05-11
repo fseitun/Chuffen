@@ -2,26 +2,19 @@
   import { useState } from 'react';
   import { TextField, Autocomplete } from '@mui/material';
   import { Formik, Form, Field } from 'formik';
-  import { useContext } from 'react';
-  import { TiposContext} from 'src/App';
 
   export function FiltroEmpresa({setFiltRS, idSociety, fideicomisos, proveedores}) {
   
 
-    var tipos = useContext(TiposContext);
-    ///const [fideInForm, setFideInForm] = useState(null);
-    const [rsInForm, setRsInForm] = useState(null);
-    ///const [compInForm, setCompInForm] = useState(null);  
+    // var tipos = useContext(TiposContext);
+    const [rsInForm, setRsInForm] = useState(null); 
   
     function filterOP(campo, newValue){
   
-      // let arr = filt;
       let id = -1
       if(newValue?.id){
         id = newValue.id;
       }
-      //if(campo ==='comp'){setFiltComp(id);}
-      //if(campo ==='fide'){setFiltFide(id);}
       if(campo ==='rs'){setFiltRS(id);}
 
     }  

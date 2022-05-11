@@ -61,6 +61,55 @@ const styles = StyleSheet.create({
             fontSize: 12,
             fontStyle: 'bold',
     },
+    rowf: {
+        flexDirection: 'row',
+        borderBottomColor: '#ffffff',
+        borderBottomWidth: 1,
+        alignItems: 'center',
+        height: 19,
+        fontSize: 10,
+        fontStyle: 'bold',
+      },
+    rowlight: {
+        flexDirection: 'row',
+        borderBottomColor: '#ffffff',
+        borderBottomWidth: 1,
+        alignItems: 'center',
+        height: 15,
+        fontSize: 9,
+    },
+    col1: {
+        width: '37%',
+        //borderRightColor: '#bff0fd', son 2
+        //borderRightWidth: 1,
+        textAlign: 'right',
+        paddingRight: 3,
+      },
+    
+      col2: {
+          width: '63%',
+          textAlign: 'left',
+          //borderRightColor: bcolor,
+          //borderRightWidth: 1,
+          fontFamily: 'Helvetica-Bold',
+          paddingLeft: 15,
+      },
+      col2i: {
+        width: '63%',
+        textAlign: 'left',
+        //borderRightColor: bcolor,
+        //borderRightWidth: 1,
+        fontFamily: 'Helvetica-Oblique',
+        paddingLeft: 15,
+    },
+
+      col2plus: {
+        width: '63%',
+        textAlign: 'left',
+        fontFamily: 'Helvetica-Bold',
+        fontSize: 12,
+        paddingLeft: 15,
+    },
 
   });  
   
@@ -70,7 +119,7 @@ const styles = StyleSheet.create({
             <Document >
                 <Page size="A4" style={styles.page}>
 
-                <View >
+                    <View >
                         <Text style={styles.saltolinea}> </Text>                       
                     </View>      
 
@@ -81,6 +130,10 @@ const styles = StyleSheet.create({
                     <View style={styles.titleContainer}>
                         <Text style={styles.reportTitle}>Control de Retenciones</Text>
                     </View>
+
+                    <View >
+                        <Text style={styles.saltolinea}> </Text>                       
+                    </View>  
 
                     <View style={styles.invoiceDateContainer}>
                         <Text style={styles.label}>Fecha de Retención: {mostrarFecha(data?.general?.fecha)}</Text>                        
@@ -94,12 +147,18 @@ const styles = StyleSheet.create({
                         <Text style={styles.subreportTitle}>A. - Datos del Agente de Retención</Text>
                     </View>
 
-                    <View >
-                        <Text style={styles.label}>Apellido y Nombre o Denominación: {data?.general?.agente}</Text>
-                        <Text style={styles.label}>C.U.I.T. N°: {data?.general?.agente_cuit}</Text>
-                        <Text style={styles.label}>Domicilio: {data?.general?.agente_dir}</Text>
+                    <View style={styles.rowf} >
+                         <Text style={styles.col1}>Apellido y Nombre o Denominación:</Text>
+                         <Text style={styles.col2}>{data?.general?.agente}</Text>
                     </View >
-
+                    <View style={styles.rowf} >
+                         <Text style={styles.col1}>C.U.I.T. N°:</Text>
+                         <Text style={styles.col2}>{data?.general?.agente_cuit}</Text>
+                    </View >
+                    <View style={styles.rowf} >
+                         <Text style={styles.col1}>Domicilio:</Text>
+                         <Text style={styles.col2}>{data?.general?.agente_dir}</Text>
+                    </View >
 
                     <View >
                         <Text style={styles.saltolinea}> </Text>                       
@@ -108,11 +167,20 @@ const styles = StyleSheet.create({
                         <Text style={styles.subreportTitle}>B. - Datos del Sujeto Retenido</Text>                       
                     </View>
 
-                    <View >
-                        <Text style={styles.label}>Apellido y Nombre o Denominación: {data?.general?.sujeto}</Text>
-                        <Text style={styles.label}>C.U.I.T. N°: {data?.general?.sujeto_cuit}</Text>
-                        <Text style={styles.label}>Domicilio: {data?.general?.sujeto_dir}</Text>
+                    <View style={styles.rowf} >
+                         <Text style={styles.col1}>Apellido y Nombre o Denominación:</Text>
+                         <Text style={styles.col2}>{data?.general?.sujeto}</Text>
                     </View >
+                    <View style={styles.rowf} >
+                         <Text style={styles.col1}>C.U.I.T. N°:</Text>
+                         <Text style={styles.col2}>{data?.general?.sujeto_cuit}</Text>
+                    </View >
+                    <View style={styles.rowf} >
+                         <Text style={styles.col1}>Domicilio:</Text>
+                         <Text style={styles.col2}>{data?.general?.sujeto_dir}</Text>
+                    </View >
+
+
 
                     <View >
                         <Text style={styles.saltolinea}> </Text>                       
@@ -120,27 +188,52 @@ const styles = StyleSheet.create({
                     <View >
                         <Text style={styles.subreportTitle}>C. - Datos de la Retención Practicada</Text>                       
                     </View>
-                    
-                    <View >
-                        <Text style={styles.label}>Impuesto: {data?.impuesto}</Text>
-                        <Text style={styles.label}>Régimen: {data?.regimen}</Text>
-                        <Text style={styles.label}>Comp. que origina la Retención: {data?.comp_origen}</Text>
-                    </View >
 
-                    <View >
-                        <Text style={styles.label}>{data?.Fila1}</Text>
-                        <Text style={styles.label}>{data?.Fila2}</Text>
-                        <Text style={styles.label}>{data?.Fila3}</Text>
-                        <Text style={styles.label}>{data?.Fila4}</Text>
+                    <View style={styles.rowf} >
+                         <Text style={styles.col1}>Impuesto:</Text>
+                         <Text style={styles.col2}>{data?.impuesto}</Text>
+                    </View >
+                    <View style={styles.rowf} >
+                         <Text style={styles.col1}>Régimen:</Text>
+                         <Text style={styles.col2}>{data?.regimen}</Text>
+                    </View >
+                    <View style={styles.rowf} >
+                         <Text style={styles.col1}>Comp. que origina la Retención:</Text>
+                         <Text style={styles.col2}>{data?.general?.comp_origen}</Text>
                     </View >
 
                     <View >
                         <Text style={styles.saltolinea}> </Text>                       
                     </View> 
 
-                    <View >
-                        <Text style={styles.label}>Monto de la Retención :{ Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(data?.monto))} pesos</Text>
+                    <View style={styles.rowlight} >
+                         <Text style={styles.col1}></Text>
+                         <Text style={styles.col2i}>{data?.Fila1}</Text>
                     </View >
+                    <View style={styles.rowlight} >
+                         <Text style={styles.col1}></Text>
+                         <Text style={styles.col2i}>{data?.Fila2}</Text>
+                    </View >
+                    <View style={styles.rowlight} >
+                         <Text style={styles.col1}></Text>
+                         <Text style={styles.col2i}>{data?.Fila3}</Text>
+                    </View >
+                    <View style={styles.rowlight} >
+                         <Text style={styles.col1}></Text>
+                         <Text style={styles.col2i}>{data?.Fila4}</Text>
+                    </View >
+
+                
+
+                    <View >
+                        <Text style={styles.saltolinea}> </Text>                       
+                    </View> 
+
+                    <View style={styles.rowf} >
+                         <Text style={styles.col1}>Monto de la Retención:</Text>
+                         <Text style={styles.col2plus}>{ Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(data?.monto))} pesos</Text>
+                    </View >
+
 
                     <View >
                         <Text style={styles.saltolinea}> </Text>                       
@@ -163,7 +256,7 @@ const styles = StyleSheet.create({
                     </View> 
 
                     <View >
-                        <Text style={styles.label}>El presente certificado se expide sobre la base de los datos declarados y aportados por el Agente de Retención a la fecha de la presente consulta, el cual podría ser pasible de modificaciones por el agente en cuestión. </Text>
+                        <Text style={[styles.label, { borderRightColor: '#0000ff' }]} >El presente certificado se expide sobre la base de los datos declarados y aportados por el Agente de Retención a la fecha de la presente consulta, el cual podría ser pasible de modificaciones por el agente en cuestión. </Text>
                      
                     </View >
 
@@ -172,7 +265,7 @@ const styles = StyleSheet.create({
                     </View> 
 
                     <View >
-                        <Text style={styles.label}>Conserve este Certificado como comprobante de Retención/Percepción. </Text>
+                        <Text style={[styles.label, { borderRightColor: '#0000ff' }]}>Conserve este Certificado como comprobante de Retención/Percepción. </Text>
                      
                     </View >
 

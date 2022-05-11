@@ -11,15 +11,13 @@ import { NavLink as RouterLink } from 'react-router-dom';
 import { useContext } from 'react';
 import { EstadosContext, RetencionesContext, FormaPagosContext, FondosContext} from 'src/App';
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
-//import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
 import { saveAs } from "file-saver";
-import { useNavigate, useParams } from 'react-router-dom';
 
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
 export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRetIVA, certificado, retSUSS, setRetSUSS, OPId, loggedUser, estadoOP, confirmada, formOP, isLoading, error, refetch, empresaId, fideicomiso}) {
-  const navigate = useNavigate();
+
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
 
@@ -141,7 +139,6 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
     verRetSUSS = false;
   }
 
-  // console.log(5555, formOP);
 
   if (isLoading) {
     return 'Cargando...';
@@ -187,7 +184,6 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                   <Grid item md={6}>
                         <TextField   sx={{ width: '64ch' }} label="Detalle"  key={formOP?.descripcion}  defaultValue={formOP?.descripcion} type="float"  name="descripcion" 
                         onChange={event => handleModification(event, setFieldValue, refetch, 'descripcion', idSociety.id, OPId, 0, 0)}
-                        /* onFocus={event => formOP.descripcion? handleModification(event, setFieldValue, refetch, 'descripcion', idSociety.id, OPId, 0, 0):false } */
                         InputProps={{
                               maxLength: 90,
                               readOnly: (!acceso || (isConfirmOP===1)?true:false),
@@ -461,7 +457,7 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                   />
                   </Grid>
                   <Grid item md={1}>
-                      <Hidden  smUp={!(certificado?.find(i => i.tipo === 'GAN')?.id > 0 || formOP?.RET_GAN < 1 ) } >
+                      <Hidden  smUp={!(certificado?.find(i => i.tipo === 'GAN')?.nombre !== undefined && certificado?.find(i => i.tipo === 'GAN')?.nombre !== ''   && formOP?.RET_GAN > 1 ) } >
                       
                       <Tooltip title="Descargar Certificado GAN"> 
                         <IconButton color="inherit" onClick={() => {saveFile(certificado?.find(i => i.tipo === 'GAN')?.nombre, apiServerUrl)}} >
@@ -494,7 +490,7 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                   />
                   </Grid>
                   <Grid item md={1}>
-                      <Hidden  smUp={!(certificado?.find(i => i.tipo === 'IVA')?.id > 0  || formOP?.RET_IVA < 1 )} >
+                      <Hidden  smUp={!(certificado?.find(i => i.tipo === 'IVA')?.nombre !== undefined && certificado?.find(i => i.tipo === 'IVA')?.nombre !== ''   && formOP?.RET_IVA > 1 )       } >
                       
                       <Tooltip title="Descargar Certificado IVA">
                         <IconButton color="inherit" onClick={() => {saveFile(certificado?.find(i => i.tipo === 'IVA')?.nombre, apiServerUrl)}} >
@@ -543,7 +539,7 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                   />
                   </Grid>
                   <Grid item md={1}>
-                    <Hidden  smUp={!(certificado?.find(i => i.tipo === 'SUS')?.id > 0   || formOP?.RET_SUSS < 1 )} >
+                    <Hidden  smUp={!(certificado?.find(i => i.tipo === 'SUS')?.nombre !== undefined && certificado?.find(i => i.tipo === 'SUS')?.nombre !== ''   && formOP?.RET_SUSS > 1 )  } >
                   
                       <Tooltip title="Descargar Certificado SUSS">
                         <IconButton color="inherit" onClick={() => {saveFile(certificado?.find(i => i.tipo === 'SUS')?.nombre, apiServerUrl)}} >
