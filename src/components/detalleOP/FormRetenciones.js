@@ -10,6 +10,7 @@ import { CondicionIVAContext } from 'src/App';
 import { pdf } from "@react-pdf/renderer";
 import RepCertificado from "src/components/reportes/certificados/certificado";
 
+const apiServerUrl = process.env.REACT_APP_API_SERVER;
 export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fideicomiso, OP, certificado, categorias, isLoading, error, refetch, loggedUser }) {
 
   const condIVA = useContext(CondicionIVAContext);
@@ -63,19 +64,19 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
 
   const GanDocument = () => {
     return (
-      <RepCertificado data={dataGAN} />
+      <RepCertificado data={dataGAN} apiServerUrl={apiServerUrl} />
     )
   }
 
   const IvaDocument = () => {
     return (
-      <RepCertificado data={dataIVA} />
+      <RepCertificado data={dataIVA}  apiServerUrl={apiServerUrl} />
     )
   }
 
   const SUSSDocument = () => {
     return (
-      <RepCertificado data={dataSUSS} />
+      <RepCertificado data={dataSUSS}  apiServerUrl={apiServerUrl} />
     )
   }
 
@@ -226,7 +227,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
     netoAcumMes = noAplica;
     retAcumMes = noAplica;
     codigo = noAplica;
-    minSujRet = noAplica;
+    // minSujRet = noAplica;
     tasaGAN = "sin dato";
     let cod = (acumulado?.letra ==="M")? 998:999;
 
@@ -246,50 +247,72 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
 
       netoAcumMes = noAplica;
       retAcumMes = noAplica;
-      minSujRet = noAplica;
+      // minSujRet = noAplica;
       let neto = parseFloat(OP?.neto);
+      // neto = 78000.;
       let arrMonto = [];
       let arrPor = [];
       arrMonto = categoriaGAN?.escalaMonto.split(",");
       arrPor = categoriaGAN?.escalaPorcentaje.split(",");
       
       let i = 0;
-      let esc1 = parseFloat(arrMonto[i+1]) * parseFloat(arrPor[i]) /100;
+      let esc = [];
+      esc[0] = 0.;
+      esc[1] = parseFloat(arrMonto[i+1]) * parseFloat(arrPor[i]) /100;
       i ++;
-      let esc2 = esc1 + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
+      esc[2] = esc[i] + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
       i ++;
-      let esc3 = esc2 + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
+      esc[3] = esc[i] + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
       i ++;
-      let esc4 = esc3 + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
+      esc[4] = esc[i] + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
       i ++;
-      let esc5 = esc4 + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
-      
+      esc[5] = esc[i] + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
       i ++;
-      let esc6 = esc5 + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
-      
+      esc[6] = esc[i] + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
       i ++;
-      let esc7 = esc6 + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
+      esc[7] = esc[i] + (parseFloat(arrMonto[i+1]) - parseFloat(arrMonto[i]))   * parseFloat(arrPor[i]) /100;
       
       tasaGAN = "Escala";
-  
-      if (parseFloat(arrMonto[7])< neto){
-        retencionGAN =  esc7 + (neto - parseFloat(arrMonto[7])) * parseFloat(arrPor[7])/100; 
-      }else if(parseFloat(arrMonto[6])< neto){
-        retencionGAN =  esc6 + (neto - parseFloat(arrMonto[6])) * parseFloat(arrPor[6])/100; 
-      }else if(parseFloat(arrMonto[5])< neto){
-        retencionGAN =  esc5 + (neto - parseFloat(arrMonto[5])) * parseFloat(arrPor[5])/100; 
-      }else if(parseFloat(arrMonto[4])< neto){
-        retencionGAN =  esc4 + (neto - parseFloat(arrMonto[4])) * parseFloat(arrPor[4])/100; 
-      }else if(parseFloat(arrMonto[3])< neto){
-        retencionGAN =  esc3 + (neto - parseFloat(arrMonto[3])) * parseFloat(arrPor[3])/100; 
-      }else if(parseFloat(arrMonto[2])< neto){
-        retencionGAN =  esc2 + (neto - parseFloat(arrMonto[2])) * parseFloat(arrPor[2])/100; 
-       
-      }else if(parseFloat(arrMonto[1])< neto){
-        retencionGAN =  esc1 + (neto - parseFloat(arrMonto[1])) * parseFloat(arrPor[1])/100; 
-      }else{
-        retencionGAN =  (neto - parseFloat(arrMonto[0])) * parseFloat(arrPor[0])/100; 
-      }
+      let neto_min = neto - parseFloat(minSujRet);
+      let saldo_ret = 0. ;
+      if(neto_min < 0){neto_min = 0.};
+
+      let index = 0;
+      if(neto_min>0){
+
+        if (parseFloat(arrMonto[7])< neto_min){
+          saldo_ret = neto_min - parseFloat(arrMonto[7]);
+          index = 7;
+        }else if(parseFloat(arrMonto[6])<= neto_min){
+          saldo_ret = neto_min - parseFloat(arrMonto[6]);
+          index = 6;
+        }else if(parseFloat(arrMonto[5])<= neto_min){
+          saldo_ret = neto_min - parseFloat(arrMonto[5]);
+          index = 5;
+        }else if(parseFloat(arrMonto[4])<= neto_min){
+          saldo_ret = neto_min - parseFloat(arrMonto[4]);
+          index = 4;
+        }else if(parseFloat(arrMonto[3])<= neto_min){
+          saldo_ret = neto_min - parseFloat(arrMonto[3]);
+          index = 3;
+        }else if(parseFloat(arrMonto[2])<= neto_min){
+          saldo_ret = neto_min - parseFloat(arrMonto[2]);
+          index = 2;
+        }else if(parseFloat(arrMonto[1])<= neto_min){
+          index = 1;
+          saldo_ret = neto_min - parseFloat(arrMonto[1]);
+        }else{
+          saldo_ret = neto_min;
+        }
+     
+        retencionGAN =  esc[index] + saldo_ret * parseFloat(arrPor[index])/100;
+
+        if(retencionGAN < categoriaGAN.inscriptos ){
+          retencionGAN = 0.; 
+        }
+
+      }   
+
     }else{  
       netoAcumMes = parseFloat(acumulado?.netoAcumMes) + parseFloat(OP?.neto);
       retAcumMes = parseFloat(acumulado?.netoGAN_Mes);
@@ -379,10 +402,10 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
       numero: date_to_YYYYMMDD_s(d) + "-" + nGan,
       impuesto: "Impto. a las Ganancias",
       regimen: codigo + " - " + regimenGAN.substring(0,50) ,      
-      Fila1: "Neto gravado acumulado mensual: " + formato_moneda(netoAcumMes),
-      Fila2: "Retenciones acumuladas del mes: " + formato_moneda(retAcumMes),
+      Fila1: categoriaGAN?.codigo===116? "": "Neto gravado acumulado mensual: " + formato_moneda(netoAcumMes),
+      Fila2: categoriaGAN?.codigo===116? "": "Retenciones acumuladas del mes: " + formato_moneda(retAcumMes),
       Fila3: "Mínimo no sujeto a retención: " + formato_moneda(minSujRet),
-      Fila4: "Tasa: " + categoriaGAN.inscriptos + " %",
+      Fila4: categoriaGAN?.codigo===116? "Calculo por escala": "Tasa: " + categoriaGAN.inscriptos + " %", /// categoriaGAN?.codigo===116
       monto: retencionGAN,
     }
    

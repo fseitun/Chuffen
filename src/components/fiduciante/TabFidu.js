@@ -5,18 +5,22 @@ import { FormEmpresa } from 'src/components/empresa/FormEmpresa';
 import { GrillaEmpresa } from 'src/components/empresa/GrillaEmpresa';
 import { FormPersona } from 'src/components/fiduciante/FormPersona';
 import { GrillaPersona } from 'src/components/fiduciante/GrillaPersona';
-
+import { useQuery} from 'react-query';
+import { getMethod } from 'src/utils/api';
 
 export function TabFidu({ idSociety, loggedUser, tipo }) {
   
+  const {
+    data: empresaInformation,
+    isLoading,
+    error,
+  } = useQuery(['empresa', idSociety], () => getMethod(`empresa/listar/${idSociety.id}/${tipo}`));
+
   
   const [activeTab, setTab] = React.useState('Personas');
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setTab(newValue);
   };  
-  
-  // let verAgregar = (loggedUser?.['rol.oc'] ==='vista'); // si es vista, no ve boton agregar 
- 
 
   return (
           
@@ -73,7 +77,8 @@ export function TabFidu({ idSociety, loggedUser, tipo }) {
                     </Box>
                   </Hidden> 
                   <Box sx={{ pt: 3 }}>
-                    <GrillaEmpresa idSociety={idSociety} loggedUser={loggedUser} tipo={tipo} />
+                    
+                    <GrillaEmpresa idSociety={idSociety} loggedUser={loggedUser} tipo={tipo}  filtRS={-1}  isLoading={isLoading} error={error} empresaInformation={empresaInformation}  />
                   </Box>
                 </Container>
               </Box>               

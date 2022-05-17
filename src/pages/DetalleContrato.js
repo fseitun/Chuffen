@@ -1,4 +1,5 @@
 import React from 'react'
+import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import { Container, Box, Typography, Button } from '@mui/material';
@@ -8,6 +9,7 @@ import { mostrarFechaMesTXT } from 'src/utils/utils';
 import { getMethod } from 'src/utils/api';
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import RepContrato from "src/components/reportes/contrato/contrato";
+import { ConceptosCuotaContext} from 'src/App';
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
@@ -17,6 +19,9 @@ export function DetalleContrato({ idSociety, loggedUser }) {
 
   const { contratoId } = useParams();
   const [verPDF, setVerPDF] = React.useState(false);
+
+
+  var conceptosCuota = useContext(ConceptosCuotaContext);
 
   function nomPdfCargado(obj){
 
@@ -108,15 +113,16 @@ export function DetalleContrato({ idSociety, loggedUser }) {
     
         <Container >
           <Box sx={{ pt: 3 }}>
-            <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >                                
-              <Grid item md={2}>
+            <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >    
+
+              <Grid item md={1}>
                 <Typography align="left" color="textPrimary" variant="h4">
-                    {dataContrato?.cont?.fideicomisos[0]?.nombre}
+                      Contrato:
                 </Typography>
               </Grid>
-              <Grid item md={7}>
+              <Grid item md={8}>
                   <Typography align="left" color="textPrimary" variant="h4">
-                  Fiduciante: {dataContrato?.cont?.empresaId > 0? dataContrato?.cont?.empresas[0].razonSocial:dataContrato?.cont?.personas[0].nombre }
+                  {dataContrato?.cont?.nombre}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Fiduciante: {dataContrato?.cont?.empresaId > 0? dataContrato?.cont?.empresas[0].razonSocial:dataContrato?.cont?.personas[0].nombre }&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;{ dataContrato?.cont?.fideicomisos[0]?.nombre}
                   </Typography>
               </Grid>
               <Grid item md={3}>
@@ -124,6 +130,8 @@ export function DetalleContrato({ idSociety, loggedUser }) {
                       {mostrarFechaMesTXT(dataContrato?.cont?.createdAt)}
                     </Typography>
               </Grid>
+
+        
             </Grid>
 
             <Grid container spacing={{ xs: 1.5, md: 2 }} columns={{ xs: 4, sm: 8, md: 12 }} > 
@@ -137,7 +145,7 @@ export function DetalleContrato({ idSociety, loggedUser }) {
               </Grid>                        
               <Grid item md={2} >
                 <Typography align="left" color="textPrimary" variant="h5">
-                    CAC Base: {dataContrato?.cont?.CACbase} 
+                    CAC Base: {"buscar CAC"} 
                 </Typography>
               </Grid>
               <Grid item md={8} >
@@ -156,13 +164,9 @@ export function DetalleContrato({ idSociety, loggedUser }) {
               dataContrato={dataContrato}
               isLoading={isLoading}
               error={error}
-              //totPagosARS={totPagosARS}
-              //totPagosUSD={totPagosUSD} 
-              //totAjusteARS={totAjusteARS}
-              //totAjusteUSD={totAjusteUSD}
+              conceptosCuota={conceptosCuota}
               moneda={moneda}
               setMoneda={setMoneda}
-              //CACs={CACs} 
               refetch={refetch}
             />
           </Box>

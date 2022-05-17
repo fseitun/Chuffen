@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { isNumberUsedDig } from 'src/utils/utils';
-import { IconButton, Collapse, Box, Grid, FormControlLabel, TextField, Button, Hidden, Checkbox, Autocomplete, Alert } from '@mui/material';
+import { IconButton, Collapse, Box, Grid, FormControlLabel, 
+TextField, Button, Hidden, Checkbox, Autocomplete, Alert } from '@mui/material';
 import { postMethod } from 'src/utils/api';
 import CloseIcon from '@mui/icons-material/Close';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
@@ -22,8 +23,6 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
   var verCheckBlue = false;
   if(loggedUser?.['rol.factura'] ==='total'){/*blue= -1;*/ verCheckBlue = true;}
 
-
-
   const { mutate: addFactura } = useMutation(
     newFactura => postMethod(`factura/agregar/${idSociety.id}`, newFactura),
     {
@@ -39,7 +38,6 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
       onSettled: () => queryClient.invalidateQueries(['factura', idSociety]),
     }
   );
-
   
   const [msg, setMsg] = useState("");
 
@@ -49,8 +47,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
 
   const [porcentajeIVA, setPorcentajeIVA] = useState({id:0, descripcion:"0,0%"});
   const [montoIVA, setMontoIVA] = useState(0);
-  const [montoNeto, setMontoNeto] = useState(null);
-  
+  const [montoNeto, setMontoNeto] = useState(null);  
   
   const [tipoInForm, setTipoInForm] = useState({id: 0, descripcion: 'Factura'});
   const [fideInForm, setFideInForm] = useState(null);

@@ -22,39 +22,6 @@ export function Login({ setLoggedUser, setIdSociety }) {
     societyStateObjectSetter(societyName, setIdSociety);
   }, [setIdSociety, societyName]);
 
-  /****************************************************/
-  /*************** deuda tecnica **********************/
-  /****************************************************/
-  /*
-  const { data: estados } = useQuery(['estados', idSociety], () =>
-    getMethod(`listasOP/listarEstados/${idSociety.id}`)
-  );
-  const { data: formaPagos } = useQuery(['formaPagos', idSociety], () =>
-    getMethod(`listasOP/listarFormaPagos/${idSociety.id}`)
-  );
-  const { data: retenciones } = useQuery(['retenciones', idSociety], () =>
-  getMethod(`listasOP/listarRetenciones/${idSociety.id}`)
-  );
-  const { data: fondos } = useQuery(['fondos', idSociety], () =>
-  getMethod(`listasOP/listarFondos/${idSociety.id}`)
-  );
-  const { data: tipos } = useQuery(['tipos', idSociety], () =>
-  getMethod(`listasOP/listarTipos/${idSociety.id}`)
-  );
-  const { data: condicion_de_IVA } = useQuery(['condicion_de_IVA', idSociety], () =>
-  getMethod(`listasOP/listarCondicion_de_IVA/${idSociety.id}`)
-  );
-  const { data: tipoProductos } = useQuery(['tipoProductos', idSociety], () =>
-  getMethod(`listasFidu/listarTipoProductos/${idSociety.id}`)
-  );
-  const {data: categorias} = useQuery(['categoria', idSociety], () => 
-    getMethod(`categoria/listarCombo/${idSociety.id}`)
-  ); 
-
-*/
-  /****************************************************/
-  /****************************************************/
-  /****************************************************/
 
   return (
     <>

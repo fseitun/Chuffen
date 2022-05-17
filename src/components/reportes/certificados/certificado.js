@@ -1,5 +1,5 @@
 import React from 'react';
-import { Page, Document } from '@react-pdf/renderer';
+import { Page, Document, Image } from '@react-pdf/renderer';
 
 import {Text, View, StyleSheet } from '@react-pdf/renderer';
 import { mostrarFecha } from 'src/utils/utils';
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     }, 
     logo: {
-        height: 43,
+        height: 44,
         marginLeft: 'auto',
         marginRight: 'auto'
     },
@@ -26,22 +26,18 @@ const styles = StyleSheet.create({
     },
     reportTitle:{
         color: '#101010',
-        letterSpacing: 4,
-        fontSize: 22,
+        // letterSpacing: 4,
+        fontSize: 18,
         textAlign: 'center',
-        textTransform: 'uppercase',
+        // height: 22,
+        // marginTop: 15,
+        // textTransform: 'uppercase',
     },
-    reportTitleFide:{
-        
-        letterSpacing: 4,
-        fontSize: 22,
-        textAlign: 'center',
-        textTransform: 'uppercase',
-    },
+
     subreportTitle:{
       color: '#101010',
-      letterSpacing: 4,
-      fontSize: 14,
+      letterSpacing: 2,
+      fontSize: 12,
       textAlign: 'left',
       textTransform: 'uppercase',
     },
@@ -114,7 +110,7 @@ const styles = StyleSheet.create({
   });  
   
 
-  const certificado = ({tipo, data}) => (
+  const certificado = ({data, apiServerUrl}) => (
 
             <Document >
                 <Page size="A4" style={styles.page}>
@@ -126,10 +122,29 @@ const styles = StyleSheet.create({
                     <View style={{flexDirection: 'row',marginLeft: '0',marginRight: '0'}} >
                        
                     </View>
+
+                   
                    
                     <View style={styles.titleContainer}>
-                        <Text style={styles.reportTitle}>Control de Retenciones</Text>
+
+                        <View style={{width: '30%' }} >
+                                <Image style={[styles.logo]} src={{ uri: `${apiServerUrl}/sociedades/afip.png` , method: "GET", body: "" }} />                   
+                        </View>
+                        <View style={{width: '70%' }}>
+                            <View >
+                                <Text style={styles.reportTitle}> SI.CO.RE. - Sistema de Control
+                                </Text>
+                            </View>
+                            <View >
+                                <Text style={styles.reportTitle}> de Retenciones
+                                </Text>
+                            </View>
+                        </View>
                     </View>
+
+                    <View >
+                        <Text style={styles.saltolinea}> </Text>                       
+                    </View> 
 
                     <View >
                         <Text style={styles.saltolinea}> </Text>                       

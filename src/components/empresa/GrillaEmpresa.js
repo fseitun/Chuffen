@@ -301,6 +301,8 @@ export function GrillaEmpresa({ empresaInformation, isLoading, error, loggedUser
 
   if(tipo===1){
     colDefaultVisibles = [
+        {c:'id',  h:true},
+        
         {c:'razonSocial',  h:false},
         {c:'CUIT',  h:false},
         {c:'telefono',  h:false},

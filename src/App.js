@@ -57,11 +57,14 @@ import { useQuery } from 'react-query';
 export const SocietyContext = createContext({});
 
 export const EstadosContext = createContext({});
+export const FormaCobrosContext = createContext({});
 export const FormaPagosContext = createContext({});
 export const RetencionesContext = createContext({});
 export const FondosContext = createContext({});
 export const TiposContext = createContext({});
 export const CondicionIVAContext = createContext({});
+export const ConceptosCuotaContext = createContext({});
+export const ConceptosPagoContext = createContext({});
 export const TipoProductosContext = createContext({});
 export const CategoriasComboContext = createContext({});
 
@@ -69,10 +72,6 @@ dotenv.config();
 
 export default function App() {
   const { loggedUser, setLoggedUser } = useAuth();
-  //const [idSociety, setIdSociety] = useState(()
- 
- 
-
     
   const [idSociety, setIdSociety] = useState(() => {
     const localStorageIdSociety = localStorage.getItem('idSociety');
@@ -81,40 +80,51 @@ export default function App() {
 
   
   const { data: estados } = useQuery(['estados', idSociety], () =>
-    getMethod(`listasOP/listarEstados/${idSociety.id}`)
+    getMethod(`listas/listarEstados/${idSociety.id}`)
   );
+  const { data: formaCobros } = useQuery(['formaCobros', idSociety], () =>
+  getMethod(`listas/listarFormaCobros/${idSociety.id}`)
+);
   const { data: formaPagos } = useQuery(['formaPagos', idSociety], () =>
-    getMethod(`listasOP/listarFormaPagos/${idSociety.id}`)
+    getMethod(`listas/listarFormaPagos/${idSociety.id}`)
   );
   const { data: retenciones } = useQuery(['retenciones', idSociety], () =>
-  getMethod(`listasOP/listarRetenciones/${idSociety.id}`)
+  getMethod(`listas/listarRetenciones/${idSociety.id}`)
   );
   const { data: fondos } = useQuery(['fondos', idSociety], () =>
-  getMethod(`listasOP/listarFondos/${idSociety.id}`)
+  getMethod(`listas/listarFondos/${idSociety.id}`)
   );
   const { data: tipos } = useQuery(['tipos', idSociety], () =>
-  getMethod(`listasOP/listarTipos/${idSociety.id}`)
+  getMethod(`listas/listarTipos/${idSociety.id}`)
   );
   const { data: condicion_de_IVA } = useQuery(['condicion_de_IVA', idSociety], () =>
-  getMethod(`listasOP/listarCondicion_de_IVA/${idSociety.id}`)
+  getMethod(`listas/listarCondicion_de_IVA/${idSociety.id}`)
   );
   const { data: tipoProductos } = useQuery(['tipoProductos', idSociety], () =>
-  getMethod(`listasFidu/listarTipoProductos/${idSociety.id}`)
+  getMethod(`listas/listarTipoProductos/${idSociety.id}`)
   );
   const {data: categoriasCombo} = useQuery(['categoriaCombo', idSociety], () => 
     getMethod(`categoria/listarCombo/${idSociety.id}`)
   ); 
-
+  const {data: conceptosCuota} = useQuery(['conceptosCuota', idSociety], () => 
+    getMethod(`listas/conceptosCuota/${idSociety.id}`)
+  ); 
+  const {data: conceptosPago} = useQuery(['conceptosPago', idSociety], () => 
+    getMethod(`listas/conceptosPago/${idSociety.id}`)
+  ); 
 
   return (
 
     <SocietyContext.Provider value={idSociety}>
     <EstadosContext.Provider value={estados}>
+    <FormaCobrosContext.Provider value={formaCobros} >
     <FormaPagosContext.Provider value={formaPagos} >
     <RetencionesContext.Provider value={retenciones}>
     <FondosContext.Provider value={fondos}>
     <TiposContext.Provider value={tipos}>
     <CondicionIVAContext.Provider value={condicion_de_IVA}>
+    <ConceptosCuotaContext.Provider value={conceptosCuota}>
+    <ConceptosPagoContext.Provider value={conceptosPago}>
     <TipoProductosContext.Provider value={tipoProductos}>
     <CategoriasComboContext.Provider value={categoriasCombo}>
 
@@ -255,11 +265,14 @@ export default function App() {
     
     </CategoriasComboContext.Provider>
     </TipoProductosContext.Provider>
+    </ConceptosPagoContext.Provider>
+    </ConceptosCuotaContext.Provider>
     </CondicionIVAContext.Provider>
     </TiposContext.Provider>
     </FondosContext.Provider>    
     </RetencionesContext.Provider>
     </FormaPagosContext.Provider>
+    </FormaCobrosContext.Provider>
     </EstadosContext.Provider>
     </SocietyContext.Provider>
     

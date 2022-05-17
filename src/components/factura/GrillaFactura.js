@@ -20,8 +20,7 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     width: 55,
     editable: false,
     headerAlign: 'center',
-  },
-  
+  },  
   {
     field: 'blue',
     headerName: 'Blue',
@@ -83,7 +82,6 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     editable: acceso,
     headerAlign: 'center',
     align: 'right',
-
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
@@ -94,7 +92,6 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     editable: false,
     headerAlign: 'center',
     align: 'right',
-
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
@@ -107,7 +104,6 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     align: 'center',
     valueFormatter: ({ value }) =>
     new Intl.NumberFormat('es-AR', { minimumFractionDigits: 1 }).format(Number(value)),
-
   },
   {
     field: 'iva',
@@ -116,7 +112,6 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     editable: acceso,
     headerAlign: 'center',
     align: 'right',
-
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
@@ -127,7 +122,6 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     editable: false,
     headerAlign: 'center',
     align: 'right',
-
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
@@ -138,7 +132,6 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     editable: false,
     headerAlign: 'center',
     align: 'right',
-
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
@@ -149,7 +142,6 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     editable: false,
     headerAlign: 'center',
     align: 'right',
-
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
@@ -161,7 +153,6 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     editable: false,
     headerAlign: 'center',
     align: 'right',
-
     valueFormatter: ({ value }) =>
     new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
@@ -174,7 +165,6 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     editable: acceso,
     headerAlign: 'center',
   },
-
   {
     field: 'es_ajuste',
     headerName: 'Mayor Costo',
@@ -200,7 +190,6 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     renderCell:  ({ row: { link } }) => (
       <a href={ link }  rel="noreferrer" target="_blank" >ver</a>)
   },
-
   {
     field: 'createdAt',
     headerName: 'Fecha C.',
@@ -209,10 +198,8 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     editable: false,
     headerAlign: 'center',
     align: 'center',
-    renderCell: fFechaC,
-    
+    renderCell: fFechaC,    
   },
-
   {
     field: 'fechaIngreso',
     headerName: 'Fecha Emisión',
@@ -221,8 +208,7 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     editable: acceso,
     headerAlign: 'center',
     align: 'center',
-    renderCell: fFechaIngreso,
-    
+    renderCell: fFechaIngreso,    
   },
   {
     field: 'diasVTO',
@@ -243,8 +229,7 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     editable: false,
     headerAlign: 'center',
     align: 'center',
-    renderCell: fFechaVTO,
-    
+    renderCell: fFechaVTO,    
   },
   {
     field: 'OPnumero',
@@ -253,8 +238,7 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     editable: false,
     headerAlign: 'center',
     renderCell: IrDetalleOP_1,
-  },
-  
+  },  
   {
     field: 'estadoOP',
     headerName: 'Estado OP',
@@ -262,7 +246,6 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     editable: false,
     headerAlign: 'center',
   },
-
   {
     field: 'deleteIcon',
     headerName: ' ',
@@ -273,7 +256,6 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     renderCell: ({ row: { deleteId, OPnumero} }) => (OPnumero>0? '':
       <DeleteIcon
         onClick={e => {
-
           setRowIdToDelete(deleteId);
           setIsPromptOpen(true);
         }}

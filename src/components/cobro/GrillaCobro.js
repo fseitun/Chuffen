@@ -9,8 +9,7 @@ import { usePrompt } from 'src/utils/usePrompt';
 import { SocietyContext } from 'src/App';
 
 
-const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [
-  
+const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [ 
   
   {
     field: 'fecha',
@@ -26,14 +25,27 @@ const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [
       month: 'short',
       timeZone: 'UTC',
     }),
-
   },
-
   {
-    field: 'cuota',
-    headerName: 'Cuota',
-    width: 120,
-    editable: acceso,
+    field: 'fideicomiso',
+    headerName: 'Fideicomiso',
+    width: 160,
+    editable: false,
+    headerAlign: 'center',
+    align: 'left',
+  }, 
+  {
+    field: 'contrato',
+    headerName: 'contrato',
+    width: 170,
+    editable: false,
+    headerAlign: 'center',
+  },
+  {
+    field: 'fiduciante',
+    headerName: 'fiduciante',
+    width: 170,
+    editable: false,
     headerAlign: 'center',
   },
 
@@ -44,9 +56,7 @@ const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [
     editable: acceso,
     headerAlign: 'left',
     renderEditCell: props => <ComboBox listItems={conceptosCuota} label={"Concepto"} props={props} />,
-
-  },
-  
+  },  
   {
     field: 'monto',
     preProcessEditCellProps: onlyNumbers,
@@ -59,7 +69,6 @@ const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
-
   {
     field: 'moneda',
     headerName: '',
@@ -67,7 +76,6 @@ const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [
     editable: false,
     headerAlign: 'center',
   },
-
   {
     field: 'deleteIcon',
     headerName: '',
@@ -87,11 +95,11 @@ const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [
   },
 ];
 
-export function GrillaCuota({ loggedUser, conceptosCuota, dataContrato, isLoading, error, refetch, moneda}) {
+export function GrillaCobro({loggedUser, dataCobro, conceptosPago, isLoading, error, refetch}) {
+  
   const idSociety = useContext(SocietyContext);
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
-
 
   var acceso = true;
   if(loggedUser?.['rol.contrato'] ==='vista'){acceso =false}
@@ -99,19 +107,19 @@ export function GrillaCuota({ loggedUser, conceptosCuota, dataContrato, isLoadin
   const queryClient = useQueryClient();
 
   const { mutate: eliminate } = useMutation(
-    async idItem => await deleteMethod(`cuota/eliminar/${idSociety.id}`, { id: idItem }),
+    async idItem => await deleteMethod(`cobro/eliminar/${idSociety.id}`, { id: idItem }),
     {
       onMutate: async idItem => {
-        await queryClient.cancelQueries(['cuota', idSociety]);
-        const prevData = queryClient.getQueryData(['cuota', idSociety]);
+        await queryClient.cancelQueries(['cobro', idSociety]);
+        const prevData = queryClient.getQueryData(['cobro', idSociety]);
         //const newData = prevData.filter(item => item.id !== idItem);
         //queryClient.setQueryData(['cuota', idSociety], newData);
         return prevData;
       },
-      onError: (err, idItem, context) => queryClient.setQueryData(['cuota', idSociety], context),
+      onError: (err, idItem, context) => queryClient.setQueryData(['cobro', idSociety], context),
       onSettled: () => {
         if(idSociety.id > 0) {
-          queryClient.invalidateQueries(['cuota', idSociety])
+          queryClient.invalidateQueries(['cobro', idSociety])
         }
         refetch()        
       }
@@ -120,15 +128,15 @@ export function GrillaCuota({ loggedUser, conceptosCuota, dataContrato, isLoadin
 
   const { mutate: modifyData } = useMutation(
     async ({ field, id, value }) =>
-      await postMethod(`cuota/modificar/${idSociety.id}`, {
+      await postMethod(`cobro/modificar/${idSociety.id}`, {
         id,
         [field]: value,
       }),
     {
       onMutate: async ({ field, id, value }) => {
-        console.log(22222, field);
-        await queryClient.cancelQueries(['cuota', idSociety]);
-        const prevData = queryClient.getQueryData(['cuota', idSociety]);
+        // console.log(22222, field);
+        await queryClient.cancelQueries(['cobro', idSociety]);
+        const prevData = queryClient.getQueryData(['cobro', idSociety]);
    
         /*const newData = [
           ...prevData.filter(item => item.id !== id),
@@ -138,10 +146,10 @@ export function GrillaCuota({ loggedUser, conceptosCuota, dataContrato, isLoadin
         // queryClient.setQueryData(['cuota', idSociety], newData);
         return prevData;
       },
-      onError: (err, id, context) => queryClient.setQueryData(['cuota', idSociety], context),
+      onError: (err, id, context) => queryClient.setQueryData(['cobro', idSociety], context),
       onSettled: () => {
         if(idSociety.id > 0) {
-          queryClient.invalidateQueries(['cuota', idSociety])
+          queryClient.invalidateQueries(['cobro', idSociety])
         }
         refetch()        
       }
@@ -169,20 +177,23 @@ export function GrillaCuota({ loggedUser, conceptosCuota, dataContrato, isLoadin
           <Grid item md={12}>
             <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
             <DataGrid
-              rows={dataContrato?.cuotas?.filter(item => item.moneda === moneda).map(item => ({
+              //rows={dataContrato?.cuotas?.filter(item => item.moneda === moneda).map(item => ({
+                rows={dataCobro?.map(item => ({  
                 id: item?.id,
                 fecha: item?.fecha,
-                concepto: conceptosCuota?.find(i => i.id === item?.concepto)?.descripcion,
-                cuota: item?.cuota,
+                concepto: conceptosPago?.find(i => i.id === item?.concepto)?.descripcion,
+                fideicomisoId: item?.fideicomisoId,
+                fideicomiso: (item?.contrato?.fideicomisos[0]? item?.contrato?.fideicomisos[0]?.nombre:''),
+                contrato: item?.contrato?.nombre, 
+                fiduciante: item?.contrato?.personas[0]? item?.contrato?.personas[0]?.nombre:'' + item?.contrato?.empresas[0]? item?.contrato?.empresas[0]?.razonSocial:'', 
                 monto: item?.monto,
                 moneda: item?.moneda,
-                CACBase: item?.CACBase,
                 createdAt: item?.createdAt,
                 deleteId: item?.id,
 
               }))}
               onCellEditCommit={modifyData}
-              columns={columns(acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete)}
+              columns={columns(acceso, conceptosPago, setIsPromptOpen, setRowIdToDelete)}
               /*pageSize={25}*/
               disableSelectionOnClick
               autoHeight              

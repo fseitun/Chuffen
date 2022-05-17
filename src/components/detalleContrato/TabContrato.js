@@ -7,7 +7,7 @@ import { GrillaCuota } from 'src/components/detalleContrato/GrillaCuota';
 //import { GrillaPagos } from 'src/components/detalleOC/GrillaPagos';
 
 
-export function TabContrato({ OCId,  idSociety, loggedUser, dataContrato, isLoading, error, refetch, moneda, setMoneda, CACs}) {
+export function TabContrato({ OCId,  idSociety, loggedUser, conceptosCuota, dataContrato, isLoading, error, refetch, moneda, setMoneda, CACs}) {
 
 
 
@@ -37,38 +37,67 @@ export function TabContrato({ OCId,  idSociety, loggedUser, dataContrato, isLoad
             </Box>
             <TabPanel value="ARS">
 
-            <Hidden  smUp={verAgregar} >
-                    <Box sx={{ pt: 3 }}>
-                      <AltaCuota
-                            OCId={OCId}
-                            idSociety={idSociety}
-                            loggedUser={loggedUser}
-                            dataContrato={dataContrato}
-                            isLoading={isLoading}
-                            error={error}
-                            refetch={refetch}
-                            moneda={'ARS'}
-                      />
-                    </Box>
-                  </Hidden>
-                  <Box sx={{ pt: 3 }}>
-                    
-                    <GrillaCuota
-                          OCId={OCId}
-                          idSociety={idSociety}
-                          loggedUser={loggedUser}
-                          dataContrato={dataContrato}
-                          isLoading={isLoading}
-                          error={error}
-                          refetch={refetch}
-      
-                          moneda={'ARS'}
-                    />
-                  </Box>
+              <Hidden  smUp={verAgregar} >
+                <Box sx={{ pt: 3 }}>
+                  <AltaCuota
+                        OCId={OCId}
+                        idSociety={idSociety}
+                        loggedUser={loggedUser}
+                        dataContrato={dataContrato}
+                        isLoading={isLoading}
+                        error={error}
+                        refetch={refetch}
+                        moneda={'ARS'}
+                        conceptosCuota={conceptosCuota}
+                  />
+                </Box>
+              </Hidden>
+              <Box sx={{ pt: 3 }}>                    
+                <GrillaCuota
+                      OCId={OCId}
+                      idSociety={idSociety}
+                      loggedUser={loggedUser}
+                      dataContrato={dataContrato}
+                      isLoading={isLoading}
+                      error={error}
+                      refetch={refetch}
+                      conceptosCuota={conceptosCuota}
+                      moneda={'ARS'}
+                />
+              </Box>
                   
             
             </TabPanel>
             <TabPanel value="USD">
+
+              <Hidden  smUp={verAgregar} >
+                <Box sx={{ pt: 3 }}>
+                  <AltaCuota
+                        OCId={OCId}
+                        idSociety={idSociety}
+                        loggedUser={loggedUser}
+                        dataContrato={dataContrato}
+                        isLoading={isLoading}
+                        error={error}
+                        refetch={refetch}
+                        moneda={'USD'}
+                        conceptosCuota={conceptosCuota}
+                  />
+                </Box>
+              </Hidden>
+              <Box sx={{ pt: 3 }}>                    
+                <GrillaCuota
+                      OCId={OCId}
+                      idSociety={idSociety}
+                      loggedUser={loggedUser}
+                      dataContrato={dataContrato}
+                      isLoading={isLoading}
+                      error={error}
+                      refetch={refetch}
+                      conceptosCuota={conceptosCuota}
+                      moneda={'USD'}
+                />
+              </Box>
             
             
             </TabPanel>

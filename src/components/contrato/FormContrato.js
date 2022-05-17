@@ -15,6 +15,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
+import { NavLink as RouterLink } from 'react-router-dom';
 
 
 function not(a, b) {
@@ -272,7 +273,14 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
                   <Grid item md={11}> 
                     <Typography align="left" color="textPrimary" variant="h6">
                           * Si el fiduciante no existe debe ingresarlo previamente en "Fiduciantes".
+                     
                     </Typography>
+                    <Button
+                            component={RouterLink}
+                            to={`/${idSociety.nombre}/fiduciantes`}
+                          >
+                            Nuevo fidudiante
+                          </Button>
                   </Grid>
               </Hidden>
 
@@ -317,11 +325,11 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
               </Hidden>
 
               <Hidden  smUp={!(activeStep===2)} >  
-                <Grid item md={5}> 
+                <Grid item md={3}> 
                   <Field
                     as={TextField}
-                    title="Nombre"
-                    label='Nombre'
+                    title="Nombre contrato"
+                    label='Nombre contrato'
                     //type='float'
                     key={'_nombre'}
                     required     
@@ -333,19 +341,7 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
                     
                     onChange={event => setIniNombre(event?.target?.value.toString())}
                   />       
-                  <Field
-                    as={TextField}
-                    title="CAC Base"
-                    label='CAC Base'
-                    type='float'
-                    required     
-                    maxLength={11}         
-                    size="small"
-                    sx={{ width: '24ch' }}
-        
-                    name='CACbase'
-                    onChange={event => onlyNumbers(event, setFieldValue, 'CACbase')}
-                  />  
+           
                 </Grid>   
                 <Grid item md={3}>
                   <LocalizationProvider dateAdapter={AdapterDateFns} locale={localeMap[locale]}>
@@ -415,6 +411,7 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
   );
 }
 
+/*
 function onlyNumbers(event, setFieldValue, typeOfData) {
   event.preventDefault();
   const { value } = event.target;
@@ -426,7 +423,27 @@ function onlyNumbers(event, setFieldValue, typeOfData) {
     if (regex.test(value.toString()) || ctrl) {  
     setFieldValue(typeOfData, value.toString());
   }
-}
+}*/
+
+/*
+        <Field
+                    as={TextField}
+                    title="CAC Base"
+                    label='CAC Base'
+                    type='float'
+                    required     
+                    maxLength={11}         
+                    size="small"
+                    sx={{ width: '24ch' }}
+        
+                    name='CACbase'
+                    onChange={event => onlyNumbers(event, setFieldValue, 'CACbase')}
+                  /> 
+
+*/
+
+
+
 
 /*
 function IrDetalleOP_1(params) {
