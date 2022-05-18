@@ -37,13 +37,6 @@ export function DetalleContrato({ idSociety, loggedUser }) {
       getMethod(`contrato/mostrar/${idSociety.id}/${contratoId}`)
 
   );
-  // ConDetalle
-  /*
-  const { data: CACs } = useQuery(['CACs', idSociety], 
-    () => getMethod(`CAC/listar/${idSociety.id}`)
-  );*/
-
- 
   
   if (isLoading) {
     return 'Cargando...';
@@ -51,26 +44,6 @@ export function DetalleContrato({ idSociety, loggedUser }) {
     return `Hubo un error: ${error.message}`;
   } else
 
-/*
-    var totPagosARS = 0.0 ;
-    var totPagosUSD = 0.0 ;
-    var totAjusteARS = 0.0 ;
-    var totAjusteUSD = 0.0 ;
-    for(var i = 0; i < formContrato?.pago.length; i++){
-          if(formContrato?.pago[i].Contrato_moneda ==='ARS'){
-            totPagosARS +=parseFloat(formContrato?.pago[i].monto);
-            totAjusteARS +=parseFloat(formContrato?.pago[i].ajuste? formContrato?.pago[i].ajuste: 0.0);
-          }else{
-            if(formContrato?.pago[i].moneda ==='ARS'){
-              totPagosUSD +=parseFloat(formContrato?.pago[i].monto) / parseFloat(formContrato?.pago[i].cotizacion_usd);
-              totAjusteUSD +=parseFloat(formContrato?.pago[i].ajuste? formContrato?.pago[i].ajuste: 0.0) / parseFloat(formContrato?.pago[i].cotizacion_usd);
-            }else{
-              totPagosUSD +=parseFloat(formContrato?.pago[i].monto);
-              totAjusteUSD +=parseFloat(formContrato?.pago[i].ajuste? formContrato?.pago[i].ajuste: 0.0);
-            }
-          }    
-    }
-    console.log(totPagosARS, totAjusteARS);*/
   return (  
 
     <div id="MENU" style={{ minHeight: "100vh" }}>
@@ -138,19 +111,29 @@ export function DetalleContrato({ idSociety, loggedUser }) {
               <Grid item md={12} >
                 &nbsp;
               </Grid>       
+              <Grid item md={3} >
+                <Typography align="left" color="textPrimary" variant="h5">
+                Fecha de adhesión: {mostrarFechaMesTXT(dataContrato?.cont?.adhesion)} 
+                </Typography>
+              </Grid>   
               <Grid item md={2} >
                 <Typography align="left" color="textPrimary" variant="h5">
-                    &nbsp;
+                    Cuotas ARS: {"36"} 
                 </Typography>
-              </Grid>                        
+              </Grid>   
+              <Grid item md={2} >
+                <Typography align="left" color="textPrimary" variant="h5">
+                    Cuotas USD: {"0"} 
+                </Typography>
+              </Grid>                    
               <Grid item md={2} >
                 <Typography align="left" color="textPrimary" variant="h5">
                     CAC Base: {"buscar CAC"} 
                 </Typography>
               </Grid>
-              <Grid item md={8} >
+              <Grid item md={3} >
                 <Typography align="left" color="textPrimary" variant="h5">
-                    Fecha de adhesión: {mostrarFechaMesTXT(dataContrato?.cont?.adhesion)} 
+                    
                 </Typography>
               </Grid>         
             </Grid>

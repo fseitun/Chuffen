@@ -20,8 +20,6 @@ export function Proveedores({ idSociety, loggedUser }) {
 
   const tipo = 0; // 1 = Fiduciantes  0 = Proveedores
 
-  console.log(222, filtRS);
-
   return (
     <>
       <Helmet>

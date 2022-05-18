@@ -4,7 +4,7 @@ import { NavItem } from './NavItem';
 import { sideBarOptions } from './sideBarOptions';
 
 export default function DashboardSidebar({ setisMobileNavOpen, setLoggedUser, isMobileNavOpen, idSociety, loggedUser }) {
-  // console.log('idSociety:', idSociety);
+  
   const navigate = useNavigate();
   if(!loggedUser){
     logOut();

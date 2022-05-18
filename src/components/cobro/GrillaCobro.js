@@ -2,19 +2,28 @@ import * as React from 'react';
 import { useState, useContext } from 'react';
 import { useQueryClient, useMutation } from 'react-query';
 import { Typography, Grid, Autocomplete, TextField } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+// import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { SocietyContext } from 'src/App';
 
 
-const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [ 
+const columns = (acceso, fondos_s, estados, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [ 
   
+  {
+    field: 'id',
+    headerName: 'Id',
+    width: 55,
+    editable: false,
+    headerAlign: 'center',
+  },  
+
   {
     field: 'fecha',
     headerName: 'Fecha',
-    width: 150,
+    width: 140,
     editable: false,
     type: 'date',
     headerAlign: 'center',
@@ -29,7 +38,7 @@ const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'fideicomiso',
     headerName: 'Fideicomiso',
-    width: 160,
+    width: 155,
     editable: false,
     headerAlign: 'center',
     align: 'left',
@@ -37,14 +46,14 @@ const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'contrato',
     headerName: 'contrato',
-    width: 170,
+    width: 150,
     editable: false,
     headerAlign: 'center',
   },
   {
     field: 'fiduciante',
     headerName: 'fiduciante',
-    width: 170,
+    width: 160,
     editable: false,
     headerAlign: 'center',
   },
@@ -52,7 +61,7 @@ const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'concepto',
     headerName: 'concepto',
-    width: 400,
+    width: 200,
     editable: acceso,
     headerAlign: 'left',
     renderEditCell: props => <ComboBox listItems={conceptosCuota} label={"Concepto"} props={props} />,
@@ -69,13 +78,51 @@ const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
+
   {
     field: 'moneda',
     headerName: '',
     width: 50,
-    editable: false,
+    editable: 
+    false,
     headerAlign: 'center',
   },
+
+  {
+    field: 'cambio',
+    preProcessEditCellProps: onlyNumbers,
+    headerName: 'Cambio',
+    width: 130,
+    editable: acceso,
+    headerAlign: 'center',
+    align: 'right',
+
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+
+  {
+    field: 'fondos',
+    headerName: 'Fondos',
+    width: 130,
+    editable: acceso,
+    headerAlign: 'left',
+    renderEditCell: props => <ComboBox listItems={fondos_s} label={"Fondos"} props={props} />,
+  },  
+
+  {
+    field: 'archivadas',
+    headerName: 'Estado',
+    width: 130,
+    editable: acceso,
+    headerAlign: 'left',
+    renderEditCell: props => <ComboBox listItems={estados} label={"Estado"} props={props} />,
+  },  
+
+
+
+
+
   {
     field: 'deleteIcon',
     headerName: '',
@@ -95,14 +142,15 @@ const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [
   },
 ];
 
-export function GrillaCobro({loggedUser, dataCobro, conceptosPago, isLoading, error, refetch}) {
+
+export function GrillaCobro({loggedUser, filtCont, filtFide, dataCobro, fondos_s, estados, conceptosPago, isLoading, error, refetch}) {
   
   const idSociety = useContext(SocietyContext);
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
 
   var acceso = true;
-  if(loggedUser?.['rol.contrato'] ==='vista'){acceso =false}
+  if(loggedUser?.['rol.cobros'] ==='vista'){acceso =false}
 
   const queryClient = useQueryClient();
 
@@ -134,7 +182,7 @@ export function GrillaCobro({loggedUser, dataCobro, conceptosPago, isLoading, er
       }),
     {
       onMutate: async ({ field, id, value }) => {
-        // console.log(22222, field);
+        
         await queryClient.cancelQueries(['cobro', idSociety]);
         const prevData = queryClient.getQueryData(['cobro', idSociety]);
    
@@ -155,6 +203,52 @@ export function GrillaCobro({loggedUser, dataCobro, conceptosPago, isLoading, er
       }
     }
   );
+
+  //function filtrar(element, filtComp, filtFide, filtRS, onlyBlue){
+  function filtrar(element, filtCont, filtFide){
+    //if(onlyBlue && element.blue !== 1){
+    //  return false;
+    //}
+
+    if(filtFide === -1 && filtCont === -1){
+      return true;
+    }
+
+    if(filtFide > -1 && filtCont === -1){//fide
+      
+      if(element.fideicomisoId===filtFide){return true;}else{return false;}
+    }
+    if(filtFide === -1 && filtCont > -1){// contrato
+      if(element.contratoId===filtCont){return true;}else{return false;}
+    }
+    if(filtFide > -1 && filtCont > -1){
+      if(element.fideicomisoId===filtFide && element.contratoId===filtCont){return true;}else{return false;}
+    }  
+
+  }
+
+
+  const [sortModel, setSortModel] = React.useState([
+    {
+      field: 'id',
+      sort: 'desc',
+    },
+  ]);
+
+  const onSort = (newSort) => {
+
+    if(newSort.length === 0){
+      newSort.push(sortModel[0]);
+      if(sortModel[0]?.sort === 'asc'){
+        newSort[0].sort = 'desc';
+      }else{
+        newSort[0].sort = 'asc';
+      }
+    }
+    setSortModel(newSort);    
+  };
+
+  const [pageSize, setPageSize] = useState(25);
   
   if (isLoading) {
     return 'Cargando...';
@@ -176,32 +270,61 @@ export function GrillaCobro({loggedUser, dataCobro, conceptosPago, isLoading, er
 
           <Grid item md={12}>
             <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
-            <DataGrid
-              //rows={dataContrato?.cuotas?.filter(item => item.moneda === moneda).map(item => ({
-                rows={dataCobro?.map(item => ({  
-                id: item?.id,
-                fecha: item?.fecha,
-                concepto: conceptosPago?.find(i => i.id === item?.concepto)?.descripcion,
-                fideicomisoId: item?.fideicomisoId,
-                fideicomiso: (item?.contrato?.fideicomisos[0]? item?.contrato?.fideicomisos[0]?.nombre:''),
-                contrato: item?.contrato?.nombre, 
-                fiduciante: item?.contrato?.personas[0]? item?.contrato?.personas[0]?.nombre:'' + item?.contrato?.empresas[0]? item?.contrato?.empresas[0]?.razonSocial:'', 
-                monto: item?.monto,
-                moneda: item?.moneda,
-                createdAt: item?.createdAt,
-                deleteId: item?.id,
+          <DataGrid
+            rows={dataCobro?.filter(element =>filtrar(element, filtCont, filtFide)).map(item => ({  
+              id: item?.id,
+              fecha: item?.fecha,
+              concepto: conceptosPago?.find(i => i.id === item?.concepto)?.descripcion,
+              fideicomisoId: item?.fideicomisoId,
+              fideicomiso: (item?.contrato?.fideicomisos[0]? item?.contrato?.fideicomisos[0]?.nombre:''),
+              contrato: item?.contrato?.nombre, 
+              fiduciante: item?.contrato?.personas[0]? item?.contrato?.personas[0]?.nombre:'' + item?.contrato?.empresas[0]? item?.contrato?.empresas[0]?.razonSocial:'', 
+              monto: item?.monto,
+              moneda: item?.moneda,
+              // recivo:
+              cambio: item?.cambio,
+              fondos: fondos_s?.find(i => i.id === item?.fondos)?.descripcion,    
+              archivadas: estados?.find(i => i.id === item?.archivadas)?.descripcion,
+              createdAt: item?.createdAt,
+              deleteId: item?.id,
 
-              }))}
-              onCellEditCommit={modifyData}
-              columns={columns(acceso, conceptosPago, setIsPromptOpen, setRowIdToDelete)}
-              /*pageSize={25}*/
-              disableSelectionOnClick
-              autoHeight              
-            />
+              }))}OPs
+
+            onCellEditCommit={modifyData}
+            columns={columns(acceso,  fondos_s, estados, conceptosPago, setIsPromptOpen, setRowIdToDelete)}
+            
+            sortModel={sortModel}
+            onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
+        
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            rowsPerPageOptions={[10, 25, 50, 100]}
+            pagination
+
+            disableSelectionOnClick
+            autoHeight
+            scrollbarSize
+            components={{
+              Toolbar: CustomToolbar,
+            }}
+          />
+
           </Grid>
         </Grid>  
       </div>
     );
+}
+
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport csvOptions={{ fields: [ 'id', 'tipo', 'letra','fideicomiso', 'empresa', 'cuit','numero', 'montoTotal', 'neto', 'porcentajeIVA', 'iva', 'percepcionesIVA', 'IIBB_CABA','IIBB_BSAS','no_gravado', 'moneda', 'es_ajuste'
+ , 'createdAt','fechaIngreso', 'fechaVTO', 'OPnumero', 'estadoOP'] }} />
+    </GridToolbarContainer>
+  );
 }
 
 function onlyNumbers(data) {

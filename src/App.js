@@ -57,6 +57,7 @@ import { useQuery } from 'react-query';
 export const SocietyContext = createContext({});
 
 export const EstadosContext = createContext({});
+export const EstadosPagoContext = createContext({});
 export const FormaCobrosContext = createContext({});
 export const FormaPagosContext = createContext({});
 export const RetencionesContext = createContext({});
@@ -81,6 +82,9 @@ export default function App() {
   
   const { data: estados } = useQuery(['estados', idSociety], () =>
     getMethod(`listas/listarEstados/${idSociety.id}`)
+  );
+  const { data: estadosPago } = useQuery(['estadosPago', idSociety], () =>
+    getMethod(`listas/listarEstadosPago/${idSociety.id}`)
   );
   const { data: formaCobros } = useQuery(['formaCobros', idSociety], () =>
   getMethod(`listas/listarFormaCobros/${idSociety.id}`)
@@ -112,11 +116,12 @@ export default function App() {
   const {data: conceptosPago} = useQuery(['conceptosPago', idSociety], () => 
     getMethod(`listas/conceptosPago/${idSociety.id}`)
   ); 
-
+  
   return (
 
     <SocietyContext.Provider value={idSociety}>
     <EstadosContext.Provider value={estados}>
+    <EstadosPagoContext.Provider value={estadosPago}>    
     <FormaCobrosContext.Provider value={formaCobros} >
     <FormaPagosContext.Provider value={formaPagos} >
     <RetencionesContext.Provider value={retenciones}>
@@ -272,7 +277,8 @@ export default function App() {
     </FondosContext.Provider>    
     </RetencionesContext.Provider>
     </FormaPagosContext.Provider>
-    </FormaCobrosContext.Provider>
+    </FormaCobrosContext.Provider>    
+    </EstadosPagoContext.Provider>
     </EstadosContext.Provider>
     </SocietyContext.Provider>
     

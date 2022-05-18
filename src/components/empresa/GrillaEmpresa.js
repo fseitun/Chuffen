@@ -283,12 +283,12 @@ export function GrillaEmpresa({ empresaInformation, isLoading, error, loggedUser
       onMutate: async ({ field, id, value }) => {
         await queryClient.cancelQueries(['empresa', idSociety]);
         const prevData = queryClient.getQueryData(['empresa', idSociety]);
-        // console.log('prevData', prevData);
+        
         const newData = [
           ...prevData.filter(empresa => empresa.id !== id),
           { ...prevData.find(empresa => empresa.id === id), [field]: value },
         ];
-        // console.log('newData', newData);
+        
         queryClient.setQueryData(['empresa', idSociety], newData);
         return prevData;
       },

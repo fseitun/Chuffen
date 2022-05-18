@@ -63,7 +63,7 @@ export function DetalleOC({ idSociety, loggedUser }) {
             }
           }    
     }
-    console.log(totPagosARS, totAjusteARS);
+    
   return (  
 
     <div id="MENU" style={{ minHeight: "100vh" }}>

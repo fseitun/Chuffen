@@ -117,16 +117,14 @@ export function GrillaDetalleFide({idSociety, loggedUser, dataFide, isLoading, e
       }), 
     {
       onMutate: async ({ field, id, value }) => {
-        console.log(field, id, value, idSociety);
+        
         await queryClient.cancelQueries(['producto', idSociety]);
         const prevData = queryClient.getQueryData(['producto', idSociety]);
         /*
-        // console.log('prevData', prevData);
         const newData = [
           ...prevData.filter(producto => producto.id !== id),
           { ...prevData.find(producto => producto.id === id), [field]: value },
         ];
-        // console.log('newData', newData);
         queryClient.setQueryData(['producto', idSociety], newData);*/
         return prevData;
       },

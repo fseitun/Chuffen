@@ -22,8 +22,7 @@ export function FormDetalleFide({ idSociety, loggedUser, fideicomisoId, refetch 
       onMutate: async newProducto => {
         newProducto.fideicomisoId = parseInt(fideicomisoId);
         newProducto.creador = loggedUser.id;
-        console.log(22, newProducto)
-        
+                
         await queryClient.invalidateQueries(['producto', idSociety]);
         const prevData = await queryClient.getQueryData(['producto', idSociety]);
         /*const newData = [...prevData, { ...newProducto, id: new Date().getTime()}];

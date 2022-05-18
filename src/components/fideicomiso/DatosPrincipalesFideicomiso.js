@@ -49,7 +49,6 @@ export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety
       },
     }
   );
-  // console.log('contactInfo:', contactInfo);
 
   const rows = [
     {
@@ -127,7 +126,6 @@ export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety
             onCellDoubleClick={e => {
               if (e.field === 'contacto') {
                 setIsDialogOpen(true);
-                // console.log('isDialogOpen:', isDialogOpen);
               }
             }}
           />
@@ -179,7 +177,7 @@ export function DatosPrincipalesFideicomiso({ selectedFideicomisoData, idSociety
           }
         }}
         filterOptions={(options, params) => {
-          // console.log('options:', options);
+        
           const filtered = filter(options, params);
           const { inputValue } = params;
           const isExisting = options.some(option => inputValue === option.nombre);

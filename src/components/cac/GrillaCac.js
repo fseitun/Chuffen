@@ -120,12 +120,12 @@ export function GrillaCac({ idSociety }) {
       onMutate: async ({ field, id, value }) => {
         await queryClient.cancelQueries(['cac', idSociety]);
         const prevData = queryClient.getQueryData(['cac', idSociety]);
-        // console.log('prevData', prevData);
+        
         const newData = [
           ...prevData.filter(cac => cac.id !== id),
           { ...prevData.find(cac => cac.id === id), [field]: value },
         ];
-        // console.log('newData', newData);
+        
         queryClient.setQueryData(['cac', idSociety], newData);
         return prevData;
       },

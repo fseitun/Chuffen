@@ -1,4 +1,4 @@
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, Hidden } from '@mui/material';
 import {useState, useContext } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
@@ -10,7 +10,7 @@ import { SocietyContext } from 'src/App';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 
-export function FormCobro({ dataContrato, conceptosPago, formaCobros, contratos, fideicomisos, loggedUser, refetch  }) {
+export function FormCobro({ mode, fide, cont, conceptosPago, formaCobros, contratos, fideicomisos, loggedUser, refetch  }) {
   
   const idSociety = useContext(SocietyContext);
   const { Prompt } = usePrompt();
@@ -20,8 +20,16 @@ export function FormCobro({ dataContrato, conceptosPago, formaCobros, contratos,
   const [formaCobro, setFormaCobro] = useState(null);
   const [moneda, setMoneda] = useState({id: 'ARS', descripcion: 'ARS'});
   const [concepto, setConcepto] = useState(null);
-  const [fideInForm, setFideInForm] = useState(null);
-  const [contInForm, setContInForm] = useState(null);
+
+  let iniFide =null;
+  let iniCont =null;
+  if(mode==='contrato'){
+    iniFide = {id: fide}; // si estoy en el detalle de un contrato fijo el fideicomiso
+    iniCont = {id: cont}; // si estoy en el detalle de un contrato fijo el contrato
+  }
+
+  const [fideInForm, setFideInForm] = useState(iniFide);
+  const [contInForm, setContInForm] = useState(iniCont);
 
   var monedas = [{id: 'ARS', descripcion: 'ARS'}, {id: 'USD', descripcion: 'USD'}];
 
@@ -65,6 +73,7 @@ export function FormCobro({ dataContrato, conceptosPago, formaCobros, contratos,
             concepto: concepto.id,
             monto: values?.monto,
             formaPago: formaCobro.id,
+            fideicomisoId: fideInForm.id,
             contratoId: contInForm.id,
             moneda: moneda.id,
             creador: loggedUser.id
@@ -80,44 +89,46 @@ export function FormCobro({ dataContrato, conceptosPago, formaCobros, contratos,
 
             <Field component={Picker} label="Fecha" type="date" name="fecha" style={{ width: '160px'}} />
 
-            <Field
-                as={Autocomplete}
-                size={'small'}
-                label='Fideicomiso'
-                title="Seleccione un fideicomiso."
-                disablePortal
-                required
-                style={{ width: '160px', display: 'inline-flex' }}
-                onChange={(event, newValue) => {
-                  setFideInForm(newValue);
-                  setFieldValue('fideicomiso', newValue);
-                }}
-                value={fideInForm}
-                getOptionLabel={option => option.nombre}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                options={(fideicomisos? fideicomisos:[])}
-                renderInput={params => <TextField {...params} label='Fideicomiso' />}
-              />
+            
+            <Hidden  smUp={(mode==='contrato')} >            
+              <Field
+                  as={Autocomplete}
+                  size={'small'}
+                  label='Fideicomiso'
+                  title="Seleccione un fideicomiso."
+                  disablePortal
+                  required
+                  style={{ width: '160px', display: 'inline-flex' }}
+                  onChange={(event, newValue) => {
+                    setFideInForm(newValue);
+                    setFieldValue('fideicomiso', newValue);
+                  }}
+                  value={fideInForm}
+                  getOptionLabel={option => option.nombre}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  options={(fideicomisos? fideicomisos:[])}
+                  renderInput={params => <TextField {...params} label='Fideicomiso' />}
+                />
 
-            <Field
-                as={Autocomplete}
-                size={'small'}
-                label='Contrato'
-                title="Contrato"
-                disablePortal
-                required
-                style={{ width: '260px', display: 'inline-flex' }}
-                onChange={(event, newValue) => {
-                  setContInForm(newValue);
-                  setFieldValue('contratoId', newValue);
-                }}
-                value={contInForm}
-                getOptionLabel={option => (`${option.nombre} - ${option?.empresas[0]? option?.empresas[0]?.razonSocial:"" + option?.personas[0]? option?.personas[0]?.nombre:""}`)}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                options={contratos? contratos?.filter(cont => cont?.fideicomisoId === fideInForm?.id):[]}
-                renderInput={params => <TextField {...params} label='Contrato' />}
-              />
-
+              <Field
+                  as={Autocomplete}
+                  size={'small'}
+                  label='Contrato'
+                  title="Contrato"
+                  disablePortal
+                  required
+                  style={{ width: '260px', display: 'inline-flex' }}
+                  onChange={(event, newValue) => {
+                    setContInForm(newValue);
+                    setFieldValue('contratoId', newValue);
+                  }}
+                  value={contInForm}
+                  getOptionLabel={option => (`${option.nombre} - ${option?.empresas[0]? option?.empresas[0]?.razonSocial:"" + option?.personas[0]? option?.personas[0]?.nombre:""}`)}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  options={contratos? contratos?.filter(cont => cont?.fideicomisoId === fideInForm?.id):[]}
+                  renderInput={params => <TextField {...params} label='Contrato' />}
+                />
+            </Hidden>
             <Field
                 as={Autocomplete}
                 size={'small'}

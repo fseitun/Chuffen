@@ -11,7 +11,7 @@ export function usePrompt() {
     action = () => {},
     message = '¿Estás seguro de eliminar este registro?',
   }) {
-    // console.log('action', action);
+    
     return (
       <div>
         <Dialog

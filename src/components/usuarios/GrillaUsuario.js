@@ -109,12 +109,12 @@ export function GrillaUsuario({ idSociety }) {
           onMutate: async ({ field, id, value }) => {
             await queryClient.cancelQueries(['usuario', idSociety]);
             const prevData = queryClient.getQueryData(['usuario', idSociety]);
-            // console.log('prevData', prevData);
+            
             const newData = [
               ...prevData.filter(usuario => usuario.id !== id),
               { ...prevData.find(usuario => usuario.id === id), [field]: value },
             ];
-            // console.log('newData', newData);
+            
             queryClient.setQueryData(['usuario', idSociety], newData);
             return prevData;
           },

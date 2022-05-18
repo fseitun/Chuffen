@@ -36,8 +36,6 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     renderCell: ({ row: { deleteId } }) => (
       <DeleteIcon
         onClick={e => {
-          // console.log('e', e);
-          // console.log('deleteId', deleteId);
           setRowIdToDelete(deleteId);
           setIsPromptOpen(true);
         }}
@@ -50,7 +48,6 @@ export function GrillaCuentaBanco({ idSociety }) {
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
   const { idBanco } = useParams();
-  // console.log(rowIdToDelete);
 
   const {
     data: cuentaBancoInformation,
@@ -86,12 +83,12 @@ export function GrillaCuentaBanco({ idSociety }) {
       onMutate: async ({ field, id, value }) => {
         await queryClient.cancelQueries(['cuentabanco', idSociety]);
         const prevData = queryClient.getQueryData(['cuentabanco', idSociety]);
-        // console.log('prevData', prevData);
+        
         const newData = [
           ...prevData.filter(cuentabanco => cuentabanco.id !== id),
           { ...prevData.find(cuentabanco => cuentabanco.id === id), [field]: value },
         ];
-        // console.log('newData', newData);
+        
         queryClient.setQueryData(['cuentabanco', idSociety], newData);
         return prevData;
       },

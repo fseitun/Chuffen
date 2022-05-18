@@ -5,7 +5,7 @@
   import { useContext } from 'react';
   import { TiposContext} from 'src/App';
 
-  export function FiltroFactura({setFiltComp, setFiltFide, setFiltRS, idSociety, fideicomisos, proveedores}) {
+  export function FiltroFactura({setFiltComp, setFiltFide, setFiltRS, fideicomisos, proveedores}) {
   
 
     var tipos = useContext(TiposContext);

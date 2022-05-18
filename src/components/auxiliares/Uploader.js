@@ -29,11 +29,10 @@ const Dropzone = styled.div`
 export function Uploader({ fideId, setNewLogoFlag }) {
   let formData = new FormData();
   const onDrop = useCallback(acceptedFiles => {
-    // console.log('fideId', fideId);
+    
     formData.append('logo', acceptedFiles[0]);
     formData.append('id', fideId);
-    // console.log([...formData.entries()], acceptedFiles[0], acceptedFiles[0].name);
-    //postMethod('fideicomiso/modificar/X_sociedad', formData);
+
     setNewLogoFlag(true);
   }, []);
 
@@ -42,31 +41,7 @@ export function Uploader({ fideId, setNewLogoFlag }) {
     accept: 'image/jpeg, image/png',
   });
 
-  /*
-  const { acceptedFiles, fileRejections, getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    accept: 'image/jpeg, image/png',
-  });
-
-  const acceptedFileItems = acceptedFiles.map(file => (
-    <li key={file.path}>
-      {file.path} - {file.size} bytes
-    </li>
-  ));
-
-  const fileRejectionItems = fileRejections.map(({ file, errors }) => (
-    <li key={file.path}>
-      {file.path} - {file.size} bytes
-      <ul>
-        {errors.map(e => (
-          <li key={e.code}>{e.message}</li>
-        ))}
-      </ul>
-    </li>
-  ));*/
-
-  // console.log('acceptedFileItems', acceptedFileItems);
-  // console.log('fileRejectionItems', fileRejectionItems);
+  
   return (
     <Container>
       <Dropzone {...getRootProps()}>

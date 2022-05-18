@@ -126,7 +126,7 @@ export function GrillaCuota({ loggedUser, conceptosCuota, dataContrato, isLoadin
       }),
     {
       onMutate: async ({ field, id, value }) => {
-        console.log(22222, field);
+        
         await queryClient.cancelQueries(['cuota', idSociety]);
         const prevData = queryClient.getQueryData(['cuota', idSociety]);
    

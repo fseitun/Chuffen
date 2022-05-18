@@ -64,8 +64,7 @@ export function GrillaDolar() {
   const idSociety = useContext(SocietyContext);
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
-  // console.log(rowIdToDelete);
-
+  
   const {
     data: dolarInformation,
     isLoading,
@@ -101,12 +100,12 @@ export function GrillaDolar() {
         await queryClient.cancelQueries(['dolar', idSociety]);
         
         const prevData = queryClient.getQueryData(['dolar', idSociety]);
-        // console.log('prevData', prevData);
+        
         const newData = [
           ...prevData.filter(dolar => dolar.id !== id),
           { ...prevData.find(dolar => dolar.id === id), [field]: value },
         ];
-        // console.log('newData', newData);
+        
         queryClient.setQueryData(['dolar', idSociety], newData);
         return prevData;
       },

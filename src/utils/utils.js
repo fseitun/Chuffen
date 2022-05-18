@@ -207,15 +207,14 @@ r = r.replace(/ /g,"_"); //returns my_name
 var d = new Date(year, month, day);
 d.setMonth(d.getMonth() + 8);
 
-ultimos
 	const id = "ctl03_Tabs1";
-	console.log(id.slice(id.length - 5)); //Outputs: Tabs1
+	print (id.slice(id.length - 5)); //Outputs: Tabs1
 primeros
 	const string = "0123456789";
   const string = "01234-123456789";
-	console.log(string.slice(0, 2)); // "01"
-	console.log(string.slice(0, 8)); // "01234567"
-	console.log(string.slice(5, 13)); // "3456"
+	print (string.slice(0, 2)); // "01"
+	print (string.slice(0, 8)); // "01234567"
+	print (string.slice(5, 13)); // "3456"
 sin decimales
 	Math.trunc(42.84);    // 42
 	Math.trunc(0.123);    //  0

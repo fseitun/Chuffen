@@ -102,7 +102,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
             simi = values.numeroBlue.slice(7, 10);
             num = values.numeroBlue;
           }
-          console.log(1111, values.numeroBlue);
+          
           
           let existe = await isNumberUsedDig('factura', idSociety.id, values.empresa.id , num);
 
@@ -115,8 +115,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
             setIsPromptOpen(true);
 
           }else{
-            console.log(2222, values.numeroBlue);
-            
+                    
             let tot = parseFloat(values.neto);
             if(montoIVA > 1){tot +=parseFloat(montoIVA);}
             if(values.percepciones){tot +=parseFloat(values.percepciones);}
@@ -347,7 +346,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                     style={{ width: '100px', display: 'inline-flex' }}
                     onChange={(event, newValue) => {
                       setPorcentajeIVA(newValue);
-                      // console.log(4444, newValue.id, montoNeto, ((newValue.id/100)) * parseFloat(montoNeto));
+                      
                       setMontoIVA(Math.round(newValue.id * parseFloat(montoNeto))/100);
                       setFieldValue('porcentajeIVA', newValue);
                     }}

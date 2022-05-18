@@ -784,14 +784,14 @@ async function getOPs(arr, idSociety, setOpen) {
       let miOP = result.op;
       let fa = {item: result.item};
       if(miOP.estadoOP ===3 && miOP.blue === 0){
-            console.log('AAi=', i, 'res: ', miOP.numero);
+            
             const NewDocument = () => {    
               return (
                 <RepOp dataOP={miOP} dataFacturas={fa} apiServerUrl={apiServerUrl} idSociedad={idSociety.id} />
               )
             }
             let generado = await getPdfBlob_2(NewDocument, miOP.id, miOP?.fideicomisos[0]?.nombre, miOP.numero, miOP?.empresas[0]?.razonSocial, idSociety);
-            console.log(generado);  
+            
             if(generado){
               enviarCorreo_2(miOP.id, miOP?.fideicomisos[0]?.nombre, miOP.numero, miOP.empresas[0]?.razonSocial, miOP.empresas[0]?.enviar_OP_auto, idSociety, miOP?.fideicomisos[0]?.mailOP)
               setOpen(true);

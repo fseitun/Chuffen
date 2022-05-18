@@ -61,7 +61,7 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
   function verFidu(e){
     setFiduInForm(null);
     setTipoFidu(e.target.value);
-    console.log(e.target.value);
+    
   }
 
   const [checked, setChecked] = React.useState([]);
@@ -93,7 +93,6 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
     let listR = right;
     listR = listR.concat(leftChecked);
     setRight(listR);
-    // setIniNombre(right.length>0? right[0]?.codigo:''); // nombre contrato por defecto
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
   };
@@ -101,7 +100,6 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
   const handleCheckedLeft = () => {
     setLeft(left.concat(rightChecked));
     setRight(not(right, rightChecked));
-    // setIniNombre(right.length>0? right[0]?.codigo:''); // nombre contrato por defecto
     setChecked(not(checked, rightChecked));
   };
 
@@ -147,7 +145,6 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
     <>
       <Formik
         initialValues={{
-          // nombre: iniNombre,
           fideicomisoId: null,
           CACbase: '',
         }}

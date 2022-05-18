@@ -107,16 +107,14 @@ export function GrillaContrato({idSociety, loggedUser }) {
       }), 
     {
       onMutate: async ({ field, id, value }) => {
-        console.log(field, id, value, idSociety);
+        
         await queryClient.cancelQueries(['contrato', idSociety]);
         const prevData = queryClient.getQueryData(['contrato', idSociety]);
-        /*
-        // console.log('prevData', prevData);
+        /*        
         const newData = [
           ...prevData.filter(contrato => contrato.id !== id),
           { ...prevData.find(contrato => contrato.id === id), [field]: value },
         ];
-        // console.log('newData', newData);
         queryClient.setQueryData(['contrato', idSociety], newData);*/
         return prevData;
       },

@@ -103,7 +103,7 @@ export function FormDetalleOC({ OCId, formOC, loggedUser, refetch  }) {
   const localeMap = {es: esLocale};  
   const maskMap = {es: '__/__/____'};
   let d = DB_to_date(formOC?.oc?.fechaIni); 
-  console.log(2222, d)
+  
   const [valuef, setValuef] = React.useState(d);
 
 

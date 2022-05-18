@@ -22,8 +22,7 @@ export function FormDolar({loggedUser}) {
     {
       onMutate: async newDolar => {
         newDolar.creador = loggedUser.id;
-        console.log(newDolar);
-        
+                
         await queryClient.invalidateQueries(['dolar', idSociety]);
         const prevData = await queryClient.getQueryData(['dolar', idSociety]);
         const newData = [...prevData, { ...newDolar, id: new Date().getTime() }];

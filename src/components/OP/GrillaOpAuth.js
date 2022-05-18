@@ -191,12 +191,12 @@ export function GrillaOpAuth({ idSociety,  loggedUser, tipo }) {
       onMutate: async ({ field, id, value }) => {
         await queryClient.cancelQueries(['OP' + tipo, idSociety]);
         const prevData = queryClient.getQueryData(['OP' + tipo, idSociety]);
-        // console.log('prevData', prevData);
+        
         const newData = [
           ...prevData.filter(OP => OP.id !== id),
           { ...prevData.find(OP => OP.id === id), [field]: value },
         ];
-        // console.log('newData', newData);
+        
         queryClient.setQueryData(['OP' + tipo, idSociety], newData);
         return prevData;
       },

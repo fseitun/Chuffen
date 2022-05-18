@@ -68,7 +68,6 @@ export function ManipularOP({ idSociety, loggedUser, fideicomisos, proveedores, 
             rubroId: values.empresa.rubroId,
             subRubroId: values.empresa.subrubroId,
             facturaId: values.factura.id,
-            // blue: !chkblue? 1:0,
             blue: !chkblue? 1:(alwaysBlue? 1:0),
             creador: loggedUser.id ,
                       

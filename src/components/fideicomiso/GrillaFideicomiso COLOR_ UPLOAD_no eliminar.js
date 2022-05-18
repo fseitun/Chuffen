@@ -142,7 +142,6 @@ export function GrillaFideicomiso({ idSociety }) {
   } = useQuery(['fideicomiso', idSociety?.id, fechaInicio, newLogoFlag], () =>
     getMethod(`fideicomiso/listar/${idSociety?.id}`)
   );
-  // console.log('dataFromFideicomisos:', dataFromFideicomisos);
 
   const { mutate: changeDataToFideicomiso } = useMutation(
     async newData => {
@@ -151,7 +150,7 @@ export function GrillaFideicomiso({ idSociety }) {
     },
     {
       onMutate: async newColor => {
-        // console.log('newColor', newColor);
+   
         await queryClient.cancelQueries(['fideicomiso', idSociety?.id]);
 
         const previousFideicomisoData = queryClient.getQueryData([
@@ -160,22 +159,21 @@ export function GrillaFideicomiso({ idSociety }) {
           fechaInicio,
           newLogoFlag,
         ]);
-        // console.log('previousFideicomisoData', previousFideicomisoData);
+    
 
         queryClient.setQueryData(['fideicomiso', idSociety?.id, fechaInicio, newLogoFlag], oldData => {
-          // console.log('oldData:', oldData);
+     
           const copyOfOldData = [...oldData];
-          // console.log('copyOfOldData:', copyOfOldData);
+   
           const changedFideicomiso = copyOfOldData.find(e => newColor.id === e.id);
-          // console.log('changedFideicomiso:', changedFideicomiso);
-          // console.log('newData:', newData);
+
           changedFideicomiso.color = newColor.color;
-          // console.log('changedFideicomiso:', changedFideicomiso);
+    
           const newListOfFideicomisos = [
             ...copyOfOldData.filter(e => e.id !== newColor.id),
             changedFideicomiso,
           ];
-          // console.log('newListOfFideicomisos:', newListOfFideicomisos);
+        
           return newListOfFideicomisos;
         });
 
@@ -215,7 +213,7 @@ export function GrillaFideicomiso({ idSociety }) {
         autoHeight
         scrollbarSize
         onCellEditCommit={({ id }) => {
-          // console.log(idSociety?.id, color.css);
+    
           changeDataToFideicomiso({
             id: id,
             fechaInicio: fechaInicio,
@@ -223,7 +221,7 @@ export function GrillaFideicomiso({ idSociety }) {
           });
         }}
         onRowDoubleClick={a => {
-         // console.log(a);
+        
           return IrAFideicomiso(a);
         }}
         components={{
@@ -299,7 +297,7 @@ function ColorPicker({ color, setColor, colorOptions, originalColor }) {
       isOptionEqualToValue={(option, value) => option.label === value.label}
       renderInput={params => <TextField style={{ background: color?.css }} {...params} />}
       renderOption={(props, option, c) => {
-        // console.log(props, option, c);
+     
         return (
           <div {...props} style={{ background: option?.css }}>
             {option.label}
