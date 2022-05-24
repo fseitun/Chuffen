@@ -57,45 +57,71 @@ export function FormDetalleFide({ idSociety, loggedUser, fideicomisoId, refetch 
       >
         {({ isSubmitting, setFieldValue }) => (
           <Form>
+
+              <Field
+                as={Autocomplete}
+                size={'small'}
+                label='Tipo'
+                required
+                disablePortal
+                style={{ width: '230px', display: 'inline-flex' }}
+                onChange={(event, newValue) => {
+                  setTipoInForm(newValue);
+                  //setFactInForm(null);
+                  setFieldValue('_tipo', newValue);
+                }}
+                value={tipoInForm}
+                getOptionLabel={option => option.descripcion}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                options={(tipoProductos? tipoProductos:[])}
+                renderInput={params => <TextField {...params} label='Tipo' />}
+              />
             
-            <Field
-            as={TextField}
-            label="Código"
-            key="codigo"
-            type="string"
-            maxLength={40}
-            size={'small'}
-            name="codigo"
-          />
+              <Field
+                as={TextField}
+                label="Unidad"
+                key="codigo"
+                type="string"
+                maxLength={40}
+                size={'small'}
+                name="codigo"
+              />
+      
+              <Field
+                as={TextField}
+                label='m² Cubierto'
+                title="m² Cubierto, solo numeros."                  
+                maxLength={9}
+                type='float'
+                size="small"
+                style={{ width: '160px', display: 'inline-flex' }}
+                name='mtCubiertos'
+                onChange={event => onlyNumbers(event, setFieldValue, 'mtCubiertos')}
+              />   
 
-          <Field
-            as={Autocomplete}
-            size={'small'}
-            label='Tipo'
-            required
-            disablePortal
-            style={{ width: '230px', display: 'inline-flex' }}
-            onChange={(event, newValue) => {
-              setTipoInForm(newValue);
-              //setFactInForm(null);
-              setFieldValue('_tipo', newValue);
-            }}
-            value={tipoInForm}
-            getOptionLabel={option => option.descripcion}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            options={(tipoProductos? tipoProductos:[])}
-            renderInput={params => <TextField {...params} label='Tipo' />}
-          />
+              <Field
+                as={TextField}
+                label='m² SemiCubierto'
+                title="m² SemiCubierto, solo numeros."                  
+                maxLength={9}
+                type='float'
+                size="small"
+                style={{ width: '160px', display: 'inline-flex' }}
+                name='mtSemiCubiertos'
+                onChange={event => onlyNumbers(event, setFieldValue, 'mtSemiCubiertos')}
+              />   
 
-          <Field
-            as={TextField}
-            label="Descripción"
-            key="descripcion"
-            type="string"
-            // maxLength={40}
-            size={'small'}
-            name="descripcion"
-          />
+              <Field
+                as={TextField}
+                label='m² Terraza'
+                title="m² Terraza, solo numeros."                  
+                maxLength={9}
+                type='float'
+                size="small"
+                style={{ width: '160px', display: 'inline-flex' }}
+                name='mtTerraza'
+                onChange={event => onlyNumbers(event, setFieldValue, 'mtTerraza')}
+              />     
 
             <Button type="submit" disabled={isSubmitting}>
               Agregar
@@ -109,4 +135,17 @@ export function FormDetalleFide({ idSociety, loggedUser, fideicomisoId, refetch 
       />
     </>
   );
+}
+
+function onlyNumbers(event, setFieldValue, typeOfData) {
+  event.preventDefault();
+  const { value } = event.target;
+  const regex = /^\d{0,11}(\.\d{0,2})?$/;
+
+  var key = event.which || event.keyCode; // keyCode detection
+  var ctrl = event.ctrlKey ? event.ctrlKey : ((key === 17) ? true : false); // ctrl detection
+
+  if (regex.test(value.toString()) || ctrl) {  
+    setFieldValue(typeOfData, value.toString());
+  }
 }

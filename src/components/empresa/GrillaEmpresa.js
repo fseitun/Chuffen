@@ -17,6 +17,7 @@ const columns = (colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, r
     width: 60,
     hide: colVisibles?.find(i => i.c === 'id').h,
     editable: false,
+    type: 'number',
     headerAlign: 'center',
   },
 
@@ -28,22 +29,32 @@ const columns = (colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, r
     editable: puedeEditar,
     headerAlign: 'center',
   },
+  
   {
     field: 'CUIT',
     headerName: 'CUIT',
     width: 130,
     hide: colVisibles?.find(i => i.c === 'CUIT').h,
-    editable: true,
+    editable: puedeEditar,
     headerAlign: 'center',
     valueFormatter: ({ value }) => mostrarCUIT(value),
   },
+  
+  {
+    field: 'descripcion',
+    headerName: 'Descripción',
+    width: 240,
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'descripcion').h,
+    editable: puedeEditar,
+    headerAlign: 'center',
+  },
+  
   {
     field: 'rubroId',
     headerName: 'Rubro',
     width: 140,
     editable: puedeEditar,
     hide: (tipo===1) || colVisibles?.find(i => i.c === 'rubroId').h,
-    // renderCell: ({ value }) => value.nombre,
     renderEditCell: props => <ComboBoxRu rubros={rubros} props={props} />,
     headerAlign: 'center',
   },
@@ -92,9 +103,8 @@ const columns = (colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, r
     headerName: 'Ret IVA',
     type: 'boolean',
     width: 160,
-    hide: true, 
     editable: puedeEditar,
-    // hide: (tipo===1) || colVisibles?.find(i => i.c === 'esRetIVA').h,
+    hide: (tipo===1) || colVisibles?.find(i => i.c === 'esRetIVA').h,
     headerAlign: 'center',
   },
 
@@ -124,6 +134,16 @@ const columns = (colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, r
   },
 
   {
+    field: 'mail',
+    headerName: 'Mail',
+    width: 150,
+    hide: colVisibles?.find(i => i.c === 'mail').h,
+    editable: puedeEditar,
+    headerAlign: 'center',
+  },
+
+
+  {
     field: 'telefono',
     headerName: 'Teléfono',
     width: 140,
@@ -138,14 +158,6 @@ const columns = (colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, r
         return value.join('');
       }
     },
-  },
-  {
-    field: 'mail',
-    headerName: 'Mail',
-    width: 150,
-    hide: colVisibles?.find(i => i.c === 'mail').h,
-    editable: puedeEditar,
-    headerAlign: 'center',
   },
 
 
@@ -186,7 +198,7 @@ const columns = (colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, r
     headerName: 'Domicilio',
     width: 200,
     editable: puedeEditar,
-    hide: (tipo===1) || colVisibles?.find(i => i.c === 'actividad').h,
+    hide: colVisibles?.find(i => i.c === 'domicilio').h,
     headerAlign: 'center',
   },
   
@@ -301,35 +313,35 @@ export function GrillaEmpresa({ empresaInformation, isLoading, error, loggedUser
 
   if(tipo===1){
     colDefaultVisibles = [
-        {c:'id',  h:true},
-        
+        {c:'id',  h:false},        
         {c:'razonSocial',  h:false},
         {c:'CUIT',  h:false},
-        {c:'telefono',  h:false},
         {c:'mail',  h:false},
+        {c:'telefono',  h:false},
+        {c:'domicilio',  h:false},     
+
         ];
   }else{   
     colDefaultVisibles = [
+
         {c:'id',  h:false},
         {c:'razonSocial',  h:false},
         {c:'CUIT',  h:false},
+        {c:'descripcion',  h:false},        
         {c:'rubroId',  h:false}, 
         {c:'condIVA',  h:false},
         {c:'ganancias',  h:false},
         {c:'categoria',  h:false},
         {c:'esRetSUSS',  h:false},
-        {c:'esRetIVA',  h:false},       
-
+        {c:'esRetIVA',  h:false},
         {c:'CBU',  h:false},
         {c:'banco',  h:false},
         {c:'nroCuenta',  h:false},
         {c:'telefono',  h:false},
-        {c:'mail',  h:false},  
-            
+        {c:'mail',  h:false},              
         {c:'enviar_OP_auto',  h:false},
         {c:'actividad',  h:false},
-        {c:'domicilio',  h:false},
-        
+        {c:'domicilio',  h:false},        
         {c:'esProveedor',  h:true},
         {c:'esFiduciante',  h:true},  
         {c:'subrubroId',  h:true}, 
@@ -347,12 +359,18 @@ export function GrillaEmpresa({ empresaInformation, isLoading, error, loggedUser
     }
   };
 
-  const [sortModel, setSortModel] = React.useState([
+  const [sortModel, setSortModel] = React.useState(
+    tipo===1?[
     {
-      field: 'razonSocial',
-      sort: 'asc',
-    },
-  ]);
+      field: 'id',
+      sort: 'desc',
+    },]
+    :[
+      {
+        field: 'razonSocial',
+        sort: 'asc',
+      },]
+  );
 
   function filtrar(element, filtRS){    
     
@@ -405,6 +423,7 @@ export function GrillaEmpresa({ empresaInformation, isLoading, error, loggedUser
             enviar_OP_auto: empresa?.enviar_OP_auto,
             actividad: empresa?.actividad,
             domicilio: empresa?.domicilio,
+            descripcion: empresa?.descripcion,
             esRetSUSS: empresa?.esRetSUSS===0? false: true,
             esRetIVA: empresa?.esRetIVA===0? false: true,
             categoria: categorias?.find(i => i.id === empresa.categoria)?.descripcion,
@@ -415,7 +434,7 @@ export function GrillaEmpresa({ empresaInformation, isLoading, error, loggedUser
             deleteId: empresa?.id,
           }))}
           onCellEditCommit={modifyData}
-          columns={columns(colVisibles, puedeEditar, categorias, condicion_de_IVA, tipo, rubros, subRubros, setIsPromptOpen, setRowIdToDelete)}
+          columns={columns(colVisibles, puedeEditar, categorias.filter(i => i.impuesto === 'GAN')  , condicion_de_IVA, tipo, rubros, subRubros, setIsPromptOpen, setRowIdToDelete)}
           
           sortModel={sortModel}
           onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}

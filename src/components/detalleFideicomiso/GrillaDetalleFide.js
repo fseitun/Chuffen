@@ -9,14 +9,15 @@ import { useContext } from 'react';
 import { TipoProductosContext} from 'src/App';
 
 const columns = (puedeEditar, setIsPromptOpen, setRowIdToDelete) => [
+
   {
-    field: 'codigo',
-    headerName: 'Código',
-    width: 140,
+    field: 'id',
+    headerName: 'Id',
+    width: 55,
     editable: false,
     headerAlign: 'center',
-    align: 'center',
-  },
+  },  
+
   {
     field: 'tipo',
     headerName: 'Tipo',
@@ -27,13 +28,70 @@ const columns = (puedeEditar, setIsPromptOpen, setRowIdToDelete) => [
   },
   
   {
-    field: 'metros',
-    headerName: 'Metros',
+    field: 'codigo',
+    headerName: 'Unidad',
+    width: 140,
+    editable: false,
+    headerAlign: 'center',
+    align: 'center',
+  },
+
+  {
+    field: 'mtCubiertos',
+    headerName: 'm² Cubierto',
     type: 'number',
-    width: 130,
+    width: 160,
     editable: true,
     headerAlign: 'center',
     align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
+    field: 'mtSemiCubiertos',
+    headerName: 'm² SemiCub.',
+    type: 'number',
+    width: 160,
+    editable: true,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
+    field: 'mtTerraza',
+    headerName: 'm² Terraza',
+    type: 'number',
+    width: 160,
+    editable: true,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+
+  {
+    field: 'mtTotal',
+    headerName: 'm² Tot',
+    type: 'number',
+    width: 160,
+    editable: false,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+
+  {
+    field: 'mtPor',
+    headerName: '%',
+    type: 'number',
+    width: 100,
+    editable: false,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
 
   {
@@ -73,7 +131,7 @@ const columns = (puedeEditar, setIsPromptOpen, setRowIdToDelete) => [
 ];
 
 
-export function GrillaDetalleFide({idSociety, loggedUser, dataFide, isLoading, error, refetch, fideicomisoId }) {
+export function GrillaDetalleFide({idSociety, loggedUser, dataFide, isLoading, error, refetch }) {
   
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
@@ -140,7 +198,7 @@ export function GrillaDetalleFide({idSociety, loggedUser, dataFide, isLoading, e
 
   const [sortModel, setSortModel] = React.useState([
     {
-      field: 'codigo',
+      field: 'id',
       sort: 'asc',
     },
   ]);
@@ -158,6 +216,21 @@ export function GrillaDetalleFide({idSociety, loggedUser, dataFide, isLoading, e
     setSortModel(newSort);    
   };
 
+  function tot(cub, semi, ter){
+    
+    let rta = (cub?parseFloat(cub):0.0) + (semi?parseFloat(semi):0.0) + (ter?parseFloat(ter):0.0) ;
+    return rta;
+  }
+
+  function por(cub, semi, ter, metrosFide){
+    let metrosUnidad = tot(cub, semi, ter);
+    let rta = 0;
+    if(metrosUnidad > 0 && parseFloat(metrosFide) > 0){
+         rta = Math.round(metrosUnidad /  parseFloat(metrosFide) * 10000) / 100;
+    }
+    return rta;
+  }
+
   const [pageSize, setPageSize] = useState(25);
   
   if (isLoading) {
@@ -172,7 +245,12 @@ export function GrillaDetalleFide({idSociety, loggedUser, dataFide, isLoading, e
           rows={dataFide?.item.map(producto => ({
             id: producto?.id,
             codigo: producto?.codigo,
-            metros: producto?.metros,
+            mtCubiertos: producto?.mtCubiertos,
+            mtSemiCubiertos: producto?.mtSemiCubiertos,
+            mtTerraza: producto?.mtTerraza,
+            mtTotal: tot(producto?.mtCubiertos, producto?.mtSemiCubiertos, producto?.mtTerraza),
+            mtPor: por(producto?.mtCubiertos, producto?.mtSemiCubiertos, producto?.mtTerraza, dataFide?.fide?.metros),
+            sector: producto?.sector,            
             precioULT: producto?.precioULT,
             tipo: tipoProductos?.find(t => t.id === producto.tipo)?.descripcion,
             descripcion: producto?.descripcion,

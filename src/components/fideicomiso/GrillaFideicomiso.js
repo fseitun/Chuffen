@@ -57,6 +57,14 @@ const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
     align: 'left',
   },
   {
+    field: 'metros',
+    headerName: 'Metros',
+    width: 130,
+    editable: true,
+    headerAlign: 'center',
+    align: 'right',
+  },
+  {
     field: 'empresaId',
     headerName: 'Id',
     width: 100,
@@ -206,6 +214,7 @@ export function GrillaFideicomiso({ idSociety }) {
             nombre: fideicomiso.nombre,
             fechaInicio: fideicomiso.fechaInicio,
             fechaFin: fideicomiso.fechaFin,
+            metros: fideicomiso.metros,
             colorElegido: fideicomiso.color,
             logo: fideicomiso.logo,
             cloud: fideicomiso.cloud,

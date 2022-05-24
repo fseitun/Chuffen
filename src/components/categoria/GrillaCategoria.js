@@ -29,7 +29,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   },
   {
     field: 'anexo',
-    headerName: 'Anexo',
+    headerName: 'Impuesto de',
     width: 120,
     editable: true,
     headerAlign: 'center',

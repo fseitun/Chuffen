@@ -36,6 +36,10 @@ export function FormEmpresa({ idSociety, loggedUser, tipo }) {
         initialValues={{
           razonSocial: '',
           CUIT: '',
+          mail: '',
+          // letra: {id: 0, descripcion: '-'},
+          telefono: '',
+          domicilio: '',
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           // check cuit
@@ -47,19 +51,27 @@ export function FormEmpresa({ idSociety, loggedUser, tipo }) {
       >
         {({ isSubmitting, setFieldValue }) => (
           <Form>
-            
-            <Field
-            as={TextField}
-            label='CUIT'
-            type='string'
-            required
-            size="small"
-            maxLength={11}
-            name='CUIT'
-            onChange={event => onlyNumbers(event, setFieldValue, 'CUIT')}
-          />
-          
+                     
           <Field as={TextField} required size="small" label='Razón Social' type='string' name='razonSocial' />
+
+          <Field
+              as={TextField}
+              label='CUIT'
+              type='string'
+              required
+              size="small"
+              maxLength={11}
+              style={{ width: '150px'}}
+              name='CUIT'
+              onChange={event => onlyNumbers(event, setFieldValue, 'CUIT')}
+            />
+            
+            <Field required size="small" as={TextField} label="Email" type="string" maxLength={100} name="mail" />
+            <Field  size="small" style={{ width: '150px'}} as={TextField} label="Teléfono" type="string" maxLength={11} name="telefono" />
+              
+            <Field size="small" as={TextField} label="Domicilio" type="string" maxLength={40} name="domicilio" />
+
+
 
             <Button type="submit" disabled={isSubmitting}>
               Agregar

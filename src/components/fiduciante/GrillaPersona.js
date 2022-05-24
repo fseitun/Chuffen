@@ -7,8 +7,20 @@ import { Delete as DeleteIcon } from '@mui/icons-material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { mostrarCUIT } from 'src/utils/utils';
+import { useContext } from 'react';
+import { LetrasContext} from 'src/App';
 
-const columns = (puedeEditar, setIsPromptOpen, setRowIdToDelete) => [
+const columns = (puedeEditar, letras, setIsPromptOpen, setRowIdToDelete) => [
+
+
+  {
+    field: 'id',
+    headerName: 'id',
+    width: 60,
+    editable: false,
+    type: 'number',
+    headerAlign: 'center',
+  },
   {
     field: 'nombre',
     headerName: 'Nombre',
@@ -18,27 +30,11 @@ const columns = (puedeEditar, setIsPromptOpen, setRowIdToDelete) => [
   },
 
   {
-    field: 'mail',
-    headerName: 'Mail',
-    width: 150,
-    editable: puedeEditar,
+    field: 'letra',
+    headerName: 'Tipo',
+    width: 110,
+    editable: false,
     headerAlign: 'center',
-  },
-  {
-    field: 'telefono',
-    headerName: 'Teléfono',
-    width: 140,
-    editable: puedeEditar,
-    headerAlign: 'center',
-    /*
-    valueFormatter: ({ value }) => {
-      if (value) {
-        value = value.split('');
-        value.splice(2, 0, '-');
-        value.splice(7, 0, '-');
-        return value.join('');
-      }
-    },*/
   },
 
   {
@@ -49,6 +45,30 @@ const columns = (puedeEditar, setIsPromptOpen, setRowIdToDelete) => [
     headerAlign: 'center',
     valueFormatter: ({ value }) => mostrarCUIT(value),
   },
+
+  {
+    field: 'mail',
+    headerName: 'Email',
+    width: 150,
+    editable: puedeEditar,
+    headerAlign: 'center',
+  },
+  {
+    field: 'telefono',
+    headerName: 'Teléfono',
+    width: 140,
+    editable: puedeEditar,
+    headerAlign: 'center',
+  },
+
+  {
+    field: 'domicilio',
+    headerName: 'Domicilio',
+    width: 200,
+    editable: puedeEditar,
+    headerAlign: 'center',
+  },
+
 
  
   {
@@ -77,6 +97,9 @@ export function GrillaPersona({loggedUser, idSociety, tipo }) {
 
   var puedeEditar = true;
   const acceso = loggedUser?.['rol.fidu'];
+
+  var letras = useContext(LetrasContext);
+console.log(7777, letras);
   if( acceso ==='vista'){puedeEditar =false}
 
   const {
@@ -128,8 +151,8 @@ export function GrillaPersona({loggedUser, idSociety, tipo }) {
 
   const [sortModel, setSortModel] = React.useState([
     {
-      field: 'nombre',
-      sort: 'asc',
+      field: 'id',
+      sort: 'desc',
     },
   ]);
 
@@ -160,13 +183,15 @@ export function GrillaPersona({loggedUser, idSociety, tipo }) {
           rows={personaInformation.map(persona => ({
             id: persona?.id,
             nombre: persona?.nombre,
+            letra: letras?.find(i => i.id === parseInt(persona.letra))?.descripcion,
             telefono: persona?.telefono,
             mail: persona?.mail,
             CUIT: persona?.CUIT,
+            domicilio: persona?.domicilio,
             deleteId: persona?.id,
           }))}
           onCellEditCommit={modifyData}
-          columns={columns(puedeEditar, setIsPromptOpen, setRowIdToDelete)}
+          columns={columns(puedeEditar, letras, setIsPromptOpen, setRowIdToDelete)}
           
           sortModel={sortModel}
           onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}

@@ -67,6 +67,7 @@ export const CondicionIVAContext = createContext({});
 export const ConceptosCuotaContext = createContext({});
 export const ConceptosPagoContext = createContext({});
 export const TipoProductosContext = createContext({});
+export const LetrasContext = createContext({});
 export const CategoriasComboContext = createContext({});
 
 dotenv.config();
@@ -107,6 +108,9 @@ export default function App() {
   const { data: tipoProductos } = useQuery(['tipoProductos', idSociety], () =>
   getMethod(`listas/listarTipoProductos/${idSociety.id}`)
   );
+  const { data: letras } = useQuery(['letras', idSociety], () =>
+  getMethod(`listas/listarLetras/${idSociety.id}`)
+  );
   const {data: categoriasCombo} = useQuery(['categoriaCombo', idSociety], () => 
     getMethod(`categoria/listarCombo/${idSociety.id}`)
   ); 
@@ -131,6 +135,7 @@ export default function App() {
     <ConceptosCuotaContext.Provider value={conceptosCuota}>
     <ConceptosPagoContext.Provider value={conceptosPago}>
     <TipoProductosContext.Provider value={tipoProductos}>
+    <LetrasContext.Provider value={letras}>    
     <CategoriasComboContext.Provider value={categoriasCombo}>
 
     
@@ -268,7 +273,8 @@ export default function App() {
     </ThemeProvider>
 
     
-    </CategoriasComboContext.Provider>
+    </CategoriasComboContext.Provider>    
+    </LetrasContext.Provider>
     </TipoProductosContext.Provider>
     </ConceptosPagoContext.Provider>
     </ConceptosCuotaContext.Provider>

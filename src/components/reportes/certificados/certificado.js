@@ -108,7 +108,27 @@ const styles = StyleSheet.create({
     },
 
   });  
-  
+
+//*******************************************************************/
+//************* Informacion comentada del calculo de la retencion ***/
+//*******************************************************************/  
+/*<View style={styles.rowlight} >
+  <Text style={styles.col1}></Text>
+  <Text style={styles.col2i}>{data?.Fila1}</Text>
+</View >
+<View style={styles.rowlight} >
+  <Text style={styles.col1}></Text>
+  <Text style={styles.col2i}>{data?.Fila2}</Text>
+</View >
+<View style={styles.rowlight} >
+  <Text style={styles.col1}></Text>
+  <Text style={styles.col2i}>{data?.Fila3}</Text>
+</View >
+<View style={styles.rowlight} >
+  <Text style={styles.col1}></Text>
+  <Text style={styles.col2i}>{data?.Fila4}</Text>
+</View >*/
+//**************************************************/
 
   const certificado = ({data, apiServerUrl}) => (
 
@@ -221,24 +241,11 @@ const styles = StyleSheet.create({
                         <Text style={styles.saltolinea}> </Text>                       
                     </View> 
 
-                    <View style={styles.rowlight} >
-                         <Text style={styles.col1}></Text>
-                         <Text style={styles.col2i}>{data?.Fila1}</Text>
-                    </View >
-                    <View style={styles.rowlight} >
-                         <Text style={styles.col1}></Text>
-                         <Text style={styles.col2i}>{data?.Fila2}</Text>
-                    </View >
-                    <View style={styles.rowlight} >
-                         <Text style={styles.col1}></Text>
-                         <Text style={styles.col2i}>{data?.Fila3}</Text>
-                    </View >
-                    <View style={styles.rowlight} >
-                         <Text style={styles.col1}></Text>
-                         <Text style={styles.col2i}>{data?.Fila4}</Text>
-                    </View >
 
-                
+                    <View style={styles.rowlight} >
+                      <Text style={styles.col1}></Text>
+                        <Text style={styles.col2i}>{"" /*data?.Fila1*/}</Text>
+                    </View >
 
                     <View >
                         <Text style={styles.saltolinea}> </Text>                       

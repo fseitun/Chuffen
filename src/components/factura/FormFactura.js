@@ -45,7 +45,8 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
   var porcentajes_IVA = [{id:21, descripcion:"21,0%"},{id:27, descripcion:"27,0%"}, {id:17, descripcion:"17,0%"},{id:10.5, descripcion:"10,5%"},{id:5, descripcion:"5,0%"},{id:0, descripcion:"0,0%"}];
   var tipos = useContext(TiposContext);
 
-  const [porcentajeIVA, setPorcentajeIVA] = useState({id:0, descripcion:"0,0%"});
+  //const iniIVA = {id:0, descripcion:"0,0%"};
+  const [porcentajeIVA, setPorcentajeIVA] = useState(null);
   const [montoIVA, setMontoIVA] = useState(0);
   const [montoNeto, setMontoNeto] = useState(null);  
   
@@ -94,12 +95,15 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
           
           if(values?.tipo === undefined){values.tipo = tipoInForm;}
           if(esBlue && values.numeroBlue === undefined){values.numeroBlue = iniNumber;}
-  
+          if(tipoInForm.id===3 && values.numeroBlue === undefined){values.numeroBlue = iniNumber;}
+
           let num = values.numero; //.slice(6, 13);
           let simi = values.numero.slice(11, 14);
           
-          if(esBlue){
-            simi = values.numeroBlue.slice(7, 10);
+        
+          if(esBlue || tipoInForm.id===3){
+            let numb = values.numeroBlue + "";
+            simi = numb.slice(7, 10);
             num = values.numeroBlue;
           }
           
@@ -116,7 +120,8 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
 
           }else{
                     
-            let tot = parseFloat(values.neto);
+            //let tot = parseFloat(values.neto);
+            let tot = parseFloat(montoNeto);            
             if(montoIVA > 1){tot +=parseFloat(montoIVA);}
             if(values.percepciones){tot +=parseFloat(values.percepciones);}
             if(values.IIBB_CABA){tot +=parseFloat(values.IIBB_CABA);}
@@ -129,8 +134,9 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
             }
 
             addFactura({
-              numero: !esBlue? values.numero:values.numeroBlue,
-              neto: values.neto,
+              numero: !esBlue && tipoInForm.id!==3? values.numero:values.numeroBlue,
+              // neto: values.neto,
+              neto: montoNeto,
               iva: values.tipo.id===2? (-1 * montoIVA):montoIVA,
               letra: !esBlue? values.letra.id: "-",
               percepciones: !esBlue? values.tipo.id===2? (-1 * values.percepciones):values.percepciones:0,
@@ -160,29 +166,29 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
               <Grid item md={12}>      
 
                 <Field
-                as={Autocomplete}
-                size={'small'}
-                label='Tipo'
-                title="Tipo de comprobante"
-                disablePortal
-                required
-                style={{ width: '160px', display: 'inline-flex' }}
-                onChange={(event, newValue) => {
-                  setTipoInForm(newValue);
-                  setFieldValue('tipo', newValue);
-                  setNumber((newValue?.id===3), setFieldValue)
-                }}
-                value={tipoInForm}
-                getOptionLabel={option => option.descripcion}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                options={(tipos? tipos:[])}
-                renderInput={params => <TextField {...params} label='Tipo de comprobante' />}
-              />
+                  as={Autocomplete}
+                  size={'small'}
+                  label='Tipo'
+                  title="Tipo de comprobante"
+                  disablePortal
+                  required
+                  style={{ width: '160px', display: 'inline-flex' }}
+                  onChange={(event, newValue) => {
+                    setTipoInForm(newValue);
+                    setFieldValue('tipo', newValue);
+                    setNumber((newValue?.id===3), setFieldValue)
+                  }}
+                  value={tipoInForm}
+                  getOptionLabel={option => option.descripcion}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  options={(tipos? tipos:[])}
+                  renderInput={params => <TextField {...params} label='Tipo de comprobante' />}
+                />
               <Hidden  smUp={( esBlue)} >
                   <Field
                     as={Autocomplete}
                     size={'small'}
-                    label='Letra'
+                    label='Letra (es obligatorio, existe 0%)'
                     title={msgLetra}
                     disablePortal
                     required
@@ -190,13 +196,13 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                     onChange={(event, newValue) => {
                       setLetraInForm(newValue);
                       setFieldValue('letra', newValue);
-                      // setLetra((newValue?.id===3), setFieldValue)
+                  
                     }}
                     value={letraInForm}
                     getOptionLabel={option => option.descripcion}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
                     options={(letras? letras:[])}
-                    renderInput={params => <TextField {...params} label='Letra' />}
+                    renderInput={params => <TextField {...params} label='Letra *' />}
                   />
               </Hidden>
               <Field
@@ -215,7 +221,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                 getOptionLabel={option => option.nombre}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 options={(fideicomisos? fideicomisos:[])}
-                renderInput={params => <TextField {...params} label='Fideicomiso' />}
+                renderInput={params => <TextField {...params} label='Fideicomiso *' />}
               />
 
               <Field
@@ -234,10 +240,10 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
               getOptionLabel={option => option?.razonSocial}
               isOptionEqualToValue={(option, value) => option?.id === value.id}
               options={(proveedores? proveedores:[])}
-              renderInput={params => <TextField {...params} label='Razon Social' />}
+              renderInput={params => <TextField {...params} label='Razon Social *' />}
             />
             
-            <Hidden  smUp={( esBlue)} >  
+            <Hidden  smUp={( esBlue || tipoInForm.id===3)} >  
               <InputMask
                 
                 mask="99999-99999999"
@@ -264,7 +270,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                 }
               </InputMask>
             </Hidden>
-            <Hidden  smUp={( !esBlue)} >  
+            <Hidden  smUp={(!esBlue && tipoInForm.id!==3)} >  
 
               <InputMask
                 
@@ -326,8 +332,8 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                   onChange={event => 
                     {
                       setMontoNeto(event.target.value);
-                      setMontoIVA(Math.round((parseFloat(event.target.value)?parseFloat(event.target.value)*parseFloat(porcentajeIVA.id):0))/100);
-                      onlyNumbers(event, setFieldValue, 'neto')
+                      setMontoIVA(Math.round((parseFloat(event.target.value)?parseFloat(event.target.value)*parseFloat(porcentajeIVA?.id? porcentajeIVA?.id:0 ):0))/100);
+             
                     }
                   }
                 />       
@@ -340,21 +346,20 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                     as={Autocomplete}
                     size={'small'}
                     label='%'
-                    title="% IVA"
+                    title="% IVA (es obligatorio, existe 0%)"
                     disablePortal
                     required
                     style={{ width: '100px', display: 'inline-flex' }}
                     onChange={(event, newValue) => {
                       setPorcentajeIVA(newValue);
-                      
-                      setMontoIVA(Math.round(newValue.id * parseFloat(montoNeto))/100);
+                      setMontoIVA(newValue?.id? Math.round(newValue.id * parseFloat(montoNeto? montoNeto:0))/100: 0);
                       setFieldValue('porcentajeIVA', newValue);
                     }}
                     value={porcentajeIVA}
                     getOptionLabel={option => option?.descripcion}
                     isOptionEqualToValue={(option, value) => option?.id === value.id}
                     options={(porcentajes_IVA? porcentajes_IVA:[])}
-                    renderInput={params => <TextField {...params} label='% IVA' />}
+                    renderInput={params => <TextField {...params} label='% IVA *' />}
                   />
 
                   <Field
@@ -464,11 +469,11 @@ function onlyNumbers(event, setFieldValue, typeOfData) {
   event.preventDefault();
   const { value } = event.target;
   const regex = /^\d{0,11}(\.\d{0,2})?$/;
-  // var regex2 = /[\x08\x0D\d]/;
+
   var key = event.which || event.keyCode; // keyCode detection
   var ctrl = event.ctrlKey ? event.ctrlKey : ((key === 17) ? true : false); // ctrl detection
-  // if (regex.test(value.toString()) || regex2.test(value.toString())) {
-    if (regex.test(value.toString()) || ctrl) {  
+
+  if (regex.test(value.toString()) || ctrl) {  
     setFieldValue(typeOfData, value.toString());
   }
 }
@@ -484,10 +489,11 @@ function setNumber(val, setFieldValue){
   }
 }
 
+
 function onlyCheck(event, setFieldValue, typeOfData, chkblue, setChkblue, setEsBlue) {
   event.preventDefault();
   setChkblue(!chkblue);
-  if(chkblue){ 
+  if(chkblue){ // es blue
 
     setNumber(true, setFieldValue);
     setFieldValue(typeOfData, 'on');
