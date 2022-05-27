@@ -27,8 +27,8 @@ export function TabContrato({idSociety, fideicomisoId,  loggedUser, dataFide, is
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <TabList onChange={handleChange} aria-label="lab API tabs example">
              
-                <Tab label="Nuevo contrato" disabled={(loggedUser?.['rol.contrato'] ==='vista')} value="0" />
-                <Tab label="Contratos" value="1" />
+                <Tab label="Nueva adhesión" disabled={(loggedUser?.['rol.contrato'] ==='vista')} value="0" />
+                <Tab label="Adhesiones" value="1" />
                 <Tab label="Liquidaciones" disabled={true} value="2" />
               </TabList>
             </Box>

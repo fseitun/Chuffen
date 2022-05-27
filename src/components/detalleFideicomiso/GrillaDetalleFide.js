@@ -47,6 +47,7 @@ const columns = (puedeEditar, setIsPromptOpen, setRowIdToDelete) => [
     valueFormatter: ({ value }) =>
     new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
+  
   {
     field: 'mtSemiCubiertos',
     headerName: 'm² SemiCub.',
@@ -58,6 +59,7 @@ const columns = (puedeEditar, setIsPromptOpen, setRowIdToDelete) => [
     valueFormatter: ({ value }) =>
     new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
+
   {
     field: 'mtTerraza',
     headerName: 'm² Terraza',
@@ -103,6 +105,7 @@ const columns = (puedeEditar, setIsPromptOpen, setRowIdToDelete) => [
     headerAlign: 'center',
     align: 'right',
   },
+
   {
     field: 'descripcion',
     headerName: 'Descri',

@@ -110,9 +110,9 @@ export function AltaCuota({ dataContrato, conceptosCuota, loggedUser, moneda, re
               required
               label="Monto"
               size="small"
-              type="float"
+              type="number"
               name="monto"
-              onChange={event => onlyNumbers(event, setFieldValue, 'monto')}
+              // onChange={event => onlyNumbers(event, setFieldValue, 'monto')}
             />        
      
 
@@ -130,15 +130,6 @@ export function AltaCuota({ dataContrato, conceptosCuota, loggedUser, moneda, re
   );
 }
 
-
-function onlyNumbers(event, setFieldValue, typeOfData) {
-  event.preventDefault();
-  const { value } = event.target;
-  const regex = /^\d{0,11}$/;
-  if (regex.test(value.toString())) {
-    setFieldValue(typeOfData, value.toString());
-  }
-}
 
 function Picker({ field, form }) {
   const { name, value } = field;

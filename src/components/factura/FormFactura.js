@@ -409,14 +409,14 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                     name='IIBB_BSAS'
                     onChange={event => onlyNumbers(event, setFieldValue, 'IIBB_BSAS')}
                   />      
-                                           <Field
+                  <Field
                     as={TextField}
                     label='No gravado'
                     title="No gravado, solo numeros."                  
                     maxLength={9}
                     type='float'
                     size="small"
-                    style={{ width: '160px', display: 'inline-flex' }}
+                    style={{ width: '160px'}}
                     name='no_gravados_exentos'
                     onChange={event => onlyNumbers(event, setFieldValue, 'no_gravados_exentos')}
                   />     
@@ -466,17 +466,25 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
 }
 
 function onlyNumbers(event, setFieldValue, typeOfData) {
+  
   event.preventDefault();
   const { value } = event.target;
-  const regex = /^\d{0,11}(\.\d{0,2})?$/;
+  
+  if(value === undefined || value === ''){
 
-  var key = event.which || event.keyCode; // keyCode detection
-  var ctrl = event.ctrlKey ? event.ctrlKey : ((key === 17) ? true : false); // ctrl detection
-
-  if (regex.test(value.toString()) || ctrl) {  
-    setFieldValue(typeOfData, value.toString());
+    setFieldValue(typeOfData, undefined);
+  }else{  
+    
+    const regex = /^\d{0,11}(\.\d{0,2})?$/;
+  
+    // var key = event.which || event.keyCode; // keyCode detection
+    var ctrl = false; // event.ctrlKey ? event.ctrlKey : ((key === 17) ? true : false); // ctrl detection
+    if (regex.test(value.toString()) || ctrl){ 
+      setFieldValue(typeOfData, value.toString());
+    }
   }
 }
+
 
 function setNumber(val, setFieldValue){
 

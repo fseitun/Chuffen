@@ -13,6 +13,10 @@ const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
 export function DetalleOC({ idSociety, loggedUser }) {
 
+  const { data: CACs } = useQuery(['CACs', idSociety], 
+    () => getMethod(`CAC/listar/${idSociety.id}`)
+  );
+  
   const { idOC } = useParams();
   const [verPDF, setVerPDF] = React.useState(false);
 
@@ -31,9 +35,7 @@ export function DetalleOC({ idSociety, loggedUser }) {
 
   );
   
-  const { data: CACs } = useQuery(['CACs', idSociety], 
-    () => getMethod(`CAC/listar/${idSociety.id}`)
-  );
+
 
   const [moneda, setMoneda] = React.useState('ARS');
   

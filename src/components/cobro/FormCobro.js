@@ -153,10 +153,10 @@ export function FormCobro({ mode, fide, cont, conceptosPago, formaCobros, contra
               required
               label="Monto"
               size="small"
-              type="float"
+              type="number"
               style={{ width: '160px'}}
               name="monto"
-              onChange={event => onlyNumbers(event, setFieldValue, 'monto')}
+              // onChange={event => onlyNumbers(event, setFieldValue, 'monto')}
             />     
 
             <Field
@@ -212,14 +212,6 @@ export function FormCobro({ mode, fide, cont, conceptosPago, formaCobros, contra
 }
 
 
-function onlyNumbers(event, setFieldValue, typeOfData) {
-  event.preventDefault();
-  const { value } = event.target;
-  const regex = /^\d{0,11}$/;
-  if (regex.test(value.toString())) {
-    setFieldValue(typeOfData, value.toString());
-  }
-}
 
 function Picker({ field, form }) {
   const { name, value } = field;

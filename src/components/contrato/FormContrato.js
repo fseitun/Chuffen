@@ -5,7 +5,7 @@ import esLocale from 'date-fns/locale/es';
 import { Formik, Form, Field } from 'formik';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DatePicker, LocalizationProvider } from '@mui/lab';
-import { Typography, RadioGroup, Radio, IconButton, Collapse, Box, Grid, FormControlLabel, TextField, Button, Hidden, Checkbox, Autocomplete, Alert } from '@mui/material';
+import { Typography, MenuItem, RadioGroup, Radio, IconButton, Collapse, Box, Grid, FormControlLabel, TextField, Button, Hidden, Checkbox, Autocomplete, Alert } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { usePrompt } from 'src/utils/usePrompt';
 import { date_to_YYYYMMDD } from 'src/utils/utils'; 
@@ -28,7 +28,7 @@ function intersection(a, b) {
 
 export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRight, fideInForm, setFideInForm, fiduInForm, setFiduInForm, activeStep, idSociety, loggedUser, fideicomisos, personas, empresas}) {
 
-
+  // console.log(66666, right, fideInForm, personas, empresas);
   const { setIsPromptOpen, Prompt } = usePrompt();
   const queryClient = useQueryClient();
 
@@ -36,7 +36,7 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
     newContrato => postMethod(`contrato/agregar/${idSociety.id}`, newContrato),
     {
       onMutate: async newContrato => {
-        
+        console.log(9999);  
         
         await queryClient.invalidateQueries(['contrato', idSociety]);
         const prevData = await queryClient.getQueryData(['contrato', idSociety]);
@@ -56,21 +56,28 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
 
 
   const [tipoFidu, setTipoFidu] = useState('persona');
+  const [cuotas, setCuotas] = useState(0);
   const [open, setOpen] = useState(false);
-
+  
   function verFidu(e){
     setFiduInForm(null);
     setTipoFidu(e.target.value);
     
   }
 
+  const [moneda, setMoneda] = useState({id: 'ARS', descripcion: 'ARS'});
+
+  var monedas = [{id: 'ARS', descripcion: 'ARS'}, {id: 'USD', descripcion: 'USD'}];
+  const enteros = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,60];
   const [checked, setChecked] = React.useState([]);
   
   async function cargarProductos(fide){
 
     let rta = await getMethod(`producto/listar/${idSociety.id}/${fide.id}`);
-    
-    setLeft(rta.filter(item => item.contratoId === null));
+
+    setLeft(rta.filter(item => item.contratoId === null).sort(function (a, b) {
+          return a.codigo.localeCompare(b.codigo);
+        }));
   };
 
   const [left, setLeft] = React.useState([{id:0, codigo:''}]);
@@ -153,17 +160,21 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
           if (!valuef) {
             setIsPromptOpen(true);
           } else{
-                       
+    
             addContrato({
-              fideicomisoId: values.fideicomiso.id,
-              personaId: tipoFidu==="persona"? fiduInForm.id:null, 
-              empresaId: tipoFidu==="empresa"? fiduInForm.id:null,
+              fideicomisoId: fideInForm?.id,
+              personaId: tipoFidu==="persona"? fiduInForm?.id:null, 
+              empresaId: tipoFidu==="empresa"? fiduInForm?.id:null,
               CACbase: values.CACbase,
               nombre: iniNombre,
+              anticipo: values.anticipo,
+              qntCuotas: cuotas,
+              montoCuota: values.montoCuota,
+              moneda: moneda?.id,
               adhesion: d,
               productos: right,
-              creador: loggedUser.id
-            });   
+              creador: loggedUser?.id
+            });
             setSubmitting(false);
           }
         }}
@@ -322,49 +333,124 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
               </Hidden>
 
               <Hidden  smUp={!(activeStep===2)} >  
-                <Grid item md={3}> 
+               
+                <Grid item md={12}>
+                    &nbsp;
+                </Grid>   
+
+                <Grid item md={12}> 
+
+                  <LocalizationProvider dateAdapter={AdapterDateFns} locale={localeMap[locale]}>
+                        <DatePicker
+                            mask={maskMap[locale]}
+                            value={valuef}
+                            label='Fecha de Adhesión'
+                            onChange={(newValue) => setValuef(newValue)}
+                            renderInput={(params) => <TextField required style={{ width: '200px'}} size="small" {...params} />}
+                          />
+                  </LocalizationProvider>
+
+                  <Field
+                      as={TextField}
+                      title="Nombre contrato"
+                      label='Nombre contrato'
+                      //type='float'
+                      key={'_nombre'}
+                      required     
+                      maxLength={40}         
+                      size="small"
+                      sx={{ width: '160px'}}
+                      value={iniNombre}    
+                      name='nombre'
+                      
+                      onChange={event => setIniNombre(event?.target?.value.toString())}
+                    />                      
+
                   <Field
                     as={TextField}
-                    title="Nombre contrato"
-                    label='Nombre contrato'
-                    //type='float'
-                    key={'_nombre'}
-                    required     
-                    maxLength={40}         
+                    label='Anticipo'
+                    title="Anticipo solo numeros."                  
+                    maxLength={11}
+                    required
+                    type='number'
                     size="small"
-                    sx={{ width: '24ch' }}
-                    value={iniNombre}    
-                    name='nombre'
-                    
-                    onChange={event => setIniNombre(event?.target?.value.toString())}
-                  />       
-           
-                </Grid>   
-                <Grid item md={3}>
-                  <LocalizationProvider dateAdapter={AdapterDateFns} locale={localeMap[locale]}>
-                    <div>
+                    style={{ width: '160px'}}
+                    name='anticipo'
+                  />   
 
-                        <DatePicker
-                          mask={maskMap[locale]}
-                          value={valuef}
-                          label='Adhesion'
-                          onChange={(newValue) => setValuef(newValue)}
-                          renderInput={(params) => <TextField required size="small" {...params} />}
-                        />
-                    </div> 
-                  </LocalizationProvider>
-  
-                </Grid>              
-                <Grid item md={4}>
+                  <Field
+                    as={TextField}
+                    label='Cant. Cuotas'
+                    title="Cant. Cuotas"
+                    required
+                    select
+                    size="small"
+                    style={{ width: '115px'}}
+                    name='qntCuotas'
+                    // helperText="Please select your currency"
+                    value={cuotas}
+                    onChange={(event) => {setCuotas(event.target.value);
+                    }}
+                    >
+                      {enteros.map((num) => (
+                      <MenuItem key={num} value={num}>
+                        {num + " Cuotas "}
+                      </MenuItem>
+                    ))}
+                  </Field>
+
+                  <Field
+                    as={TextField}
+                    label='Monto cuota'
+                    title="Monto, solo numeros."                  
+                    maxLength={11}
+                    required
+                    type='number'
+                    size="small"
+                    style={{ width: '160px'}}
+                    name='montoCuota'
+                    // onChange={event => onlyNumbers(event, setFieldValue, 'anticipo')}
+                  />   
+
+                  <Field
+                    as={Autocomplete}
+                    size={'small'}
+                    label='Moneda'
+                    title="Moneda"
+                    disablePortal
+                    required
+                    style={{ width: '115px', display: 'inline-flex' }}
+                    onChange={(event, newValue) => {
+                      setMoneda(newValue);
+                      setFieldValue('moneda', newValue);
+                    }}
+                    value={moneda}
+                    getOptionLabel={option => option.descripcion}
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                    options={(monedas? monedas:[])}
+                    renderInput={params => <TextField {...params} label='Moneda *' />}
+                  />
+
                   <Button type="submit" disabled={isSubmitting}>
                       Agregar
                   </Button>  
-                </Grid>
-                <Grid item md={12}> 
+
+                </Grid>   
+                <Grid item md={11}> 
                     <Typography align="left" color="textPrimary" variant="h6">
-                          * Ingrese CAC y Fecha de Adhesión.
+                          Ingrese una fecha de adhesión, un nombre o descripción, un monto por el anticipo (cero en el caso de no existir), cantidad de cuotas y el monto de las mismas.
+                    </Typography>
+                    <Typography align="left" color="textPrimary" variant="h6">
+                          Si la moneda del anticipo es diferente a la de las cuotas, ingrese 0(cero) en el anticipo, luego de haber creado el contrato se puede agregar en la moneda que corresponda.
+                    </Typography>
+                    <Typography align="left" color="textPrimary" variant="h6">
+                          Las fechas de cada cuota se crean de forma mensual y secuencial, en caso de ser cuotas con frecuencia bimensual, trimestral o cuatrimestral, luego de crear el contrato se pueden ajustar.
+                    </Typography>
+                    <Typography align="left" color="textPrimary" variant="h6">
+                          Si el fiduciante ya abono el 100% de la unidad, ingrese el valor abonado en el anticipo, 0(cero) en cuotas y 0(cero) en monto cuota.
                     </Typography>
                 </Grid>
+        
                 
                  
               </Hidden>                               
@@ -407,64 +493,3 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
     </>
   );
 }
-
-/*
-function onlyNumbers(event, setFieldValue, typeOfData) {
-  event.preventDefault();
-  const { value } = event.target;
-  const regex = /^\d{0,11}(\.\d{0,2})?$/;
-  // var regex2 = /[\x08\x0D\d]/;
-  var key = event.which || event.keyCode; // keyCode detection
-  var ctrl = event.ctrlKey ? event.ctrlKey : ((key === 17) ? true : false); // ctrl detection
-  // if (regex.test(value.toString()) || regex2.test(value.toString())) {
-    if (regex.test(value.toString()) || ctrl) {  
-    setFieldValue(typeOfData, value.toString());
-  }
-}*/
-
-/*
-        <Field
-                    as={TextField}
-                    title="CAC Base"
-                    label='CAC Base'
-                    type='float'
-                    required     
-                    maxLength={11}         
-                    size="small"
-                    sx={{ width: '24ch' }}
-        
-                    name='CACbase'
-                    onChange={event => onlyNumbers(event, setFieldValue, 'CACbase')}
-                  /> 
-
-*/
-
-
-
-
-/*
-function IrDetalleOP_1(params) {
-
-  let path = `${params.row.id}/Detalle Contrato`;
-  
-  return <Button
-          component={RouterLink}
-          sx={{color: 'primary.main',}}
-          to={path}
-        >
-          <span>{ params.row.nombre }</span>
-        </Button>
-
-} */
-
-/*
-function setNumber(val, setFieldValue){
-
-  if(val){
-    let f = new Date();
-    let n = "" + yearMonthDayNum(f) + "01";
-    setFieldValue('numero', parseInt(n));
-  }else{
-    setFieldValue('numero', '');
-  }
-}*/

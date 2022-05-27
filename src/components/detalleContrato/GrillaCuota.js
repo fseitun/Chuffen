@@ -147,6 +147,26 @@ export function GrillaCuota({ loggedUser, conceptosCuota, dataContrato, isLoadin
       }
     }
   );
+
+  const [sortModel, setSortModel] = React.useState([
+    {
+      field: 'fecha',
+      sort: 'asc',
+    },
+  ]);
+
+  const onSort = (newSort) => {
+
+    if(newSort.length === 0){
+      newSort.push(sortModel[0]);
+      if(sortModel[0]?.sort === 'asc'){
+        newSort[0].sort = 'desc';
+      }else{
+        newSort[0].sort = 'asc';
+      }
+    }
+    setSortModel(newSort);    
+  };
   
   if (isLoading) {
     return 'Cargando...';
@@ -183,6 +203,9 @@ export function GrillaCuota({ loggedUser, conceptosCuota, dataContrato, isLoadin
               }))}
               onCellEditCommit={modifyData}
               columns={columns(acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete)}
+
+              sortModel={sortModel}
+              onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
               /*pageSize={25}*/
               disableSelectionOnClick
               autoHeight              

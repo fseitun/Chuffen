@@ -39,7 +39,6 @@ export function PageCobro({ mode, idSociety, loggedUser, contrato}) {
   var fondos_s =  useContext(FondosContext); 
   var estados =  useContext(EstadosPagoContext);
 
-  console.log(22222, mode, contrato);
 
   return (
     <>

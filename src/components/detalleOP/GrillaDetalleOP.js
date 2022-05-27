@@ -8,16 +8,13 @@ import { postMethod } from 'src/utils/api';
 import { useContext } from 'react';
 import { TiposContext} from 'src/App';
 
-// const columns = [
 const columns = (puedeEditar, verEliminar) => [
   {
     field: 'tipo', // campo en grilla
     headerName: 'Tipo de Comp.',
     width: 170,
-    // type: 'singleSelect',
     editable: false,
-    renderCell: ({ value }) => value.descripcion, // a visualizar
-    // renderEditCell: props => <ComboBoxFon fondos_s={fondos_s} props={props} />,
+    renderCell: ({ value }) => value.descripcion,
     headerAlign: 'center',
   },
   {
@@ -157,7 +154,7 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
           },
           link: el.link,
           link2: el.link,
-          montoTotal: el.montoTotal, // parseInt(el.tipo)===2? (-1 * el.montoTotal):el.montoTotal,
+          montoTotal: el.montoTotal,
           moneda: el.moneda,
           es_ajuste: el.es_ajuste,
           detalle: el.detalle,
@@ -168,12 +165,10 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
         }))}
 
         columns={columns(puedeEditar, verEliminar)}
-        // isCellEditable={(params) => (!params.row.confirmada || accesoOP ==='total')}
         disableSelectionOnClick           
         autoHeight   
         onCellEditCommit={handleCellModification}
-        /*hideFooterSelectedRowCount*/
-     
+        
       />
     </div>
   );

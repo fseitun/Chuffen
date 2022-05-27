@@ -9,7 +9,7 @@ import { usePrompt } from 'src/utils/usePrompt';
 import { mostrarFecha } from 'src/utils/utils';
 import { SocietyContext } from 'src/App';
 import { ProgressBar } from 'src/components/detalleOC/ProgressBar';
-import { date_to_YYYYMMDD } from 'src/utils/utils';
+import { buscarCAC } from 'src/utils/utils';
 
 const columns = (acceso, total, setIsPromptOpen, setRowIdToDelete) => [
   
@@ -128,7 +128,10 @@ export function GrillaTareas({ OCId, loggedUser, formOC, refetch, moneda, totPag
     }
   );
 
-  function buscarCAC(fechaOP, CACtipo){
+
+  /*
+
+  function buscarCAC(CACs, fechaOP, CACtipo){
 
           
     let rta = 0.0;
@@ -172,6 +175,9 @@ export function GrillaTareas({ OCId, loggedUser, formOC, refetch, moneda, totPag
     return rta;
   }
 
+  */
+
+
   const { mutate: modifyData } = useMutation(
     async ({ field, id, value }) =>
       await postMethod(`OCdetalle/modificar/${idSociety.id}`, {
@@ -210,8 +216,8 @@ export function GrillaTareas({ OCId, loggedUser, formOC, refetch, moneda, totPag
     var saldo = totTareas + totAjuste - totPagos;
     var avance = (totPagos-totAjuste) / totTareas;
 
-    var ajuste_del_saldo = (1 - (formOC?.oc?.CACbase / buscarCAC(formOC.oc?.fechaIni, formOC.oc?.CACtipo))) * (saldo);
-    if(buscarCAC(formOC.oc?.fechaIni, formOC.oc?.CACtipo)< 1){
+    var ajuste_del_saldo = (1 - (formOC?.oc?.CACbase / buscarCAC(CACs, formOC.oc?.fechaIni, formOC.oc?.CACtipo))) * (saldo);
+    if(buscarCAC(CACs, formOC.oc?.fechaIni, formOC.oc?.CACtipo)< 1){
       ajuste_del_saldo = 0;
     }
 

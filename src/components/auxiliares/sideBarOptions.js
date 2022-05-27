@@ -50,7 +50,7 @@ export const sideBarOptions = [
   {
     path: 'contrato',
     icon: HandshakeOutlinedIcon,
-    title: 'Contratos',
+    title: 'Adhesiones',
     acceso: 'contrato',
   },
   {

@@ -5,21 +5,25 @@ import Grid from '@mui/material/Grid';
 import { Container, Box, Typography, Button } from '@mui/material';
 import { useQuery } from 'react-query';
 import { TabContrato } from 'src/components/detalleContrato/TabContrato';
-import { mostrarFechaMesTXT } from 'src/utils/utils';
+import { mostrarFechaMesTXT, buscarCAC } from 'src/utils/utils';
 import { getMethod } from 'src/utils/api';
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import RepContrato from "src/components/reportes/contrato/contrato";
 import { ConceptosCuotaContext} from 'src/App';
+// import { buscarCAC } from 'src/utils/utils';
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
 export function DetalleContrato({ idSociety, loggedUser }) {
 
+  const { data: CACs } = useQuery(['CACs', idSociety], 
+    () => getMethod(`CAC/listar/${idSociety.id}`)
+  );
+
   const [moneda, setMoneda] = React.useState('ARS');
 
   const { contratoId } = useParams();
   const [verPDF, setVerPDF] = React.useState(false);
-
 
   var conceptosCuota = useContext(ConceptosCuotaContext);
 
@@ -37,12 +41,30 @@ export function DetalleContrato({ idSociety, loggedUser }) {
       getMethod(`contrato/mostrar/${idSociety.id}/${contratoId}`)
 
   );
+
+  var qPesos = 0;
+  var qDolar = 0;
   
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
     return `Hubo un error: ${error.message}`;
   } else
+
+    for(var i =0; i< dataContrato?.cuotas.length; i++ ){
+     
+      if(dataContrato?.cuotas[i]?.concepto ===1){
+
+        if(dataContrato?.cuotas[i]?.moneda ==='ARS'){
+          qPesos ++;
+        }else{
+          qDolar ++;
+        }
+
+      }
+      
+  }
+
 
   return (  
 
@@ -88,16 +110,14 @@ export function DetalleContrato({ idSociety, loggedUser }) {
           <Box sx={{ pt: 3 }}>
             <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >    
 
-              <Grid item md={1}>
-                <Typography align="left" color="textPrimary" variant="h4">
-                      Contrato:
-                </Typography>
-              </Grid>
-              <Grid item md={8}>
+          
+
+              <Grid item md={9}>
                   <Typography align="left" color="textPrimary" variant="h4">
                   {dataContrato?.cont?.nombre}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Fiduciante: {dataContrato?.cont?.empresaId > 0? dataContrato?.cont?.empresas[0].razonSocial:dataContrato?.cont?.personas[0].nombre }&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;{ dataContrato?.cont?.fideicomisos[0]?.nombre}
                   </Typography>
               </Grid>
+              
               <Grid item md={3}>
                     <Typography align="right" color="textPrimary" variant="h5">
                       {mostrarFechaMesTXT(dataContrato?.cont?.createdAt)}
@@ -118,17 +138,17 @@ export function DetalleContrato({ idSociety, loggedUser }) {
               </Grid>   
               <Grid item md={2} >
                 <Typography align="left" color="textPrimary" variant="h5">
-                    Cuotas ARS: {"36"} 
+                    Cuotas ARS: {qPesos} 
                 </Typography>
               </Grid>   
               <Grid item md={2} >
                 <Typography align="left" color="textPrimary" variant="h5">
-                    Cuotas USD: {"0"} 
+                    Cuotas USD: {qDolar} 
                 </Typography>
               </Grid>                    
               <Grid item md={2} >
                 <Typography align="left" color="textPrimary" variant="h5">
-                    CAC Base: {"buscar CAC"} 
+                    CAC Base: {buscarCAC(CACs, dataContrato?.cont?.adhesion, "Construción")} 
                 </Typography>
               </Grid>
               <Grid item md={3} >
