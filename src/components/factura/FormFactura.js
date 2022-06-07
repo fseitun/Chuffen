@@ -135,8 +135,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
 
             addFactura({
               numero: !esBlue && tipoInForm.id!==3? values.numero:values.numeroBlue,
-              // neto: values.neto,
-              neto: montoNeto,
+              neto: values.tipo.id===2? (-1 * montoNeto):montoNeto,
               iva: values.tipo.id===2? (-1 * montoIVA):montoIVA,
               letra: !esBlue? values.letra.id: "-",
               percepciones: !esBlue? values.tipo.id===2? (-1 * values.percepciones):values.percepciones:0,

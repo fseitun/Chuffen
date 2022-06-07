@@ -455,6 +455,7 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
 
           disableSelectionOnClick
           autoHeight
+      
           scrollbarSize
           components={{
             Toolbar: CustomToolbar,

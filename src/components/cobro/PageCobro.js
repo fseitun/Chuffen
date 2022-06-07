@@ -18,7 +18,7 @@ export function PageCobro({ mode, idSociety, loggedUser, contrato}) {
     isLoading,
     error,
     refetch,
-  } = useQuery(['cobro', idSociety], () => getMethod(`cobro/listar/${idSociety.id}/${(mode ==='contrato')? contrato?.id:0}`));
+  } = useQuery(['cobro', idSociety], () => getMethod(`cobro/listar/${idSociety.id}/${(mode ==='contrato')? contrato?.id:0}/*/*`));
 
   ////////////////////////////////////////////////
   /////////// ver /////////////////////////////////////

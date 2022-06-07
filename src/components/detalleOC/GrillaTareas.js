@@ -244,7 +244,7 @@ export function GrillaTareas({ OCId, loggedUser, formOC, refetch, moneda, totPag
 
           <Grid item md={8}>
             <Typography align="right" color="textWarning" variant="h5">
-             Saldo{moneda==='ARS'? " + Ajuste CAC":""}:
+             Saldo233{moneda==='ARS'? " + Ajuste CAC":""}:
             </Typography>
           </Grid>                      
           <Grid item md={2}>
@@ -282,6 +282,7 @@ export function GrillaTareas({ OCId, loggedUser, formOC, refetch, moneda, totPag
               /*pageSize={25}*/
               disableSelectionOnClick
               autoHeight              
+    
             />
           </Grid>
         </Grid>  

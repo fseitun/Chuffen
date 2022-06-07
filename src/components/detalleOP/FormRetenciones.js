@@ -384,7 +384,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
 
   general = {
     fecha: date_to_YYYYMMDD(d),      
-    comp_origen: "Factura / Tique Nro. " + facturas,
+    comp_origen: "Factura Nro." + facturas,
     agente: OP?.fideicomisos[0]?.empresas[0]?.razonSocial,
     agente_cuit: OP?.fideicomisos[0]?.empresas[0]?.CUIT,
     agente_dir: OP?.fideicomisos[0]?.empresas[0]?.domicilio,
@@ -405,7 +405,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
       Fila1: categoriaGAN?.codigo===116? "": "Neto gravado acumulado mensual: " + formato_moneda(netoAcumMes),
       Fila2: categoriaGAN?.codigo===116? "": "Retenciones acumuladas del mes: " + formato_moneda(retAcumMes),
       Fila3: "Mínimo no sujeto a retención: " + formato_moneda(minSujRet),
-      Fila4: categoriaGAN?.codigo===116? "Calculo por escala": "Tasa: " + categoriaGAN.inscriptos + " %", /// categoriaGAN?.codigo===116
+      Fila4: categoriaGAN?.codigo===116? "Calculo por escala": "Tasa: " + categoriaGAN?.inscriptos + " %", /// categoriaGAN?.codigo===116
       monto: retencionGAN,
     }
    
