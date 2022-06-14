@@ -2,6 +2,7 @@ import { useState } from 'react';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import { Button, Tooltip, IconButton, RadioGroup, Radio, FormControlLabel, TextField, Typography, Grid, Autocomplete, Hidden, Switch} from '@mui/material';
+// import {CurrencyTextField} from '@unicef/material-ui-currency-textfield'
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { postMethod, getMethod} from 'src/utils/api';
@@ -22,10 +23,16 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
   const queryClient = useQueryClient();
 
   var acceso = true;
-
+  var accesoObra = true; 
   if(loggedUser?.['rol.op'] ==='vista'){
        acceso =false;
+       accesoObra = false;
   }
+ 
+  if(loggedUser?.['rol.descripcion'] ==='obra'){
+    accesoObra =true;
+  }
+  
 
   const { mutate: updateOP } = useMutation(
       async newOP =>
@@ -43,6 +50,7 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
  
   const saveFile = (nombre, url) => {
     let path = url + "sociedades/" + idSociety.id + "/certificados/" + nombre;  
+    console.log("AABBCC", path);
     saveAs(
       path, nombre + ".pdf"
     );
@@ -140,6 +148,7 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
   }
 
 
+
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
@@ -183,10 +192,15 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
 
                   <Grid item md={6}>
                         <TextField   sx={{ width: '64ch' }} label="Detalle"  key={formOP?.descripcion}  defaultValue={formOP?.descripcion} type="float"  name="descripcion" 
-                        onChange={event => handleModification(event, setFieldValue, refetch, 'descripcion', idSociety.id, OPId, 0, 0)}
+                        
+                        onChange={event => setFlagField("descripcion")}
+     
+                        onBlur={event => handleModificationBlur(event, setFieldValue, refetch, 'descripcion', idSociety.id, OPId, 0, 0, null, flagField)}
+                        
+                      
                         InputProps={{
                               maxLength: 90,
-                              readOnly: (!acceso || (isConfirmOP===1)?true:false),
+                              readOnly: (!accesoObra || (isConfirmOP===1)?true:false),
                             }}
 
                         />                  
@@ -290,9 +304,7 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                     <Typography  align="right" color="textPrimary" variant="h5">
                       Estado:&nbsp;&nbsp;&nbsp;
                     </Typography>
-                  </Grid>     
-                  
-
+                  </Grid>   
 
                   <Grid item md={4}>                  
                     <Field
@@ -1079,17 +1091,21 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                                   
                   </Grid>  
                   <Grid item md={2}>
+
+
                     <TextField  
                         size={'small'}
                         sx={{ width: '20ch' }}
                         label="Monto" type="float"  
+                        thousandSeparator
                         key={formOP?.OPpago.monto4}  
                         defaultValue={formOP?.OPpago.monto4}
                         name="monto4"      
                         onChange={event => setFlagField('monto4')}  
                         onBlur={event => onlyNumbers3(event, setFieldValue, refetch, 'monto4', idSociety.id, OPId, 1, 0,null,flagField)} 
                         inputProps={{readOnly: (!acceso || (isConfirmOP===1)?true:false), min: 0, style: { textAlign: 'center' }}}
-                      />                
+                      />
+                           
                   </Grid>
 
                   <Grid item md={10}>
@@ -1207,6 +1223,67 @@ function onlyNumbers(event, setFieldValue, refetch, typeOfData, idSociety, OPId,
   }else{
     return false;
   }
+}
+
+function handleModificationBlur(event, setFieldValue, refetch, typeOfData, idSociety, OPId, flag, valorCombo, formOP, flagField) {
+  
+  let val = null;
+
+  if(flagField ==='descripcion'){
+  
+    if(flag === 2){ // si es una fecha
+      
+      val = yearMonthDayString(event) + " 03:00:00";
+    }else{  
+      event.preventDefault();
+      const { value } = event.target;
+      setFieldValue(typeOfData, value.toString());
+      
+      val = value;
+      if(typeOfData==='OCId' || typeOfData==='estadoOP' || typeOfData==='estadoRET' || typeOfData==='fondos'){
+        val = valorCombo;
+      }
+      if(typeOfData.toString().substring(0,5)==='banco'){
+        val = valorCombo;
+      }
+      if(typeOfData.toString().substring(0,3)==='nro'){
+        val = valorCombo;
+      }
+      if(typeOfData.toString().substring(0,4)==='modo'){
+        val = valorCombo;
+      }
+    }
+
+    let newData = {
+          id: OPId,
+          [typeOfData]: val,
+        };
+    if(flag > 0){
+          newData.flagPago = 1;
+    }
+    
+    if(valorCombo==="Retenciones"){
+      let r = parseFloat(formOP?.RET_GAN) + parseFloat(formOP?.RET_IVA) + parseFloat(formOP?.RET_SUSS);
+      if(typeOfData==='modo1'){newData.monto1 = r;}
+      if(typeOfData==='modo2'){newData.monto2 = r;}
+      if(typeOfData==='modo3'){newData.monto3 = r;}
+      if(typeOfData==='modo4'){newData.monto4 = r;}
+      if(typeOfData==='modo5'){newData.monto5 = r;}
+      if(typeOfData==='modo6'){newData.monto6 = r;}
+      if(typeOfData==='modo7'){newData.monto7 = r;}
+      
+    }   
+      
+    postMethod(`op/modificar/${idSociety}`, newData);
+    setTimeout(() => {
+      if(refetch){
+        refetch();
+        console.log("refetch");
+      }
+    }, 2000)
+
+  }
+
 }
 
 function handleModification(event, setFieldValue, refetch, typeOfData, idSociety, OPId, flag, valorCombo, formOP) {

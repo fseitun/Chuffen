@@ -3,10 +3,13 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Tab, Hidden} from '@mui/material';
 import { AltaCuota } from 'src/components/detalleContrato/AltaCuota';
 import { GrillaCuota } from 'src/components/detalleContrato/GrillaCuota';
-import { GrillaItems } from 'src/components/detalleContrato/GrillaItems';
+import { FormCesion } from 'src/components/detalleContrato/FormCesion';
+import { GrillaItem } from 'src/components/detalleContrato/GrillaItem';
+import { RepeaterCesion } from 'src/components/detalleContrato/RepeaterCesion';
+
 import { PageCobro } from 'src/components/cobro/PageCobro';
 
-export function TabContrato({ OCId,  idSociety, loggedUser, conceptosCuota, dataContrato, isLoading, error, refetch, moneda, setMoneda, CACs}) {
+export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota, dataContrato, isLoading, error, refetch, moneda, setMoneda, personas, empresas, CACs}) {
 
 
 
@@ -32,6 +35,7 @@ export function TabContrato({ OCId,  idSociety, loggedUser, conceptosCuota, data
                 <Tab label="Liquidaciones" disabled={true}  value="LIQ" />
                 <Tab label="Compromisos en Pesos" value="ARS" />
                 <Tab label="Compromisos en Dolares" value="USD" />
+                <Tab label="Cesiones" value="CES" />
                 <Tab label="Productos" value="PRD" />
                 
               </TabList>
@@ -57,7 +61,6 @@ export function TabContrato({ OCId,  idSociety, loggedUser, conceptosCuota, data
               <Hidden  smUp={verAgregar} >
                 <Box sx={{ pt: 3 }}>
                   <AltaCuota
-                        OCId={OCId}
                         idSociety={idSociety}
                         loggedUser={loggedUser}
                         dataContrato={dataContrato}
@@ -71,7 +74,6 @@ export function TabContrato({ OCId,  idSociety, loggedUser, conceptosCuota, data
               </Hidden>
               <Box sx={{ pt: 3 }}>                    
                 <GrillaCuota
-                      OCId={OCId}
                       idSociety={idSociety}
                       loggedUser={loggedUser}
                       dataContrato={dataContrato}
@@ -91,7 +93,6 @@ export function TabContrato({ OCId,  idSociety, loggedUser, conceptosCuota, data
               <Hidden  smUp={verAgregar} >
                 <Box sx={{ pt: 3 }}>
                   <AltaCuota
-                        OCId={OCId}
                         idSociety={idSociety}
                         loggedUser={loggedUser}
                         dataContrato={dataContrato}
@@ -105,7 +106,6 @@ export function TabContrato({ OCId,  idSociety, loggedUser, conceptosCuota, data
               </Hidden>
               <Box sx={{ pt: 3 }}>                    
                 <GrillaCuota
-                      OCId={OCId}
                       idSociety={idSociety}
                       loggedUser={loggedUser}
                       dataContrato={dataContrato}
@@ -119,8 +119,41 @@ export function TabContrato({ OCId,  idSociety, loggedUser, conceptosCuota, data
             
             
             </TabPanel>
+            <TabPanel value="CES">
+
+                <FormCesion
+                      // OCId={OCId}
+                      contratoId={contratoId} 
+                      idSociety={idSociety}
+                      loggedUser={loggedUser}
+                      // dataContrato={dataContrato}
+                      isLoading={isLoading}
+                      error={error}
+                      refetch={refetch}
+                   
+                />
+
+              {dataContrato?.cesiones?.map((item,index)=>{
+                  return <RepeaterCesion     
+                            key={'rep_'+ index}             
+                            idSociety={idSociety}
+                            fila={dataContrato?.cesiones?.length - index}
+                            fideicomisoId={dataContrato?.cont?.fideicomisoId}
+                            cesion={item}
+                            isLoading={isLoading}
+                            error={error}
+                            personas={personas}
+                            empresas={empresas}
+                            loggedUser={loggedUser}
+                            refetch={refetch}
+                          />
+              })}
+              
+              
+              
+            </TabPanel>
             <TabPanel value="PRD">
-              <GrillaItems                    
+              <GrillaItem               
                   items={dataContrato?.item}
               />
             </TabPanel>

@@ -256,6 +256,7 @@ export function GrillaPagos({ OCId, loggedUser, formOC, isLoading, error, moneda
 
               }))}
               /* onCellEditCommit={modifyData}*/
+              hideFooter
               columns={columns(verLink, moneda)}
               /*pageSize={25}*/
               disableSelectionOnClick

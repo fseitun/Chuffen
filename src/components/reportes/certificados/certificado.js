@@ -26,14 +26,31 @@ const styles = StyleSheet.create({
     },
     reportTitle:{
         color: '#101010',
-        // letterSpacing: 4,
-        fontSize: 18,
+        fontSize: 14,
         textAlign: 'center',
-        // height: 22,
-        // marginTop: 15,
-        // textTransform: 'uppercase',
     },
-
+    reportTitleG:{
+        color: '#101010',
+        fontSize: 16,
+        textAlign: 'center',
+    },
+    litleSpace:{
+        color: '#101010',
+        fontSize: 2,
+        textAlign: 'center',
+    },
+    litleSpace8:{
+        color: '#101010',
+        fontSize: 8,
+        textAlign: 'center',
+    },
+    size11Bold:{
+        color: '#101010',
+        fontSize: 11,
+        fontFamily: 'Helvetica-Bold',
+        textAlign: 'center',
+    },
+    
     subreportTitle:{
       color: '#101010',
       letterSpacing: 2,
@@ -148,15 +165,38 @@ const styles = StyleSheet.create({
                     <View style={styles.titleContainer}>
 
                         <View style={{width: '30%' }} >
-                                <Image style={[styles.logo]} src={{ uri: `${apiServerUrl}/sociedades/afip.png` , method: "GET", body: "" }} />                   
+                                <Image style={[styles.logo]} src={{ uri: `${apiServerUrl}/sociedades/afip.png` , method: "GET", body: "" }} /> 
+                                <View >
+                                <Text style={styles.size11Bold}> 
+                                {data?.tipo==='IVA'? "F.2005":(data?.tipo==='GAN'? "":"F.2004")}
+                                </Text>
+                            </View>                  
                         </View>
                         <View style={{width: '70%' }}>
+
                             <View >
-                                <Text style={styles.reportTitle}> SI.CO.RE. - Sistema de Control
+                                <Text style={styles.litleSpace8}> 
+                                {data?.tipo==='IVA'? " ":""}
+                                </Text>
+                            </View>
+                       
+
+                            <View >
+                                <Text style={data?.tipo==='GAN'? styles.reportTitleG:styles.reportTitle}> 
+                                {data?.tipo==='GAN'?
+                                "SI.CO.RE. - Sistema de Control":(data?.tipo==='IVA'?
+                                "CERTIFICADO DE RETENCIÓN/PERCEPCIÓN":
+                                "CERTIFICADO DE RETENCIÓN/") }
+                          
                                 </Text>
                             </View>
                             <View >
-                                <Text style={styles.reportTitle}> de Retenciones
+                                <Text style={data?.tipo==='IVA'? styles.litleSpace:(data?.tipo==='GAN'? styles.reportTitleG:styles.reportTitle)}> 
+                                {data?.tipo==='GAN'?
+                                "de Retenciones":(data?.tipo==='IVA'?
+                                "":
+                                "PERCEPCIÓN de la SEGURIDAD SOCIAL") }                                                               
+
                                 </Text>
                             </View>
                         </View>

@@ -22,6 +22,10 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
   var retencionIVA = 0.0;
   var retencionSUSS = 0.0;
 
+  var retGAN = "CERT_GAN_OP_";
+  var retIVA = "CERT_IVA_OP_";
+  var retSUSS = "CERT_SUSS_OP_";
+  var folder = `sociedades/${idSociety.id}/certificados/`;
   //1- Guarda los valores de las retenciones en la OP
   //2- LLama guardar_cert_en_server
   const { mutate: saveRET_1_of_4 } = useMutation(
@@ -33,6 +37,11 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
         RET_GAN: retencionGAN,
         RET_IVA: retencionIVA,
         RET_SUSS: retencionSUSS,
+        COMP_GAN: (retencionGAN > 0.1)?  apiServerUrl + folder + retGAN + OP?.numero + "_" + fideicomiso + "_" + OP?.empresas[0]?.razonSocial?.replace(/ /g,"_") + "_" + txt_to_DDMMAAAA(fecha):undefined,
+        COMP_IVA: (retencionIVA > 0.1)?  apiServerUrl + folder + retIVA + OP?.numero + "_" + fideicomiso + "_" + OP?.empresas[0]?.razonSocial?.replace(/ /g,"_") + "_" + txt_to_DDMMAAAA(fecha):undefined,
+        COMP_SUSS: (retencionSUSS > 0.1)?  apiServerUrl + folder + retSUSS + OP?.numero + "_" + fideicomiso + "_" + OP?.empresas[0]?.razonSocial?.replace(/ /g,"_") + "_" + txt_to_DDMMAAAA(fecha):undefined,
+
+    
       })
       ),
       
@@ -94,7 +103,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
 
   const createPDF_2_of_4 = async () =>   {
 
-    let nom, ret = "";
+    let nom = "";
 
     // GANANCIAS
     // Si existe una retencion en Ganancias
@@ -103,17 +112,20 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
       let blobPdf = await pdf(GanDocument()).toBlob();
       let formData = new FormData();
       formData.append('file', blobPdf);
-      ret = "CERT_GAN_OP_";
+      
       let r = OP?.empresas[0]?.razonSocial;
       r = r.replace(/ /g,"_"); //returns my_name
-      nom = ret + + OP?.numero + "_" + fideicomiso + "_" + r + "_" + txt_to_DDMMAAAA(fecha);
+      nom = retGAN + + OP?.numero + "_" + fideicomiso + "_" + r + "_" + txt_to_DDMMAAAA(fecha);
      
-      formData.append('path', `./sociedades/${idSociety.id}/certificados/`); // guarda archivo en carpeta
+      formData.append('path', './' + folder); // guarda archivo en carpeta
       formData.append('fileName', nom);     
 
       savePDF_3_of_4({formData});
       
     }
+
+  
+
 
     // IVA
     // Si existe una retencion en Ganancias
@@ -123,12 +135,12 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
       let blobPdf = await pdf(IvaDocument()).toBlob();
       let formData = new FormData();
       formData.append('file', blobPdf);
-      ret = "CERT_IVA_OP_";
+      // ret = "CERT_IVA_OP_";
       let r = OP?.empresas[0]?.razonSocial;
       r = r.replace(/ /g,"_"); //returns my_name
-      nom = ret + OP?.numero + "_" + fideicomiso + "_" + r + "_" + txt_to_DDMMAAAA(fecha);
+      nom = retIVA + OP?.numero + "_" + fideicomiso + "_" + r + "_" + txt_to_DDMMAAAA(fecha);
      
-      formData.append('path', `./sociedades/${idSociety.id}/certificados/`); // guarda archivo en carpeta
+      formData.append('path', './' + folder); // guarda archivo en carpeta
       formData.append('fileName', nom);
      
       savePDF_3_of_4({formData});
@@ -142,12 +154,12 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
       let blobPdf = await pdf(SUSSDocument()).toBlob();
       let formData = new FormData();
       formData.append('file', blobPdf);
-      ret = "CERT_SUSS_OP_";
+      // ret = "CERT_SUSS_OP_";
       let r = OP?.empresas[0]?.razonSocial;
       r = r.replace(/ /g,"_"); //returns my_name
-      nom = ret + OP?.numero + "_" + fideicomiso + "_" + r + "_" + txt_to_DDMMAAAA(fecha);
+      nom = retSUSS + OP?.numero + "_" + fideicomiso + "_" + r + "_" + txt_to_DDMMAAAA(fecha);
      
-      formData.append('path', `./sociedades/${idSociety.id}/certificados/`); // guarda archivo en carpeta
+      formData.append('path', './' + folder); // guarda archivo en carpeta
       formData.append('fileName', nom);
      
       savePDF_3_of_4({formData});
@@ -212,6 +224,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
   var regimenGAN = "";
   var netoAcumMes = 0.0;
   var retAcumMes = 0.0;
+  var minimoGAN = 240.;
   
   var codigo = "";
   categoriaGAN = categorias?.find(c => c.id === OP?.empresas[0].categoria);
@@ -322,6 +335,10 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
 
     }
 
+    if(retencionGAN < parseFloat(minimoGAN) ){
+      retencionGAN = 0.; 
+    }
+
   }
 
   //*****************************
@@ -399,6 +416,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
     retencionGAN = Math.round(retencionGAN * 100) / 100;
     let dGAN = {
       general: general,
+      tipo: "GAN",
       numero: date_to_YYYYMMDD_s(d) + "-" + nGan,
       impuesto: "Impto. a las Ganancias",
       regimen: codigo + " - " + regimenGAN.substring(0,50) ,      
@@ -420,6 +438,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
     let le = acumulado?.letra ==="M" || acumulado?.letra ==="A_SUJ_RET"? "Letra: " +  acumulado?.letra: "";
     let dIVA = {
       general: general,
+      tipo: "IVA",
       numero: date_to_YYYYMMDD_s(d) + "-" + nIVA,
       impuesto: "IVA",
       regimen: 831,      
@@ -442,6 +461,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
 
     let dSUSS = {
       general: general,
+      tipo: "SUS",
       numero: date_to_YYYYMMDD_s(d) + "-" + nSUSS,
       impuesto: "RETENCIONES CONTRIB. SEG. SOCIAL",
       regimen: 754 ,      

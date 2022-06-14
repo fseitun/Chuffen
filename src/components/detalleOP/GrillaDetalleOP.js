@@ -164,6 +164,9 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
           onDelete: () => deleteProduct(el.id),
         }))}
 
+        //hideFooterPagination
+        hideFooter
+
         columns={columns(puedeEditar, verEliminar)}
         disableSelectionOnClick           
         autoHeight   

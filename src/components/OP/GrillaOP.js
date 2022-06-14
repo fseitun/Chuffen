@@ -152,7 +152,6 @@ const columns = (colVisibles, estados, retenciones, fondos_s, verColumnBlue, pue
     hide: colVisibles?.find(i => i.c === 'facturas').h,
     headerAlign: 'center',
     align: 'center',
-    renderCell: ({ row: { misFacturas }}) => misFacturas?.map(({numero}) => numero)?.join(', '), 
   },
   {
     field: 'RET_GAN',
@@ -232,7 +231,6 @@ const columns = (colVisibles, estados, retenciones, fondos_s, verColumnBlue, pue
     headerAlign: 'center',
     renderEditCell: props => <ComboBox rubros={rubros} props={props} />
   },
-
   {
     field: 'subrubroId',
     headerName: 'Sub Rubro',
@@ -241,7 +239,83 @@ const columns = (colVisibles, estados, retenciones, fondos_s, verColumnBlue, pue
     hide: colVisibles?.find(i => i.c === 'subrubroId').h,
     headerAlign: 'center',
     renderEditCell: props => <ComboBoxSub subRubros={subRubros} props={props} />
-  },  
+  },
+  {
+    field: 'fpagoModo1',
+    headerName: 'Forma pago 1',
+    width: 120,
+    editable: false,
+    hide: colVisibles?.find(i => i.c === 'fpagoModo1').h,
+    headerAlign: 'center',
+  },
+  {
+    field: 'fpagoMonto1',
+    headerName: 'Forma pago monto 1',
+    width: 120,
+    editable: false,
+    hide: colVisibles?.find(i => i.c === 'fpagoMonto1').h,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
+    field: 'fpagoModo2',
+    headerName: 'Forma pago 2',
+    width: 120,
+    editable: false,
+    hide: colVisibles?.find(i => i.c === 'fpagoModo2').h,
+    headerAlign: 'center',
+  },
+  {
+    field: 'fpagoMonto2',
+    headerName: 'Forma pago monto 2',
+    width: 120,
+    editable: false,
+    hide: colVisibles?.find(i => i.c === 'fpagoMonto2').h,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
+    field: 'fpagoModo3',
+    headerName: 'Forma pago 3',
+    width: 120,
+    editable: false,
+    hide: colVisibles?.find(i => i.c === 'fpagoModo3').h,
+    headerAlign: 'center',
+  },
+  {
+    field: 'fpagoMonto3',
+    headerName: 'Forma pago monto 3',
+    width: 120,
+    editable: false,
+    hide: colVisibles?.find(i => i.c === 'fpagoMonto3').h,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+  {
+    field: 'fpagoModo4',
+    headerName: 'Forma pago 4',
+    width: 120,
+    editable: false,
+    hide: colVisibles?.find(i => i.c === 'fpagoModo4').h,
+    headerAlign: 'center',
+  },
+  {
+    field: 'fpagoMonto4',
+    headerName: 'Forma pago monto 4',
+    width: 120,
+    editable: false,
+    hide: colVisibles?.find(i => i.c === 'fpagoMonto4').h,
+    headerAlign: 'center',
+    align: 'right',
+    valueFormatter: ({ value }) =>
+    new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
 
   {
     field: 'descripcion',
@@ -551,6 +625,14 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
     {c:'rubroId',  h:true},
     {c:'subrubroId',  h:true},
     {c:'descripcion',  h:false},
+    {c:'fpagoModo1',  h:true},
+    {c:'fpagoMonto1',  h:true},
+    {c:'fpagoModo2',  h:true},
+    {c:'fpagoMonto2',  h:true},
+    {c:'fpagoModo3',  h:true},
+    {c:'fpagoMonto3',  h:true},
+    {c:'fpagoModo4',  h:true},
+    {c:'fpagoMonto4',  h:true},    
     {c:'archivada',  h:false},
     {c:'enviada',  h:false},
     {c:'confirmada',  h:false},
@@ -670,13 +752,12 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
             moneda: OP?.moneda,   
             estadoOP: estados?.find(estado => estado.id === OP.estadoOP)?.descripcion,
             estadoRET: retenciones?.find(retencion => retencion.id === OP.estadoRET)?.descripcion,
-            misFacturas: grfacturas?.filter(factura => factura?.OPId === OP.id),
+            facturas: grfacturas?.filter(factura => factura?.OPId === OP.id)?.map(({numero}) => numero)?.join(', '),
             fondos: fondos_s?.find(fondos => fondos?.id === OP.fondos)?.descripcion,
             descripcion: OP?.descripcion,
             archivada: OP?.archivada,
             enviada: OP?.enviada,
-            confirmada: OP?.confirmada===0? false: true,           
-                   
+            confirmada: OP?.confirmada===0? false: true,
             RET_SUSS: OP?.RET_SUSS,
             RET_GAN: OP?.RET_GAN,
             RET_IVA: OP?.RET_IVA,
@@ -687,11 +768,18 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
             deleteId: OP?.id,
             aprobado_obra: OP?.auth_obra? (OP.auth_obra[0]? (OP.auth_obra[0].usuarios? (OP.auth_obra[0].usuarios[0].user):''):''):'',
             aprobado_adm: OP?.auth_adm? (OP.auth_adm[0]? (OP.auth_adm[0].usuarios? (OP.auth_adm[0].usuarios[0].user):''):''):'',
-            
             formaPago: OP?.formaPago,          
             rubroId: rubros?.find(rubro => rubro?.id === OP?.rubroId)?.rubro,
             subrubroId: subRubros?.find(subRubro => subRubro?.id === OP?.subRubroId)?.subRubro,
             Color_estadoOP: OP?.estadoOP,     
+            fpagoModo1: OP?.OPpago?.modo1,
+            fpagoMonto1: OP?.OPpago?.monto1,
+            fpagoModo2: OP?.OPpago?.modo2,
+            fpagoMonto2: OP?.OPpago?.monto2,
+            fpagoModo3: OP?.OPpago?.modo3,
+            fpagoMonto3: OP?.OPpago?.monto3,
+            fpagoModo4: OP?.OPpago?.modo4,
+            fpagoMonto4: OP?.OPpago?.monto4,
             onAuthObra: () => nonAuthObra(OP),
             onAuthAdm: () => nonAuthAdm(OP),
             onEnviar: () => enviarCorreo(OP),
@@ -845,10 +933,13 @@ async function enviarCorreo_2(idOP, fideicomiso, numero, razonSocial, enviar_OP_
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
-      <GridToolbarColumnsButton />
+      <GridToolbarColumnsButton />subrubroId
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
-      <GridToolbarExport csvOptions={{ fields: ['id', 'createdAt', 'fideicomiso', 'numero','empresa','monto','moneda','RET_SUSS','RET_GAN','RET_IVA','fondos','estadoRET', 'estadoOP', 'apr_obra', 'apr_adm','rubroId', 'subrubroId','descripcion'] }} />
+      <GridToolbarExport csvOptions={{ fields: ['id', 'createdAt', 'fideicomiso', 'numero','empresa',
+      'monto','moneda','RET_SUSS','RET_GAN','RET_IVA','fondos','estadoRET', 'facturas', 'estadoOP', 
+      'apr_obra', 'apr_adm','rubroId','fpagoModo1','fpagoMonto1','fpagoModo2','fpagoMonto2','fpagoModo3',
+      'fpagoMonto3','fpagoModo4','fpagoMonto4','descripcion'] }} />
     </GridToolbarContainer>
   );
 }

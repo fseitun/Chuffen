@@ -25,7 +25,7 @@ const columns = () => [
 ];
 
 
-export function GrillaItems({ items}) {
+export function GrillaItem({ items}) {
 
   var tipoProductos = useContext(TipoProductosContext);
 
@@ -34,7 +34,7 @@ export function GrillaItems({ items}) {
         <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >
          
 
-          <Grid item md={12}>
+          <Grid item md={7}>
 
             <DataGrid
               rows={items.map(item => ({
@@ -43,6 +43,8 @@ export function GrillaItems({ items}) {
                 tipo: tipoProductos?.find(t => t.id === item.tipo)?.descripcion,
         
               }))}
+
+              hideFooter
               columns={columns()}
               disableSelectionOnClick
               autoHeight              

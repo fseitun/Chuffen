@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
-import { isNumberUsedDig } from 'src/utils/utils';
 import { IconButton, Collapse, Box, Grid, FormControlLabel, 
 TextField, Button, Hidden, Checkbox, Autocomplete, Alert } from '@mui/material';
 import { postMethod } from 'src/utils/api';
@@ -10,7 +9,7 @@ import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import React from 'react';
 import { usePrompt } from 'src/utils/usePrompt';
-import { yearMonthDayNum } from 'src/utils/utils'; 
+import { yearMonthDayNum, isNumberUsedDig } from 'src/utils/utils';
 import { useContext } from 'react';
 import { TiposContext} from 'src/App';
 import InputMask from 'react-input-mask';
@@ -120,7 +119,6 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
 
           }else{
                     
-            //let tot = parseFloat(values.neto);
             let tot = parseFloat(montoNeto);            
             if(montoIVA > 1){tot +=parseFloat(montoIVA);}
             if(values.percepciones){tot +=parseFloat(values.percepciones);}
@@ -183,6 +181,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                   options={(tipos? tipos:[])}
                   renderInput={params => <TextField {...params} label='Tipo de comprobante' />}
                 />
+
               <Hidden  smUp={( esBlue)} >
                   <Field
                     as={Autocomplete}
@@ -204,6 +203,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                     renderInput={params => <TextField {...params} label='Letra *' />}
                   />
               </Hidden>
+              
               <Field
                 as={Autocomplete}
                 size={'small'}

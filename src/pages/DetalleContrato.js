@@ -20,6 +20,14 @@ export function DetalleContrato({ idSociety, loggedUser }) {
     () => getMethod(`CAC/listar/${idSociety.id}`)
   );
 
+  const { data: empresas } = useQuery(
+    ['empresas'],
+    () => getMethod(`empresa/listar/${idSociety.id}/1`));
+
+  const { data: personas } = useQuery(
+    ['persona'],
+    () => getMethod(`persona/listar/${idSociety.id}`));  
+
   const [moneda, setMoneda] = React.useState('ARS');
 
   const { contratoId } = useParams();
@@ -110,8 +118,6 @@ export function DetalleContrato({ idSociety, loggedUser }) {
           <Box sx={{ pt: 3 }}>
             <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >    
 
-          
-
               <Grid item md={9}>
                   <Typography align="left" color="textPrimary" variant="h4">
                   {dataContrato?.cont?.nombre}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Fiduciante: {dataContrato?.cont?.empresaId > 0? dataContrato?.cont?.empresas[0].razonSocial:dataContrato?.cont?.personas[0].nombre }&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;{ dataContrato?.cont?.fideicomisos[0]?.nombre}
@@ -123,7 +129,6 @@ export function DetalleContrato({ idSociety, loggedUser }) {
                       {mostrarFechaMesTXT(dataContrato?.cont?.createdAt)}
                     </Typography>
               </Grid>
-
         
             </Grid>
 
@@ -133,7 +138,7 @@ export function DetalleContrato({ idSociety, loggedUser }) {
               </Grid>       
               <Grid item md={3} >
                 <Typography align="left" color="textPrimary" variant="h5">
-                Fecha de adhesión: {mostrarFechaMesTXT(dataContrato?.cont?.adhesion)} 
+                    Fecha de adhesión: {mostrarFechaMesTXT(dataContrato?.cont?.adhesion)} 
                 </Typography>
               </Grid>   
               <Grid item md={2} >
@@ -165,6 +170,8 @@ export function DetalleContrato({ idSociety, loggedUser }) {
               idSociety={idSociety}
               loggedUser={loggedUser}
               dataContrato={dataContrato}
+              empresas={empresas}
+              personas={personas}
               isLoading={isLoading}
               error={error}
               conceptosCuota={conceptosCuota}

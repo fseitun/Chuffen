@@ -277,6 +277,7 @@ export function GrillaTareas({ OCId, loggedUser, formOC, refetch, moneda, totPag
                 deleteId: item.id,
 
               }))}
+              hideFooter
               onCellEditCommit={modifyData}
               columns={columns(acceso, moneda==='ARS'?formOC?.oc?.monto_ARS:formOC?.oc?.monto_USD,setIsPromptOpen, setRowIdToDelete)}
               /*pageSize={25}*/
