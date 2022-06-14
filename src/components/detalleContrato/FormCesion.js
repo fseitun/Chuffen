@@ -17,7 +17,7 @@ export function FormCesion({idSociety, loggedUser, contratoId, fideicomisoId, pe
     newItem => postMethod(`cesion/agregar/${idSociety.id}`, newItem),
     {
       onMutate: async newItem => {
-        //newItem.creador = loggedUser.id;
+
         await queryClient.invalidateQueries(['cesionItem', idSociety]);
         const prevData = await queryClient.getQueryData(['cesionItem', idSociety]);
         // const newData = [...prevData, { ...newItem, id: new Date().getTime() }];
