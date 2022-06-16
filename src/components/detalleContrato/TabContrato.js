@@ -126,6 +126,8 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
                       contratoId={contratoId} 
                       idSociety={idSociety}
                       loggedUser={loggedUser}
+                      personas={personas}
+                      empresas={empresas}
                       // dataContrato={dataContrato}
                       isLoading={isLoading}
                       error={error}

@@ -163,9 +163,10 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
     
             addContrato({
               fideicomisoId: fideInForm?.id,
+              nombreCesion: tipoFidu==="persona"? fiduInForm?.nombre:fiduInForm?.razonSocial,
               personaId: tipoFidu==="persona"? fiduInForm?.id:null, 
               empresaId: tipoFidu==="empresa"? fiduInForm?.id:null,
-              CACbase: values.CACbase,
+              CACbase: null, // values.CACbase,
               nombre: iniNombre,
               anticipo: values.anticipo,
               qntCuotas: cuotas,

@@ -13,6 +13,8 @@ export function PageCobro({ mode, idSociety, loggedUser, contrato}) {
   const [filtCont, setFiltCont] = useState(-1);
   const [filtFide, setFiltFide] = useState(-1);
 
+  console.log(mode, contrato);
+
   const {
     data: dataCobro,
     isLoading,

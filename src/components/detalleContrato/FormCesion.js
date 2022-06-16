@@ -6,7 +6,7 @@ import { Formik, Form, Field } from 'formik';
 import { RadioGroup, Radio, Grid, FormControlLabel, TextField, Button, Hidden, Autocomplete } from '@mui/material';
 import { usePrompt } from 'src/utils/usePrompt';
 import { postMethod} from 'src/utils/api';
-
+import { date_to_YYYYMMDD } from 'src/utils/utils'; 
 
 export function FormCesion({idSociety, loggedUser, contratoId, fideicomisoId, personas, empresas, refetch}) {
 
@@ -14,7 +14,7 @@ export function FormCesion({idSociety, loggedUser, contratoId, fideicomisoId, pe
   const queryClient = useQueryClient();
 
   const { mutate: addItem } = useMutation(
-    newItem => postMethod(`cesion/agregar/${idSociety.id}`, newItem),
+    newItem => postMethod(`cesion/alta/${idSociety.id}`, newItem),
     {
       onMutate: async newItem => {
 
@@ -51,6 +51,9 @@ export function FormCesion({idSociety, loggedUser, contratoId, fideicomisoId, pe
     
   }
 
+  let f =new Date();
+  const fecha = date_to_YYYYMMDD(f); 
+
   /*
   const locale = 'es';
   const localeMap = {es: esLocale};  
@@ -70,13 +73,15 @@ export function FormCesion({idSociety, loggedUser, contratoId, fideicomisoId, pe
               setMsg("Debe seleccionar un fiduciante.");
               setIsPromptOpen(true);
             }else{
-              // console.log(iniPersona?.id, cesionId, fideicomisoId, loggedUser?.id);
-              addItem({              
+       
+              addItem({ 
+                contratoId: contratoId,
+                fecha: fecha, 
+                nombre: tipoFidu==="persona"? iniPersona?.nombre:iniEmpresa?.razonSocial,             
                 personaId: tipoFidu==="persona"? iniPersona?.id:null, // values.anticipo.id, 
                 empresaId: tipoFidu==="empresa"? iniEmpresa?.id:null, // fiduInForm?.id:null,
                 fideicomisoId: fideicomisoId,
-                // cesionId: cesionId,
-                porcentaje: 0.,
+                // porcentaje: 100. esta en la api harckodeado en 100,
                 creador: loggedUser?.id
               });
               setSubmitting(false);

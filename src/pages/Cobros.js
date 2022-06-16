@@ -2,8 +2,9 @@ import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
 import { PageCobro } from 'src/components/cobro/PageCobro';
 
-export function Cobros({ idSociety, loggedUser}) {
+export function Cobros({ idSociety, loggedUser, contrato}) {
 
+  
 
   return (
     <>
@@ -23,7 +24,7 @@ export function Cobros({ idSociety, loggedUser}) {
                   mode={"cobro"} 
                   idSociety={idSociety}
                   loggedUser={loggedUser}
-                  contrato={null}
+                  contrato={contrato}
               />
       
         </Container>

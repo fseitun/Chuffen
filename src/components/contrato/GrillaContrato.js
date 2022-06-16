@@ -162,8 +162,8 @@ export function GrillaContrato({idSociety, loggedUser }) {
           rows={dataContrato?.map(contrato => ({
             id: contrato?.id,
             nombre: contrato?.nombre,
-            fideicomiso: (contrato?.fideicomisos? contrato?.fideicomisos[0]?.nombre:''),            
-            fiduciante:(contrato?.empresaId>0? contrato?.empresas[0]?.razonSocial:contrato?.personas? contrato?.personas[0]?.nombre:""), 
+            fideicomiso:(contrato?.fideicomisos? contrato?.fideicomisos? contrato?.fideicomisos[0]?.nombre:'':''),            
+            fiduciante:(contrato?.empresaId>0? contrato?.empresas? (contrato?.empresas[0]?.razonSocial):'' :contrato?.personas? contrato?.personas[0]?.nombre:""), 
             deleteId: contrato?.id,
           }))}
           onCellEditCommit={modifyData}

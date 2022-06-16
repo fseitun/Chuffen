@@ -7,7 +7,7 @@ import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarFilterBut
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
-import { SocietyContext } from 'src/App';
+import { SocietyContext, FormaCobrosContext } from 'src/App';
 
 
 const columns = (acceso, fondos_s, estados, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [ 
@@ -102,6 +102,14 @@ const columns = (acceso, fondos_s, estados, conceptosCuota, setIsPromptOpen, set
   },
 
   {
+    field: 'formaPago',
+    headerName: 'formaPago',
+    width: 160,
+    editable: false,
+    headerAlign: 'center',
+  },
+
+  {
     field: 'fondos',
     headerName: 'Fondos',
     width: 130,
@@ -146,6 +154,7 @@ const columns = (acceso, fondos_s, estados, conceptosCuota, setIsPromptOpen, set
 export function GrillaCobro({loggedUser, filtCont, filtFide, dataCobro, fondos_s, estados, conceptosPago, isLoading, error, refetch}) {
   
   const idSociety = useContext(SocietyContext);
+  var formas_cobro = useContext(FormaCobrosContext);
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
 
@@ -280,7 +289,9 @@ export function GrillaCobro({loggedUser, filtCont, filtFide, dataCobro, fondos_s
               contrato: item?.contrato?.nombre, 
               fiduciante: item?.contrato?.personas[0]? item?.contrato?.personas[0]?.nombre:'' + item?.contrato?.empresas[0]? item?.contrato?.empresas[0]?.razonSocial:'', 
               monto: item?.monto,
-              moneda: item?.moneda,
+              moneda: item?.moneda,              
+              formaPago: formas_cobro && item?.formaPago? formas_cobro?.find(i => i.id === item?.formaPago)?.descripcion:'',
+              // formaPago: item?.formaPago,
               // recivo:
               cambio: item?.cambio,
               fondos: fondos_s?.find(i => i.id === item?.fondos)?.descripcion,    
