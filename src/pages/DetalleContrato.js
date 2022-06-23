@@ -2,7 +2,7 @@ import React from 'react'
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
-import { Container, Box, Typography, Button } from '@mui/material';
+import { Container, Box, Typography, Hidden, Button } from '@mui/material';
 import { useQuery } from 'react-query';
 import { TabContrato } from 'src/components/detalleContrato/TabContrato';
 import { mostrarFechaMesTXT, buscarCAC } from 'src/utils/utils';
@@ -15,6 +15,8 @@ import { ConceptosCuotaContext} from 'src/App';
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
 export function DetalleContrato({ idSociety, loggedUser }) {
+
+  const { contratoId } = useParams();
 
   const { data: CACs } = useQuery(['CACs', idSociety], 
     () => getMethod(`CAC/listar/${idSociety.id}`)
@@ -30,7 +32,7 @@ export function DetalleContrato({ idSociety, loggedUser }) {
 
   const [moneda, setMoneda] = React.useState('ARS');
 
-  const { contratoId } = useParams();
+  
   const [verPDF, setVerPDF] = React.useState(false);
 
   var conceptosCuota = useContext(ConceptosCuotaContext);
@@ -77,36 +79,40 @@ export function DetalleContrato({ idSociety, loggedUser }) {
   return (  
 
     <div id="MENU" style={{ minHeight: "100vh" }}>
-    <nav
-        style={{
-          display: "flex",
-          borderBottom: "1px solid black",
-          paddingBottom: "5px",
-          justifyContent: "flex-end",
-        }}
-      >
 
-        <Box mt={2} sx={{ pt: 1 }}>
-          <Button
-            /*variant="info"*/
-            onClick={() => {
-              setVerPDF(!verPDF);
-            }}
-          >
-            {verPDF ? "Ocultar PDF" : "Ver PDF"}
-          </Button>
+    <Hidden  smUp={true} >
 
-          <PDFDownloadLink
-            document={isLoading===false? <RepContrato dataContrato={dataContrato} idSociedad={idSociety.id} apiServerUrl={apiServerUrl} />:null }
+      <nav
+          style={{
+            display: "flex",
+            borderBottom: "1px solid black",
+            paddingBottom: "5px",
+            justifyContent: "flex-end",
+          }}
+        >
 
-            fileName={nomPdfCargado(dataContrato)}
-          >
-            <Button variant="info"  >Descargar</Button>
-          </PDFDownloadLink>
-    
-        </Box>       
-       
-    </nav>     
+          <Box mt={2} sx={{ pt: 1 }}>
+            <Button
+              /*variant="info"*/
+              onClick={() => {
+                setVerPDF(!verPDF);
+              }}
+            >
+              {verPDF ? "Ocultar PDF" : "Ver PDF"}
+            </Button>
+
+            <PDFDownloadLink
+              document={isLoading===false? <RepContrato dataContrato={dataContrato} idSociedad={idSociety.id} apiServerUrl={apiServerUrl} />:null }
+
+              fileName={nomPdfCargado(dataContrato)}
+            >
+              <Button variant="info"  >Descargar</Button>
+            </PDFDownloadLink>
+      
+          </Box>       
+        
+      </nav>     
+    </Hidden>
       <>                  
         {verPDF ? (
           <PDFViewer style={{ width: "100%", height: "90vh" }}>

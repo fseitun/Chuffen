@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { TiposContext, EstadosContext} from 'src/App';
 
-const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
+const columns = (verColumnBlue, acceso, acceso_cuotas, setIsPromptOpen, setRowIdToDelete) => [
 
   {
     field: 'id',
@@ -79,7 +79,7 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     field: 'montoTotal',
     headerName: 'Monto',
     width: 130,
-    editable: acceso,
+    editable: false,
     headerAlign: 'center',
     align: 'right',
     valueFormatter: ({ value }) =>
@@ -109,7 +109,7 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     field: 'iva',
     headerName: 'IVA',
     width: 110,
-    editable: acceso,
+    editable: false,
     headerAlign: 'center',
     align: 'right',
     valueFormatter: ({ value }) =>
@@ -170,9 +170,20 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     headerName: 'Mayor Costo',
     type: 'boolean',
     width: 160,
-    editable: true,
+    editable: acceso,
     headerAlign: 'center',
   },
+
+  // TEMA POLIZA Y CUOTAS 
+  /*
+  {
+    field: 'es_cuotas',
+    headerName: 'Cuotas',
+    type: 'boolean',
+    width: 160,
+    editable: acceso,
+    headerAlign: 'center',
+  },*/
   {
     field: 'link',
     headerName: 'Link',
@@ -253,7 +264,7 @@ const columns = (verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete) => [
     width: 50,
     headerAlign: 'center',
     align: 'center',
-    renderCell: ({ row: { deleteId, OPnumero} }) => (OPnumero>0? '':
+    renderCell: ({ row: { deleteId, OPnumero, es_cuotas} }) => (OPnumero>0 || es_cuotas===1? '':
       <DeleteIcon
         onClick={e => {
           setRowIdToDelete(deleteId);
@@ -283,7 +294,9 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
   
   var acceso = true;
   if(loggedUser?.['rol.factura'] ==='vista'){acceso =false}
-
+  function acceso_cuotas(aa){
+    return false;
+  }
 
   const {
     data: facturaInformation,
@@ -314,7 +327,7 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
       ( 
       await postMethod(`factura/modificar/${idSociety.id}`, {
         id,
-        [field]: (field==='es_ajuste')? (value?1:0):value,
+        [field]: (field==='es_ajuste' || field==='es_cuotas')? (value?1:0):value,
       })
       ),
       
@@ -428,6 +441,7 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
             moneda: factura?.moneda,   
             porcentajeIVA: factura?.porcentajeIVA,       
             es_ajuste: factura?.es_ajuste,
+            es_cuotas: factura?.es_cuotas,            
             no_gravado: factura?.no_gravados_exentos,
             fechaIngreso: factura?.fechaIngreso,
             diasVTO: factura?.diasVTO, 
@@ -443,11 +457,15 @@ export function GrillaFactura({ filtComp, filtFide, filtRS, idSociety, loggedUse
 
           }))}OPs
           onCellEditCommit={modifyData}
-          columns={columns(verColumnBlue, acceso, setIsPromptOpen, setRowIdToDelete)}
+          columns={columns(verColumnBlue, acceso, acceso_cuotas, setIsPromptOpen, setRowIdToDelete)}
           
           sortModel={sortModel}
           onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
-       
+
+          /*
+          isCellEditable={(params) => (!params.row.es_cuotas || loggedUser?.['rol.factura'] ==='total')}
+          */
+         
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[10, 25, 50, 100]}
@@ -471,8 +489,9 @@ function CustomToolbar() {
       
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
-      <GridToolbarExport csvOptions={{ fields: [ 'id', 'tipo', 'letra','fideicomiso', 'empresa', 'cuit','numero', 'montoTotal', 'neto', 'porcentajeIVA', 'iva', 'percepcionesIVA', 'IIBB_CABA','IIBB_BSAS','no_gravado', 'moneda', 'es_ajuste'
- , 'createdAt','fechaIngreso', 'fechaVTO', 'OPnumero', 'estadoOP'] }} />
+      <GridToolbarExport csvOptions={{ fields: [ 'id', 'tipo', 'letra','fideicomiso', 'empresa', 'cuit','numero'
+      , 'montoTotal', 'neto', 'porcentajeIVA', 'iva', 'percepcionesIVA', 'IIBB_CABA','IIBB_BSAS','no_gravado'
+      , 'moneda', 'es_ajuste', 'es_cuotas', 'createdAt','fechaIngreso', 'fechaVTO', 'OPnumero', 'estadoOP'] }} />
     </GridToolbarContainer>
   );
 }

@@ -2,11 +2,11 @@ import * as React from 'react';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Tab, Hidden} from '@mui/material';
 import { AltaCuota } from 'src/components/detalleContrato/AltaCuota';
+import { PageLiquidacion } from 'src/components/liquidacion/PageLiquidacion';
 import { GrillaCuota } from 'src/components/detalleContrato/GrillaCuota';
 import { FormCesion } from 'src/components/detalleContrato/FormCesion';
 import { GrillaItem } from 'src/components/detalleContrato/GrillaItem';
 import { RepeaterCesion } from 'src/components/detalleContrato/RepeaterCesion';
-
 import { PageCobro } from 'src/components/cobro/PageCobro';
 
 export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota, dataContrato, isLoading, error, refetch, moneda, setMoneda, personas, empresas, CACs}) {
@@ -32,7 +32,7 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <TabList onChange={handleChange} aria-label="lab API tabs example">
                 <Tab label="Cobros" value="COB" />
-                <Tab label="Liquidaciones" disabled={true}  value="LIQ" />
+                <Tab label="Liquidaciones" value="LIQ" />
                 <Tab label="Compromisos en Pesos" value="ARS" />
                 <Tab label="Compromisos en Dolares" value="USD" />
                 <Tab label="Cesiones" value="CES" />
@@ -55,6 +55,20 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
 
             </TabPanel>
             <TabPanel value="LIQ">
+
+              <Box sx={{ pt: 3 }}>
+                
+                <PageLiquidacion 
+                    contratoId={contratoId}
+                    idSociety={idSociety}
+                    loggedUser={loggedUser}
+                    contrato={dataContrato?.cont}
+                />
+              
+              </Box>
+
+         
+
             </TabPanel>
             <TabPanel value="ARS">
 
