@@ -16,7 +16,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 export function RepeaterCesion({idSociety, loggedUser, cesion, fila, personas, empresas, isLoading, error, refetch}) {
 
   var acceso = true;
-  if(loggedUser?.['rol.oc'] ==='vista'){acceso =false}
+  if(loggedUser?.['rol.contrato'] ==='vista'){acceso =false}
   const [field, setField] = useState("");
 
   

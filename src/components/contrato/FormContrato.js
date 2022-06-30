@@ -28,7 +28,6 @@ function intersection(a, b) {
 
 export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRight, fideInForm, setFideInForm, fiduInForm, setFiduInForm, activeStep, idSociety, loggedUser, fideicomisos, personas, empresas}) {
 
-  // console.log(66666, right, fideInForm, personas, empresas);
   const { setIsPromptOpen, Prompt } = usePrompt();
   const queryClient = useQueryClient();
 
@@ -36,7 +35,6 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
     newContrato => postMethod(`contrato/agregar/${idSociety.id}`, newContrato),
     {
       onMutate: async newContrato => {
-        console.log(9999);  
         
         await queryClient.invalidateQueries(['contrato', idSociety]);
         const prevData = await queryClient.getQueryData(['contrato', idSociety]);

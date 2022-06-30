@@ -13,8 +13,6 @@ export function PageCobro({ mode, idSociety, loggedUser, contrato}) {
   const [filtCont, setFiltCont] = useState(-1);
   const [filtFide, setFiltFide] = useState(-1);
 
-  console.log(mode, contrato);
-
   const {
     data: dataCobro,
     isLoading,
@@ -46,7 +44,15 @@ export function PageCobro({ mode, idSociety, loggedUser, contrato}) {
 
           <Hidden smUp={(loggedUser?.['rol.cobros'] ==='vista')} >
             <Box sx={{ pt: 3 }}>
-              <FormCobro idSociety={idSociety}  mode={mode} fide={contrato?.fideicomisoId} cont={contrato?.id}  contratos={contratos} fideicomisos={fideicomisos}  formaCobros={formaCobros} conceptosPago={conceptosPago} loggedUser={loggedUser}  refetch={refetch}/>
+              <FormCobro idSociety={idSociety}  
+              mode={mode} fide={contrato?.fideicomisoId} 
+              cont={contrato?.id}  
+              contratos={contratos} 
+              fideicomisos={fideicomisos}  
+              formaCobros={formaCobros} 
+              conceptosPago={conceptosPago} 
+              loggedUser={loggedUser}  
+              refetch={refetch}/>
             </Box>
           </Hidden>
 

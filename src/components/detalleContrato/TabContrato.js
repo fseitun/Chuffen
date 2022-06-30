@@ -63,6 +63,7 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
                     idSociety={idSociety}
                     loggedUser={loggedUser}
                     contrato={dataContrato?.cont}
+                    cesion={dataContrato?.cesiones[0]}
                 />
               
               </Box>

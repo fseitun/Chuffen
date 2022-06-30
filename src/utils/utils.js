@@ -159,6 +159,22 @@ export function date_to_YYYYMMDD_s(fecha) {
 }
 
 // entra base de datos
+// Devuelve un string con formato "mar.2021"
+export function DB_to_MMMAAAA(fecha) {
+
+  
+  if(fecha ===undefined || fecha ===null){
+    return null
+  }else{
+    let mm = new Date(fecha).toLocaleDateString('es-AR', { timeZone: 'UTC',  month: 'short' });
+    let yyyy = new Date(fecha).getFullYear();
+    return mm + yyyy ;
+  }
+
+}
+
+
+// entra base de datos
 // Devuelve un string con formato 24/5/2021
 export function DB_to_DDMMAAAA(fecha) {
 

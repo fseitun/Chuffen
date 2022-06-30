@@ -7,19 +7,34 @@ import { usePrompt } from 'src/utils/usePrompt';
 import { SocietyContext } from 'src/App';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
-import { date_to_YYYYMMDD } from 'src/utils/utils';
+import { date_to_YYYYMMDD, DB_to_MMMAAAA } from 'src/utils/utils';
+// import { date_to_YYYYMMDD } from 'src/utils/utils'; 
+import RepLiquidacion from "src/components/reportes/liquidaciones/liquidacion";
+import { pdf } from "@react-pdf/renderer";
+
+const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
 
-export function FormLiquidacion({ contrato, loggedUser, refetch  }) {
+export function FormLiquidacion({ contrato, cesion, loggedUser, refetch  }) {
   
   const idSociety = useContext(SocietyContext);
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
-
-  const [concepto, setConcepto] = useState(null);
+  
+  const [data, setData] = useState({});
+  // const [concepto, setConcepto] = useState(null);
  
+  ////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
 
-  const { mutate: addLiquidacion } = useMutation(
+  // En el click del boton "AGREGAR"
+  // Paso 1: Graba en tabla liquidaciones un registro con su JSON
+  // Paso 2: createPDF_2_of_4 formData es el archivo y los parametros (usando el reporte de liquidaciones)
+  // Paso 3: savePDF_3_of_4 guarda el pdf en sociedades/sociedadId/liquidaciones
+
+  var folder = `sociedades/${idSociety.id}/liquidaciones/`;
+  const { mutate: addLiquidacion_1_of_3 } = useMutation(
     Liquidacion => postMethod(`liquidacion/agregar/${idSociety.id}`, Liquidacion),
     {
       onMutate: async Liquidacion => {
@@ -27,42 +42,96 @@ export function FormLiquidacion({ contrato, loggedUser, refetch  }) {
 
         await queryClient.invalidateQueries(['liquidacion', idSociety]);
         const prevData = await queryClient.getQueryData(['liquidacion', idSociety]);
-        // const newData = [...prevData, { ...Liquidacion, id: new Date().getTime() }];
-        // queryClient.setQueryData(['Liquidacion', idSociety], newData);
+
         return prevData;
 
       },
       onError: (err, id, context) => queryClient.setQueryData(['liquidacion', idSociety], context),
-      onSettled: () => {
+      onSettled: (Liquidacion) => {
+        setData({cont: contrato, liq: Liquidacion});
+        console.log(22222, Liquidacion?.fecha);
         if(idSociety.id > 0) {
+          // console.log(22222);
+          createPDF_2_of_3(Liquidacion);
+        }  
+        // refetch()
+        /*if(idSociety.id > 0) {
           queryClient.invalidateQueries(['liquidacion', idSociety])
         }
-        refetch()        
+        refetch()  */      
       }
     }
   );
 
-  console.log(contrato);
+  function nombreLiq(fecha){
+    let n = contrato?.fideicomisos[0]?.nombre + "-" + cesion?.nombre ;
+    return "Liquidacion-" + n.replace(/ /g,"_") + "-Adhesion_" + contrato?.id + "-" + DB_to_MMMAAAA(fecha);
+  
+  }
+  const createPDF_2_of_3 = async (Liquidacion) =>   {
+
+    // GANANCIAS
+    // Si existe una retencion en Ganancias
+    // if(retencionGAN > 0.1){    
+
+      let blobPdf = await pdf(LiqDocument()).toBlob();
+      let formData = new FormData();
+      formData.append('file', blobPdf);      
+     
+      formData.append('path', './' + folder); // guarda archivo en carpeta
+      formData.append('fileName', nombreLiq(Liquidacion?.fecha));     
+
+      savePDF_3_of_3({formData});
+      
+    // }
+  }
+
+  const LiqDocument = () => {
+    return (
+      <RepLiquidacion data={data} apiServerUrl={apiServerUrl} />
+    )
+  }
+
+  const { mutate: savePDF_3_of_3 } = useMutation(
+    async ({formData}) => 
+        await postMethod(`utilidades/uploadpdf/${idSociety.id}`, formData),          
+      {
+        onMutate: async ({ formData }) => {
+          await queryClient.cancelQueries(['pdfFile', idSociety]);
+          const prevData = queryClient.getQueryData(['pdfFile', idSociety]);
+          return prevData;
+        },
+        onError: (err, id, context) => queryClient.setQueryData(['pdfFile', idSociety], context),
+        onSettled: (fileName) => {
+          if(idSociety.id > 0) {
+            queryClient.invalidateQueries(['pdfFile', idSociety])
+          }
+          refetch() 
+        }
+      }     
+);
+
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+
+  
 
   return (
     
      <>
      <Formik
         initialValues={{
-          // concepto: '',
-          // monto: '',
           fecha: null,
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           
-          addLiquidacion({         
+          addLiquidacion_1_of_3({         
+            
             fechaLiquidacion: date_to_YYYYMMDD(values?.fecha), 
             contrato: contrato,
-            // concepto: concepto.id,
-            // monto: values?.monto,
-
+            link: apiServerUrl + folder + nombreLiq(date_to_YYYYMMDD(values?.fecha)),
             contratoId: contrato?.cont?.id,
-            // moneda: moneda,
             creador: loggedUser.id
           });
           resetForm();

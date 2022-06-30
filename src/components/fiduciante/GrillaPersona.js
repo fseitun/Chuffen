@@ -99,7 +99,7 @@ export function GrillaPersona({loggedUser, idSociety, tipo }) {
   const acceso = loggedUser?.['rol.fidu'];
 
   var letras = useContext(LetrasContext);
-console.log(7777, letras);
+
   if( acceso ==='vista'){puedeEditar =false}
 
   const {

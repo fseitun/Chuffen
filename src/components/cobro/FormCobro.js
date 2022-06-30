@@ -2,13 +2,18 @@ import { TextField, Button, Hidden } from '@mui/material';
 import {useState, useContext } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
-
 import { Autocomplete } from '@mui/material';
 import { postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { SocietyContext } from 'src/App';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
+import RepRecibo from "src/components/reportes/recibo/recibo";
+import { pdf } from "@react-pdf/renderer";
+
+
+const apiServerUrl = process.env.REACT_APP_API_SERVER;
+
 
 export function FormCobro({ mode, fide, cont, conceptosPago, formaCobros, contratos, fideicomisos, loggedUser, refetch  }) {
   
@@ -32,29 +37,83 @@ export function FormCobro({ mode, fide, cont, conceptosPago, formaCobros, contra
   const [contInForm, setContInForm] = useState(iniCont);
 
   var monedas = [{id: 'ARS', descripcion: 'ARS'}, {id: 'USD', descripcion: 'USD'}];
+  const [data, setData] = useState({});
 
-  const { mutate: addCuota } = useMutation(
-    Cuota => postMethod(`cobro/agregar/${idSociety.id}`, Cuota),
+  // En el click del boton "AGREGAR"
+  // Paso 1: Graba en tabla Cobros 
+  // Paso 2: createPDF_2_of_4 formData es el archivo y los parametros (usando el reporte de recibo)
+  // Paso 3: savePDF_3_of_4 guarda el pdf en sociedades/sociedadId/recibos
+
+  var folder = `sociedades/${idSociety.id}/recibos/`;
+  const { mutate: addCobro_1_of_3 } = useMutation(
+    Cobro => postMethod(`cobro/agregar/${idSociety.id}`, Cobro),
     {
-      onMutate: async Cuota => {
-        Cuota.creador = parseInt(loggedUser.id);
+      onMutate: async Cobro => {
+        Cobro.creador = parseInt(loggedUser.id);
 
         await queryClient.invalidateQueries(['cobro', idSociety]);
         const prevData = await queryClient.getQueryData(['cobro', idSociety]);
-        // const newData = [...prevData, { ...Cuota, id: new Date().getTime() }];
-        // queryClient.setQueryData(['cuota', idSociety], newData);
+        // const newData = [...prevData, { ...Cobro, id: new Date().getTime() }];
+        // queryClient.setQueryData(['Cobro', idSociety], newData);
         return prevData;
 
       },
       onError: (err, id, context) => queryClient.setQueryData(['cobro', idSociety], context),
-      onSettled: () => {
+      onSettled: (Cobro) => {
+        setData({Cobro});
+        console.log(33333, Cobro);
         if(idSociety.id > 0) {
-          queryClient.invalidateQueries(['cobro', idSociety])
-        }
-        // refetch()        
+          createPDF_2_of_3(Cobro);
+        }       
       }
     }
   );
+
+           
+  function nombreRecibo(nombreFide, nombreContrato, numeroRecibo){
+
+    let n =  nombreFide + "-" + nombreContrato ;
+    return "Recibo_" + numeroRecibo + "-" + n.replace(/ /g,"_") ;
+  
+  }
+
+  const createPDF_2_of_3 = async (Cobro) =>   {
+
+      let blobPdf = await pdf(RecDocument()).toBlob();
+      let formData = new FormData();
+      formData.append('file', blobPdf);      
+     
+      formData.append('path', './' + folder); // guarda archivo en carpeta
+      formData.append('fileName', nombreRecibo(fideInForm?.nombre, contInForm?.nombre, Cobro?.reciboNum));     
+
+      savePDF_3_of_3({formData});
+
+  }
+
+  const RecDocument = () => {
+    return (
+      <RepRecibo data={data} apiServerUrl={apiServerUrl} />
+    )
+  }
+
+  const { mutate: savePDF_3_of_3 } = useMutation(
+    async ({formData}) => 
+        await postMethod(`utilidades/uploadpdf/${idSociety.id}`, formData),          
+      {
+        onMutate: async ({ formData }) => {
+          await queryClient.cancelQueries(['pdfFile', idSociety]);
+          const prevData = queryClient.getQueryData(['pdfFile', idSociety]);
+          return prevData;
+        },
+        onError: (err, id, context) => queryClient.setQueryData(['pdfFile', idSociety], context),
+        onSettled: (fileName) => {
+          if(idSociety.id > 0) {
+            queryClient.invalidateQueries(['pdfFile', idSociety])
+          }
+          refetch() 
+        }
+      }     
+);
 
   return (
     
@@ -62,23 +121,25 @@ export function FormCobro({ mode, fide, cont, conceptosPago, formaCobros, contra
      <Formik
         initialValues={{
           concepto: '',
-          cuota: '',
           monto: '',
           fecha: null,
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           
-          addCuota({         
+          
+          addCobro_1_of_3({         
             fecha: values?.fecha, 
             concepto: concepto.id,
             monto: values?.monto,
             formaPago: formaCobro.id,
             fideicomisoId: fideInForm.id,
+            reciboUrl: apiServerUrl + folder + nombreRecibo(fideInForm?.nombre, contInForm?.nombre, "*****"), // los 5 asteriscos los edita en la API por el nuevo ID
             contratoId: contInForm.id,
             moneda: moneda.id,
             creador: loggedUser.id
 
           });
+
           resetForm();
           setSubmitting(false);
           
@@ -113,8 +174,8 @@ export function FormCobro({ mode, fide, cont, conceptosPago, formaCobros, contra
               <Field
                   as={Autocomplete}
                   size={'small'}
-                  label='Contrato'
-                  title="Contrato"
+                  label='Adhesión'
+                  title="Adhesión"
                   disablePortal
                   required
                   style={{ width: '260px', display: 'inline-flex' }}
@@ -126,7 +187,7 @@ export function FormCobro({ mode, fide, cont, conceptosPago, formaCobros, contra
                   getOptionLabel={option => (`${option.nombre} - ${option?.empresas[0]? option?.empresas[0]?.razonSocial:"" + option?.personas[0]? option?.personas[0]?.nombre:""}`)}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
                   options={contratos? contratos?.filter(cont => cont?.fideicomisoId === fideInForm?.id):[]}
-                  renderInput={params => <TextField {...params} label='Contrato' />}
+                  renderInput={params => <TextField {...params} label='Adhesión' />}
                 />
             </Hidden>
             <Field

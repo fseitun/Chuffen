@@ -2,15 +2,16 @@ import * as React from 'react';
 import { useState, useContext } from 'react';
 // import { useQuery } from 'react-query';
 import { useQueryClient, useMutation } from 'react-query';
-import { Typography, Grid, Autocomplete, TextField } from '@mui/material';
+import { Typography, Grid, IconButton } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { SocietyContext } from 'src/App';
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
+import { saveAs } from "file-saver";
 
-
-const columns = (acceso, setIsPromptOpen, setRowIdToDelete) => [
+const columns = (acceso, saveFile, setIsPromptOpen, setRowIdToDelete) => [
   
   
   {
@@ -57,6 +58,19 @@ const columns = (acceso, setIsPromptOpen, setRowIdToDelete) => [
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
 
+  {
+    field: 'link',
+    headerName: 'Link',
+    width: 70,
+    editable: false,
+    // hide: (!verColumnBlue && colVisibles?.find(i => i.c === 'blue').h),    
+    headerAlign: 'center',
+    renderCell: ({ value }) => value===0?'' :
+                        <IconButton color="inherit" onClick={() => {saveFile(value)}} >
+                          <DownloadForOfflineIcon color="primary" />
+                        </IconButton>,
+  },
+
   
   {
     field: 'deleteIcon',
@@ -88,7 +102,13 @@ export function GrillaLiquidacion({ loggedUser, liquidaciones, isLoading, error,
 
   const queryClient = useQueryClient();
 
+  const saveFile = (url) => {
+    let nombre = url.split("/liquidaciones/")[1];  
 
+    saveAs(
+      url, nombre + ".pdf"
+    );
+  };
 
   const { mutate: eliminate } = useMutation(
     async Liquidacion => await deleteMethod(`liquidacion/eliminar/${idSociety.id}`, { id: Liquidacion }),
@@ -193,7 +213,7 @@ export function GrillaLiquidacion({ loggedUser, liquidaciones, isLoading, error,
 
               }))}
               // onCellEditCommit={modifyData}
-              columns={columns(acceso, setIsPromptOpen, setRowIdToDelete)}
+              columns={columns(acceso, saveFile, setIsPromptOpen, setRowIdToDelete)}
 
               sortModel={sortModel}
               onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
@@ -217,6 +237,7 @@ function onlyNumbers(data) {
   return { ...data.props, error };
 }
 
+/*
 function ComboBox({ listItems, label, props }) {
   const { id, api, field } = props;
 
@@ -249,4 +270,4 @@ function ComboBox({ listItems, label, props }) {
       renderInput={params => <TextField {...params} label={label} />}
     />
   );
-}
+}*/

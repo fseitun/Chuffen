@@ -6,7 +6,7 @@ import { GrillaLiquidacion } from 'src/components/liquidacion/GrillaLiquidacion'
 import { useQuery } from 'react-query';
 import { getMethod } from 'src/utils/api';
 
-export function PageLiquidacion({ contratoId, idSociety, loggedUser, contrato}) {
+export function PageLiquidacion({ contratoId, idSociety, loggedUser, contrato, cesion}) {
 
   var acceso = true;
   if(loggedUser?.['rol.contrato'] ==='vista'){acceso =false}
@@ -18,9 +18,6 @@ export function PageLiquidacion({ contratoId, idSociety, loggedUser, contrato}) 
     refetch,
   } = useQuery(['liquidaciones', idSociety], () => getMethod(`liquidacion/listar/${idSociety.id}/0/${contratoId}`));
 
-  console.log(liquidaciones);
-
-
 
   return (
     <>
@@ -31,6 +28,7 @@ export function PageLiquidacion({ contratoId, idSociety, loggedUser, contrato}) 
                     
                     loggedUser={loggedUser}
                     contrato={contrato}
+                    cesion={cesion}
                     refetch={refetch}
                     
               />

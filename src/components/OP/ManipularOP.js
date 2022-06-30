@@ -35,7 +35,6 @@ export function ManipularOP({ idSociety, loggedUser, fideicomisos, proveedores, 
   const [factInForm, setFactInForm] = useState(null);  
   const [open, setOpen] = useState(false);
 
-  // console.log(222223, ddfacturas);
 
   let verCheckBlueDis = false;  
   let iniBlue = true;

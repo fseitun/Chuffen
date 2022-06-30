@@ -50,7 +50,7 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
  
   const saveFile = (nombre, url) => {
     let path = url + "sociedades/" + idSociety.id + "/certificados/" + nombre;  
-    console.log("AABBCC", path);
+
     saveAs(
       path, nombre + ".pdf"
     );

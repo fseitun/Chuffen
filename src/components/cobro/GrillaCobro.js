@@ -1,16 +1,17 @@
 import * as React from 'react';
 import { useState, useContext } from 'react';
 import { useQueryClient, useMutation } from 'react-query';
-import { Typography, Grid, Autocomplete, TextField } from '@mui/material';
-// import { DataGrid } from '@mui/x-data-grid';
+import { Typography, Grid, Autocomplete, TextField, IconButton } from '@mui/material';
 import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { SocietyContext, FormaCobrosContext } from 'src/App';
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
+import { saveAs } from "file-saver";
 
 
-const columns = (acceso, fondos_s, estados, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [ 
+const columns = (acceso, saveFile, fondos_s, estados, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [ 
   
   {
     field: 'id',
@@ -45,7 +46,7 @@ const columns = (acceso, fondos_s, estados, conceptosCuota, setIsPromptOpen, set
   }, 
   {
     field: 'contrato',
-    headerName: 'contrato',
+    headerName: 'Adhesión',
     width: 150,
     editable: false,
     headerAlign: 'center',
@@ -56,6 +57,36 @@ const columns = (acceso, fondos_s, estados, conceptosCuota, setIsPromptOpen, set
     width: 160,
     editable: false,
     headerAlign: 'center',
+  },
+
+  {
+    field: 'reciboNum',
+    headerName: 'Recibo',
+    width: 160,
+    editable: acceso,
+    headerAlign: 'center',
+  },
+  
+
+  {
+    field: 'descargar',
+    headerName: 'Link',
+    width: 160,
+    editable: acceso,
+    headerAlign: 'center',
+  },
+
+  {
+    field: 'reciboUrl',
+    headerName: 'Link',
+    width: 70,
+    editable: false,
+    // hide: (!verColumnBlue && colVisibles?.find(i => i.c === 'blue').h),    
+    headerAlign: 'center',
+    renderCell: ({ value }) => value===0?'' :
+                        <IconButton color="inherit" onClick={() => {saveFile(value)}} >
+                          <DownloadForOfflineIcon color="primary" />
+                        </IconButton>,
   },
 
   {
@@ -127,6 +158,13 @@ const columns = (acceso, fondos_s, estados, conceptosCuota, setIsPromptOpen, set
     renderEditCell: props => <ComboBox listItems={estados} label={"Estado"} props={props} />,
   },  
 
+  {
+    field: 'observaciones',
+    headerName: 'Obs.',
+    width: 180,
+    editable: acceso,
+    headerAlign: 'center',
+  },
 
 
 
@@ -160,6 +198,14 @@ export function GrillaCobro({loggedUser, filtCont, filtFide, dataCobro, fondos_s
 
   var acceso = true;
   if(loggedUser?.['rol.cobros'] ==='vista'){acceso =false}
+
+  const saveFile = (url) => {
+    let nombre = url.split("/recibos/")[1];  
+
+    saveAs(
+      url, nombre + ".pdf"
+    );
+  };
 
   const queryClient = useQueryClient();
 
@@ -213,23 +259,20 @@ export function GrillaCobro({loggedUser, filtCont, filtFide, dataCobro, fondos_s
     }
   );
 
-  //function filtrar(element, filtComp, filtFide, filtRS, onlyBlue){
   function filtrar(element, filtCont, filtFide){
-    //if(onlyBlue && element.blue !== 1){
-    //  return false;
-    //}
 
     if(filtFide === -1 && filtCont === -1){
       return true;
     }
 
-    if(filtFide > -1 && filtCont === -1){//fide
-      
+    if(filtFide > -1 && filtCont === -1){//fide      
       if(element.fideicomisoId===filtFide){return true;}else{return false;}
     }
+
     if(filtFide === -1 && filtCont > -1){// contrato
       if(element.contratoId===filtCont){return true;}else{return false;}
     }
+    
     if(filtFide > -1 && filtCont > -1){
       if(element.fideicomisoId===filtFide && element.contratoId===filtCont){return true;}else{return false;}
     }  
@@ -291,8 +334,10 @@ export function GrillaCobro({loggedUser, filtCont, filtFide, dataCobro, fondos_s
               monto: item?.monto,
               moneda: item?.moneda,              
               formaPago: formas_cobro && item?.formaPago? formas_cobro?.find(i => i.id === item?.formaPago)?.descripcion:'',
-              // formaPago: item?.formaPago,
-              // recivo:
+              reciboNum: item?.reciboNum,
+              reciboUrl: item?.reciboUrl,
+              descargar: item?.reciboUrl,
+              observaciones: item?.observaciones,
               cambio: item?.cambio,
               fondos: fondos_s?.find(i => i.id === item?.fondos)?.descripcion,    
               archivadas: estados?.find(i => i.id === item?.archivadas)?.descripcion,
@@ -302,7 +347,7 @@ export function GrillaCobro({loggedUser, filtCont, filtFide, dataCobro, fondos_s
               }))}OPs
 
             onCellEditCommit={modifyData}
-            columns={columns(acceso,  fondos_s, estados, conceptosPago, setIsPromptOpen, setRowIdToDelete)}
+            columns={columns(acceso,  saveFile, fondos_s, estados, conceptosPago, setIsPromptOpen, setRowIdToDelete)}
             
             sortModel={sortModel}
             onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}

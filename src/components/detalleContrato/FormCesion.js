@@ -68,7 +68,7 @@ export function FormCesion({idSociety, loggedUser, contratoId, fideicomisoId, pe
           CACbase: '',
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
-            // console.log(tipoFidu, iniPersona?.id, iniEmpresa?.id, values?.persona?.id, values?.empresa?.id);
+           
             if(iniPersona?.id === undefined && iniEmpresa?.id === undefined){
               setMsg("Debe seleccionar un fiduciante.");
               setIsPromptOpen(true);
