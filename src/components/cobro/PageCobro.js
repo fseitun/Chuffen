@@ -5,7 +5,7 @@ import { FormCobro } from 'src/components/cobro/FormCobro';
 import { GrillaCobro } from 'src/components/cobro/GrillaCobro';
 import { useQuery } from 'react-query';
 import { getMethod } from 'src/utils/api';
-import { ConceptosPagoContext, FormaCobrosContext, FondosContext, EstadosPagoContext} from 'src/App';
+import { ConceptosPagoContext, FormaPagosFiduContext, FondosContext, EstadosPagoContext} from 'src/App';
 import { FiltroCobro } from 'src/components/cobro/FiltroCobro';
 
 export function PageCobro({ mode, idSociety, loggedUser, contrato}) {
@@ -29,12 +29,13 @@ export function PageCobro({ mode, idSociety, loggedUser, contrato}) {
 
   const { data: fideicomisos } = useQuery(
     ['fideicomisos'],
-    () => getMethod(`fideicomiso/listar/${idSociety.id}`));
+    () => getMethod(`fideicomiso/listarEmpresa/${idSociety.id}`));
   //////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////
 
   var conceptosPago = useContext(ConceptosPagoContext);
-  var formaCobros = useContext(FormaCobrosContext);  
+  // var formaCobros = useContext(FormaCobrosContext); 
+  var formaPagosFidu =  useContext(FormaPagosFiduContext); 
   var fondos_s =  useContext(FondosContext); 
   var estados =  useContext(EstadosPagoContext);
 
@@ -45,11 +46,11 @@ export function PageCobro({ mode, idSociety, loggedUser, contrato}) {
           <Hidden smUp={(loggedUser?.['rol.cobros'] ==='vista')} >
             <Box sx={{ pt: 3 }}>
               <FormCobro idSociety={idSociety}  
-              mode={mode} fide={contrato?.fideicomisoId} 
-              cont={contrato?.id}  
+              mode={mode} 
+              contrato={contrato}  
               contratos={contratos} 
               fideicomisos={fideicomisos}  
-              formaCobros={formaCobros} 
+              formaPagosFidu={formaPagosFidu} 
               conceptosPago={conceptosPago} 
               loggedUser={loggedUser}  
               refetch={refetch}/>
@@ -59,15 +60,20 @@ export function PageCobro({ mode, idSociety, loggedUser, contrato}) {
           <Hidden smUp={(mode ==='contrato')} >
             <Box sx={{ pt: 3 }}>
               <FiltroCobro idSociety={idSociety} 
-                fideicomisos={fideicomisos}  setFiltCont={setFiltCont} setFiltFide={setFiltFide}  contratos={contratos}
+                fideicomisos={fideicomisos}               
+                setFiltCont={setFiltCont} setFiltFide={setFiltFide}  contratos={contratos}
               />
             </Box>
           </Hidden>
           
      
           <Box sx={{ pt: 3 }}>
-              <GrillaCobro idSociety={idSociety} loggedUser={loggedUser}          
-              dataCobro={dataCobro} conceptosPago={conceptosPago} isLoading={isLoading}
+              <GrillaCobro idSociety={idSociety} loggedUser={loggedUser}   
+              formaPagosFidu={formaPagosFidu}
+              mode={mode} 
+              contratoId={contrato?.cont?.id}        
+              dataCobro={dataCobro} 
+              conceptosPago={conceptosPago} isLoading={isLoading}
               fondos_s={fondos_s} estados={estados} error={error} refetch={refetch}
               filtCont={filtCont} filtFide={filtFide} 
             />

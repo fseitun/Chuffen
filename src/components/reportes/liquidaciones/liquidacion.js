@@ -1,24 +1,17 @@
 import React from 'react';
 import { Page, Document } from '@react-pdf/renderer';
-// import { Image } from '@react-pdf/renderer';
-/*
-import TablaFacturas from './tablaFacturas';
-import TablaTEC from './tablaTEC';
-import TablaADM from './tablaADM';
-import TablaCompra from './tablaCompra';*/
-//import TablaTarea from './tablaTarea';
-//import TablaPago from './tablaPago';
-import {Text, View, StyleSheet } from '@react-pdf/renderer';
-//import { mostrarFecha } from 'src/utils/utils';
-
+import {StyleSheet, View, Text } from '@react-pdf/renderer';
+import DataFidu from './dataFidu';
+import Estado from './estado';
+import Detalle from './detalle';
 
 const styles = StyleSheet.create({
     page: {
         fontFamily: 'Helvetica',
         fontSize: 11,
         paddingTop: 10,
-        paddingLeft:60,
-        paddingRight:60,
+        paddingLeft:45,
+        paddingRight:40,
         lineHeight: 1.5,
         flexDirection: 'column',
     }, 
@@ -71,27 +64,20 @@ const styles = StyleSheet.create({
 
   });
 
-  /*
-  var arr_id = [];
-  var arr_banco = [];
-  var arr_cid = [];
-  var arr_cuenta = [];*/
-  
-
-  
-
-  const orden_de_compra = ({dataContrato, apiServerUrl, idSociedad}) => (
+  const liquidacion = ({conceptosPago, conceptosCuota, data}) => (
 
             <Document >
                 <Page size="A4" style={styles.page}>
 
                     <View >
-                        <Text style={styles.saltolinea}>Contrato Hola</Text>                       
-                    </View>      
-
+                        <Text style={styles.reportTitle}>PAGOS</Text> 
+                        <DataFidu conceptosPago={conceptosPago} conceptosCuota={conceptosCuota} cont={data?.cont} liq={data?.liq}  /> 
+                        <Estado conceptosPago={conceptosPago} conceptosCuota={conceptosCuota} cont={data?.cont} liq={data?.liq}  /> 
+                        <Detalle conceptosPago={conceptosPago} conceptosCuota={conceptosCuota} cont={data?.cont} liq={data?.liq}  />                      
+                    </View>  
                    
                 </Page>
             </Document>
         );
   
-  export default orden_de_compra
+  export default liquidacion

@@ -10,34 +10,36 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import RepRecibo from "src/components/reportes/recibo/recibo";
 import { pdf } from "@react-pdf/renderer";
-
+import { mostrarCUIT } from 'src/utils/utils';
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
 
-export function FormCobro({ mode, fide, cont, conceptosPago, formaCobros, contratos, fideicomisos, loggedUser, refetch  }) {
+export function FormCobro({ mode, contrato, conceptosPago, formaPagosFidu, contratos, fideicomisos, loggedUser, refetch  }) {
   
   const idSociety = useContext(SocietyContext);
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
 
   
-  const [formaCobro, setFormaCobro] = useState(null);
+  
+  const [formaPagoFidu, setFormaPagoFidu] = useState(null);
   const [moneda, setMoneda] = useState({id: 'ARS', descripcion: 'ARS'});
   const [concepto, setConcepto] = useState(null);
 
   let iniFide =null;
   let iniCont =null;
   if(mode==='contrato'){
-    iniFide = {id: fide}; // si estoy en el detalle de un contrato fijo el fideicomiso
-    iniCont = {id: cont}; // si estoy en el detalle de un contrato fijo el contrato
+    iniFide = {id: contrato?.cont?.fideicomisoId}; // si estoy en el detalle de un contrato fijo el fideicomiso
+    iniCont = {id: contrato?.cont?.id}; // si estoy en el detalle de un contrato fijo el contrato
   }
 
   const [fideInForm, setFideInForm] = useState(iniFide);
   const [contInForm, setContInForm] = useState(iniCont);
 
   var monedas = [{id: 'ARS', descripcion: 'ARS'}, {id: 'USD', descripcion: 'USD'}];
-  const [data, setData] = useState({});
+  
+  var data = null;
 
   // En el click del boton "AGREGAR"
   // Paso 1: Graba en tabla Cobros 
@@ -60,10 +62,66 @@ export function FormCobro({ mode, fide, cont, conceptosPago, formaCobros, contra
       },
       onError: (err, id, context) => queryClient.setQueryData(['cobro', idSociety], context),
       onSettled: (Cobro) => {
-        setData({Cobro});
-        console.log(33333, Cobro);
+        
+        let dirL1, dirL2  = ""
+        if(mode!=='contrato'){
+          if(fideInForm?.empresas[0]?.domicilio){
+            dirL1 = " " + fideInForm?.empresas[0]?.domicilio.split(",")[0]
+            if(fideInForm?.empresas[0]?.domicilio.split(",").length>1){
+              dirL2 = fideInForm?.empresas[0]?.domicilio.split(",")[1]
+              if(fideInForm?.empresas[0]?.domicilio.split(",").length>2){
+                dirL2 += "," + fideInForm?.empresas[0]?.domicilio.split(",")[2]
+              }
+            }
+          }   
+        }else{ // es dentro de detalle contrato
+
+          dirL1 = " " + contrato?.cont?.fideicomisos[0]?.empresas[0]?.domicilio.split(",")[0]
+          if(contrato?.cont?.fideicomisos[0]?.empresas[0]?.domicilio.split(",").length>1){
+            dirL2 = contrato?.cont?.fideicomisos[0]?.empresas[0]?.domicilio.split(",")[1]
+            if(contrato?.cont?.fideicomisos[0]?.empresas[0]?.domicilio.split(",").length>2){
+              dirL2 += "," + contrato?.cont?.fideicomisos[0]?.empresas[0]?.domicilio.split(",")[2]
+            }
+          }
+        }
+        
+        let f = null;
+        let _fecha = null;
+          
+        if(mode==='contrato'){
+          _fecha = contrato?.cont?.fideicomisos[0]?.fechaInicio.slice(0,10)
+        }else if(fideInForm?.fechaInicio){
+          _fecha = fideInForm?.fechaInicio.slice(0,10) 
+        }
+
+        if(_fecha){
+          f = new Date((_fecha + " 03:00")).toLocaleDateString('es-AR', {
+            year: 'numeric',
+            month: 'short',
+            timeZone: 'UTC',
+          })
+        }
+        
+        let ptoVenta = "00000" + (Cobro?.reciboNum + "").slice(0, 1)
+
+        data = {
+          'cobro_numero': ptoVenta.slice(-5) + "-" + (Cobro?.reciboNum + "").slice(1, 9),// ptoVenta.slice(-5) + "-" + numTXT.slice(1, 9),
+          'fide_nombre': mode==='contrato'? contrato?.cont?.fideicomisos[0]?.empresas[0]?.razonSocial: fideInForm?.empresas[0]?.razonSocial,
+          'fide_cuit': mode==='contrato'? mostrarCUIT(contrato?.cont?.fideicomisos[0]?.empresas[0]?.CUIT):mostrarCUIT(fideInForm?.empresas[0]?.CUIT),
+          'fide_fecha': f,
+          'fide_dir_linea1': dirL1,
+          'fide_dir_linea2': dirL2,
+          'fidu_nombre': mode==='contrato'? contrato?.cesiones[0]?.nombre:contInForm?.cesions[0]?.nombre,
+          'adhe_nombre': mode==='contrato'? contrato?.cont?.nombre:contInForm?.nombre,
+          'cobro_monto': Cobro?.monto? Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(Cobro?.monto)):"",
+          'cobro_moneda': Cobro?.moneda,          
+          'cobro_f_pago': formaPagoFidu?.descripcion,
+          'cobro_concepto': concepto?.descripcion,          
+         }
+        
         if(idSociety.id > 0) {
-          createPDF_2_of_3(Cobro);
+          createPDF_2_of_3(Cobro)
+          
         }       
       }
     }
@@ -79,15 +137,18 @@ export function FormCobro({ mode, fide, cont, conceptosPago, formaCobros, contra
 
   const createPDF_2_of_3 = async (Cobro) =>   {
 
+    if(data && Cobro){
+
       let blobPdf = await pdf(RecDocument()).toBlob();
       let formData = new FormData();
       formData.append('file', blobPdf);      
-     
+      
       formData.append('path', './' + folder); // guarda archivo en carpeta
       formData.append('fileName', nombreRecibo(fideInForm?.nombre, contInForm?.nombre, Cobro?.reciboNum));     
 
       savePDF_3_of_3({formData});
-
+    }
+    
   }
 
   const RecDocument = () => {
@@ -131,7 +192,7 @@ export function FormCobro({ mode, fide, cont, conceptosPago, formaCobros, contra
             fecha: values?.fecha, 
             concepto: concepto.id,
             monto: values?.monto,
-            formaPago: formaCobro.id,
+            formaPago: formaPagoFidu.id,
             fideicomisoId: fideInForm.id,
             reciboUrl: apiServerUrl + folder + nombreRecibo(fideInForm?.nombre, contInForm?.nombre, "*****"), // los 5 asteriscos los edita en la API por el nuevo ID
             contratoId: contInForm.id,
@@ -217,7 +278,6 @@ export function FormCobro({ mode, fide, cont, conceptosPago, formaCobros, contra
               type="number"
               style={{ width: '160px'}}
               name="monto"
-              // onChange={event => onlyNumbers(event, setFieldValue, 'monto')}
             />     
 
             <Field
@@ -248,13 +308,13 @@ export function FormCobro({ mode, fide, cont, conceptosPago, formaCobros, contra
                 required
                 style={{ width: '160px', display: 'inline-flex' }}
                 onChange={(event, newValue) => {
-                  setFormaCobro(newValue);
+                  setFormaPagoFidu(newValue);
                   setFieldValue('formaPago', newValue);
                 }}
-                value={formaCobro}
+                value={formaPagoFidu}
                 getOptionLabel={option => option.descripcion}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
-                options={(formaCobros? formaCobros:[])}
+                options={(formaPagosFidu? formaPagosFidu:[])}
                 renderInput={params => <TextField {...params} label='Forma de pago' />}
               />
 

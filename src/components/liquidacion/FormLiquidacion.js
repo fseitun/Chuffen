@@ -1,14 +1,13 @@
 import { TextField, Button } from '@mui/material';
-import {useState, useContext } from 'react';
+import { useContext } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
-import { SocietyContext } from 'src/App';
+import { SocietyContext, ConceptosPagoContext, ConceptosCuotaContext } from 'src/App';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import { date_to_YYYYMMDD, DB_to_MMMAAAA } from 'src/utils/utils';
-// import { date_to_YYYYMMDD } from 'src/utils/utils'; 
 import RepLiquidacion from "src/components/reportes/liquidaciones/liquidacion";
 import { pdf } from "@react-pdf/renderer";
 
@@ -21,7 +20,11 @@ export function FormLiquidacion({ contrato, cesion, loggedUser, refetch  }) {
   const { Prompt } = usePrompt();
   const queryClient = useQueryClient();
   
-  const [data, setData] = useState({});
+  var conceptosPago = useContext(ConceptosPagoContext);  
+  var conceptosCuota = useContext(ConceptosCuotaContext);
+
+  // const [data, setData] = useState({});
+  var data = null;
   // const [concepto, setConcepto] = useState(null);
  
   ////////////////////////////////////////////////////////////////////////
@@ -48,17 +51,13 @@ export function FormLiquidacion({ contrato, cesion, loggedUser, refetch  }) {
       },
       onError: (err, id, context) => queryClient.setQueryData(['liquidacion', idSociety], context),
       onSettled: (Liquidacion) => {
-        setData({cont: contrato, liq: Liquidacion});
-        console.log(22222, Liquidacion?.fecha);
+        // setData({cont: contrato, liq: Liquidacion});
+        data = {cont: contrato, liq: Liquidacion};
+        // console.log(222224, data);
         if(idSociety.id > 0) {
-          // console.log(22222);
           createPDF_2_of_3(Liquidacion);
         }  
-        // refetch()
-        /*if(idSociety.id > 0) {
-          queryClient.invalidateQueries(['liquidacion', idSociety])
-        }
-        refetch()  */      
+     
       }
     }
   );
@@ -88,7 +87,7 @@ export function FormLiquidacion({ contrato, cesion, loggedUser, refetch  }) {
 
   const LiqDocument = () => {
     return (
-      <RepLiquidacion data={data} apiServerUrl={apiServerUrl} />
+      <RepLiquidacion conceptosPago={conceptosPago}  conceptosCuota={conceptosCuota} data={data} apiServerUrl={apiServerUrl} />
     )
   }
 
@@ -129,9 +128,9 @@ export function FormLiquidacion({ contrato, cesion, loggedUser, refetch  }) {
           addLiquidacion_1_of_3({         
             
             fechaLiquidacion: date_to_YYYYMMDD(values?.fecha), 
-            contrato: contrato,
+            contrato: {pepe: 22, id: contrato?.id, nombre: contrato?.nombre, fideicomisoId: contrato?.fideicomisoId, adhesion: contrato?.adhesion},
             link: apiServerUrl + folder + nombreLiq(date_to_YYYYMMDD(values?.fecha)),
-            contratoId: contrato?.cont?.id,
+            // contratoId: contrato?.cont?.id,
             creador: loggedUser.id
           });
           resetForm();

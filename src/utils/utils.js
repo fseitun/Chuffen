@@ -1,6 +1,33 @@
 
 import { getMethod } from './api';
 
+
+/*
+
+('0' + 4).slice(-2)  // '04'   completa con ceros a la izquierda
+
+r = r.replace(/ /g,"_"); //returns my_name
+
+var d = new Date(year, month, day);
+d.setMonth(d.getMonth() + 8);
+
+	const id = "ctl03_Tabs1";
+	print (id.slice(id.length - 5)); //Outputs: Tabs1
+primeros
+	const string = "0123456789";
+  const string = "01234-123456789";
+	print (string.slice(0, 2)); // "01"
+	print (string.slice(0, 8)); // "01234567"
+	print (string.slice(5, 13)); // "3456"
+sin decimales
+	Math.trunc(42.84);    // 42
+	Math.trunc(0.123);    //  0
+Number to string
+	n.toString()
+	""+n
+  */
+
+
 export function isValidDate(d) {
   let f = new Date(d);
   return !isNaN(f.getTime());
@@ -11,8 +38,6 @@ export function mostrarCUIT(value) {
   try {
     value = value.split('');
     value.splice(2, 0, '-');
-    //value.splice(5, 0, '.');
-    //value.splice(9, 0, '.');
     value.splice(11, 0, '-');
     return value.join('');
   } catch (e) {
@@ -251,24 +276,4 @@ export function buscarCAC(CACs, fechaOP, CACtipo){
 }
 
 
-/*
-r = r.replace(/ /g,"_"); //returns my_name
 
-var d = new Date(year, month, day);
-d.setMonth(d.getMonth() + 8);
-
-	const id = "ctl03_Tabs1";
-	print (id.slice(id.length - 5)); //Outputs: Tabs1
-primeros
-	const string = "0123456789";
-  const string = "01234-123456789";
-	print (string.slice(0, 2)); // "01"
-	print (string.slice(0, 8)); // "01234567"
-	print (string.slice(5, 13)); // "3456"
-sin decimales
-	Math.trunc(42.84);    // 42
-	Math.trunc(0.123);    //  0
-Number to string
-	n.toString()
-	""+n
-  */

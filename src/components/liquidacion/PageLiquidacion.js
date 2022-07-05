@@ -6,7 +6,12 @@ import { GrillaLiquidacion } from 'src/components/liquidacion/GrillaLiquidacion'
 import { useQuery } from 'react-query';
 import { getMethod } from 'src/utils/api';
 
+
 export function PageLiquidacion({ contratoId, idSociety, loggedUser, contrato, cesion}) {
+
+  // var conceptosPago = useContext(ConceptosPagoContext);  
+  // var conceptosCuota = useContext(ConceptosCuotaContext);
+
 
   var acceso = true;
   if(loggedUser?.['rol.contrato'] ==='vista'){acceso =false}
@@ -30,6 +35,8 @@ export function PageLiquidacion({ contratoId, idSociety, loggedUser, contrato, c
                     contrato={contrato}
                     cesion={cesion}
                     refetch={refetch}
+                    // conceptosPago={conceptosPago}
+                    // conceptosCuota={conceptosCuota}
                     
               />
             </Box>

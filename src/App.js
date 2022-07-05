@@ -60,6 +60,7 @@ export const EstadosContext = createContext({});
 export const EstadosPagoContext = createContext({});
 export const FormaCobrosContext = createContext({});
 export const FormaPagosContext = createContext({});
+export const FormaPagosFiduContext = createContext({});
 export const RetencionesContext = createContext({});
 export const FondosContext = createContext({});
 export const TiposContext = createContext({});
@@ -88,10 +89,13 @@ export default function App() {
     getMethod(`listas/listarEstadosPago/${idSociety.id}`)
   );
   const { data: formaCobros } = useQuery(['formaCobros', idSociety], () =>
-  getMethod(`listas/listarFormaCobros/${idSociety.id}`)
-);
+    getMethod(`listas/listarFormaCobros/${idSociety.id}`)
+  );
   const { data: formaPagos } = useQuery(['formaPagos', idSociety], () =>
     getMethod(`listas/listarFormaPagos/${idSociety.id}`)
+  );
+  const { data: formaPagosFidu } = useQuery(['formaPagosFidu', idSociety], () =>
+    getMethod(`listas/listarFormaPagosFidu/${idSociety.id}`)
   );
   const { data: retenciones } = useQuery(['retenciones', idSociety], () =>
   getMethod(`listas/listarRetenciones/${idSociety.id}`)
@@ -121,12 +125,14 @@ export default function App() {
     getMethod(`listas/conceptosPago/${idSociety.id}`)
   ); 
   
+  
   return (
 
     <SocietyContext.Provider value={idSociety}>
     <EstadosContext.Provider value={estados}>
     <EstadosPagoContext.Provider value={estadosPago}>    
     <FormaCobrosContext.Provider value={formaCobros} >
+    <FormaPagosFiduContext.Provider value={formaPagosFidu} >
     <FormaPagosContext.Provider value={formaPagos} >
     <RetencionesContext.Provider value={retenciones}>
     <FondosContext.Provider value={fondos}>
@@ -204,10 +210,6 @@ export default function App() {
                 />
               </Route>
               
-              
-              
-              
-              
               <Route path="factura">
                 <Route path="" element={<Factura idSociety={idSociety} loggedUser={loggedUser} />} />
                 <Route
@@ -245,10 +247,6 @@ export default function App() {
                 />
               </Route>
 
-              
-              
-
-
               <Route path="*" element={<NotFound />} />
             </Route>
             
@@ -283,6 +281,7 @@ export default function App() {
     </FondosContext.Provider>    
     </RetencionesContext.Provider>
     </FormaPagosContext.Provider>
+    </FormaPagosFiduContext.Provider>
     </FormaCobrosContext.Provider>    
     </EstadosPagoContext.Provider>
     </EstadosContext.Provider>

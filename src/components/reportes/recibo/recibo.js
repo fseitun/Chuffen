@@ -1,8 +1,6 @@
 import React from 'react';
-import { Page, Document, Image } from '@react-pdf/renderer';
-
-import {Text, View, StyleSheet, link } from '@react-pdf/renderer';
-// import { mostrarFecha } from 'src/utils/utils';
+import { Page, Document } from '@react-pdf/renderer';
+import {View, StyleSheet } from '@react-pdf/renderer';
 import Header from './header';
 import Fiduciante from './fiduciante';
 import IVA from './IVA';
@@ -61,12 +59,6 @@ const styles = StyleSheet.create({
 
 });
 
-  /*
-  var arr_id = [];
-  var arr_banco = [];
-  var arr_cid = [];
-  var arr_cuenta = [];*/
-  
 
   
 
@@ -77,11 +69,12 @@ const styles = StyleSheet.create({
                 
                 <View style={{ flexDirection: 'row',flexWrap: 'wrap', margin: 65, borderWidth: 1, borderColor: '#000000', }} >
                 
-                        <Header />
-                        <Fiduciante />
-                        <IVA />
-                        <Monto />
-                        <Total />
+                <Header data={data} />
+                <Fiduciante data={data}  />
+                <IVA data={data}  />
+                <Monto data={data}  />
+                <Total data={data}  />
+                    
 
                 </View>   
 

@@ -48,7 +48,7 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
                     mode={"contrato"} 
                     idSociety={idSociety}
                     loggedUser={loggedUser}
-                    contrato={dataContrato?.cont}
+                    contrato={dataContrato}
                 />
               
               </Box>

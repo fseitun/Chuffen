@@ -6,12 +6,13 @@ import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarFilterBut
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
-import { SocietyContext, FormaCobrosContext } from 'src/App';
+import { SocietyContext} from 'src/App';
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
+import { mostrarFecha } from 'src/utils/utils';
 import { saveAs } from "file-saver";
 
 
-const columns = (acceso, saveFile, fondos_s, estados, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [ 
+const columns = (acceso, mode, saveFile, fondos_s, estados, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [ 
   
   {
     field: 'id',
@@ -24,22 +25,17 @@ const columns = (acceso, saveFile, fondos_s, estados, conceptosCuota, setIsPromp
   {
     field: 'fecha',
     headerName: 'Fecha',
-    width: 140,
-    editable: false,
+    width: 150,
     type: 'date',
     headerAlign: 'center',
     align: 'center',
-    valueFormatter: ({ value }) =>
-    new Date(value).toLocaleDateString('es-AR', {
-      year: 'numeric',
-      month: 'short',
-      timeZone: 'UTC',
-    }),
+    valueFormatter: ({ value }) => mostrarFecha(value),
   },
   {
     field: 'fideicomiso',
     headerName: 'Fideicomiso',
     width: 155,
+    hide: (mode==='contrato'),
     editable: false,
     headerAlign: 'center',
     align: 'left',
@@ -48,6 +44,7 @@ const columns = (acceso, saveFile, fondos_s, estados, conceptosCuota, setIsPromp
     field: 'contrato',
     headerName: 'Adhesión',
     width: 150,
+    hide: (mode==='contrato'),
     editable: false,
     headerAlign: 'center',
   },
@@ -55,6 +52,7 @@ const columns = (acceso, saveFile, fondos_s, estados, conceptosCuota, setIsPromp
     field: 'fiduciante',
     headerName: 'fiduciante',
     width: 160,
+    hide: (mode==='contrato'),
     editable: false,
     headerAlign: 'center',
   },
@@ -80,8 +78,7 @@ const columns = (acceso, saveFile, fondos_s, estados, conceptosCuota, setIsPromp
     field: 'reciboUrl',
     headerName: 'Link',
     width: 70,
-    editable: false,
-    // hide: (!verColumnBlue && colVisibles?.find(i => i.c === 'blue').h),    
+    editable: false,   
     headerAlign: 'center',
     renderCell: ({ value }) => value===0?'' :
                         <IconButton color="inherit" onClick={() => {saveFile(value)}} >
@@ -189,10 +186,9 @@ const columns = (acceso, saveFile, fondos_s, estados, conceptosCuota, setIsPromp
 ];
 
 
-export function GrillaCobro({loggedUser, filtCont, filtFide, dataCobro, fondos_s, estados, conceptosPago, isLoading, error, refetch}) {
+export function GrillaCobro({loggedUser, mode, contratoId, filtCont, formaPagosFidu, filtFide, dataCobro, fondos_s, estados, conceptosPago, isLoading, error, refetch}) {
   
   const idSociety = useContext(SocietyContext);
-  var formas_cobro = useContext(FormaCobrosContext);
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
 
@@ -261,6 +257,9 @@ export function GrillaCobro({loggedUser, filtCont, filtFide, dataCobro, fondos_s
 
   function filtrar(element, filtCont, filtFide){
 
+    if(mode==='contrato'){
+      if(element.contratoId===contratoId){return true;}else{return false;}
+    }
     if(filtFide === -1 && filtCont === -1){
       return true;
     }
@@ -333,7 +332,7 @@ export function GrillaCobro({loggedUser, filtCont, filtFide, dataCobro, fondos_s
               fiduciante: item?.contrato?.personas[0]? item?.contrato?.personas[0]?.nombre:'' + item?.contrato?.empresas[0]? item?.contrato?.empresas[0]?.razonSocial:'', 
               monto: item?.monto,
               moneda: item?.moneda,              
-              formaPago: formas_cobro && item?.formaPago? formas_cobro?.find(i => i.id === item?.formaPago)?.descripcion:'',
+              formaPago: formaPagosFidu && item?.formaPago? formaPagosFidu?.find(i => i.id === item?.formaPago)?.descripcion:'',
               reciboNum: item?.reciboNum,
               reciboUrl: item?.reciboUrl,
               descargar: item?.reciboUrl,
@@ -347,7 +346,7 @@ export function GrillaCobro({loggedUser, filtCont, filtFide, dataCobro, fondos_s
               }))}OPs
 
             onCellEditCommit={modifyData}
-            columns={columns(acceso,  saveFile, fondos_s, estados, conceptosPago, setIsPromptOpen, setRowIdToDelete)}
+            columns={columns(acceso,  mode, saveFile, fondos_s, estados, conceptosPago, setIsPromptOpen, setRowIdToDelete)}
             
             sortModel={sortModel}
             onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
