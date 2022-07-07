@@ -7,7 +7,7 @@ import { useQuery } from 'react-query';
 import { getMethod } from 'src/utils/api';
 
 
-export function PageLiquidacion({ contratoId, idSociety, loggedUser, contrato, cesion}) {
+export function PageLiquidacion({ contratoId, idSociety, loggedUser, contrato, productos, cesion, qCuotasARS, qCuotasUSD}) {
 
   // var conceptosPago = useContext(ConceptosPagoContext);  
   // var conceptosCuota = useContext(ConceptosCuotaContext);
@@ -33,7 +33,10 @@ export function PageLiquidacion({ contratoId, idSociety, loggedUser, contrato, c
                     
                     loggedUser={loggedUser}
                     contrato={contrato}
+                    productos={productos}
                     cesion={cesion}
+                    qCuotasARS={qCuotasARS}
+                    qCuotasUSD={qCuotasUSD}
                     refetch={refetch}
                     // conceptosPago={conceptosPago}
                     // conceptosCuota={conceptosCuota}

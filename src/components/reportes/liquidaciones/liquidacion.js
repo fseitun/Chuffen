@@ -1,6 +1,7 @@
 import React from 'react';
 import { Page, Document } from '@react-pdf/renderer';
-import {StyleSheet, View, Text } from '@react-pdf/renderer';
+import {StyleSheet, View } from '@react-pdf/renderer';
+import Header from './header';
 import DataFidu from './dataFidu';
 import Estado from './estado';
 import Detalle from './detalle';
@@ -70,10 +71,12 @@ const styles = StyleSheet.create({
                 <Page size="A4" style={styles.page}>
 
                     <View >
-                        <Text style={styles.reportTitle}>PAGOS</Text> 
-                        <DataFidu conceptosPago={conceptosPago} conceptosCuota={conceptosCuota} cont={data?.cont} liq={data?.liq}  /> 
+
+                        <Header conceptosPago={conceptosPago} conceptosCuota={conceptosCuota} cont={data?.cont} liq={data?.liq} cesion={data?.cesion} productos={data?.productos}  letras={data?.letras}  qCuotasARS={data?.qCuotasARS} qCuotasUSD={data?.qCuotasUSD} /> 
+                        <DataFidu conceptosPago={conceptosPago} conceptosCuota={conceptosCuota} cont={data?.cont} liq={data?.liq} cesion={data?.cesion} productos={data?.productos}  letras={data?.letras}  qCuotasARS={data?.qCuotasARS} qCuotasUSD={data?.qCuotasUSD} /> 
                         <Estado conceptosPago={conceptosPago} conceptosCuota={conceptosCuota} cont={data?.cont} liq={data?.liq}  /> 
                         <Detalle conceptosPago={conceptosPago} conceptosCuota={conceptosCuota} cont={data?.cont} liq={data?.liq}  />                      
+                   
                     </View>  
                    
                 </Page>

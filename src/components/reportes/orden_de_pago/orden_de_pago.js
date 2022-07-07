@@ -62,10 +62,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-end'
     },
-    invoiceDate: {
-            fontSize: 12,
-            fontStyle: 'bold',
-    },
+
 
   });
 

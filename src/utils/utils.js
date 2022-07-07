@@ -239,6 +239,9 @@ export function buscarCAC(CACs, fechaOP, CACtipo){
     
     if(CACtipo==="Construción"){
       rta = CACs?.find(cac => cac.fecha.slice(0, 7) === fechaOP?.slice(0, 7))?.definitivo;
+      if(rta < 1. || rta===null){
+        rta = CACs?.find(cac => cac.fecha.slice(0, 7) === fechaOP?.slice(0, 7))?.estimado;
+      }
     }else if(CACtipo==="Materiales"){
       rta = CACs?.find(cac => cac.fecha.slice(0, 7) === fechaOP?.slice(0, 7))?.materiales;
     }else if(CACtipo==="Mano de Obra"){

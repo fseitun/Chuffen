@@ -17,6 +17,7 @@ const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
     align: 'left',
     renderCell: IrDetalleOP_0
   },
+
   {
     field: 'fechaInicio',
     headerName: 'Inicio',
@@ -33,6 +34,7 @@ const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
       }),
     
   },
+  
   {
     field: 'fechaFin',
     headerName: 'Finalización',
@@ -51,7 +53,15 @@ const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
   {
     field: 'mailOP',
     headerName: 'Mail Contador',
-    width: 200,
+    width: 140,
+    editable: true,
+    headerAlign: 'center',
+    align: 'left',
+  },
+  {
+    field: 'web',
+    headerName: 'Web',
+    width: 140,
     editable: true,
     headerAlign: 'center',
     align: 'left',
@@ -219,6 +229,7 @@ export function GrillaFideicomiso({ idSociety }) {
             logo: fideicomiso.logo,
             cloud: fideicomiso.cloud,
             mailOP: fideicomiso.mailOP,
+            web: fideicomiso.web,
             empresaId: fideicomiso.empresaId,
             deleteId: fideicomiso.id,
           }))}

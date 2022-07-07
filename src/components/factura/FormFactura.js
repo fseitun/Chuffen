@@ -40,6 +40,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
   
   const [msg, setMsg] = useState("");
 
+  //Aclaracion: esta es la letra de una factura, la cual es una lista distinta a la letra de las personas
   var letras = [{id:"A", descripcion:"A"},{id:"B", descripcion:"B"},{id:"C", descripcion:"C"},{id:"M", descripcion:"M"},{id:"A_SUJ_RET", descripcion:"A Ope. Sujeto a Retención"},{id:"-" , descripcion:"-"}];
   var porcentajes_IVA = [{id:21, descripcion:"21,0%"},{id:27, descripcion:"27,0%"}, {id:17, descripcion:"17,0%"},{id:10.5, descripcion:"10,5%"},{id:5, descripcion:"5,0%"},{id:0, descripcion:"0,0%"}];
   var tipos = useContext(TiposContext);

@@ -1,146 +1,162 @@
 import React from 'react';
 import {Text, View, StyleSheet} from '@react-pdf/renderer';
-import ItemCobro from './itemCobro';
-import ItemCuota from './itemCuota';
-
+import { grey } from '@mui/material/colors';
 
 const styles = StyleSheet.create({
 
+
+  titulo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 23,
+    fontSize: 8,
+    textAlign: 'center',
+    fontStyle: 'bold',
+    flexGrow: 1,
+},
+
+espacio5: {
+  flexDirection: 'row',
+  height: 5,
+  fontSize: 7,
+  textAlign: 'center',
+  flexGrow: 1,
+},
+
+
+  espacio10: {
+    flexDirection: 'row',
+    height: 10,
+    fontSize: 7,
+    textAlign: 'center',
+    flexGrow: 1,
+},
+
   container: {
       flexDirection: 'row',
-      borderBottomWidth: 1,
-      alignItems: 'center',
-      height: 21,
-      fontSize: 8,
+      height: 12,
+      fontSize: 7,
       textAlign: 'center',
-      fontStyle: 'bold',
       flexGrow: 1,
   },
 
 
   col1: {
     width: '14%',
-    borderRightWidth: 1,
-    textAlign: 'left',
+    textAlign: 'right',
     paddingLeft: 2,
   },
 
   col2: {
       width: '36%',
       textAlign: 'left',
-      //borderRightColor: bcolor,
-      borderRightWidth: 1,
-      paddingLeft: 2,
+      paddingLeft: 15,
   },
-  col2bis: {
-    width: '16%',
-    textAlign: 'left',
-    //borderRightColor: bcolor,
-    borderRightWidth: 1,
-    paddingLeft: 2,
-  },
-
   col3: {
-    width: '10%',
-    //borderRightColor: '#bff0fd',
-    borderRightWidth: 1,
-    textAlign: 'left',
-    paddingLeft: 2,
-},
-  col4: {
     width: '24%',
     textAlign: 'right',
-    paddingRight: 2,
-  },
-
-  cob_col1: {
-    width: '18%',
-    borderRightWidth: 1,
-    textAlign: 'left',
     paddingLeft: 2,
   },
 
-  cob_col2: {
-      width: '42%',
-      textAlign: 'left',
-      //borderRightColor: bcolor,
-      borderRightWidth: 1,
-      paddingLeft: 2,
-  },
-
-  cob_col3: {
-    width: '14%',
-    //borderRightColor: '#bff0fd',
-    borderRightWidth: 1,
-    textAlign: 'left',
+  col4: {
+    width: '5%',
+    textAlign: 'right',
     paddingLeft: 2,
 },
-  cob_col4: {
-    width: '26%',
+  col5: {
+    width: '8%',
     textAlign: 'right',
     paddingRight: 2,
   },
-  /*
-  rowf: {
-    flexDirection: 'row',
-    borderBottomColor: '#ffffff',
-    borderBottomWidth: 1,
-    alignItems: 'center',
-    height: 21,
-    fontSize: 8,
-    fontStyle: 'bold',
-  },
-  descriptionf: {
-    width: '15%',
+  col6: {
+    width: '5%',
     textAlign: 'right',
-    //borderRightColor: '#bff0fd',
-    borderRightWidth: 1,
-    paddingRight: 8,
+    paddingRight: 2,
   },
-  totalf: {
-    width: '35%',
+  col7: {
+    width: '8%',
     textAlign: 'right',
-    paddingRight: 8,
-  },*/
+    paddingRight: 2,
+  },
 });
 
 
 
-  const detalle = ({conceptosPago, conceptosCuota, cont, liq}) => (
-
- 
+  const header = ({cont, liq}) => (
                 
                 <View style={{ flexDirection: 'row',flexWrap: 'wrap', margin: 0, borderWidth: 0, borderColor: '#000000', }} >
                 
-                  <View style={{  flexDirection: 'row',flexWrap: 'wrap', width: '100%', marginLeft: 0, marginRight: 0, textAlign: 'center', borderWidth: 0, borderColor: '#000000', }} >
+                    <View style={[{ width: '100%', flexDirection: 'row', marginTop: 20,}]}>
+                        <Text style={[{width: '100%',color: '#101010', fontSize: 22, textAlign: 'left',}]}>{cont?.fideicomisos[0]?.nombre}</Text>
+                        
+                    </View>
+                      <View 
+                        style={[styles.container, { margin: 0 }]}>
+                        <Text style={[styles.col1, {margin: 0,}]}>Cuenta Recaudadora:</Text>
+                        <Text style={[styles.col2, {margin: 0,}]}>{cont?.fideicomisos[0]?.empresas[0]?.banco}-{cont?.fideicomisos[0]?.empresas[0]?.nroCuenta}</Text>
+                        <Text style={[styles.col3, {margin: 0,}]}>Tel:</Text>
+                        <Text style={[{margin: 0, width: '26%',textAlign: 'left', paddingLeft: 8,}]}>{cont?.fideicomisos[0]?.empresas[0]?.telefono}</Text>
+
+                      </View> 
+
+                      <View 
+                        style={[styles.container, { margin: 0 }]}>
+                        <Text style={[styles.col1, {margin: 0,}]}>Cuenta (CC U$S):</Text>
+                        <Text style={[styles.col2, {margin: 0,}]}></Text>
+                        <Text style={[styles.col3, {margin: 0,}]}>CUIT:</Text>
+                        <Text style={[{margin: 0, width: '26%',textAlign: 'left', paddingLeft: 8,}]}>{cont?.fideicomisos[0]?.empresas[0]?.CUIT}</Text>
+                  
+                      </View>           
+
+                      <View 
+                        style={[styles.container, { margin: 0 }]}>
+                        <Text style={[styles.col1, {margin: 0,}]}>CBU:</Text>
+                        <Text style={[styles.col2, {margin: 0,}]}>{cont?.fideicomisos[0]?.empresas[0]?.CBU}</Text>
+                        <Text style={[styles.col3, {margin: 0}]}>Mail:</Text>
+                        <Text style={[{margin: 0, width: '26%',textAlign: 'left', paddingLeft: 8,}]}>{cont?.fideicomisos[0]?.empresas[0]?.mail}</Text>
+                
+                      </View> 
+
+                      <View 
+                        style={[styles.container, { margin: 0 }]}>
+                        <Text style={[styles.col1, {margin: 0,}]}></Text>
+                        <Text style={[{margin: 0, color: grey[700], width: '86%', textAlign: 'left', paddingLeft: 15,}]}>Oficinas en {cont?.fideicomisos[0]?.empresas[0]?.domicilio}</Text>
+
+         
+                      </View>
                       
                       <View 
-                        style={[styles.container, { margin: 0, borderBottomColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff'}]}>
-                        <Text style={[{width: '100%',textAlign: 'left',paddingLeft: 2}]}>DATOS DEL FIDUCIANTE</Text>
-                           
-                      </View> 
+                        style={[styles.container, { margin: 0 }]}>
+                        <Text style={[styles.col1, {margin: 0,}]}></Text>
+                        <Text style={[{margin: 0, color: grey[700], width: '86%', textAlign: 'left', paddingLeft: 15,}]}>Condición de pago del 1 al 15 de cada mes, se solicita enviar comprobante de pago para acreditar la cuota.</Text>
+                        
+                      </View>
 
-                      <View /* Encabezado*/   
-                        style={[styles.container, { margin: 0, borderBottomColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>
-                        <Text style={[styles.col1, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Fecha</Text>
-                        <Text style={[styles.col2, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Concepto</Text>
-                        <Text style={[styles.col2bis, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>V. Unitario</Text>
-                        <Text style={[styles.col3, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Mon.</Text>
-                        <Text style={[styles.col4, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Monto</Text>
+                      <View 
+                        style={[styles.container, { margin: 0 }]}>
+                        <Text style={[styles.col1, {margin: 0,}]}></Text>
+                        <Text style={[{margin: 0, color: grey[700], width: '86%', textAlign: 'left', paddingLeft: 15,}]}>Web {cont?.fideicomisos[0]?.web}</Text>
+                        
+                      </View>
 
-                      </View> 
-
-
-                    
-                  
-                  </View>      
-
+                    <View style={[{ width: '100%', flexDirection: 'row'}]} >
+                        <Text style={[styles.label, {margin: 0, width: '100%', textAlign: 'right'}]}>Periodo: {
+                            new Date(liq?.fecha).toLocaleDateString('es-AR', {
+                            year: 'numeric',
+                            month: 'short',
+                            timeZone: 'UTC',
+                          })}</Text>
                        
+                    </View >   
+
+                    <View 
+                        style={[styles.espacio5, { margin: 0,}]}>
+                        <Text style={[{width: '100%'}]}> </Text>
+                           
+                    </View>
 
                 </View>   
-
-
       
         );
   
-  export default detalle
+  export default header

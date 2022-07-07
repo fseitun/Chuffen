@@ -1,146 +1,154 @@
 import React from 'react';
 import {Text, View, StyleSheet} from '@react-pdf/renderer';
-import ItemCobro from './itemCobro';
-import ItemCuota from './itemCuota';
+import { grey, red } from '@mui/material/colors';
 
 
 const styles = StyleSheet.create({
 
+  titulo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 23,
+    fontSize: 8,
+    textAlign: 'center',
+    fontStyle: 'bold',
+    flexGrow: 1,
+},
+
+espacio5: {
+  flexDirection: 'row',
+  height: 5,
+  fontSize: 7,
+  textAlign: 'center',
+  flexGrow: 1,
+},
+
+
+  espacio10: {
+    flexDirection: 'row',
+    height: 10,
+    fontSize: 7,
+    textAlign: 'center',
+    flexGrow: 1,
+},
+
   container: {
       flexDirection: 'row',
-      borderBottomWidth: 1,
-      alignItems: 'center',
-      height: 21,
-      fontSize: 8,
+      height: 12,
+      fontSize: 7,
       textAlign: 'center',
-      fontStyle: 'bold',
       flexGrow: 1,
   },
 
 
   col1: {
     width: '14%',
-    borderRightWidth: 1,
-    textAlign: 'left',
+    textAlign: 'right',
     paddingLeft: 2,
   },
 
   col2: {
       width: '36%',
-      textAlign: 'left',
-      //borderRightColor: bcolor,
-      borderRightWidth: 1,
+      textAlign: 'right',
       paddingLeft: 2,
   },
-  col2bis: {
-    width: '16%',
-    textAlign: 'left',
-    //borderRightColor: bcolor,
-    borderRightWidth: 1,
-    paddingLeft: 2,
-  },
-
   col3: {
-    width: '10%',
-    //borderRightColor: '#bff0fd',
-    borderRightWidth: 1,
-    textAlign: 'left',
-    paddingLeft: 2,
-},
-  col4: {
     width: '24%',
     textAlign: 'right',
-    paddingRight: 2,
-  },
-
-  cob_col1: {
-    width: '18%',
-    borderRightWidth: 1,
-    textAlign: 'left',
     paddingLeft: 2,
   },
 
-  cob_col2: {
-      width: '42%',
-      textAlign: 'left',
-      //borderRightColor: bcolor,
-      borderRightWidth: 1,
-      paddingLeft: 2,
-  },
-
-  cob_col3: {
-    width: '14%',
-    //borderRightColor: '#bff0fd',
-    borderRightWidth: 1,
-    textAlign: 'left',
+  col4: {
+    width: '5%',
+    textAlign: 'right',
     paddingLeft: 2,
 },
-  cob_col4: {
-    width: '26%',
+  col5: {
+    width: '8%',
     textAlign: 'right',
     paddingRight: 2,
   },
-  /*
-  rowf: {
-    flexDirection: 'row',
-    borderBottomColor: '#ffffff',
-    borderBottomWidth: 1,
-    alignItems: 'center',
-    height: 21,
-    fontSize: 8,
-    fontStyle: 'bold',
-  },
-  descriptionf: {
-    width: '15%',
+  col6: {
+    width: '5%',
     textAlign: 'right',
-    //borderRightColor: '#bff0fd',
-    borderRightWidth: 1,
-    paddingRight: 8,
+    paddingRight: 2,
   },
-  totalf: {
-    width: '35%',
+  col7: {
+    width: '8%',
     textAlign: 'right',
-    paddingRight: 8,
-  },*/
+    paddingRight: 2,
+  },
+
+
 });
 
-
-
-  const estado = ({conceptosPago, conceptosCuota, cont, liq}) => (
-
- 
+  const estado = ({conceptosPago, conceptosCuota, cont, liq}) => ( 
                 
                 <View style={{ flexDirection: 'row',flexWrap: 'wrap', margin: 0, borderWidth: 0, borderColor: '#000000', }} >
                 
                   <View style={{  flexDirection: 'row',flexWrap: 'wrap', width: '100%', marginLeft: 0, marginRight: 0, textAlign: 'center', borderWidth: 0, borderColor: '#000000', }} >
                       
                       <View 
-                        style={[styles.container, { margin: 0, borderBottomColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff'}]}>
-                        <Text style={[{width: '100%',textAlign: 'left',paddingLeft: 2}]}>ESTADO DE CUENTA</Text>
+                        style={[styles.titulo, { margin: 0, borderTopWidth: 1, borderTopColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff'}]}>
+                        <Text style={[{fontFamily: 'Helvetica-Bold', width: '100%',textAlign: 'left',paddingLeft: 2}]}>ESTADO DE CUENTA</Text>
                            
                       </View> 
 
-                      <View /* Encabezado*/   
-                        style={[styles.container, { margin: 0, borderBottomColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>
-                        <Text style={[styles.col1, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Fecha</Text>
-                        <Text style={[styles.col2, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Concepto</Text>
-                        <Text style={[styles.col2bis, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>V. Unitario</Text>
-                        <Text style={[styles.col3, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Mon.</Text>
-                        <Text style={[styles.col4, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Monto</Text>
+                      <View 
+                        style={[styles.container, { margin: 0 }]}>
+                        <Text style={[styles.col1, {margin: 0,}]}></Text>
+                        <Text style={[styles.col2, {margin: 0,}]}></Text>
+                        <Text style={[styles.col3, {margin: 0,}]}>Cuota mes en curso:</Text>
+                        <Text style={[styles.col4, {margin: 0,}]}>ARS&nbsp;</Text>
+                        <Text style={[styles.col5, {margin: 0}]}>{Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(liq?.data?.ultimaCuotaARS))}</Text>
+                        <Text style={[styles.col6, {margin: 0,}]}></Text>
+                        <Text style={[styles.col7, {margin: 0,}]}></Text>
 
                       </View> 
 
+                      <View 
+                        style={[styles.container, { margin: 0 }]}>
+                        <Text style={[styles.col1, {margin: 0,}]}></Text>
+                        <Text style={[styles.col2, {margin: 0,}]}></Text>
+                        <Text style={[styles.col3, {margin: 0, color: grey[700]}]}>Saldo al mes Anterior:</Text>
+                        <Text style={[styles.col4, {margin: 0, color: grey[700] }]}>ARS&nbsp;</Text>
+                        <Text style={[styles.col5, {margin: 0, color: grey[700]}]}>0.00</Text>
+                        <Text style={[styles.col6, {margin: 0, color: grey[700]}]}></Text>
+                        <Text style={[styles.col7, {margin: 0, color: grey[700]}]}></Text>
 
-                    
+                      </View> 
+
+                      <View 
+                        style={[styles.container, { margin: 0 }]}>
+                        <Text style={[styles.col1, {margin: 0,}]}></Text>
+                        <Text style={[styles.col2, {margin: 0,}]}></Text>
+                        <Text style={[styles.col3, {margin: 0, color: grey[700]}]}>Punitorios:</Text>
+                        <Text style={[styles.col4, {margin: 0, color: grey[700]}]}>ARS&nbsp;</Text>
+                        <Text style={[styles.col5, {margin: 0, color: grey[700]}]}>0.00</Text>
+                        <Text style={[styles.col6, {margin: 0, color: grey[700]}]}></Text>
+                        <Text style={[styles.col7, {margin: 0, color: grey[700]}]}></Text>
+                      </View> 
+
+                      <View 
+                        style={[styles.container, { margin: 0 }]}>
+                        <Text style={[styles.col1, {margin: 0,}]}></Text>
+                        <Text style={[styles.col2, {margin: 0,}]}></Text>
+                        <Text style={[styles.col3, {margin: 0, color: red[700]}]}>Saldo en cuenta corriente:</Text>
+                        <Text style={[styles.col4, {margin: 0, color: red[700]}]}>ARS&nbsp;</Text>
+                        <Text style={[styles.col5, {margin: 0, color: red[700]}]}>{Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(parseFloat(liq?.data?.cuotasTotARS)+parseFloat(liq?.data?.estimadoTot)+parseFloat(liq?.data?.deltaTot)-parseFloat(liq?.data?.cobrosTotARS)))}</Text>
+                        <Text style={[styles.col6, {margin: 0, color: red[700]}]}></Text>
+                        <Text style={[styles.col7, {margin: 0, color: red[700]}]}></Text>
+                      </View>
+
+                      <View 
+                        style={[styles.espacio5, { margin: 0, borderBottomWidth: 1, borderBottomColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff'}]}>
+                        <Text style={[{width: '100%'}]}> </Text>
+                           
+                      </View> 
                   
-                  </View>      
-
-                       
+                  </View>    
 
                 </View>   
-
-
-      
         );
   
   export default estado

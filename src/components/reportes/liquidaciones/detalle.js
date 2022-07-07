@@ -6,6 +6,16 @@ import ItemCuota from './itemCuota';
 
 const styles = StyleSheet.create({
 
+  titulo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 21,
+    fontSize: 8,
+    textAlign: 'center',
+    fontStyle: 'bold',
+    flexGrow: 1,
+},
+
   container: {
       flexDirection: 'row',
       borderBottomWidth: 1,
@@ -28,21 +38,18 @@ const styles = StyleSheet.create({
   col2: {
       width: '36%',
       textAlign: 'left',
-      //borderRightColor: bcolor,
       borderRightWidth: 1,
       paddingLeft: 2,
   },
   col2bis: {
     width: '16%',
     textAlign: 'left',
-    //borderRightColor: bcolor,
     borderRightWidth: 1,
     paddingLeft: 2,
   },
 
   col3: {
     width: '10%',
-    //borderRightColor: '#bff0fd',
     borderRightWidth: 1,
     textAlign: 'left',
     paddingLeft: 2,
@@ -63,14 +70,12 @@ const styles = StyleSheet.create({
   cob_col2: {
       width: '42%',
       textAlign: 'left',
-      //borderRightColor: bcolor,
       borderRightWidth: 1,
       paddingLeft: 2,
   },
 
   cob_col3: {
     width: '14%',
-    //borderRightColor: '#bff0fd',
     borderRightWidth: 1,
     textAlign: 'left',
     paddingLeft: 2,
@@ -80,28 +85,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     paddingRight: 2,
   },
-  /*
-  rowf: {
-    flexDirection: 'row',
-    borderBottomColor: '#ffffff',
-    borderBottomWidth: 1,
-    alignItems: 'center',
-    height: 21,
-    fontSize: 8,
-    fontStyle: 'bold',
-  },
-  descriptionf: {
-    width: '15%',
-    textAlign: 'right',
-    //borderRightColor: '#bff0fd',
-    borderRightWidth: 1,
-    paddingRight: 8,
-  },
-  totalf: {
-    width: '35%',
-    textAlign: 'right',
-    paddingRight: 8,
-  },*/
+
 });
 
 
@@ -115,8 +99,8 @@ const styles = StyleSheet.create({
                   <View style={{  flexDirection: 'row',flexWrap: 'wrap', width: '53%', marginLeft: 0, marginRight: 35, textAlign: 'center', borderWidth: 0 }} >
                       
                       <View 
-                        style={[styles.container, { margin: 0, borderBottomColor: '#ffffff'}]}>
-                        <Text style={[{width: '100%',textAlign: 'left',paddingLeft: 2}]}>DETALLE DE LA CUOTA</Text>
+                        style={[styles.titulo, { margin: 0}]}>
+                        <Text style={[{fontFamily: 'Helvetica-Bold', width: '100%',textAlign: 'left',paddingLeft: 2}]}>DETALLE DE LA CUOTA</Text>
                            
                       </View> 
 
@@ -138,8 +122,8 @@ const styles = StyleSheet.create({
                   <View style={{ flexDirection: 'row',flexWrap: 'wrap', width: '37%', marginLeft: 12, marginRight: 0, textAlign: 'center', borderWidth: 0, borderColor: '#000000', }} >
 
                       <View 
-                        style={[styles.container, { margin: 0, borderBottomColor: '#ffffff'}]}>
-                        <Text style={[{width: '100%',textAlign: 'left',paddingLeft: 2}]}>HISTORIAL DE PAGOS</Text>
+                        style={[styles.titulo, { margin: 0}]}>
+                        <Text style={[{fontFamily: 'Helvetica-Bold', width: '100%',textAlign: 'left',paddingLeft: 2}]}>HISTORIAL DE PAGOS</Text>
                            
                       </View> 
                       <View /* Encabezado*/   
@@ -151,12 +135,9 @@ const styles = StyleSheet.create({
 
                       </View> 
                       <ItemCobro  conceptosPago={conceptosPago} fide={cont?.fideicomisos[0]} cobros={liq?.data?.cobros}  />  
-                  </View>                
+                  </View>              
 
-                </View>   
-
-
-      
+                </View>         
         );
   
   export default detalle

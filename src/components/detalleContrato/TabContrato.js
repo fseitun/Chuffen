@@ -17,6 +17,10 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
     setMoneda(newValue);
   };
 
+  let qCuotasARS = dataContrato?.cuotas.filter(p => p.moneda==='ARS' && p.concepto > 0).length;
+  let qCuotasUSD = dataContrato?.cuotas.filter(p => p.moneda==='USD' && p.concepto > 0).length;
+
+
   let verAgregar = (loggedUser?.['rol.contrato'] ==='vista'); // si es vista, no ve boton agregar 
 
   if (isLoading) {
@@ -63,7 +67,10 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
                     idSociety={idSociety}
                     loggedUser={loggedUser}
                     contrato={dataContrato?.cont}
+                    productos={dataContrato?.item}
                     cesion={dataContrato?.cesiones[0]}
+                    qCuotasARS={qCuotasARS}
+                    qCuotasUSD={qCuotasUSD}
                 />
               
               </Box>
