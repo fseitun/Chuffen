@@ -7,7 +7,6 @@ const styles = StyleSheet.create({
 
   row: {
     flexDirection: 'row',
-    // borderBottomColor: '#bff0fd',
     borderBottomWidth: 1,
     alignItems: 'center',
     height: 18,

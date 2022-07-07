@@ -104,6 +104,7 @@ export function FormCobro({ mode, contrato, conceptosPago, formaPagosFidu, contr
         
         let ptoVenta = "00000" + (Cobro?.reciboNum + "").slice(0, 1)
 
+        // console.log(222222, contrato);
         data = {
           'cobro_numero': ptoVenta.slice(-5) + "-" + (Cobro?.reciboNum + "").slice(1, 9),// ptoVenta.slice(-5) + "-" + numTXT.slice(1, 9),
           'fide_nombre': mode==='contrato'? contrato?.cont?.fideicomisos[0]?.empresas[0]?.razonSocial: fideInForm?.empresas[0]?.razonSocial,
@@ -120,6 +121,7 @@ export function FormCobro({ mode, contrato, conceptosPago, formaPagosFidu, contr
          }
         
         if(idSociety.id > 0) {
+          
           createPDF_2_of_3(Cobro)
           
         }       
@@ -144,7 +146,7 @@ export function FormCobro({ mode, contrato, conceptosPago, formaPagosFidu, contr
       formData.append('file', blobPdf);      
       
       formData.append('path', './' + folder); // guarda archivo en carpeta
-      formData.append('fileName', nombreRecibo(fideInForm?.nombre, contInForm?.nombre, Cobro?.reciboNum));     
+      formData.append('fileName', nombreRecibo(mode==='contrato'? contrato?.cont?.fideicomisos[0]?.empresas[0]?.razonSocial: fideInForm?.empresas[0]?.razonSocial, mode==='contrato'? contrato?.cont?.nombre:contInForm?.nombre, Cobro?.reciboNum));     
 
       savePDF_3_of_3({formData});
     }
@@ -194,7 +196,7 @@ export function FormCobro({ mode, contrato, conceptosPago, formaPagosFidu, contr
             monto: values?.monto,
             formaPago: formaPagoFidu.id,
             fideicomisoId: fideInForm.id,
-            reciboUrl: apiServerUrl + folder + nombreRecibo(fideInForm?.nombre, contInForm?.nombre, "*****"), // los 5 asteriscos los edita en la API por el nuevo ID
+            reciboUrl: apiServerUrl + folder + nombreRecibo(mode==='contrato'? contrato?.cont?.fideicomisos[0]?.empresas[0]?.razonSocial: fideInForm?.empresas[0]?.razonSocial, mode==='contrato'? contrato?.cont?.nombre:contInForm?.nombre, "*****"), // los 5 asteriscos los edita en la API por el nuevo ID
             contratoId: contInForm.id,
             moneda: moneda.id,
             creador: loggedUser.id
