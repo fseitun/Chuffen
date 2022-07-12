@@ -5,7 +5,7 @@ import { FormCobro } from 'src/components/cobro/FormCobro';
 import { GrillaCobro } from 'src/components/cobro/GrillaCobro';
 import { useQuery } from 'react-query';
 import { getMethod } from 'src/utils/api';
-import { ConceptosPagoContext, FormaPagosFiduContext, FondosContext, EstadosPagoContext} from 'src/App';
+import { ConceptosPagoContext, FormaPagosFiduContext, EstadosPagoContext} from 'src/App';
 import { FiltroCobro } from 'src/components/cobro/FiltroCobro';
 
 export function PageCobro({ mode, idSociety, loggedUser, contrato}) {
@@ -30,13 +30,18 @@ export function PageCobro({ mode, idSociety, loggedUser, contrato}) {
   const { data: fideicomisos } = useQuery(
     ['fideicomisos'],
     () => getMethod(`fideicomiso/listarEmpresa/${idSociety.id}`));
+
+  const { data: cuentas_destino} = useQuery(
+    ['cuentabanco'], 
+    () => getMethod(`cuentabanco/listar/${idSociety.id}/*`));
   //////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////
+  // var cuentas_destino = [{}];
 
   var conceptosPago = useContext(ConceptosPagoContext);
   // var formaCobros = useContext(FormaCobrosContext); 
   var formaPagosFidu =  useContext(FormaPagosFiduContext); 
-  var fondos_s =  useContext(FondosContext); 
+  // var fondos_s =  useContext(FondosContext); 
   var estados =  useContext(EstadosPagoContext);
 
 
@@ -64,8 +69,7 @@ export function PageCobro({ mode, idSociety, loggedUser, contrato}) {
                 setFiltCont={setFiltCont} setFiltFide={setFiltFide}  contratos={contratos}
               />
             </Box>
-          </Hidden>
-          
+          </Hidden>          
      
           <Box sx={{ pt: 3 }}>
               <GrillaCobro idSociety={idSociety} loggedUser={loggedUser}   
@@ -74,7 +78,7 @@ export function PageCobro({ mode, idSociety, loggedUser, contrato}) {
               contratoId={contrato?.cont?.id}        
               dataCobro={dataCobro} 
               conceptosPago={conceptosPago} isLoading={isLoading}
-              fondos_s={fondos_s} estados={estados} error={error} refetch={refetch}
+              cuentas_destino={cuentas_destino} estados={estados} error={error} refetch={refetch}
               filtCont={filtCont} filtFide={filtFide} 
             />
          

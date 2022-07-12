@@ -5,7 +5,6 @@ import { PageCobro } from 'src/components/cobro/PageCobro';
 export function Cobros({ idSociety, loggedUser, contrato}) {
 
   
-
   return (
     <>
       <Helmet>

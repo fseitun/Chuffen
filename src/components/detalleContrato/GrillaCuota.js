@@ -16,7 +16,7 @@ const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [
     field: 'fecha',
     headerName: 'Fecha',
     width: 150,
-    editable: false,
+    editable: acceso,
     type: 'date',
     headerAlign: 'center',
     align: 'center',

@@ -13,7 +13,7 @@ import { GrillaCesionItem } from 'src/components/detalleContrato/GrillaCesionIte
 import { DatePicker, LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
-export function RepeaterCesion({idSociety, loggedUser, cesion, fila, personas, empresas, isLoading, error, refetch}) {
+export function RepeaterCesion({idSociety, loggedUser, cesion, ultimo, fila, personas, empresas, isLoading, error, refetch}) {
 
   var acceso = true;
   if(loggedUser?.['rol.contrato'] ==='vista'){acceso =false}
@@ -108,7 +108,7 @@ export function RepeaterCesion({idSociety, loggedUser, cesion, fila, personas, e
               
               <Grid item md={1}> 
                     <Typography align="left" color="textPrimary" variant="h5">
-                      Cesión {fila}:
+                      {fila===0? "Adhesión Original":"Cesión " + fila}:
                     </Typography>
               </Grid>               
               

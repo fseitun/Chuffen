@@ -161,7 +161,8 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
                   return <RepeaterCesion     
                             key={'rep_'+ index}             
                             idSociety={idSociety}
-                            fila={dataContrato?.cesiones?.length - index}
+                            // ultimo={dataContrato?.cesiones?.length}
+                            fila={dataContrato?.cesiones?.length - index - 1}
                             fideicomisoId={dataContrato?.cont?.fideicomisoId}
                             cesion={item}
                             isLoading={isLoading}

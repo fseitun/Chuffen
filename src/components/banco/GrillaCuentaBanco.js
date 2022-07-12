@@ -4,11 +4,12 @@ import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
+import { Autocomplete, TextField } from '@mui/material';
 import { Typography } from '@mui/material';
 import { usePrompt } from 'src/utils/usePrompt';
 import { useParams } from 'react-router-dom';
 
-const columns = (setIsPromptOpen, setRowIdToDelete) => [
+const columns = (fideicomisos, setIsPromptOpen, setRowIdToDelete) => [
   
   {
     field: 'cuentaBanco',
@@ -25,6 +26,14 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
     editable: true,
     headerAlign: 'center',
     align: 'center',
+  },
+  {
+    field: 'fideicomisoId',
+    headerName: 'Fideicomiso',
+    width: 150,
+    editable: true,
+    renderEditCell: props => <ComboBox fideicomisos={fideicomisos} props={props} />,
+    headerAlign: 'center',
   },
 
   {
@@ -44,7 +53,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   },
 ];
 
-export function GrillaCuentaBanco({ idSociety }) {
+export function GrillaCuentaBanco({ idSociety, fideicomisos }) {
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
   const { idBanco } = useParams();
@@ -132,12 +141,13 @@ export function GrillaCuentaBanco({ idSociety }) {
           rows={cuentaBancoInformation.map(cuentabanco => ({
             id: cuentabanco.id,
             cuentaBanco: cuentabanco.cuentaBanco,
+            fideicomisoId: fideicomisos?.find(f => f.id === cuentabanco.fideicomisoId)?.nombre,
             descripcionLarga: cuentabanco.descripcionLarga,
             deleteId: cuentabanco.id,
           }))}
           onCellEditCommit={modifyData}
       
-          columns={columns(setIsPromptOpen, setRowIdToDelete)}
+          columns={columns(fideicomisos, setIsPromptOpen, setRowIdToDelete)}
           
           onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
        
@@ -174,4 +184,51 @@ function CustomToolbar() {
       <GridToolbarExport csvOptions={{ fields: ['cuentaBanco', 'descripcionLarga'] }} />
     </GridToolbarContainer>
   );
+}
+
+
+function ComboBox({ fideicomisos, props }) {
+  const { id, api, field } = props;
+  
+  fideicomisos = [
+    ...fideicomisos,
+    /*{
+      nombre: 'AAA',
+    },*/
+  ];
+  const [_selected, setSelected] = useState({
+    nombre: '...', id: id
+  });
+
+  if(props.row.confirmada){
+    return (
+      <TextField defaultValue={props.row.fideicomiso.nombre }  
+      InputProps={{
+       readOnly: true,
+     }}
+    />)
+  }else{
+
+  return (
+    <Autocomplete
+      value={_selected}
+      onChange={async (event, newValue) => {        
+        setSelected(newValue); 
+   
+        if(newValue?.id){
+          
+          api.setEditCellValue({ id, field, value: newValue.id }, event);
+          await props.api.commitCellChange({ id, field });
+          api.setCellMode(id, field, 'view');
+        }
+      }}
+      id="combo-box-demo"
+      options={fideicomisos}      
+      isOptionEqualToValue={(fi, val) => fi.nombre === val.nombre}
+      getOptionLabel={option => option.nombre}
+      sx={{ width: 300 }}
+      renderInput={params => <TextField {...params} label="Fideicomiso" />}
+    />
+  );
+    }
 }

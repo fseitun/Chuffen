@@ -10,7 +10,7 @@ import { mostrarCUIT } from 'src/utils/utils';
 import { useContext } from 'react';
 import { LetrasContext} from 'src/App';
 
-const columns = (puedeEditar, letras, setIsPromptOpen, setRowIdToDelete) => [
+const columns = (puedeEditar, esManager, letras, setIsPromptOpen, setRowIdToDelete) => [
 
 
   {
@@ -75,7 +75,7 @@ const columns = (puedeEditar, letras, setIsPromptOpen, setRowIdToDelete) => [
     field: 'deleteIcon',
     headerName: ' ',
     width: 50,
-    hide: !puedeEditar,
+    hide: !esManager,
     headerAlign: 'center',
     align: 'center',
     renderCell: ({ row: { deleteId } }) => (
@@ -96,11 +96,13 @@ export function GrillaPersona({loggedUser, idSociety, tipo }) {
   const [rowIdToDelete, setRowIdToDelete] = useState();
 
   var puedeEditar = true;
+  var esManager = false;
   const acceso = loggedUser?.['rol.fidu'];
 
   var letras = useContext(LetrasContext);
 
   if( acceso ==='vista'){puedeEditar =false}
+  if( acceso ==='total'){esManager =true}
 
   const {
     data: personaInformation,
@@ -191,7 +193,7 @@ export function GrillaPersona({loggedUser, idSociety, tipo }) {
             deleteId: persona?.id,
           }))}
           onCellEditCommit={modifyData}
-          columns={columns(puedeEditar, letras, setIsPromptOpen, setRowIdToDelete)}
+          columns={columns(puedeEditar, esManager, letras, setIsPromptOpen, setRowIdToDelete)}
           
           sortModel={sortModel}
           onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}

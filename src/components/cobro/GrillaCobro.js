@@ -12,7 +12,7 @@ import { mostrarFecha } from 'src/utils/utils';
 import { saveAs } from "file-saver";
 
 
-const columns = (acceso, mode, saveFile, fondos_s, estados, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [ 
+const columns = (acceso, mode, saveFile, cuentas_destino, estados, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [ 
   
   {
     field: 'id',
@@ -20,8 +20,7 @@ const columns = (acceso, mode, saveFile, fondos_s, estados, conceptosCuota, setI
     width: 55,
     editable: false,
     headerAlign: 'center',
-  },  
-
+  },
   {
     field: 'fecha',
     headerName: 'Fecha',
@@ -56,7 +55,6 @@ const columns = (acceso, mode, saveFile, fondos_s, estados, conceptosCuota, setI
     editable: false,
     headerAlign: 'center',
   },
-
   {
     field: 'reciboNum',
     headerName: 'Recibo',
@@ -64,19 +62,16 @@ const columns = (acceso, mode, saveFile, fondos_s, estados, conceptosCuota, setI
     editable: acceso,
     headerAlign: 'center',
   },
-  
-
   {
-    field: 'descargar',
+    field: 'reciboUrl',
     headerName: 'Link',
     width: 160,
     editable: acceso,
     headerAlign: 'center',
   },
-
   {
-    field: 'reciboUrl',
-    headerName: 'Link',
+    field: 'descargar',
+    headerName: '',
     width: 70,
     editable: false,   
     headerAlign: 'center',
@@ -85,7 +80,6 @@ const columns = (acceso, mode, saveFile, fondos_s, estados, conceptosCuota, setI
                           <DownloadForOfflineIcon color="primary" />
                         </IconButton>,
   },
-
   {
     field: 'concepto',
     headerName: 'concepto',
@@ -106,7 +100,6 @@ const columns = (acceso, mode, saveFile, fondos_s, estados, conceptosCuota, setI
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
-
   {
     field: 'moneda',
     headerName: '',
@@ -115,12 +108,11 @@ const columns = (acceso, mode, saveFile, fondos_s, estados, conceptosCuota, setI
     false,
     headerAlign: 'center',
   },
-
   {
     field: 'cambio',
     preProcessEditCellProps: onlyNumbers,
-    headerName: 'Cambio',
-    width: 130,
+    headerName: 'Tipo de cambio',
+    width: 180,
     editable: acceso,
     headerAlign: 'center',
     align: 'right',
@@ -128,24 +120,22 @@ const columns = (acceso, mode, saveFile, fondos_s, estados, conceptosCuota, setI
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
-
   {
     field: 'formaPago',
-    headerName: 'formaPago',
-    width: 160,
+    headerName: 'Forma de pago',
+    width: 180,
     editable: false,
     headerAlign: 'center',
   },
-
   {
-    field: 'fondos',
-    headerName: 'Fondos',
-    width: 130,
+    field: 'formaCobro',
+    headerName: 'Cuenta destino',
+    width: 185,
     editable: acceso,
     headerAlign: 'left',
-    renderEditCell: props => <ComboBox listItems={fondos_s} label={"Fondos"} props={props} />,
+    renderEditCell: props => <ComboBoxCuenta cuentas_destino={cuentas_destino} label={"Cuenta destino"} props={props} />,
   },  
-
+  
   {
     field: 'archivadas',
     headerName: 'Estado',
@@ -153,8 +143,7 @@ const columns = (acceso, mode, saveFile, fondos_s, estados, conceptosCuota, setI
     editable: acceso,
     headerAlign: 'left',
     renderEditCell: props => <ComboBox listItems={estados} label={"Estado"} props={props} />,
-  },  
-
+  },
   {
     field: 'observaciones',
     headerName: 'Obs.',
@@ -162,10 +151,6 @@ const columns = (acceso, mode, saveFile, fondos_s, estados, conceptosCuota, setI
     editable: acceso,
     headerAlign: 'center',
   },
-
-
-
-
   {
     field: 'deleteIcon',
     headerName: '',
@@ -186,7 +171,7 @@ const columns = (acceso, mode, saveFile, fondos_s, estados, conceptosCuota, setI
 ];
 
 
-export function GrillaCobro({loggedUser, mode, contratoId, filtCont, formaPagosFidu, filtFide, dataCobro, fondos_s, estados, conceptosPago, isLoading, error, refetch}) {
+export function GrillaCobro({loggedUser, mode, contratoId, filtCont, formaPagosFidu, filtFide, dataCobro, cuentas_destino, estados, conceptosPago, isLoading, error, refetch}) {
   
   const idSociety = useContext(SocietyContext);
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
@@ -331,14 +316,14 @@ export function GrillaCobro({loggedUser, mode, contratoId, filtCont, formaPagosF
               contrato: item?.contrato?.nombre, 
               fiduciante: item?.contrato?.personas[0]? item?.contrato?.personas[0]?.nombre:'' + item?.contrato?.empresas[0]? item?.contrato?.empresas[0]?.razonSocial:'', 
               monto: item?.monto,
-              moneda: item?.moneda,              
+              moneda: item?.moneda,          
+              formaCobro: cuentas_destino?.find(f => f.id === item?.formaCobro)?.cuentaBanco,     
               formaPago: formaPagosFidu && item?.formaPago? formaPagosFidu?.find(i => i.id === item?.formaPago)?.descripcion:'',
               reciboNum: item?.reciboNum,
               reciboUrl: item?.reciboUrl,
               descargar: item?.reciboUrl,
               observaciones: item?.observaciones,
-              cambio: item?.cambio,
-              fondos: fondos_s?.find(i => i.id === item?.fondos)?.descripcion,    
+              cambio: item?.cambio,                 
               archivadas: estados?.find(i => i.id === item?.archivadas)?.descripcion,
               createdAt: item?.createdAt,
               deleteId: item?.id,
@@ -346,7 +331,7 @@ export function GrillaCobro({loggedUser, mode, contratoId, filtCont, formaPagosF
               }))}OPs
 
             onCellEditCommit={modifyData}
-            columns={columns(acceso,  mode, saveFile, fondos_s, estados, conceptosPago, setIsPromptOpen, setRowIdToDelete)}
+            columns={columns(acceso,  mode, saveFile, cuentas_destino, estados, conceptosPago, setIsPromptOpen, setRowIdToDelete)}
             
             sortModel={sortModel}
             onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
@@ -418,6 +403,43 @@ function ComboBox({ listItems, label, props }) {
       options={listItems}
       isOptionEqualToValue={(op, val) => op.descripcion === val.descripcion}
       getOptionLabel={option => option.descripcion}
+      sx={{ width: 300 }}
+      renderInput={params => <TextField {...params} label={label} />}
+    />
+  );
+}
+
+
+function ComboBoxCuenta({ cuentas_destino, label, props }) {
+  const { id, api, field } = props;
+
+  // console.log(33333, props?.row?.fideicomisoId);
+
+  cuentas_destino = [
+    ...cuentas_destino,
+    /*{
+      descripcion: '',
+    },*/
+  ];
+  const [selectedRet, setSelectedRol] = useState({
+    cuentaBanco: '', id: id,
+  });
+
+  return (
+    <Autocomplete
+      value={selectedRet}
+      onChange={async (event, newValue) => {        
+        setSelectedRol(newValue);    
+        if(newValue?.id){
+          api.setEditCellValue({ id, field, value: newValue.id }, event);
+          await props.api.commitCellChange({ id, field });
+          api.setCellMode(id, field, 'view');
+        }
+      }}
+      id="combo-box-demo"
+      options={cuentas_destino.filter(cuenta => cuenta?.fideicomisoId === parseInt(props?.row?.fideicomisoId))}
+      isOptionEqualToValue={(op, val) => op.cuentaBanco === val.cuentaBanco}
+      getOptionLabel={option => option.cuentaBanco}
       sx={{ width: 300 }}
       renderInput={params => <TextField {...params} label={label} />}
     />

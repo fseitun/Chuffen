@@ -709,7 +709,7 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                         value={cuentasbanco.find(cuenta => cuenta.id === (formOP?.OPpago.nro1 || 0))}
                         getOptionLabel={option => option.cuentaBanco}
                         isOptionEqualToValue={(option, value) => option.id === value.id}
-                        options={cuentasbanco.filter(cuenta => cuenta.bancoId === 0 || cuenta.bancoId === parseInt((formOP?.OPpago.banco1)))}
+                        options={cuentasbanco.filter(cuenta => cuenta.bancoId === 0 || (cuenta.bancoId === parseInt((formOP?.OPpago.banco1)) && cuenta.fideicomisoId === parseInt((formOP?.fideicomisoId))   ))}
                         
                         renderInput={params => <TextField {...params} label='Cuenta' />}
                         
@@ -824,7 +824,7 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                         value={cuentasbanco.find(cuenta => cuenta.id === parseInt(formOP?.OPpago.nro2 || 0))}
                         getOptionLabel={option => option.cuentaBanco}
                         isOptionEqualToValue={(option, value) => option?.id === value?.id}
-                        options={cuentasbanco.filter(cuenta => cuenta.bancoId === 0 || cuenta.bancoId === parseInt((formOP?.OPpago.banco2)))}
+                        options={cuentasbanco.filter(cuenta => cuenta.bancoId === 0 || (cuenta.bancoId === parseInt((formOP?.OPpago.banco2))  && cuenta.fideicomisoId === parseInt((formOP?.fideicomisoId)))   )}
                         
                         renderInput={params => <TextField {...params} label='Cuenta' />}
                         
@@ -939,7 +939,7 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                         value={cuentasbanco.find(cuenta => cuenta.id === parseInt(formOP?.OPpago.nro3 || 0))}
                         getOptionLabel={option => option.cuentaBanco}
                         isOptionEqualToValue={(option, value) => option?.id === value?.id}
-                        options={cuentasbanco.filter(cuenta => cuenta.bancoId === 0 || cuenta.bancoId === parseInt((formOP?.OPpago.banco3)))}
+                        options={cuentasbanco.filter(cuenta => cuenta.bancoId === 0 || (cuenta.bancoId === parseInt((formOP?.OPpago.banco3))  && cuenta.fideicomisoId === parseInt((formOP?.fideicomisoId)))   )}
                         
                         renderInput={params => <TextField {...params} label='Cuenta' />}
                         
@@ -1052,7 +1052,7 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                         value={cuentasbanco.find(cuenta => cuenta.id === parseInt(formOP?.OPpago.nro4 || 0))}
                         getOptionLabel={option => option.cuentaBanco}
                         isOptionEqualToValue={(option, value) => option?.id === value?.id}
-                        options={cuentasbanco.filter(cuenta => cuenta.bancoId === 0 || cuenta.bancoId === parseInt((formOP?.OPpago.banco4)))}
+                        options={cuentasbanco.filter(cuenta => cuenta.bancoId === 0 || (cuenta.bancoId === parseInt((formOP?.OPpago.banco4))  && cuenta.fideicomisoId === parseInt((formOP?.fideicomisoId)))   )}
                         
                         renderInput={params => <TextField {...params} label='Cuenta' />}
                         

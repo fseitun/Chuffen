@@ -88,9 +88,9 @@ export default function App() {
   const { data: estadosPago } = useQuery(['estadosPago', idSociety], () =>
     getMethod(`listas/listarEstadosPago/${idSociety.id}`)
   );
-  const { data: formaCobros } = useQuery(['formaCobros', idSociety], () =>
-    getMethod(`listas/listarFormaCobros/${idSociety.id}`)
-  );
+  //const { data: formaCobros } = useQuery(['formaCobros', idSociety], () =>
+  //  getMethod(`listas/listarFormaCobros/${idSociety.id}`)
+  //);
   const { data: formaPagos } = useQuery(['formaPagos', idSociety], () =>
     getMethod(`listas/listarFormaPagos/${idSociety.id}`)
   );
@@ -131,7 +131,7 @@ export default function App() {
     <SocietyContext.Provider value={idSociety}>
     <EstadosContext.Provider value={estados}>
     <EstadosPagoContext.Provider value={estadosPago}>    
-    <FormaCobrosContext.Provider value={formaCobros} >
+    
     <FormaPagosFiduContext.Provider value={formaPagosFidu} >
     <FormaPagosContext.Provider value={formaPagos} >
     <RetencionesContext.Provider value={retenciones}>
@@ -282,7 +282,7 @@ export default function App() {
     </RetencionesContext.Provider>
     </FormaPagosContext.Provider>
     </FormaPagosFiduContext.Provider>
-    </FormaCobrosContext.Provider>    
+  
     </EstadosPagoContext.Provider>
     </EstadosContext.Provider>
     </SocietyContext.Provider>
