@@ -10,7 +10,8 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import RepRecibo from "src/components/reportes/recibo/recibo";
 import { pdf } from "@react-pdf/renderer";
-import { mostrarCUIT } from 'src/utils/utils';
+import NumberFormat from 'react-number-format';
+import { mostrarCUIT, num_to_api } from 'src/utils/utils';
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
@@ -189,11 +190,11 @@ export function FormCobro({ mode, contrato, conceptosPago, formaPagosFidu, contr
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           
-          
+          console.log(22222, num_to_api(values?.monto), values?.monto)
           addCobro_1_of_3({         
             fecha: values?.fecha, 
             concepto: concepto.id,
-            monto: values?.monto,
+            monto: num_to_api(values?.monto),
             formaPago: formaPagoFidu.id,
             fideicomisoId: fideInForm.id,
             reciboUrl: apiServerUrl + folder + nombreRecibo(mode==='contrato'? contrato?.cont?.fideicomisos[0]?.empresas[0]?.razonSocial: fideInForm?.empresas[0]?.razonSocial, mode==='contrato'? contrato?.cont?.nombre:contInForm?.nombre, "*****"), // los 5 asteriscos los edita en la API por el nuevo ID
@@ -271,16 +272,30 @@ export function FormCobro({ mode, contrato, conceptosPago, formaPagosFidu, contr
                 options={(conceptosPago? conceptosPago:[])}
                 renderInput={params => <TextField {...params} label='Concepto' />}
               />
+          
 
-            <Field
-              as={TextField}
-              required
-              label="Monto"
-              size="small"
-              type="number"
-              style={{ width: '160px'}}
-              name="monto"
-            />     
+            <NumberFormat
+
+            label='Monto'
+            title="Monto, solo numeros."  
+            name='monto'
+            required
+            onChange={(event) => {
+              // console.log(333333, event.target?.value);
+              setFieldValue('monto', event.target?.value);
+            }}
+ 
+
+            customInput={TextField}
+            size={'small'}
+            inputProps={{maxLength:14}}
+            style={{ width: '160px'}}       
+                                        
+            thousandSeparator={"."}
+            decimalScale={2}
+            decimalSeparator={","}
+
+            />
 
             <Field
                 as={Autocomplete}

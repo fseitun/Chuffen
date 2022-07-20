@@ -64,6 +64,19 @@ const columns = (colVisibles, estados, retenciones, fondos_s, verColumnBlue, pue
     align: 'center',
     valueFormatter: ({ value }) => new Date(value).toLocaleDateString('es-AR', { timeZone: 'UTC' }),
   },
+
+  {
+    field: 'fechaCierre',
+    headerName: 'Fec. Cierre',
+    width: 120,
+    type: 'date',
+    editable: false,
+    hide: colVisibles?.find(i => i.c === 'fechaCierre').h,
+    headerAlign: 'center',
+    align: 'center',
+    valueFormatter: ({ value }) => new Date(value).toLocaleDateString('es-AR', { timeZone: 'UTC' }),
+  },
+
   {
     field: 'fideicomiso',
     headerName: 'Fideicomiso',
@@ -606,6 +619,7 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
     {c:'id',  h:false},
     {c:'blue',  h:false},
     {c:'createdAt',  h:false},
+    {c:'fechaCierre',  h:true},
     {c:'fideicomiso',  h:false},
     {c:'numero',  h:false},
     {c:'empresa',  h:false},
@@ -764,6 +778,7 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
             apr_obra: OP?.auth_obra? (OP.auth_obra[0]? (OP.auth_obra[0].usuarios? (OP.auth_obra[0].usuarios[0].user):''):''):'',
             apr_adm: OP?.auth_adm? (OP.auth_adm[0]? (OP.auth_adm[0].usuarios? (OP.auth_adm[0].usuarios[0].user):''):''):'',
             filtroRubroID: OP?.rubroId,
+            fechaCierre: OP?.fechaCierre,
             acceso: accesoOP,
             deleteId: OP?.id,
             aprobado_obra: OP?.auth_obra? (OP.auth_obra[0]? (OP.auth_obra[0].usuarios? (OP.auth_obra[0].usuarios[0].user):''):''):'',
@@ -844,12 +859,8 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
               >
                 Acción realizada!
               </Alert>
-          </Collapse>  
-
-
-        </Box>
-
-        
+          </Collapse>
+        </Box>       
 
       </div>
     );
@@ -936,7 +947,7 @@ function CustomToolbar() {
       <GridToolbarColumnsButton />subrubroId
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
-      <GridToolbarExport csvOptions={{ fields: ['id', 'createdAt', 'fideicomiso', 'numero','empresa',
+      <GridToolbarExport csvOptions={{ fields: ['id', 'createdAt', 'fechaCierre', 'fideicomiso', 'numero','empresa',
       'monto','moneda','RET_SUSS','RET_GAN','RET_IVA','fondos','estadoRET', 'facturas', 'estadoOP', 
       'apr_obra', 'apr_adm','rubroId','fpagoModo1','fpagoMonto1','fpagoModo2','fpagoMonto2','fpagoModo3',
       'fpagoMonto3','fpagoModo4','fpagoMonto4','descripcion'] }} />

@@ -54,11 +54,17 @@ export const sideBarOptions = [
     acceso: 'contrato',
   },
   {
+    path: 'liquidacion',
+    icon: DashboardCustomizeOutlinedIcon,
+    title: 'Liquidaciones',
+    acceso: 'liquidacion',
+  },
+  /*{
     path: 'cuotas',
     icon: DashboardCustomizeOutlinedIcon,
     title: 'Cuotas',
     acceso: 'cuotas',
-  },
+  },*/
   {
     path: 'cobros',
     icon: LocalAtmIcon,

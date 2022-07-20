@@ -3,14 +3,15 @@ import { useState } from 'react';
 import { useQueryClient, useMutation } from 'react-query';
 import esLocale from 'date-fns/locale/es';
 import { Formik, Form } from 'formik';
-import { Typography, Grid, TextField, Box, Button } from '@mui/material';
+import { Typography, Grid, TextField, Box, Button, Tooltip, IconButton } from '@mui/material';
 import { usePrompt } from 'src/utils/usePrompt';
 import { postMethod, deleteMethod} from 'src/utils/api';
-import { date_to_YYYYMMDD, DB_to_date } from 'src/utils/utils'; 
+import { date_to_YYYYMMDD, DB_to_date, saveFile } from 'src/utils/utils'; 
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { FormCesionItem } from 'src/components/detalleContrato/FormCesionItem';
 import { GrillaCesionItem } from 'src/components/detalleContrato/GrillaCesionItem';
 import { DatePicker, LocalizationProvider } from '@mui/lab';
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
 export function RepeaterCesion({idSociety, loggedUser, cesion, ultimo, fila, personas, empresas, isLoading, error, refetch}) {
@@ -106,9 +107,9 @@ export function RepeaterCesion({idSociety, loggedUser, cesion, ultimo, fila, per
             <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
             <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} > 
               
-              <Grid item md={1}> 
-                    <Typography align="left" color="textPrimary" variant="h5">
-                      {fila===0? "Adhesión Original":"Cesión " + fila}:
+              <Grid item md={2}> 
+                    <Typography align="right" color="textPrimary" variant="h5">
+                      {fila===0? "Adhesión Original":"Cesión " + fila}:&nbsp;&nbsp;
                     </Typography>
               </Grid>               
               
@@ -130,12 +131,12 @@ export function RepeaterCesion({idSociety, loggedUser, cesion, ultimo, fila, per
 
               </Grid>   
               <Grid item md={1}> 
-                    <Typography align="left" color="textPrimary" variant="h5">
+                    <Typography align="right" color="textPrimary" variant="h5">
                       Fecha:
                     </Typography>
-              </Grid>               
+              </Grid>    
               
-              <Grid item md={4}>
+              <Grid item md={6}>
                     <LocalizationProvider dateAdapter={AdapterDateFns} locale={localeMap[locale]}>
                       <DatePicker
                         mask={maskMap[locale]}
@@ -155,7 +156,42 @@ export function RepeaterCesion({idSociety, loggedUser, cesion, ultimo, fila, per
                           }}
                         />
                     
+              </Grid> 
+
+              <Grid item md={2}> 
+                    <Typography align="right" color="textPrimary" variant="h5">
+                      Link:&nbsp;&nbsp;
+                    </Typography>
+              </Grid>              
+                
+
+              <Grid item md={3} >
+                     <TextField  
+                      size={'small'} 
+                      sx={{ width: '20ch' }} 
+                      label="Link" 
+                      disabled={!acceso}
+                      style={{ width: '250px', display: 'inline-flex' }}
+                      key={'link' + cesion?.id} 
+                      defaultValue={cesion?.link}  
+                      name="link" 
+                      onChange={event => setField('link')}               
+                      onBlur={event => save(event, field, cesion?.id, false, false)}  
+            
+                    /> 
               </Grid>   
+
+              <Grid item md={7}> 
+                    <Typography align="left" color="textPrimary" variant="h5">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <Tooltip title="Descargar Contrato">
+                        <IconButton color="inherit" onClick={() => {saveFile(cesion?.link)}} >
+                          <DownloadForOfflineIcon color="primary" />
+                        </IconButton>
+                      </Tooltip>
+                
+                    </Typography>
+              </Grid> 
               
               <Grid item md={12} >
                     &nbsp;
@@ -169,13 +205,13 @@ export function RepeaterCesion({idSociety, loggedUser, cesion, ultimo, fila, per
 
       <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} > 
 
-        <Grid item md={1}>
+        <Grid item md={2}>
           &nbsp;
         </Grid>        
 
-        <Box component="span" width={'60%'} sx={{ p: 2, borderRadius: 2, border: 2, borderColor: 'primary.main' }}>      
+        <Box component="span" width={'67%'} sx={{ p: 2, borderRadius: 2, border: 2, borderColor: 'primary.main' }}>      
             
-            <Grid item md={11}>
+            <Grid item md={10}>
 
                 <Typography align="right" >
                   <Button align="center" size='small' onClick={() => {setVerFidu(!verFidu);}} >

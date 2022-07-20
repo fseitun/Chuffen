@@ -34,6 +34,7 @@ import { Fideicomiso } from 'src/pages/Fideicomiso';
 import { DetalleFideicomiso } from 'src/pages/DetalleFideicomiso';
 
 // *** Contrato *********************************
+import { Liquidacion } from 'src/pages/Liquidacion';
 import { Contrato } from 'src/pages/Contrato';
 import { Cobros } from 'src/pages/Cobros';
 import { Cuotas } from 'src/pages/Cuotas';
@@ -176,13 +177,6 @@ export default function App() {
                   element={<SubRubro idSociety={idSociety} loggedUser={loggedUser} />}
                 />
               </Route>
-
-              
-              
-              
-              
-              
-              
               
               <Route path="contrato">
                 <Route path="" element={<Contrato idSociety={idSociety} loggedUser={loggedUser} />} />
@@ -191,6 +185,7 @@ export default function App() {
                   element={<DetalleContrato idSociety={idSociety} loggedUser={loggedUser} />}
                 />
               </Route>
+              <Route path="liquidacion" element={<Liquidacion idSociety={idSociety}  loggedUser={loggedUser}  />} />
               <Route path="cobros" element={<Cobros idSociety={idSociety}  loggedUser={loggedUser}  />} />
               <Route path="cuotas" element={<Cuotas idSociety={idSociety}  loggedUser={loggedUser}  />} />
               <Route path="categoria" element={<Categoria idSociety={idSociety}  loggedUser={loggedUser}  />} />

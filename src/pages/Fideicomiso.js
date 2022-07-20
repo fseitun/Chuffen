@@ -4,6 +4,8 @@ import { ManipularFideicomiso } from 'src/components/fideicomiso/ManipularFideic
 import { GrillaFideicomiso } from 'src/components/fideicomiso/GrillaFideicomiso';
 
 export function Fideicomiso({ idSociety }) {
+
+
   return (
     <>
       <Helmet>

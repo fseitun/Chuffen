@@ -2,12 +2,11 @@ import { useState } from 'react';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import { Button, Tooltip, IconButton, RadioGroup, Radio, FormControlLabel, TextField, Typography, Grid, Autocomplete, Hidden, Switch} from '@mui/material';
-// import {CurrencyTextField} from '@unicef/material-ui-currency-textfield'
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { postMethod, getMethod} from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
-import { isValidDate, yearMonthDayString } from 'src/utils/utils'; 
+import { isValidDate, yearMonthDayString, date_to_YYYYMMDD } from 'src/utils/utils'; 
 import { NavLink as RouterLink } from 'react-router-dom';
 import { useContext } from 'react';
 import { EstadosContext, RetencionesContext, FormaPagosContext, FondosContext} from 'src/App';
@@ -166,9 +165,7 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           updateOP(values);
-          // resetForm();
           setSubmitting(false);
-          // refetch();
         }}
       >
         {({ isSubmitting, setFieldValue }) => (
@@ -179,7 +176,7 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                   <Grid item md={12}>                  
                     <Grid item md={12}>                  
                       <Typography align="left" color="textPrimary" variant="h4">
-                      Aprobación Técnica 
+                      Aprobación Técnica
                       </Typography>
                     
 
@@ -1348,8 +1345,10 @@ function confirmarOP(event, setIsConfirmOP, typeOfData, idSociety, OPId, refetch
   event.preventDefault();
 
   setIsConfirmOP(valor);
+  let d = new Date();
   let newData = {
         id: OPId,
+        fechaCierre: valor===1? date_to_YYYYMMDD(d) + " 03:00": null,// cierro la OP
         [typeOfData]: valor,
       };
   if(flagPago===1){

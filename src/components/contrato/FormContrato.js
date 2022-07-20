@@ -166,6 +166,7 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
               empresaId: tipoFidu==="empresa"? fiduInForm?.id:null,
               CACbase: null, // values.CACbase,
               nombre: iniNombre,
+              link: values.link,
               anticipo: values.anticipo,
               qntCuotas: cuotas,
               montoCuota: values.montoCuota,
@@ -212,6 +213,18 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
                         options={(fideicomisos? fideicomisos:[])}
                         renderInput={params => <TextField {...params} label='Fideicomiso' />}
                       />
+
+                      <Field
+                        as={TextField}
+                        label="Link al archivo del contrato"
+                        title="Link"
+                        // required
+                        style={{ width: '330px', display: 'inline-flex' }}
+                        size="small"
+                        type="text"              
+                        name="link"
+                      />
+                
                 
                   </Grid>
                   <Grid item md={12} >
@@ -303,7 +316,7 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
                         variant="outlined"
                         size="small"
                         onClick={handleCheckedRight}
-                        disabled={leftChecked.length === 0}
+                        disabled={leftChecked?.length === 0}
                         aria-label="move selected right"
                       >
                         &gt;
@@ -313,7 +326,7 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
                         variant="outlined"
                         size="small"
                         onClick={handleCheckedLeft}
-                        disabled={rightChecked.length === 0}
+                        disabled={rightChecked?.length === 0}
                         aria-label="move selected left"
                       >
                         &lt;

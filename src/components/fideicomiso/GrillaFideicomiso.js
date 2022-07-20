@@ -4,6 +4,7 @@ import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { TextField, Autocomplete, Button } from '@mui/material';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
+import { buscarCAC } from 'src/utils/utils';
 import { usePrompt } from 'src/utils/usePrompt';
 import { NavLink as RouterLink } from 'react-router-dom';
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
@@ -36,20 +37,31 @@ const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
   },
   
   {
-    field: 'fechaFin',
-    headerName: 'Finalización',
-    editable: true,
-    width: 170,
-    type: 'date',
+    field: 'CACbase',
+    headerName: 'CAC Base',
+    width: 150,
     headerAlign: 'center',
-    align: 'center',
-    valueFormatter: ({ value }) =>
-      new Date(value).toLocaleDateString('es-AR', {
-        year: 'numeric',
-        month: 'short',
-        timeZone: 'UTC',
-      }),
+    align: 'right',
   },
+
+  {
+    field: 'tasaPunitoria',
+    headerName: 'Punitorios',
+    width: 150,
+    editable: true,
+    headerAlign: 'center',
+    align: 'right',
+  },
+
+  {
+    field: 'qntDias',
+    headerName: 'Días',
+    width: 120,
+    editable: true,
+    headerAlign: 'center',
+    align: 'right',
+  },
+
   {
     field: 'mailOP',
     headerName: 'Mail Contador',
@@ -137,9 +149,14 @@ const colors = [
 
 export function GrillaFideicomiso({ idSociety }) {
 
+
   const [color, setColor] = useState(null);
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
+
+  const { data: CACs } = useQuery(['CACs', idSociety], 
+  () => getMethod(`CAC/listar/${idSociety.id}`)
+);
 
   const {
     data: fideicomisoInformation,
@@ -220,18 +237,20 @@ export function GrillaFideicomiso({ idSociety }) {
         <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
         <DataGrid
           rows={fideicomisoInformation.map(fideicomiso => ({
-            id: fideicomiso.id,
-            nombre: fideicomiso.nombre,
-            fechaInicio: fideicomiso.fechaInicio,
-            fechaFin: fideicomiso.fechaFin,
-            metros: fideicomiso.metros,
-            colorElegido: fideicomiso.color,
-            logo: fideicomiso.logo,
-            cloud: fideicomiso.cloud,
-            mailOP: fideicomiso.mailOP,
-            web: fideicomiso.web,
-            empresaId: fideicomiso.empresaId,
-            deleteId: fideicomiso.id,
+            id: fideicomiso?.id,
+            nombre: fideicomiso?.nombre,
+            fechaInicio: fideicomiso?.fechaInicio,
+            CACbase: buscarCAC(CACs, fideicomiso?.fechaInicio, "Construción"),
+            tasaPunitoria: fideicomiso?.tasaPunitoria,
+            qntDias: fideicomiso?.qntDias,
+            metros: fideicomiso?.metros,
+            colorElegido: fideicomiso?.color,
+            logo: fideicomiso?.logo,
+            cloud: fideicomiso?.cloud,
+            mailOP: fideicomiso?.mailOP,
+            web: fideicomiso?.web,
+            empresaId: fideicomiso?.empresaId,
+            deleteId: fideicomiso?.id,
           }))}
           onCellEditCommit={modifyData}
           columns={columns(color, setColor, idSociety?.id, setIsPromptOpen, setRowIdToDelete)}

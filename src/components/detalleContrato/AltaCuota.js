@@ -60,8 +60,8 @@ export function AltaCuota({ dataContrato, conceptosCuota, loggedUser, moneda, re
             cuota: values?.cuota,              
             concepto: concepto.id,
             monto: values?.monto,
-
             contratoId: dataContrato?.cont?.id,
+            fideicomisoId: dataContrato?.cont?.fideicomisoId,
             moneda: moneda,
             creador: loggedUser.id
           });

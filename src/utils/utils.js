@@ -1,4 +1,5 @@
-
+// const apiServerUrl = process.env.REACT_APP_API_SERVER;
+import { saveAs } from "file-saver";
 import { getMethod } from './api';
 
 
@@ -27,6 +28,20 @@ Number to string
 	""+n
   */
 
+
+// Es el downLoad 
+export function saveFile(url){    
+    return saveAs(url);
+};
+  
+//recibe numero con comas y punto en string, y lo pasa a flotante para almacenar en base 
+export function num_to_api(num){
+  if(num && num !==""){
+    return parseFloat(num.replaceAll(".","").replace(",","."));
+  }else{
+    return num;
+  }
+}
 
 export function isValidDate(d) {
   let f = new Date(d);

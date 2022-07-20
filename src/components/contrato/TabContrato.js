@@ -3,7 +3,7 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Tab} from '@mui/material';
 import { StepperContrato } from 'src/components/contrato/StepperContrato';
 import { GrillaContrato } from 'src/components/contrato/GrillaContrato';
-
+import { GrillaCashFlow } from 'src/components/contrato/GrillaCashFlow';
 
 export function TabContrato({idSociety, fideicomisoId,  loggedUser, dataFide, isLoading, error, refetch}) {
 
@@ -29,7 +29,7 @@ export function TabContrato({idSociety, fideicomisoId,  loggedUser, dataFide, is
              
                 <Tab label="Nueva adhesión" disabled={(loggedUser?.['rol.contrato'] ==='vista')} value="0" />
                 <Tab label="Adhesiones" value="1" />
-                <Tab label="Liquidaciones" disabled={true} value="2" />
+                <Tab label="CashFlow" value="2" />
               </TabList>
             </Box>
             <TabPanel value="0">
@@ -65,7 +65,8 @@ export function TabContrato({idSociety, fideicomisoId,  loggedUser, dataFide, is
      
             <TabPanel value="2">
               <Box sx={{ pt: 3 }}>
-          bbbb
+              <GrillaCashFlow    />
+          
               
               </Box>           
             </TabPanel>

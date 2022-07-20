@@ -350,7 +350,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
 
                     <Grid item md={5}>
                           <Typography align="right" color="textPrimary" variant="h5">
-                            {mostrarFechaMesTXT(fecha)}
+                            Creada: {mostrarFechaMesTXT(fecha)} { formOP?.op?.fechaCierre? " | Cierre: " + mostrarFechaMesTXT(formOP?.op?.fechaCierre):""}
                           </Typography>
                     </Grid>             
 

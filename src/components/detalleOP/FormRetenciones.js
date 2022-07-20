@@ -240,7 +240,6 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
     netoAcumMes = noAplica;
     retAcumMes = noAplica;
     codigo = noAplica;
-    // minSujRet = noAplica;
     tasaGAN = "sin dato";
     let cod = (acumulado?.letra ==="M")? 998:999;
 
@@ -260,9 +259,7 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
 
       netoAcumMes = noAplica;
       retAcumMes = noAplica;
-      // minSujRet = noAplica;
       let neto = parseFloat(OP?.neto);
-      // neto = 78000.;
       let arrMonto = [];
       let arrPor = [];
       arrMonto = categoriaGAN?.escalaMonto.split(",");
@@ -327,11 +324,11 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
       }   
 
     }else{  
+
       netoAcumMes = parseFloat(acumulado?.netoAcumMes) + parseFloat(OP?.neto);
       retAcumMes = parseFloat(acumulado?.netoGAN_Mes);
       retencionGAN = ((netoAcumMes - minSujRet) * categoriaGAN.inscriptos / 100) - retAcumMes;
       if(retencionGAN<0){retencionGAN = 0.0;} 
-
 
     }
 
@@ -354,7 +351,6 @@ export function FormRetenciones({ idSociety, OPId, acumulado, item, fecha, fidei
       porcentaje_a_retenerIVA = 50;
     }
     retencionIVA = ( parseFloat(OP?.iva) * porcentaje_a_retenerIVA / 100);
-
 
   }
 

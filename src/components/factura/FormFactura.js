@@ -13,11 +13,15 @@ import { yearMonthDayNum, isNumberUsedDig } from 'src/utils/utils';
 import { useContext } from 'react';
 import { TiposContext} from 'src/App';
 import InputMask from 'react-input-mask';
+import NumberFormat from 'react-number-format';
+
+
 
 export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores}) {
 
   const { setIsPromptOpen, Prompt } = usePrompt();
   const queryClient = useQueryClient();
+  // var NumberFormat = require('react-number-format');
 
   var verCheckBlue = false;
   if(loggedUser?.['rol.factura'] ==='total'){/*blue= -1;*/ verCheckBlue = true;}
@@ -82,6 +86,15 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
   const [chkblue, setChkblue] = useState(iniBlue);
   const [esBlue, setEsBlue] = useState(!iniBlue);
 
+  //numero con comas y punto en string, lo paso a flotante para almacenar en base 
+  function num_to_api(num){
+    if(num && num !==""){
+      return parseFloat(num.replaceAll(".","").replace(",","."));
+    }else{
+      return num;
+    }
+  }
+
   return (
     <>
       <Formik
@@ -92,7 +105,6 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
 
-          
           if(values?.tipo === undefined){values.tipo = tipoInForm;}
           if(esBlue && values.numeroBlue === undefined){values.numeroBlue = iniNumber;}
           if(tipoInForm.id===3 && values.numeroBlue === undefined){values.numeroBlue = iniNumber;}
@@ -119,13 +131,13 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
             setIsPromptOpen(true);
 
           }else{
-                    
+              
             let tot = parseFloat(montoNeto);            
             if(montoIVA > 1){tot +=parseFloat(montoIVA);}
-            if(values.percepciones){tot +=parseFloat(values.percepciones);}
-            if(values.IIBB_CABA){tot +=parseFloat(values.IIBB_CABA);}
-            if(values.IIBB_BSAS){tot +=parseFloat(values.IIBB_BSAS);}
-            if(values.no_gravados_exentos){tot +=parseFloat(values.no_gravados_exentos);}
+            if(values.percepciones){tot +=num_to_api(values.percepciones);}
+            if(values.IIBB_CABA){tot +=num_to_api(values.IIBB_CABA);}
+            if(values.IIBB_BSAS){tot +=num_to_api(values.IIBB_BSAS);}
+            if(values.no_gravados_exentos){tot +=num_to_api(values.no_gravados_exentos);}
 
             if(similar){
               setMsg("Cuidado, esta ingresando una factura terminada en: " + simi + " y existe una similar para ese proveedor.");
@@ -137,10 +149,10 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
               neto: values.tipo.id===2? (-1 * montoNeto):montoNeto,
               iva: values.tipo.id===2? (-1 * montoIVA):montoIVA,
               letra: !esBlue? values.letra.id: "-",
-              percepciones: !esBlue? values.tipo.id===2? (-1 * values.percepciones):values.percepciones:0,
-              IIBB_CABA: !esBlue? values.tipo.id===2? (-1 * values.IIBB_CABA):values.IIBB_CABA: 0,
-              IIBB_BSAS: !esBlue? values.tipo.id===2? (-1 * values.IIBB_BSAS):values.IIBB_BSAS: 0,
-              no_gravados_exentos: !esBlue? values.tipo.id===2? (-1 * values.no_gravados_exentos):values.no_gravados_exentos: 0,
+              percepciones: !esBlue? values.tipo.id===2? (-1 * num_to_api(values.percepciones)):num_to_api(values.percepciones):0,
+              IIBB_CABA: !esBlue? values.tipo.id===2? (-1 * num_to_api(values.IIBB_CABA)):num_to_api(values.IIBB_CABA): 0,
+              IIBB_BSAS: !esBlue? values.tipo.id===2? (-1 * num_to_api(values.IIBB_BSAS)):num_to_api(values.IIBB_BSAS): 0,
+              no_gravados_exentos: !esBlue? values.tipo.id===2? (-1 * num_to_api(values.no_gravados_exentos)):num_to_api(values.no_gravados_exentos): 0,
               montoTotal: values.tipo.id===2? (-1 * tot):tot,
               porcentajeIVA: !esBlue? values.porcentajeIVA.id:0,
               fechaIngreso: values.fechaIngreso, 
@@ -165,11 +177,12 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
 
                 <Field
                   as={Autocomplete}
-                  size={'small'}
+                  
                   label='Tipo'
                   title="Tipo de comprobante"
                   disablePortal
                   required
+                  size={'small'}
                   style={{ width: '160px', display: 'inline-flex' }}
                   onChange={(event, newValue) => {
                     setTipoInForm(newValue);
@@ -297,6 +310,7 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                 
                 }
               </InputMask>
+
             </Hidden>
             <Hidden  smUp={( esBlue)} >
               <Field component={Picker} label="Fecha Emisión" type="date" name="fechaIngreso" />
@@ -318,27 +332,31 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                 
               </Grid>
               <Grid item md={12}> 
+              
+              <NumberFormat
 
-                <Field
-                  as={TextField}
+                  customInput={TextField}
+                  size={'small'}
+                  inputProps={{maxLength:14}}
+                  style={{ width: '160px'}}
+                                    
                   label='Neto'
                   title="Monto , solo numeros."
                   required
-                  maxLength={9}
-                  type='float'
-                  size="small"
-                  style={{ width: '160px', display: 'inline-flex' }}
                   name='neto'
                   onChange={event => 
                     {
-                      setMontoNeto(event.target.value);
-                      setMontoIVA(Math.round((parseFloat(event.target.value)?parseFloat(event.target.value)*parseFloat(porcentajeIVA?.id? porcentajeIVA?.id:0 ):0))/100);
-             
+                      setMontoNeto(num_to_api(event.target.value));                      
+                      setMontoIVA(Math.round((parseFloat(event.target.value)?parseFloat(event.target.value.replaceAll(".","").replace(",","."))*parseFloat(porcentajeIVA?.id? porcentajeIVA?.id:0 ):0))/100);
+            
                     }
                   }
-                />       
-
-               
+                                              
+                  thousandSeparator={"."}
+                  decimalScale={2}
+                  decimalSeparator={","}
+                  
+              />
 
                 <Hidden  smUp={( esBlue)} >
 
@@ -361,65 +379,102 @@ export function FormFactura({ idSociety, loggedUser, fideicomisos, proveedores})
                     options={(porcentajes_IVA? porcentajes_IVA:[])}
                     renderInput={params => <TextField {...params} label='% IVA *' />}
                   />
+             
+                         
+                  <NumberFormat
 
-                  <Field
-                    as={TextField}
-                    label='Iva'
-                    title="Iva, solo numeros."                  
-                    maxLength={9}
-                    type='float'
-                    size="small"
-                    value={montoIVA}
-                    style={{ width: '160px', display: 'inline-flex' }}
-                    name='iva'
-                    onChange={event => onlyNumbers(event, setFieldValue, 'iva')}
-                  />  
-              
+                  label='Iva'
+                  title="Iva, solo numeros."  
+                  name='iva'
+                  onChange={event => onlyNumbers(event, setFieldValue, 'iva')}
+                  value={montoIVA}
 
-                  <Field
-                    as={TextField}
+                  customInput={TextField}
+                  size={'small'}
+                  inputProps={{maxLength:14}}
+                  style={{ width: '160px'}}       
+                                              
+                  thousandSeparator={"."}
+                  decimalScale={2}
+                  decimalSeparator={","}
+
+                  />
+
+                  <NumberFormat
+
                     label='Percepciones IVA'
-                    title="Percepciones, solo numeros."                  
-                    maxLength={9}
-                    type='float'
-                    size="small"
-                    style={{ width: '160px', display: 'inline-flex' }}
+                    title="Percepciones, solo numeros." 
                     name='percepciones'
                     onChange={event => onlyNumbers(event, setFieldValue, 'percepciones')}
-                  />  
-                            <Field
-                    as={TextField}
-                    label='IIBB CABA'
-                    title="IIBB CABA, solo numeros."                  
-                    maxLength={9}
-                    type='float'
-                    size="small"
-                    style={{ width: '160px', display: 'inline-flex' }}
-                    name='IIBB_CABA'
-                    onChange={event => onlyNumbers(event, setFieldValue, 'IIBB_CABA')}
-                  />  
-                          <Field
-                    as={TextField}
-                    label='IIBB Buenos Aires'
-                    title="IIBB BsAs, solo numeros."                  
-                    maxLength={9}
-                    type='float'
-                    size="small"
-                    style={{ width: '160px', display: 'inline-flex' }}
-                    name='IIBB_BSAS'
-                    onChange={event => onlyNumbers(event, setFieldValue, 'IIBB_BSAS')}
-                  />      
-                  <Field
-                    as={TextField}
-                    label='No gravado'
-                    title="No gravado, solo numeros."                  
-                    maxLength={9}
-                    type='float'
-                    size="small"
-                    style={{ width: '160px'}}
-                    name='no_gravados_exentos'
-                    onChange={event => onlyNumbers(event, setFieldValue, 'no_gravados_exentos')}
-                  />     
+
+                    customInput={TextField}
+                    size={'small'}
+                    inputProps={{maxLength:14}}
+                    style={{ width: '160px'}}       
+                                                
+                    thousandSeparator={"."}
+                    decimalScale={2}
+                    decimalSeparator={","}
+
+                  />
+
+                  <NumberFormat
+
+
+                  label='IIBB CABA'
+                  title="IIBB CABA, solo numeros."   
+                  name='IIBB_CABA'
+                  onChange={event => onlyNumbers(event, setFieldValue, 'IIBB_CABA')}
+
+                  customInput={TextField}
+                  size={'small'}
+                  inputProps={{maxLength:14}}
+                  style={{ width: '160px'}}       
+                                              
+                  thousandSeparator={"."}
+                  decimalScale={2}
+                  decimalSeparator={","}
+
+                  />
+
+                  <NumberFormat
+
+
+                  label='IIBB Buenos Aires'
+                  title="IIBB BsAs, solo numeros."  
+                  name='IIBB_BSAS'
+                  onChange={event => onlyNumbers(event, setFieldValue, 'IIBB_BSAS')}
+
+                  customInput={TextField}
+                  size={'small'}
+                  inputProps={{maxLength:14}}
+                  style={{ width: '160px'}}       
+                                              
+                  thousandSeparator={"."}
+                  decimalScale={2}
+                  decimalSeparator={","}
+
+                  />
+
+                  <NumberFormat
+
+
+                  label='No gravado'
+                  title="No gravado, solo numeros."                  
+                  name='no_gravados_exentos'
+                  onChange={event => onlyNumbers(event, setFieldValue, 'no_gravados_exentos')}
+
+                  customInput={TextField}
+                  size={'small'}
+                  inputProps={{maxLength:14}}
+                  style={{ width: '160px'}}       
+                                              
+                  thousandSeparator={"."}
+                  decimalScale={2}
+                  decimalSeparator={","}
+
+                  />
+                     
                 </Hidden>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
@@ -469,17 +524,17 @@ function onlyNumbers(event, setFieldValue, typeOfData) {
   
   event.preventDefault();
   const { value } = event.target;
+
   
   if(value === undefined || value === ''){
-
     setFieldValue(typeOfData, undefined);
   }else{  
     
     const regex = /^\d{0,11}(\.\d{0,2})?$/;
   
-    // var key = event.which || event.keyCode; // keyCode detection
-    var ctrl = false; // event.ctrlKey ? event.ctrlKey : ((key === 17) ? true : false); // ctrl detection
-    if (regex.test(value.toString()) || ctrl){ 
+    var ctrl = false;
+    if (regex.test(value.toString().replaceAll(".","").replace(",",".")) || ctrl){ 
+      console.log(555555, value.toString(), parseFloat(value.toString().replaceAll(".","").replace(",",".")));
       setFieldValue(typeOfData, value.toString());
     }
   }

@@ -10,7 +10,6 @@ import { getMethod } from 'src/utils/api';
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import RepContrato from "src/components/reportes/contrato/contrato";
 import { ConceptosCuotaContext} from 'src/App';
-// import { buscarCAC } from 'src/utils/utils';
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 

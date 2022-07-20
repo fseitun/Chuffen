@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useState, useContext } from 'react';
-// import { useQuery } from 'react-query';
 import { useQueryClient, useMutation } from 'react-query';
 import { Typography, Grid, IconButton } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
@@ -11,9 +10,28 @@ import { SocietyContext } from 'src/App';
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import { saveAs } from "file-saver";
 
-const columns = (acceso, saveFile, setIsPromptOpen, setRowIdToDelete) => [
+const columns = (modo, acceso, saveFile, setIsPromptOpen, setRowIdToDelete) => [
   
-  
+    
+  {
+    field: 'fideicomiso',
+    headerName: 'Fideicomiso',
+    hide: (modo==='contrato'),
+    width: 170,
+    editable: false,
+    headerAlign: 'Fide',
+
+  },
+    
+  {
+    field: 'contrato',
+    headerName: 'Adhesión',
+    hide: (modo==='contrato'),
+    width: 170,
+    editable: false,
+    headerAlign: 'center',
+
+  },
   {
     field: 'fecha',
     headerName: 'Fecha',
@@ -30,7 +48,6 @@ const columns = (acceso, saveFile, setIsPromptOpen, setRowIdToDelete) => [
     }),
 
   },
-
   
   {
     field: 'saldoARS',
@@ -45,6 +62,7 @@ const columns = (acceso, saveFile, setIsPromptOpen, setRowIdToDelete) => [
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
 
+  /*
   {
     field: 'saldoUSD',
     preProcessEditCellProps: onlyNumbers,
@@ -56,14 +74,13 @@ const columns = (acceso, saveFile, setIsPromptOpen, setRowIdToDelete) => [
 
     valueFormatter: ({ value }) =>
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
-  },
+  },*/
 
   {
     field: 'link',
     headerName: 'Link',
     width: 70,
     editable: false,
-    // hide: (!verColumnBlue && colVisibles?.find(i => i.c === 'blue').h),    
     headerAlign: 'center',
     renderCell: ({ value }) => value===0?'' :
                         <IconButton color="inherit" onClick={() => {saveFile(value)}} >
@@ -91,7 +108,7 @@ const columns = (acceso, saveFile, setIsPromptOpen, setRowIdToDelete) => [
   },
 ];
 
-export function GrillaLiquidacion({ loggedUser, liquidaciones, isLoading, error, refetch}) {
+export function GrillaLiquidacion({ modo, loggedUser, fideicomisos, contratos, filtFide, filtContrato, filtPeriodo, liquidaciones, isLoading, error, refetch}) {
   
   const idSociety = useContext(SocietyContext);
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
@@ -130,36 +147,34 @@ export function GrillaLiquidacion({ loggedUser, liquidaciones, isLoading, error,
     }
   );
 
-  /*
-  const { mutate: modifyData } = useMutation(
-    async ({ field, id, value }) =>
-      await postMethod(`liquidacion/modificar/${idSociety.id}`, {
-        id,
-        [field]: value,
-      }),
-    {
-      onMutate: async ({ field, id, value }) => {
-        
-        await queryClient.cancelQueries(['liquidacion', idSociety]);
-        const prevData = queryClient.getQueryData(['liquidacion', idSociety]);
-   
-        //const newData = [
-        //  ...prevData.filter(item => item.id !== id),
-        //  { ...prevData.find(item => item.id === id), [field]: value },
-        //];
-   
-        // queryClient.setQueryData(['liquidacion', idSociety], newData);
-        return prevData;
-      },
-      onError: (err, id, context) => queryClient.setQueryData(['liquidacion', idSociety], context),
-      onSettled: () => {
-        if(idSociety.id > 0) {
-          queryClient.invalidateQueries(['liquidacion', idSociety])
-        }
-        refetch()        
-      }
+  function filtrar(element, filtFide, filtContrato, filtPeriodo){
+
+    if(filtFide === -1 && filtContrato === -1 && filtPeriodo === -1){
+      return true;
     }
-  );*/
+    if(filtFide > -1 && filtContrato === -1 && filtPeriodo === -1){//fide
+      if(element.fideicomisoId===filtFide){return true;}else{return false;}
+    }    
+    if(filtFide === -1 && filtContrato > -1 && filtPeriodo === -1){// Contrato
+      if(element.contratoId===filtContrato){return true;}else{return false;}
+    }
+    if(filtFide === -1 && filtContrato === -1 && filtPeriodo > -1){//periodo
+      if(element.periodo===filtPeriodo){return true;}else{return false;}
+    }
+    if(filtFide > -1 && filtContrato > -1 && filtPeriodo === -1){
+      if(element.fideicomisoId===filtFide && element.contratoId===filtContrato){return true;}else{return false;}
+    }
+    if(filtFide > -1 && filtContrato === -1 && filtPeriodo > -1){
+      if(element.fideicomisoId===filtFide && element.periodo===filtPeriodo){return true;}else{return false;}
+    }
+    if(filtFide === -1 && filtContrato > -1 && filtPeriodo > -1){
+      if(element.contratoId===filtContrato && element.periodo===filtPeriodo){return true;}else{return false;}
+    }
+    if(filtFide > -1 && filtContrato > -1 && filtPeriodo > -1){
+      if(element.fideicomisoId===filtFide && element.contratoId===filtContrato && element.periodo===filtPeriodo){return true;}else{return false;}
+    }  
+
+  }
 
   const [sortModel, setSortModel] = React.useState([
     {
@@ -193,35 +208,35 @@ export function GrillaLiquidacion({ loggedUser, liquidaciones, isLoading, error,
         <Grid container spacing={{ xs: 0.5, md: 1 }} columns={{ xs: 4, sm: 8, md: 12 }} >
 
           <Grid item md={4}>
-            <Typography align="left" color="textPrimary" variant="h6">
-                  
-            </Typography>
-          </Grid>                      
- 
+            <Typography align="left" color="textPrimary" variant="h6"></Typography>
+          </Grid>
 
           <Grid item md={12}>
+
             <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
             
             <DataGrid
-              rows={liquidaciones?.map(item => ({
+
+              rows={liquidaciones?.filter(element =>filtrar(element, filtFide, filtContrato, filtPeriodo)).map(item => ({
                 id: item?.id,
+                
+                contrato: contratos?.find(i => i.id === item?.contratoId)?.nombre,
+                fideicomiso: fideicomisos?.find(i => i.id === item?.fideicomisoId)?.nombre,
                 fecha: item?.fecha,
+                periodo: item?.periodo,
                 saldoARS: item?.saldoARS,
                 saldoUSD: item?.saldoUSD,
                 link: item?.link,  
                 deleteId: item?.id,
-
               }))}
-              // onCellEditCommit={modifyData}
-              columns={columns(acceso, saveFile, setIsPromptOpen, setRowIdToDelete)}
-
+              
+              columns={columns(modo, acceso, saveFile, setIsPromptOpen, setRowIdToDelete)}
               sortModel={sortModel}
               onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
-              /*pageSize={25}*/
               disableSelectionOnClick
-              autoHeight              
+              autoHeight
+
             />
-            
 
           </Grid>
         </Grid>  
@@ -236,38 +251,3 @@ function onlyNumbers(data) {
   const error = !isValid;
   return { ...data.props, error };
 }
-
-/*
-function ComboBox({ listItems, label, props }) {
-  const { id, api, field } = props;
-
-  listItems = [
-    ...listItems,
-    {
-      descripcion: '',
-    },
-  ];
-  const [selectedRet, setSelectedRol] = useState({
-    descripcion: '',
-  });
-
-  return (
-    <Autocomplete
-      value={selectedRet}
-      onChange={async (event, newValue) => {        
-        setSelectedRol(newValue);    
-        if(newValue?.id){
-          api.setEditCellValue({ id, field, value: newValue.id }, event);
-          await props.api.commitCellChange({ id, field });
-          api.setCellMode(id, field, 'view');
-        }
-      }}
-      id="combo-box-demo"
-      options={listItems}
-      isOptionEqualToValue={(op, val) => op.descripcion === val.descripcion}
-      getOptionLabel={option => option.descripcion}
-      sx={{ width: 300 }}
-      renderInput={params => <TextField {...params} label={label} />}
-    />
-  );
-}*/

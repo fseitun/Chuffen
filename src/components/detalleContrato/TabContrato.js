@@ -39,7 +39,7 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
                 <Tab label="Liquidaciones" value="LIQ" />
                 <Tab label="Compromisos en Pesos" value="ARS" />
                 <Tab label="Compromisos en Dolares" value="USD" />
-                <Tab label="Cesiones" value="CES" />
+                <Tab label="Contratos" value="CES" />
                 <Tab label="Productos" value="PRD" />
                 
               </TabList>
@@ -63,6 +63,7 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
               <Box sx={{ pt: 3 }}>
                 
                 <PageLiquidacion 
+                    modo={'contrato'}
                     contratoId={contratoId}
                     idSociety={idSociety}
                     loggedUser={loggedUser}
@@ -144,13 +145,11 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
             <TabPanel value="CES">
 
                 <FormCesion
-                      // OCId={OCId}
                       contratoId={contratoId} 
                       idSociety={idSociety}
                       loggedUser={loggedUser}
                       personas={personas}
                       empresas={empresas}
-                      // dataContrato={dataContrato}
                       isLoading={isLoading}
                       error={error}
                       refetch={refetch}
@@ -161,7 +160,6 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
                   return <RepeaterCesion     
                             key={'rep_'+ index}             
                             idSociety={idSociety}
-                            // ultimo={dataContrato?.cesiones?.length}
                             fila={dataContrato?.cesiones?.length - index - 1}
                             fideicomisoId={dataContrato?.cont?.fideicomisoId}
                             cesion={item}

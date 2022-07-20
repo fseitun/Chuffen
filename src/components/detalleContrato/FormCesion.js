@@ -77,6 +77,7 @@ export function FormCesion({idSociety, loggedUser, contratoId, fideicomisoId, pe
               addItem({ 
                 contratoId: contratoId,
                 fecha: fecha, 
+                link: "",
                 nombre: tipoFidu==="persona"? iniPersona?.nombre:iniEmpresa?.razonSocial,             
                 personaId: tipoFidu==="persona"? iniPersona?.id:null, // values.anticipo.id, 
                 empresaId: tipoFidu==="empresa"? iniEmpresa?.id:null, // fiduInForm?.id:null,

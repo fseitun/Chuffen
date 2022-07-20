@@ -7,7 +7,6 @@ import { FormFactura } from 'src/components/factura/FormFactura';
 import { FiltroFactura } from 'src/components/factura/FiltroFactura';
 import { GrillaFactura } from 'src/components/factura/GrillaFactura';
 
-
 export function Factura({ idSociety , loggedUser}) {
 
   const [filtComp, setFiltComp] = useState(-1);

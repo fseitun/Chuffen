@@ -119,10 +119,6 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
     }
   );
 
-
- // await queryClient.refetchQueries(['facturas', idSociety, selectedFacturaData]), 
-
-
   function handleCellModification(e) {
     
     let newData = {
@@ -146,7 +142,7 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
         rows={facturas.map(el => ({
           id: el.id,
           empresa:(el.empresas[0]?el.empresas[0].razonSocial:''),
-          // confirmada:(el.OPs[0]?el?.OPs[0]?.confirmada:0),
+
           numero: el.numero,
           tipo: {
             id: el.tipo,
@@ -164,7 +160,6 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
           onDelete: () => deleteProduct(el.id),
         }))}
 
-        //hideFooterPagination
         hideFooter
 
         columns={columns(puedeEditar, verEliminar)}
@@ -176,9 +171,6 @@ export function GrillaDetalleOP({ idSociety, OPId, loggedUser, selectedFacturaDa
     </div>
   );
 }
-
-
-
 
 function DeleteRow(params) {
   const deleteRow = params.row.onDelete;
