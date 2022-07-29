@@ -5,25 +5,28 @@ import { getMethod } from './api';
 
 /*
 
-('0' + 4).slice(-2)  // '04'   completa con ceros a la izquierda
+******* Completa con ceros a la izquierda ********************
+('0' + 4).slice(-2)  // '04'   
+recibo = ("00000" + item?.ptoVenta).slice(-5) + "-" + ("00000000" + item?.reciboNum).slice(-8),
 
+*******  Reemplaza
+// Reemplazar espacios
 r = r.replace(/ /g,"_"); //returns my_name
+// Reemplazar todos
+r = r.replaceAll(",","."); //returns my_name
 
-var d = new Date(year, month, day);
-d.setMonth(d.getMonth() + 8);
-
-	const id = "ctl03_Tabs1";
-	print (id.slice(id.length - 5)); //Outputs: Tabs1
-primeros
+******* primeros digitos
 	const string = "0123456789";
   const string = "01234-123456789";
 	print (string.slice(0, 2)); // "01"
 	print (string.slice(0, 8)); // "01234567"
 	print (string.slice(5, 13)); // "3456"
-sin decimales
+
+******* sin decimales
 	Math.trunc(42.84);    // 42
 	Math.trunc(0.123);    //  0
-Number to string
+
+******* Number to string
 	n.toString()
 	""+n
   */

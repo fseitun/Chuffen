@@ -534,7 +534,7 @@ function onlyNumbers(event, setFieldValue, typeOfData) {
   
     var ctrl = false;
     if (regex.test(value.toString().replaceAll(".","").replace(",",".")) || ctrl){ 
-      console.log(555555, value.toString(), parseFloat(value.toString().replaceAll(".","").replace(",",".")));
+      
       setFieldValue(typeOfData, value.toString());
     }
   }

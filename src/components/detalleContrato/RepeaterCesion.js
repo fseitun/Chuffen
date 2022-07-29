@@ -14,7 +14,7 @@ import { DatePicker, LocalizationProvider } from '@mui/lab';
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
-export function RepeaterCesion({idSociety, loggedUser, cesion, ultimo, fila, personas, empresas, isLoading, error, refetch}) {
+export function RepeaterCesion({idSociety, loggedUser, cesion, tipos, fila, personas, empresas, isLoading, error, refetch}) {
 
   var acceso = true;
   if(loggedUser?.['rol.contrato'] ==='vista'){acceso =false}
@@ -109,7 +109,8 @@ export function RepeaterCesion({idSociety, loggedUser, cesion, ultimo, fila, per
               
               <Grid item md={2}> 
                     <Typography align="right" color="textPrimary" variant="h5">
-                      {fila===0? "Adhesión Original":"Cesión " + fila}:&nbsp;&nbsp;
+                      {tipos?.find(t => t.id === cesion?.tipo)?.descripcion}:&nbsp;&nbsp;
+                      
                     </Typography>
               </Grid>               
               

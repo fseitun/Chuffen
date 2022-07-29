@@ -50,7 +50,7 @@ export function FormLiquidacion({ contrato, productos, cesion, qCuotasARS, qCuot
       onSettled: (Liquidacion) => {
 
         data = {cont: contrato, liq: Liquidacion, cesion: cesion, productos: productos, letras:letras, qCuotasARS:qCuotasARS, qCuotasUSD:qCuotasUSD};
-        // console.log(222224, data);
+       
         if(idSociety.id > 0) {
           createPDF_2_of_3(Liquidacion);
         }  
@@ -82,9 +82,11 @@ export function FormLiquidacion({ contrato, productos, cesion, qCuotasARS, qCuot
     // }
   }
 
+  var qntDecimals = 1;
+
   const LiqDocument = () => {
     return (
-      <RepLiquidacion conceptosPago={conceptosPago}  conceptosCuota={conceptosCuota} data={data} apiServerUrl={apiServerUrl} />
+      <RepLiquidacion qntDecimals={qntDecimals} conceptosPago={conceptosPago}  conceptosCuota={conceptosCuota} data={data} apiServerUrl={apiServerUrl} />
     )
   }
 
@@ -125,6 +127,8 @@ export function FormLiquidacion({ contrato, productos, cesion, qCuotasARS, qCuot
           addLiquidacion_1_of_3({         
             
             fechaLiquidacion: date_to_YYYYMMDD(values?.fecha), 
+            tasaPunitoria: contrato?.fideicomisos[0]?.tasaPunitoria,
+            qntDias: contrato?.fideicomisos[0]?.qntDias,            
             contrato: {id: contrato?.id, nombre: contrato?.nombre, fideicomisoId: contrato?.fideicomisoId, adhesion: contrato?.adhesion},
             link: apiServerUrl + folder + nombreLiq(date_to_YYYYMMDD(values?.fecha)),
        

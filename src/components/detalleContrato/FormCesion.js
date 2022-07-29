@@ -1,17 +1,17 @@
 import React from 'react';
 import { useState } from 'react';
 import { useQueryClient, useMutation } from 'react-query';
-// import esLocale from 'date-fns/locale/es';
 import { Formik, Form, Field } from 'formik';
 import { RadioGroup, Radio, Grid, FormControlLabel, TextField, Button, Hidden, Autocomplete } from '@mui/material';
 import { usePrompt } from 'src/utils/usePrompt';
 import { postMethod} from 'src/utils/api';
 import { date_to_YYYYMMDD } from 'src/utils/utils'; 
 
-export function FormCesion({idSociety, loggedUser, contratoId, fideicomisoId, personas, empresas, refetch}) {
+export function FormCesion({idSociety, tipos, loggedUser, contratoId, fideicomisoId, personas, empresas, refetch}) {
 
   const { setIsPromptOpen, Prompt } = usePrompt();
   const queryClient = useQueryClient();
+
 
   const { mutate: addItem } = useMutation(
     newItem => postMethod(`cesion/alta/${idSociety.id}`, newItem),
@@ -41,6 +41,8 @@ export function FormCesion({idSociety, loggedUser, contratoId, fideicomisoId, pe
   const [iniPersona, setIniPersona] = useState(null);
   const [iniEmpresa, setIniEmpresa] = useState(null);
 
+  const [tipo, setTipo] = useState({id: 1, descripcion: 'Cesión'});
+
   const [tipoFidu, setTipoFidu] = useState('persona');
   
   function verFidu(e){
@@ -53,12 +55,6 @@ export function FormCesion({idSociety, loggedUser, contratoId, fideicomisoId, pe
 
   let f =new Date();
   const fecha = date_to_YYYYMMDD(f); 
-
-  /*
-  const locale = 'es';
-  const localeMap = {es: esLocale};  
-  const maskMap = {es: '__/__/____'};
-  const [valuef, setValuef] = React.useState(null); */
 
   return (
     <>
@@ -78,6 +74,7 @@ export function FormCesion({idSociety, loggedUser, contratoId, fideicomisoId, pe
                 contratoId: contratoId,
                 fecha: fecha, 
                 link: "",
+                tipo: tipo?.id,
                 nombre: tipoFidu==="persona"? iniPersona?.nombre:iniEmpresa?.razonSocial,             
                 personaId: tipoFidu==="persona"? iniPersona?.id:null, // values.anticipo.id, 
                 empresaId: tipoFidu==="empresa"? iniEmpresa?.id:null, // fiduInForm?.id:null,
@@ -151,10 +148,31 @@ export function FormCesion({idSociety, loggedUser, contratoId, fideicomisoId, pe
                                 <FormControlLabel value="empresa" control={<Radio />} label="Empresa" />
 
                       </RadioGroup>
+
+                    </Grid>
+                    <Grid item md={2}> 
+                      <Field
+                        as={Autocomplete}
+                        size={'small'}
+                        label='Tipo contrato'
+                        title="Tipo de contrato"
+                        disablePortal
+                        required
+                        style={{ width: '180px', display: 'inline-flex' }}
+                        onChange={(event, newValue) => {
+                          setTipo(newValue);
+                          setFieldValue('tipo', newValue);
+                        }}
+                        value={tipo}
+                        getOptionLabel={option => option.descripcion}
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        options={(tipos? tipos:[])}
+                        renderInput={params => <TextField {...params} label='Tipo de contrato' />}
+                      />
                   </Grid>
                   <Grid item md={2}> 
                       <Button type="submit" disabled={isSubmitting} >
-                        Nueva Cesión
+                        Nueva
                       </Button> 
                   </Grid>               
               

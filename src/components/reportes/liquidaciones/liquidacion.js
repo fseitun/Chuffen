@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
 
   });
 
-  const liquidacion = ({conceptosPago, conceptosCuota, data}) => (
+  const liquidacion = ({conceptosPago, conceptosCuota, data, qntDecimals}) => (
 
             <Document >
                 <Page size="A4" style={styles.page}>
@@ -73,9 +73,9 @@ const styles = StyleSheet.create({
                     <View >
 
                         <Header conceptosPago={conceptosPago} conceptosCuota={conceptosCuota} cont={data?.cont} liq={data?.liq} cesion={data?.cesion} productos={data?.productos}  letras={data?.letras}  qCuotasARS={data?.qCuotasARS} qCuotasUSD={data?.qCuotasUSD} /> 
-                        <DataFidu conceptosPago={conceptosPago} conceptosCuota={conceptosCuota} cont={data?.cont} liq={data?.liq} cesion={data?.cesion} productos={data?.productos}  letras={data?.letras}  qCuotasARS={data?.qCuotasARS} qCuotasUSD={data?.qCuotasUSD} /> 
-                        <Estado conceptosPago={conceptosPago} conceptosCuota={conceptosCuota} cont={data?.cont} liq={data?.liq}  /> 
-                        <Detalle conceptosPago={conceptosPago} conceptosCuota={conceptosCuota} cont={data?.cont} liq={data?.liq}  />                      
+                        <DataFidu qntDecimals={qntDecimals} conceptosPago={conceptosPago} conceptosCuota={conceptosCuota} cont={data?.cont} liq={data?.liq} cesion={data?.cesion} productos={data?.productos}  letras={data?.letras}  qCuotasARS={data?.qCuotasARS} qCuotasUSD={data?.qCuotasUSD} /> 
+                        <Estado qntDecimals={qntDecimals} conceptosPago={conceptosPago} conceptosCuota={conceptosCuota} cont={data?.cont} liq={data?.liq}  /> 
+                        <Detalle qntDecimals={qntDecimals} conceptosPago={conceptosPago} conceptosCuota={conceptosCuota} cont={data?.cont} liq={data?.liq}  />                      
                    
                     </View>  
                    

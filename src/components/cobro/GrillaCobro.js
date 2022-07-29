@@ -1,16 +1,22 @@
 import * as React from 'react';
 import { useState, useContext } from 'react';
 import { useQueryClient, useMutation } from 'react-query';
-import { Typography, Grid, Autocomplete, TextField, IconButton } from '@mui/material';
+import { Typography, Box, Grid, Autocomplete, TextField, IconButton } from '@mui/material';
 import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { postMethod, deleteMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
+import { darken, lighten } from '@mui/material/styles';
 import { SocietyContext} from 'src/App';
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import { mostrarFecha } from 'src/utils/utils';
 import { saveAs } from "file-saver";
 
+const getBackgroundColor = (color, mode) =>
+  mode === 'dark' ? darken(color, 0.6) : lighten(color, 0.6);
+
+const getHoverBackgroundColor = (color, mode) =>
+  mode === 'dark' ? darken(color, 0.5) : lighten(color, 0.5)
 
 const columns = (acceso, mode, saveFile, cuentas_destino, estados, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [ 
   
@@ -305,51 +311,101 @@ export function GrillaCobro({loggedUser, mode, contratoId, filtCont, formaPagosF
  
 
           <Grid item md={12}>
-            <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
-          <DataGrid
-            rows={dataCobro?.filter(element =>filtrar(element, filtCont, filtFide)).map(item => ({  
-              id: item?.id,
-              fecha: item?.fecha,
-              concepto: conceptosPago?.find(i => i.id === item?.concepto)?.descripcion,
-              fideicomisoId: item?.fideicomisoId,
-              fideicomiso: (item?.contrato?.fideicomisos[0]? item?.contrato?.fideicomisos[0]?.nombre:''),
-              contrato: item?.contrato?.nombre, 
-              fiduciante: item?.contrato?.personas[0]? item?.contrato?.personas[0]?.nombre:'' + item?.contrato?.empresas[0]? item?.contrato?.empresas[0]?.razonSocial:'', 
-              monto: item?.monto,
-              moneda: item?.moneda,          
-              formaCobro: cuentas_destino?.find(f => f.id === item?.formaCobro)?.cuentaBanco,     
-              formaPago: formaPagosFidu && item?.formaPago? formaPagosFidu?.find(i => i.id === item?.formaPago)?.descripcion:'',
-              reciboNum: item?.reciboNum,
-              reciboUrl: item?.reciboUrl,
-              descargar: item?.reciboUrl,
-              observaciones: item?.observaciones,
-              cambio: item?.cambio,                 
-              archivadas: estados?.find(i => i.id === item?.archivadas)?.descripcion,
-              createdAt: item?.createdAt,
-              deleteId: item?.id,
 
-              }))}OPs
-
-            onCellEditCommit={modifyData}
-            columns={columns(acceso,  mode, saveFile, cuentas_destino, estados, conceptosPago, setIsPromptOpen, setRowIdToDelete)}
-            
-            sortModel={sortModel}
-            onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
-        
-            pageSize={pageSize}
-            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={[10, 25, 50, 100]}
-            pagination
-
-            disableSelectionOnClick
-            autoHeight
-            scrollbarSize
-            components={{
-              Toolbar: CustomToolbar,
+            <Box
+            sx={{
+              height: 400,
+              width: 1,
+            // Confirmada
+              '& .color_x_estado-conf': {
+                bgcolor: (theme) =>
+                getBackgroundColor(theme.palette.success.main, theme.palette.mode),
+              '&:hover': {
+                bgcolor: (theme) =>
+                  getHoverBackgroundColor(
+                    theme.palette.success.main,
+                    theme.palette.mode,),},
+              },
+              // para autorizar
+              '& .color_x_estado-auth': {
+                bgcolor: (theme) =>
+                  getBackgroundColor(theme.palette.error.main, theme.palette.mode),
+                '&:hover': {
+                  bgcolor: (theme) =>
+                    getHoverBackgroundColor(theme.palette.error.main, theme.palette.mode),},
+              },
+              // anulada
+              '& .color_x_estado-anulado': {
+                bgcolor: (theme) =>
+                  getBackgroundColor(theme.palette.text.primary, theme.palette.mode),
+                '&:hover': {
+                  bgcolor: (theme) =>
+                    getHoverBackgroundColor(theme.palette.text.primary, theme.palette.mode),},
+              },
+                // para pagar
+                '& .color_x_estado-parap': {
+                  bgcolor: (theme) =>
+                    getBackgroundColor(theme.palette.warning.light, theme.palette.mode),
+                  '&:hover': {
+                    bgcolor: (theme) =>
+                      getHoverBackgroundColor(theme.palette.warning.light, theme.palette.mode),},
+                },
+              
             }}
-          />
+          >  
+
+              <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
+            <DataGrid
+              rows={dataCobro?.filter(element =>filtrar(element, filtCont, filtFide)).map(item => ({  
+                id: item?.id,
+                fecha: item?.fecha,
+                concepto: conceptosPago?.find(i => i.id === item?.concepto)?.descripcion,
+                fideicomisoId: item?.fideicomisoId,
+                fideicomiso: (item?.contrato?.fideicomisos[0]? item?.contrato?.fideicomisos[0]?.nombre:''),
+                contrato: item?.contrato?.nombre, 
+                fiduciante: item?.contrato?.personas[0]? item?.contrato?.personas[0]?.nombre:'' + item?.contrato?.empresas[0]? item?.contrato?.empresas[0]?.razonSocial:'', 
+                monto: item?.monto,
+                moneda: item?.moneda,          
+                formaCobro: cuentas_destino?.find(f => f.id === item?.formaCobro)?.cuentaBanco,     
+                formaPago: formaPagosFidu && item?.formaPago? formaPagosFidu?.find(i => i.id === item?.formaPago)?.descripcion:'',
+                reciboNum: ("00000" + item?.ptoVenta).slice(-5) + "-" + ("00000000" + item?.reciboNum).slice(-8),
+                reciboUrl: item?.reciboUrl,
+                descargar: item?.reciboUrl,
+                observaciones: item?.observaciones,
+                cambio: item?.cambio,
+                status: item?.archivadas,                  
+                archivadas: estados?.find(i => i.id === item?.archivadas)?.descripcion,
+                createdAt: item?.createdAt,
+                deleteId: item?.id,
+
+                }))}OPs
+
+              onCellEditCommit={modifyData}
+              columns={columns(acceso,  mode, saveFile, cuentas_destino, estados, conceptosPago, setIsPromptOpen, setRowIdToDelete)}
+              
+              sortModel={sortModel}
+              onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
+
+              getRowClassName={(params) => `color_x_estado-${params.row.status===1?'anulado':'regular'}`}
+          
+              pageSize={pageSize}
+              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+              rowsPerPageOptions={[10, 25, 50, 100]}
+              pagination
+
+              disableSelectionOnClick
+              autoHeight
+              scrollbarSize
+              components={{
+                Toolbar: CustomToolbar,
+              }}
+            />
+            </Box>
 
           </Grid>
+
+ 
+
         </Grid>  
       </div>
     );
@@ -437,7 +493,7 @@ function ComboBoxCuenta({ cuentas_destino, label, props }) {
         }
       }}
       id="combo-box-demo"
-      options={cuentas_destino.filter(cuenta => cuenta?.fideicomisoId === parseInt(props?.row?.fideicomisoId))}
+      options={cuentas_destino.filter(cuenta => cuenta.bancoId === 0 || cuenta?.fideicomisoId === parseInt(props?.row?.fideicomisoId))}
       isOptionEqualToValue={(op, val) => op.cuentaBanco === val.cuentaBanco}
       getOptionLabel={option => option.cuentaBanco}
       sx={{ width: 300 }}

@@ -35,7 +35,7 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
     newContrato => postMethod(`contrato/agregar/${idSociety.id}`, newContrato),
     {
       onMutate: async newContrato => {
-        
+  
         await queryClient.invalidateQueries(['contrato', idSociety]);
         const prevData = await queryClient.getQueryData(['contrato', idSociety]);
         const newData = [...prevData, { ...newContrato, id: new Date().getTime() }];        
@@ -158,7 +158,7 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
           if (!valuef) {
             setIsPromptOpen(true);
           } else{
-    
+            // vvvver
             addContrato({
               fideicomisoId: fideInForm?.id,
               nombreCesion: tipoFidu==="persona"? fiduInForm?.nombre:fiduInForm?.razonSocial,

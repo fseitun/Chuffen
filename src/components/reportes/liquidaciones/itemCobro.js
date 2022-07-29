@@ -43,13 +43,13 @@ const styles = StyleSheet.create({
 });
 
 
-    var itemCobro = ({conceptosPago, fide, cobros}) => cobros.map(function(p, i){
+    var itemCobro = ({conceptosPago, fide, cobros, qntDecimals}) => cobros.map(function(p, i){
       return (
         <View key={'row' + p.numero + i}  style={[styles.row, { borderBottomColor: fide?.color }]} >
           <Text key={'col_a' + i} style={[styles.col1, { borderRightColor: fide?.color }]}>{mostrarFecha(p.fecha)}</Text>
           <Text key={'col_b' + i} style={[styles.col2, { borderRightColor: fide?.color }]}> {conceptosPago?.find(c => c.id === p.concepto)?.descripcion}</Text>
           <Text key={'col_c' + i} style={[styles.col3, { borderRightColor: fide?.color }]}> {p.moneda}</Text>
-          <Text key={'col_d' + i} style={[styles.col4, { borderRightColor: fide?.color }]}> {Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(p.monto))}</Text>            
+          <Text key={'col_d' + i} style={[styles.col4, { borderRightColor: fide?.color }]}> {Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number(parseFloat(p.monto)).toFixed(qntDecimals))}</Text>            
           
         </View>  
           );

@@ -19,10 +19,11 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
 
   let qCuotasARS = dataContrato?.cuotas.filter(p => p.moneda==='ARS' && p.concepto > 0).length;
   let qCuotasUSD = dataContrato?.cuotas.filter(p => p.moneda==='USD' && p.concepto > 0).length;
-
+  var tipos = [{id: 0, descripcion: 'Adhesión'}, {id: 1, descripcion: 'Cesión'}, {id: 2, descripcion: 'Adenda'}];
 
   let verAgregar = (loggedUser?.['rol.contrato'] ==='vista'); // si es vista, no ve boton agregar 
 
+  
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
@@ -146,6 +147,8 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
 
                 <FormCesion
                       contratoId={contratoId} 
+                      fideicomisoId={dataContrato?.cont?.fideicomisoId}
+                      tipos={tipos}
                       idSociety={idSociety}
                       loggedUser={loggedUser}
                       personas={personas}
@@ -160,6 +163,7 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
                   return <RepeaterCesion     
                             key={'rep_'+ index}             
                             idSociety={idSociety}
+                            tipos={tipos}
                             fila={dataContrato?.cesiones?.length - index - 1}
                             fideicomisoId={dataContrato?.cont?.fideicomisoId}
                             cesion={item}

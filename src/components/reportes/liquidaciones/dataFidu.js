@@ -77,7 +77,7 @@ espacio5: {
 
 });
 
-  const dataFidu = ({cont, liq, cesion, productos, letras, qCuotasARS, qCuotasUSD}) => ( 
+  const dataFidu = ({cont, liq, cesion, productos, letras, qCuotasARS, qCuotasUSD, qntDecimals}) => ( 
                 
                 <View style={{ flexDirection: 'row',flexWrap: 'wrap', margin: 0, borderWidth: 0, borderColor: '#000000', }} >
                 
@@ -119,7 +119,7 @@ espacio5: {
                         <Text style={[styles.col1, {margin: 0,}]}>Fecha de adhesion: </Text>
                         <Text style={[styles.col2, {margin: 0,}]}>{cont?.adhesion.slice(0,10)}</Text>
                         <Text style={[styles.col3, {margin: 0}]}>CAC Base:</Text>
-                        <Text style={[{margin: 0, width: '26%',textAlign: 'left', paddingLeft: 8,}]}>{liq?.data?.CACBase}</Text>
+                        <Text style={[{margin: 0, width: '26%',textAlign: 'left', paddingLeft: 8,}]}>{Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number(parseFloat(liq?.data?.CACBase)).toFixed(qntDecimals))}</Text>
                       </View>
 
                       <View 

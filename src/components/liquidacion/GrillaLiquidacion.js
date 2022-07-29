@@ -62,6 +62,45 @@ const columns = (modo, acceso, saveFile, setIsPromptOpen, setRowIdToDelete) => [
       new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
   },
 
+  {
+    field: 'ultCuotaARS',
+    preProcessEditCellProps: onlyNumbers,
+    headerName: 'Ultima Cuota',
+    width: 170,
+    editable: false,
+    headerAlign: 'center',
+    align: 'right',
+
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+
+  {
+    field: 'deudaARS',
+    preProcessEditCellProps: onlyNumbers,
+    headerName: 'Deuda',
+    width: 170,
+    editable: false,
+    headerAlign: 'center',
+    align: 'right',
+
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+
+  {
+    field: 'punitorioARS',
+    preProcessEditCellProps: onlyNumbers,
+    headerName: 'Punitorios',
+    width: 170,
+    editable: false,
+    headerAlign: 'center',
+    align: 'right',
+
+    valueFormatter: ({ value }) =>
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+  },
+
   /*
   {
     field: 'saldoUSD',
@@ -226,6 +265,12 @@ export function GrillaLiquidacion({ modo, loggedUser, fideicomisos, contratos, f
                 periodo: item?.periodo,
                 saldoARS: item?.saldoARS,
                 saldoUSD: item?.saldoUSD,
+                ultCuotaARS: item?.ultCuotaARS,
+                ultCuotaUSD: item?.ultCuotaUSD,
+                deudaARS: item?.deudaARS,
+                deudaUSD: item?.deudaUSD,
+                punitorioARS: item?.punitorioARS,
+                punitorioUSD: item?.punitorioUSD,
                 link: item?.link,  
                 deleteId: item?.id,
               }))}

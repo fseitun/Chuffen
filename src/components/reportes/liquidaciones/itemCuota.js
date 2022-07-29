@@ -48,12 +48,11 @@ const styles = StyleSheet.create({
 
 });
 
-
-    var itemCobro = ({conceptosCuota, fide, cuotas, ajusteEst, ajusteDelt}) => cuotas.map(function(p, i){
+    var itemCobro = ({conceptosCuota, fide, cuotas, ajusteEst, ajusteDelt, qntDecimals}) => cuotas.map(function(p, i){
       return (
         <View key={'rowCont' + p.numero + i}  style={[{ margin: 0, borderWidth: 0}]} >
 
-          {p.moneda==='ARS' && p.concepto>0?(
+          {p.moneda==='ARS' && p.concepto>0 && p.concepto!==3?(
             <View key={'rowCont' + p.numero + i}  style={[{ margin: 0, borderWidth: 0}]} >
 
               <View key={'row1' + p.numero + i}  style={[styles.row, { borderBottomColor: fide?.color }]} >
@@ -62,7 +61,7 @@ const styles = StyleSheet.create({
                 <Text key={'col_b' + i} style={[styles.col2, { borderRightColor: fide?.color }]}>{conceptosCuota?.find(c => c.id === p.concepto)?.descripcion}</Text>
                 <Text key={'col_c' + i} style={[styles.col2bis, { borderRightColor: fide?.color }]}> {" "}</Text>
                 <Text key={'col_d' + i} style={[styles.col3, { borderRightColor: fide?.color }]}> {p.moneda}</Text>
-                <Text key={'col_e' + i} style={[styles.col4, { borderRightColor: fide?.color }]}> {Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(p.monto))}</Text>            
+                <Text key={'col_e' + i} style={[styles.col4, { borderRightColor: fide?.color }]}> {Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number(parseFloat(p.monto)).toFixed(qntDecimals))}</Text>            
                 
               </View>  
 
@@ -70,9 +69,9 @@ const styles = StyleSheet.create({
 
                 <Text key={'col_f' + i} style={[styles.col1, { borderRightColor: fide?.color }]}>{mostrarFecha(p.fecha)}</Text>
                 <Text key={'col_g' + i} style={[styles.col2, { borderRightColor: fide?.color }]}> {"Cuota ajuste CAC Estimado"}</Text>
-                <Text key={'col_h' + i} style={[styles.col2bis, { borderRightColor: fide?.color }]}>{ajusteEst[i]?.CAC}</Text>
+                <Text key={'col_h' + i} style={[styles.col2bis, { borderRightColor: fide?.color }]}>{Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number(parseFloat(ajusteEst[i]?.CAC)).toFixed(qntDecimals))}</Text>
                 <Text key={'col_i' + i} style={[styles.col3, { borderRightColor: fide?.color }]}> {p.moneda}</Text>
-                <Text key={'col_j' + i} style={[styles.col4, { borderRightColor: fide?.color }]}> {Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(ajusteEst[i]?.monto))}</Text>            
+                <Text key={'col_j' + i} style={[styles.col4, { borderRightColor: fide?.color }]}> {Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number(parseFloat(ajusteEst[i]?.monto)).toFixed(qntDecimals))}</Text>            
 
               </View>  
 
@@ -80,9 +79,9 @@ const styles = StyleSheet.create({
 
                 <Text key={'col_k' + i} style={[styles.col1, { borderRightColor: fide?.color }]}>{mostrarFecha(p.fecha)}</Text>
                 <Text key={'col_l' + i} style={[styles.col2, { borderRightColor: fide?.color }]}>{"Cuota ajuste CAC Delta Def."}</Text>
-                <Text key={'col_m' + i} style={[styles.col2bis, { borderRightColor: fide?.color }]}>{ajusteDelt[i]?.CAC}</Text>
+                <Text key={'col_m' + i} style={[styles.col2bis, { borderRightColor: fide?.color }]}>{Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number(parseFloat(ajusteDelt[i]?.CAC)).toFixed(qntDecimals))}</Text>
                 <Text key={'col_n' + i} style={[styles.col3, { borderRightColor: fide?.color }]}> {p.moneda}</Text>
-                <Text key={'col_o' + i} style={[styles.col4, { borderRightColor: fide?.color }]}> {Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(ajusteDelt[i]?.monto))}</Text>            
+                <Text key={'col_o' + i} style={[styles.col4, { borderRightColor: fide?.color }]}> {Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number(parseFloat(ajusteDelt[i]?.monto)).toFixed(qntDecimals))}</Text>            
 
               </View>  
 
@@ -97,7 +96,7 @@ const styles = StyleSheet.create({
                 <Text key={'col_b' + i} style={[styles.col2, { borderRightColor: fide?.color }]}>{conceptosCuota?.find(c => c.id === p.concepto)?.descripcion}</Text>
                 <Text key={'col_c' + i} style={[styles.col2bis, { borderRightColor: fide?.color }]}> {" "}</Text>
                 <Text key={'col_d' + i} style={[styles.col3, { borderRightColor: fide?.color }]}> {p.moneda}</Text>
-                <Text key={'col_e' + i} style={[styles.col4, { borderRightColor: fide?.color }]}> {Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(p.monto))}</Text>            
+                <Text key={'col_e' + i} style={[styles.col4, { borderRightColor: fide?.color }]}> {Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number(parseFloat(p.monto)).toFixed(qntDecimals))}</Text>            
                 
               </View>  
             </View>)} 

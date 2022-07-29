@@ -15,7 +15,7 @@ import { saveAs } from "file-saver";
 
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
-
+//fff
 export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRetIVA, certificado, retSUSS, setRetSUSS, OPId, loggedUser, estadoOP, confirmada, formOP, isLoading, error, refetch, empresaId, fideicomiso}) {
 
   const { Prompt } = usePrompt();

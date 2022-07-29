@@ -20,12 +20,12 @@ export function FormCobro({ mode, contrato, conceptosPago, formaPagosFidu, contr
   
   const idSociety = useContext(SocietyContext);
   const { Prompt } = usePrompt();
-  const queryClient = useQueryClient();
-
-  
+  const queryClient = useQueryClient(); 
   
   const [formaPagoFidu, setFormaPagoFidu] = useState(null);
   const [moneda, setMoneda] = useState({id: 'ARS', descripcion: 'ARS'});
+  const [punto, setPunto] = useState({id: 1, descripcion: '1'});
+
   const [concepto, setConcepto] = useState(null);
 
   let iniFide =null;
@@ -38,6 +38,7 @@ export function FormCobro({ mode, contrato, conceptosPago, formaPagosFidu, contr
   const [fideInForm, setFideInForm] = useState(iniFide);
   const [contInForm, setContInForm] = useState(iniCont);
 
+  var puntos = [{id: 1, descripcion: '1'}, {id: 2, descripcion: '2'}];
   var monedas = [{id: 'ARS', descripcion: 'ARS'}, {id: 'USD', descripcion: 'USD'}];
   
   var data = null;
@@ -102,12 +103,9 @@ export function FormCobro({ mode, contrato, conceptosPago, formaPagosFidu, contr
             timeZone: 'UTC',
           })
         }
-        
-        let ptoVenta = "00000" + (Cobro?.reciboNum + "").slice(0, 1)
 
-        // console.log(222222, contrato);
         data = {
-          'cobro_numero': ptoVenta.slice(-5) + "-" + (Cobro?.reciboNum + "").slice(1, 9),// ptoVenta.slice(-5) + "-" + numTXT.slice(1, 9),
+          'cobro_numero': ("00000" + Cobro?.ptoVenta).slice(-5) + "-" + ("00000000" + Cobro?.reciboNum).slice(-8),
           'fide_nombre': mode==='contrato'? contrato?.cont?.fideicomisos[0]?.empresas[0]?.razonSocial: fideInForm?.empresas[0]?.razonSocial,
           'fide_cuit': mode==='contrato'? mostrarCUIT(contrato?.cont?.fideicomisos[0]?.empresas[0]?.CUIT):mostrarCUIT(fideInForm?.empresas[0]?.CUIT),
           'fide_fecha': f,
@@ -190,7 +188,6 @@ export function FormCobro({ mode, contrato, conceptosPago, formaPagosFidu, contr
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           
-          console.log(22222, num_to_api(values?.monto), values?.monto)
           addCobro_1_of_3({         
             fecha: values?.fecha, 
             concepto: concepto.id,
@@ -199,6 +196,7 @@ export function FormCobro({ mode, contrato, conceptosPago, formaPagosFidu, contr
             fideicomisoId: fideInForm.id,
             reciboUrl: apiServerUrl + folder + nombreRecibo(mode==='contrato'? contrato?.cont?.fideicomisos[0]?.empresas[0]?.razonSocial: fideInForm?.empresas[0]?.razonSocial, mode==='contrato'? contrato?.cont?.nombre:contInForm?.nombre, "*****"), // los 5 asteriscos los edita en la API por el nuevo ID
             contratoId: contInForm.id,
+            ptoVenta: punto.id,
             moneda: moneda.id,
             creador: loggedUser.id
 
@@ -272,6 +270,25 @@ export function FormCobro({ mode, contrato, conceptosPago, formaPagosFidu, contr
                 options={(conceptosPago? conceptosPago:[])}
                 renderInput={params => <TextField {...params} label='Concepto' />}
               />
+
+              <Field
+                as={Autocomplete}
+                size={'small'}
+                label='Pto. Venta'
+                title="Punto de Venta"
+                disablePortal
+                required
+                style={{ width: '120px', display: 'inline-flex' }}
+                onChange={(event, newValue) => {
+                  setPunto(newValue);
+                  setFieldValue('ptoVenta', newValue);
+                }}
+                value={punto}
+                getOptionLabel={option => option.descripcion}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                options={(puntos? puntos:[])}
+                renderInput={params => <TextField {...params} label='Punto de Venta' />}
+              />
           
 
             <NumberFormat
@@ -281,7 +298,7 @@ export function FormCobro({ mode, contrato, conceptosPago, formaPagosFidu, contr
             name='monto'
             required
             onChange={(event) => {
-              // console.log(333333, event.target?.value);
+
               setFieldValue('monto', event.target?.value);
             }}
  

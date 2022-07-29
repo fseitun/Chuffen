@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
 
 
 
-  const detalle = ({conceptosPago, conceptosCuota, cont, liq}) => (
+  const detalle = ({conceptosPago, conceptosCuota, cont, liq, qntDecimals}) => (
 
  
                 
@@ -108,13 +108,13 @@ const styles = StyleSheet.create({
                         style={[styles.container, { margin: 0, borderBottomColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>
                         <Text style={[styles.col1, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Fecha</Text>
                         <Text style={[styles.col2, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Concepto</Text>
-                        <Text style={[styles.col2bis, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>V. Unitario</Text>
+                        <Text style={[styles.col2bis, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>CAC</Text>
                         <Text style={[styles.col3, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Mon.</Text>
                         <Text style={[styles.col4, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Monto</Text>
 
                       </View> 
 
-                      <ItemCuota  conceptosCuota={conceptosCuota} fide={cont?.fideicomisos[0]}  cuotas={liq?.data?.cuotas}  ajusteEst={liq?.data?.ajusteEst} ajusteDelt={liq?.data?.ajusteDelt} /> 
+                      <ItemCuota  qntDecimals={qntDecimals}  conceptosCuota={conceptosCuota} fide={cont?.fideicomisos[0]}  cuotas={liq?.data?.cuotas}  ajusteEst={liq?.data?.ajusteEst} ajusteDelt={liq?.data?.ajusteDelt} /> 
                     
                   
                   </View>      
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
                         <Text style={[styles.cob_col4, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Monto</Text>
 
                       </View> 
-                      <ItemCobro  conceptosPago={conceptosPago} fide={cont?.fideicomisos[0]} cobros={liq?.data?.cobros}  />  
+                      <ItemCobro  qntDecimals={qntDecimals} conceptosPago={conceptosPago} fide={cont?.fideicomisos[0]} cobros={liq?.data?.cobros}  />  
                   </View>              
 
                 </View>         

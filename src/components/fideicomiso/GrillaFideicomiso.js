@@ -2,12 +2,20 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridToolbarDensitySelector } from '@mui/x-data-grid';
-import { TextField, Autocomplete, Button } from '@mui/material';
+import { TextField, Box, Autocomplete, Button } from '@mui/material';
+import { darken, lighten } from '@mui/material/styles';
 import { getMethod, postMethod, deleteMethod } from 'src/utils/api';
 import { buscarCAC } from 'src/utils/utils';
 import { usePrompt } from 'src/utils/usePrompt';
 import { NavLink as RouterLink } from 'react-router-dom';
+
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
+
+const getBackgroundColor = (color, mode) =>
+  mode === 'dark' ? darken(color, 0.6) : lighten(color, 0.6);
+
+const getHoverBackgroundColor = (color, mode) =>
+  mode === 'dark' ? darken(color, 0.5) : lighten(color, 0.5)
 
 const columns = (color, setColor, id,  setIsPromptOpen, setRowIdToDelete) => [
   {
@@ -162,7 +170,7 @@ export function GrillaFideicomiso({ idSociety }) {
     data: fideicomisoInformation,
     isLoading,
     error,
-  } = useQuery(['fideicomiso', idSociety], () => getMethod(`fideicomiso/listar/${idSociety.id}`));
+  } = useQuery(['fideicomiso', idSociety], () => getMethod(`fideicomiso/listarActivos/${idSociety.id}`));
 
   const queryClient = useQueryClient();
 
@@ -234,8 +242,52 @@ export function GrillaFideicomiso({ idSociety }) {
   } else
     return (
       <div style={{ width: '100%' }}>
+
+        <Box
+            sx={{
+              height: 400,
+              width: 1,
+            // Confirmada
+              '& .color_x_estado-conf': {
+                bgcolor: (theme) =>
+                getBackgroundColor(theme.palette.success.main, theme.palette.mode),
+              '&:hover': {
+                bgcolor: (theme) =>
+                  getHoverBackgroundColor(
+                    theme.palette.success.main,
+                    theme.palette.mode,),},
+              },
+              // para autorizar
+              '& .color_x_estado-auth': {
+                bgcolor: (theme) =>
+                  getBackgroundColor(theme.palette.error.main, theme.palette.mode),
+                '&:hover': {
+                  bgcolor: (theme) =>
+                    getHoverBackgroundColor(theme.palette.error.main, theme.palette.mode),},
+              },
+              // anulada
+              '& .color_x_estado-anulado': {
+                bgcolor: (theme) =>
+                  getBackgroundColor(theme.palette.text.primary, theme.palette.mode),
+                '&:hover': {
+                  bgcolor: (theme) =>
+                    getHoverBackgroundColor(theme.palette.text.primary, theme.palette.mode),},
+              },
+                // para pagar
+                '& .color_x_estado-parap': {
+                  bgcolor: (theme) =>
+                    getBackgroundColor(theme.palette.warning.light, theme.palette.mode),
+                  '&:hover': {
+                    bgcolor: (theme) =>
+                      getHoverBackgroundColor(theme.palette.warning.light, theme.palette.mode),},
+                },
+              
+            }}
+          >  
+
         <Prompt message="¿Eliminar fila?" action={() => eliminate(rowIdToDelete)} />
         <DataGrid
+
           rows={fideicomisoInformation.map(fideicomiso => ({
             id: fideicomiso?.id,
             nombre: fideicomiso?.nombre,
@@ -252,17 +304,16 @@ export function GrillaFideicomiso({ idSociety }) {
             empresaId: fideicomiso?.empresaId,
             deleteId: fideicomiso?.id,
           }))}
+
           onCellEditCommit={modifyData}
           columns={columns(color, setColor, idSociety?.id, setIsPromptOpen, setRowIdToDelete)}
-          
           sortModel={sortModel}
           onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
-       
+          getRowClassName={(params) => `color_x_estado-${params.row.cloud===0?'conf':'regular'}`}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[10, 25, 50, 100]}
           pagination
-
           disableSelectionOnClick
           autoHeight
           scrollbarSize
@@ -270,6 +321,9 @@ export function GrillaFideicomiso({ idSociety }) {
             Toolbar: CustomToolbar,
           }}
         />
+
+        </Box>
+
       </div>
     );
 
@@ -293,8 +347,7 @@ function IrDetalleOP_0(params) {
 
 function CustomToolbar() {
   return (
-    <GridToolbarContainer>
-      
+    <GridToolbarContainer>      
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
       <GridToolbarExport csvOptions={{ fields: ['nombre','fechaInicio','fechaFin'] }} />

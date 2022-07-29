@@ -2,8 +2,7 @@
   import { useState } from 'react';
   import { TextField, Autocomplete, Hidden } from '@mui/material';
   import { Formik, Form, Field } from 'formik';
-  import { useContext } from 'react';
-  import { TiposContext} from 'src/App';
+
 
   export function FiltroLiquidacion({modo, setFiltFide, setFiltContrato, setFiltPeriodo, fideicomisos, contratos, periodos}) {
  

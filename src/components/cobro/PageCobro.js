@@ -33,7 +33,7 @@ export function PageCobro({ mode, idSociety, loggedUser, contrato}) {
 
   const { data: cuentas_destino} = useQuery(
     ['cuentabanco'], 
-    () => getMethod(`cuentabanco/listar/${idSociety.id}/*`));
+    () => getMethod(`cuentabanco/listarB/${idSociety.id}/*`));
   //////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////
   // var cuentas_destino = [{}];
