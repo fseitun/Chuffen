@@ -18,8 +18,11 @@ export function DetalleContrato({ idSociety, loggedUser }) {
   const { contratoId } = useParams();
 
   const { data: CACs } = useQuery(['CACs', idSociety], 
-    () => getMethod(`CAC/listar/${idSociety.id}`)
-  );
+    () => getMethod(`CAC/listar/${idSociety.id}`));
+  
+  const { data: usuarios } = useQuery(
+    ['usuarios'],
+    () => getMethod(`usuario/listarCombo/${idSociety.id}`));
 
   const { data: empresas } = useQuery(
     ['empresas'],
@@ -35,6 +38,7 @@ export function DetalleContrato({ idSociety, loggedUser }) {
   const [verPDF, setVerPDF] = React.useState(false);
 
   var conceptosCuota = useContext(ConceptosCuotaContext);
+
 
   function nomPdfCargado(obj){
 
@@ -174,6 +178,7 @@ export function DetalleContrato({ idSociety, loggedUser }) {
               contratoId={contratoId}
               idSociety={idSociety}
               loggedUser={loggedUser}
+              usuarios={usuarios}
               dataContrato={dataContrato}
               empresas={empresas}
               personas={personas}

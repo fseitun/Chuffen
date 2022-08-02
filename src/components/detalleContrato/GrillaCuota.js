@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useContext } from 'react';
 import { useQueryClient, useMutation } from 'react-query';
-import { Typography, Grid, Autocomplete, TextField } from '@mui/material';
+import { Typography, Grid, Autocomplete, TextField, Checkbox, Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { postMethod, deleteMethod } from 'src/utils/api';
@@ -9,7 +9,7 @@ import { usePrompt } from 'src/utils/usePrompt';
 import { SocietyContext } from 'src/App';
 
 
-const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [
+const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete, modifyData) => [
   
   
   {
@@ -69,6 +69,36 @@ const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [
   },
 
   {
+    field: 'condonado',
+    headerName: 'Condonado',
+    width: 140,
+    editable: false,
+
+    headerAlign: 'center',
+    
+    renderCell: ({ value, row: { id, son_punitorios,  condonado, field} }) => (
+      !son_punitorios? "":(condonado?
+      (acceso?<Button
+          // sx={{ p: 1, m: 1 }}
+          // variant='contained'
+          size='small'
+          onClick={()=>modifyData({field, id, value})}
+          >Sí</Button>:"Sí"):(acceso?
+      <Button size='small' onClick={()=>modifyData({field, id, value})} >No</Button>:"No"))
+
+    ),
+
+  },
+
+  {
+    field: 'condonador',
+    headerName: 'Condonador',
+    width: 140,
+    editable: false,
+    headerAlign: 'center',
+  },
+
+  {
     field: 'deleteIcon',
     headerName: '',
     width: 50,
@@ -87,7 +117,8 @@ const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete) => [
   },
 ];
 
-export function GrillaCuota({ loggedUser, conceptosCuota, dataContrato, isLoading, error, refetch, moneda}) {
+export function GrillaCuota({ loggedUser, conceptosCuota, usuarios, dataContrato, isLoading, error, refetch, moneda}) {
+  
   const idSociety = useContext(SocietyContext);
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
@@ -122,11 +153,12 @@ export function GrillaCuota({ loggedUser, conceptosCuota, dataContrato, isLoadin
     async ({ field, id, value }) =>
       await postMethod(`cuota/modificar/${idSociety.id}`, {
         id,
-        [field]: value,
+        [field]: field==='condonado'?(value===1?0:1):value,
+        condonador: field==='condonado'? loggedUser?.id:undefined,
       }),
     {
       onMutate: async ({ field, id, value }) => {
-        
+        console.log(5555, field, id, value);
         await queryClient.cancelQueries(['cuota', idSociety]);
         const prevData = queryClient.getQueryData(['cuota', idSociety]);
    
@@ -193,16 +225,21 @@ export function GrillaCuota({ loggedUser, conceptosCuota, dataContrato, isLoadin
                 id: item?.id,
                 fecha: item?.fecha,
                 concepto: conceptosCuota?.find(i => i.id === item?.concepto)?.descripcion,
+                son_punitorios: item?.concepto ===3? true:false,
                 cuota: item?.cuota,
                 monto: item?.monto,
                 moneda: item?.moneda,
                 CACBase: item?.CACBase,
-                createdAt: item?.createdAt,
+                createdAt: item?.createdAt,                  
+                condonado: item?.condonado,
+                // condonador: item?.condonador, 
+                condonador: usuarios?.find(u => u?.id === item?.condonador)?.user,
+                field: "condonado",
                 deleteId: item?.id,
 
               }))}
               onCellEditCommit={modifyData}
-              columns={columns(acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete)}
+              columns={columns(acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete, modifyData)}
 
               sortModel={sortModel}
               onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}

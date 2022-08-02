@@ -101,7 +101,7 @@ espacio5: {
 
                       <View 
                         style={[styles.container, { margin: 0 }]}>
-                        <Text style={[styles.col1, {margin: 0,}]}>Cuenta (CC U$S):</Text>
+                        <Text style={[styles.col1, {margin: 0,}]}></Text>
                         <Text style={[styles.col2, {margin: 0,}]}></Text>
                         <Text style={[styles.col3, {margin: 0,}]}>CUIT:</Text>
                         <Text style={[{margin: 0, width: '26%',textAlign: 'left', paddingLeft: 8,}]}>{cont?.fideicomisos[0]?.empresas[0]?.CUIT}</Text>
@@ -128,7 +128,7 @@ espacio5: {
                       <View 
                         style={[styles.container, { margin: 0 }]}>
                         <Text style={[styles.col1, {margin: 0,}]}></Text>
-                        <Text style={[{margin: 0, color: grey[700], width: '86%', textAlign: 'left', paddingLeft: 15,}]}>Condición de pago del 1 al 15 de cada mes, se solicita enviar comprobante de pago para acreditar la cuota.</Text>
+                        <Text style={[{margin: 0, color: grey[700], width: '86%', textAlign: 'left', paddingLeft: 15,}]}>Condición de pago del 1 al 15 de cada mes, se solicita enviar comprobante de pago para acreditar el aporte.</Text>
                         
                       </View>
 

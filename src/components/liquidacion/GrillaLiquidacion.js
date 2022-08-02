@@ -10,6 +10,8 @@ import { SocietyContext } from 'src/App';
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import { saveAs } from "file-saver";
 
+const qntDecimals = 2;
+
 const columns = (modo, acceso, saveFile, setIsPromptOpen, setRowIdToDelete) => [
   
     
@@ -59,7 +61,7 @@ const columns = (modo, acceso, saveFile, setIsPromptOpen, setRowIdToDelete) => [
     align: 'right',
 
     valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number(value).toFixed(qntDecimals)),
   },
 
   {
@@ -72,7 +74,7 @@ const columns = (modo, acceso, saveFile, setIsPromptOpen, setRowIdToDelete) => [
     align: 'right',
 
     valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number(value).toFixed(qntDecimals)),
   },
 
   {
@@ -85,7 +87,7 @@ const columns = (modo, acceso, saveFile, setIsPromptOpen, setRowIdToDelete) => [
     align: 'right',
 
     valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number(value).toFixed(qntDecimals)),
   },
 
   {
@@ -98,7 +100,7 @@ const columns = (modo, acceso, saveFile, setIsPromptOpen, setRowIdToDelete) => [
     align: 'right',
 
     valueFormatter: ({ value }) =>
-      new Intl.NumberFormat('es-AR', { minimumFractionDigits: 2 }).format(Number(value)),
+      new Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number(value).toFixed(qntDecimals)),
   },
 
   /*
@@ -127,6 +129,7 @@ const columns = (modo, acceso, saveFile, setIsPromptOpen, setRowIdToDelete) => [
                         </IconButton>,
   },
 
+
   
   {
     field: 'deleteIcon',
@@ -152,6 +155,8 @@ export function GrillaLiquidacion({ modo, loggedUser, fideicomisos, contratos, f
   const idSociety = useContext(SocietyContext);
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();
+
+  
 
   var acceso = true;
   if(loggedUser?.['rol.contrato'] ==='vista'){acceso =false}
@@ -271,7 +276,7 @@ export function GrillaLiquidacion({ modo, loggedUser, fideicomisos, contratos, f
                 deudaUSD: item?.deudaUSD,
                 punitorioARS: item?.punitorioARS,
                 punitorioUSD: item?.punitorioUSD,
-                link: item?.link,  
+                link: item?.link,
                 deleteId: item?.id,
               }))}
               

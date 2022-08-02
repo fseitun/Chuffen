@@ -15,29 +15,34 @@ const styles = StyleSheet.create({
   },
 
   col1: {
-    width: '18%',
-    borderRightWidth: 1,
+    width: '16%',
+    //borderRightWidth: 1,
     textAlign: 'center',
-    paddingRight: 2,
+    paddingRight: 0,
   },
 
   col2: {
-      width: '42%',
+      width: '36%',
       textAlign: 'left',
-      borderRightWidth: 1,
-      paddingLeft: 2,
+      //borderRightWidth: 1,
+      paddingLeft: 0,
   },
 
   col3: {
-    width: '14%',
-    borderRightWidth: 1,
+    width: '12%',
+    //borderRightWidth: 1,
     textAlign: 'center',
     paddingRight: 0,
 },
   col4: {
-    width: '26%',
+    width: '22%',
     textAlign: 'right',
-    paddingRight: 2,
+    paddingRight: 0,
+  },
+  col5: {
+    width: '14%',
+    textAlign: 'right',
+    paddingRight: 0,
   },
 
 });
@@ -49,7 +54,8 @@ const styles = StyleSheet.create({
           <Text key={'col_a' + i} style={[styles.col1, { borderRightColor: fide?.color }]}>{mostrarFecha(p.fecha)}</Text>
           <Text key={'col_b' + i} style={[styles.col2, { borderRightColor: fide?.color }]}> {conceptosPago?.find(c => c.id === p.concepto)?.descripcion}</Text>
           <Text key={'col_c' + i} style={[styles.col3, { borderRightColor: fide?.color }]}> {p.moneda}</Text>
-          <Text key={'col_d' + i} style={[styles.col4, { borderRightColor: fide?.color }]}> {Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number(parseFloat(p.monto)).toFixed(qntDecimals))}</Text>            
+          <Text key={'col_d' + i} style={[styles.col4, { borderRightColor: fide?.color }]}> {Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number(parseFloat(p.monto)).toFixed(qntDecimals))}</Text>
+          <Text key={'col_d' + i} style={[styles.col5, { borderRightColor: fide?.color }]}> {("0000" + p.reciboNum).slice(-4)}</Text>            
           
         </View>  
           );

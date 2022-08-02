@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
 
   col1: {
     width: '14%',
-    borderRightWidth: 1,
+    //borderRightWidth: 1,
     textAlign: 'left',
     paddingLeft: 2,
   },
@@ -38,52 +38,57 @@ const styles = StyleSheet.create({
   col2: {
       width: '36%',
       textAlign: 'left',
-      borderRightWidth: 1,
-      paddingLeft: 2,
+      //borderRightWidth: 1,
+      paddingLeft: 0,
   },
   col2bis: {
     width: '16%',
     textAlign: 'left',
-    borderRightWidth: 1,
-    paddingLeft: 2,
+    //borderRightWidth: 1,
+    paddingLeft: 0,
   },
 
   col3: {
     width: '10%',
-    borderRightWidth: 1,
+    //borderRightWidth: 1,
     textAlign: 'left',
-    paddingLeft: 2,
+    paddingLeft: 0,
 },
   col4: {
     width: '24%',
     textAlign: 'right',
-    paddingRight: 2,
+    paddingRight: 0,
   },
 
   cob_col1: {
-    width: '18%',
-    borderRightWidth: 1,
+    width: '16%',
+    //borderRightWidth: 1,
     textAlign: 'left',
-    paddingLeft: 2,
+    paddingLeft: 0,
   },
 
   cob_col2: {
-      width: '42%',
+      width: '36%',
       textAlign: 'left',
-      borderRightWidth: 1,
-      paddingLeft: 2,
+      //borderRightWidth: 1,
+      paddingLeft: 0,
   },
 
   cob_col3: {
-    width: '14%',
-    borderRightWidth: 1,
+    width: '12%',
+    //borderRightWidth: 1,
     textAlign: 'left',
-    paddingLeft: 2,
+    paddingLeft: 0,
 },
   cob_col4: {
-    width: '26%',
+    width: '22%',
     textAlign: 'right',
     paddingRight: 2,
+  },
+  cob_col5: {
+    width: '14%',
+    textAlign: 'right',
+    paddingRight: 0,
   },
 
 });
@@ -106,11 +111,11 @@ const styles = StyleSheet.create({
 
                       <View /* Encabezado*/   
                         style={[styles.container, { margin: 0, borderBottomColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>
-                        <Text style={[styles.col1, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Fecha</Text>
-                        <Text style={[styles.col2, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Concepto</Text>
-                        <Text style={[styles.col2bis, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>CAC</Text>
-                        <Text style={[styles.col3, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Mon.</Text>
-                        <Text style={[styles.col4, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Monto</Text>
+                        <Text style={[styles.col1, ]}>Fecha</Text>
+                        <Text style={[styles.col2, ]}>Concepto</Text>
+                        <Text style={[styles.col2bis, ]}>Indice CAC</Text>
+                        <Text style={[styles.col3, ]}>Mon.</Text>
+                        <Text style={[styles.col4, ]}>Monto</Text>
 
                       </View> 
 
@@ -128,10 +133,11 @@ const styles = StyleSheet.create({
                       </View> 
                       <View /* Encabezado*/   
                       style={[styles.container, { margin: 0, borderBottomColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>
-                        <Text style={[styles.cob_col1, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Fecha</Text>
-                        <Text style={[styles.cob_col2, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Concepto</Text>
-                        <Text style={[styles.cob_col3, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Mon.</Text>
-                        <Text style={[styles.cob_col4, { borderRightColor: cont?.fideicomisos[0]? cont?.fideicomisos[0]?.color:'#ffffff' }]}>Monto</Text>
+                        <Text style={[styles.cob_col1, ]}>Fecha</Text>
+                        <Text style={[styles.cob_col2, ]}>Concepto</Text>
+                        <Text style={[styles.cob_col3, ]}>Mon.</Text>
+                        <Text style={[styles.cob_col4, ]}>Monto</Text>
+                        <Text style={[styles.cob_col5, ]}>Recibo</Text>
 
                       </View> 
                       <ItemCobro  qntDecimals={qntDecimals} conceptosPago={conceptosPago} fide={cont?.fideicomisos[0]} cobros={liq?.data?.cobros}  />  

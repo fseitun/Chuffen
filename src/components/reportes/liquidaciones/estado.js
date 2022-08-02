@@ -110,7 +110,21 @@ espacio5: {
                         style={[styles.container, { margin: 0 }]}>
                         <Text style={[styles.col1, {margin: 0,}]}></Text>
                         <Text style={[styles.col2, {margin: 0,}]}></Text>
-                        <Text style={[styles.col3, {margin: 0, color: grey[700]}]}>Saldo al mes Anterior:</Text>
+                        <Text style={[styles.col3, {margin: 0,}]}>Delta CAC:</Text>
+                        <Text style={[styles.col4, {margin: 0,}]}>ARS&nbsp;</Text>
+                        <Text style={[styles.col5, {margin: 0}]}>{Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number((parseFloat(liq?.data?.totalDeltaCAC)-parseFloat(liq?.data?.totalDeltaCACAnt)).toFixed(qntDecimals)))}</Text>
+                        <Text style={[styles.col6, {margin: 0,}]}></Text>
+                        <Text style={[styles.col7, {margin: 0,}]}></Text>
+
+                      </View> 
+
+                      
+
+                      <View 
+                        style={[styles.container, { margin: 0 }]}>
+                        <Text style={[styles.col1, {margin: 0,}]}></Text>
+                        <Text style={[styles.col2, {margin: 0,}]}></Text>
+                        <Text style={[styles.col3, {margin: 0, color: grey[700]}]}>Saldo:</Text>
                         <Text style={[styles.col4, {margin: 0, color: grey[700] }]}>ARS&nbsp;</Text>
                         <Text style={[styles.col5, {margin: 0, color: grey[700]}]}>{Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number(parseFloat(liq?.data?.deudaARS).toFixed(qntDecimals)))}</Text>
                         <Text style={[styles.col6, {margin: 0, color: grey[700]}]}></Text>
@@ -133,7 +147,7 @@ espacio5: {
                         style={[styles.container, { margin: 0 }]}>
                         <Text style={[styles.col1, {margin: 0,}]}></Text>
                         <Text style={[styles.col2, {margin: 0,}]}></Text>
-                        <Text style={[styles.col3, {margin: 0, color: red[700]}]}>Saldo en cuenta corriente:</Text>
+                        <Text style={[styles.col3, {margin: 0, color: red[700]}]}>Total a pagar:</Text>
                         <Text style={[styles.col4, {margin: 0, color: red[700]}]}>ARS&nbsp;</Text>
                         <Text style={[styles.col5, {margin: 0, color: red[700]}]}>{Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number(parseFloat(liq?.data?.saldoARS).toFixed(qntDecimals)))}</Text>
                         <Text style={[styles.col6, {margin: 0, color: red[700]}]}></Text>

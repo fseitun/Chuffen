@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
 
   col1: {
     width: '14%',
-    borderRightWidth: 1,
+    //borderRightWidth: 1,
     textAlign: 'center',
     paddingRight: 2,
   },
@@ -24,19 +24,19 @@ const styles = StyleSheet.create({
   col2: {
       width: '36%',
       textAlign: 'left',
-      borderRightWidth: 1,
+      //borderRightWidth: 1,
       paddingLeft: 2,
   },
   col2bis: {
     width: '16%',
     textAlign: 'right',
-    borderRightWidth: 1,
+    //borderRightWidth: 1,
     paddingRight: 2,
 },
 
   col3: {
     width: '10%',
-    borderRightWidth: 1,
+    //borderRightWidth: 1,
     textAlign: 'center',
     paddingRight: 0,
 },

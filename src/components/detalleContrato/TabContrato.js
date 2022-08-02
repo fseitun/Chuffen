@@ -9,7 +9,7 @@ import { GrillaItem } from 'src/components/detalleContrato/GrillaItem';
 import { RepeaterCesion } from 'src/components/detalleContrato/RepeaterCesion';
 import { PageCobro } from 'src/components/cobro/PageCobro';
 
-export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota, dataContrato, isLoading, error, refetch, moneda, setMoneda, personas, empresas, CACs}) {
+export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota, usuarios, dataContrato, isLoading, error, refetch, moneda, setMoneda, personas, empresas, CACs}) {
 
 
 
@@ -23,7 +23,6 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
 
   let verAgregar = (loggedUser?.['rol.contrato'] ==='vista'); // si es vista, no ve boton agregar 
 
-  
   if (isLoading) {
     return 'Cargando...';
   } else if (error) {
@@ -100,6 +99,7 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
                 <GrillaCuota
                       idSociety={idSociety}
                       loggedUser={loggedUser}
+                      usuarios={usuarios}
                       dataContrato={dataContrato}
                       isLoading={isLoading}
                       error={error}
@@ -132,6 +132,7 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
                 <GrillaCuota
                       idSociety={idSociety}
                       loggedUser={loggedUser}
+                      usuarios={usuarios}
                       dataContrato={dataContrato}
                       isLoading={isLoading}
                       error={error}

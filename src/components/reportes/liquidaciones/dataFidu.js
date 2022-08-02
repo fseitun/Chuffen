@@ -77,6 +77,21 @@ espacio5: {
 
 });
 
+function ver_productos(productos){
+  // 1 UF
+  let uf = productos.filter(p => p.tipo === 1);
+  // 3 Cochera
+  let co = productos.filter(p => p.tipo === 3);
+  let cocheraTXT = "";
+  if(co.length >0){
+    cocheraTXT = " , Cant. cocheras: " + co.length;
+  }
+  return uf[0]? uf[0]?.codigo:"-" + cocheraTXT;
+  
+   
+  // productos[0]?.codigo + (productos[1]? ", " + productos[1]?.codigo:"") + (productos[2]? ", " + productos[2]?.codigo:"");
+}
+
   const dataFidu = ({cont, liq, cesion, productos, letras, qCuotasARS, qCuotasUSD, qntDecimals}) => ( 
                 
                 <View style={{ flexDirection: 'row',flexWrap: 'wrap', margin: 0, borderWidth: 0, borderColor: '#000000', }} >
@@ -102,14 +117,14 @@ espacio5: {
                         style={[styles.container, { margin: 0 }]}>
                         <Text style={[styles.col1, {margin: 0,}]}>DNI/DUIL/CUIT:</Text>
                         <Text style={[styles.col2, {margin: 0,}]}>{cesion?.cesionItems[0]?.personaId>0?   cesion?.cesionItems[0]?.personas[0]?.CUIT:cesion?.cesionItems[0]?.empresaId>0? cesion?.cesionItems[0]?.empresas[0]?.CUIT:""}</Text>
-                        <Text style={[styles.col3, {margin: 0}]}>Cuotas Totales:</Text>
+                        <Text style={[styles.col3, {margin: 0}]}>Cantidad cuotas:</Text>
                         <Text style={[{margin: 0, width: '26%',textAlign: 'left', paddingLeft: 8,}]}>{qCuotasARS + qCuotasUSD}</Text>
                       </View>           
 
                       <View 
                         style={[styles.container, { margin: 0 }]}>
                         <Text style={[styles.col1, {margin: 0,}]}>Unidad funcional:</Text>
-                        <Text style={[styles.col2, {margin: 0,}]}>{productos[0]?.codigo + (productos[1]? ", " + productos[1]?.codigo:"") + (productos[2]? ", " + productos[2]?.codigo:"")}</Text>
+                        <Text style={[styles.col2, {margin: 0,}]}>{ver_productos(productos)}</Text>
                         <Text style={[styles.col3, {margin: 0}]}>Tipo de fiduciante:</Text>
                         <Text style={[{margin: 0, width: '26%',textAlign: 'left', paddingLeft: 8,}]}>{cesion?.cesionItems[0]?.personaId>0? letras?.find(i => i.id === parseInt(cesion?.cesionItems[0]?.personas[0]?.letra))?.descripcion:""}</Text>
                       </View> 
