@@ -60,7 +60,7 @@ const columns = (setIsPromptOpen, setRowIdToDelete) => [
   },
 ];
 
-export function GrillaDolar() {
+export function GrillaDolar({loggedUser}) {
   const idSociety = useContext(SocietyContext);
   const { Prompt, setIsPromptOpen } = usePrompt(() => {});
   const [rowIdToDelete, setRowIdToDelete] = useState();

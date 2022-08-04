@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useContext } from 'react';
 import { useQueryClient, useMutation } from 'react-query';
-import { Typography, Grid, Autocomplete, TextField, Checkbox, Button } from '@mui/material';
+import { Typography, Grid, Autocomplete, TextField, Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { postMethod, deleteMethod } from 'src/utils/api';
@@ -71,7 +71,7 @@ const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete, modi
   {
     field: 'condonado',
     headerName: 'Condonado',
-    width: 140,
+    width: 155,
     editable: false,
 
     headerAlign: 'center',
@@ -92,8 +92,8 @@ const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete, modi
 
   {
     field: 'condonador',
-    headerName: 'Condonador',
-    width: 140,
+    headerName: 'Usuario',
+    width: 155,
     editable: false,
     headerAlign: 'center',
   },
@@ -232,7 +232,6 @@ export function GrillaCuota({ loggedUser, conceptosCuota, usuarios, dataContrato
                 CACBase: item?.CACBase,
                 createdAt: item?.createdAt,                  
                 condonado: item?.condonado,
-                // condonador: item?.condonador, 
                 condonador: usuarios?.find(u => u?.id === item?.condonador)?.user,
                 field: "condonado",
                 deleteId: item?.id,
@@ -243,7 +242,7 @@ export function GrillaCuota({ loggedUser, conceptosCuota, usuarios, dataContrato
 
               sortModel={sortModel}
               onSortModelChange={(model) => model[0]!==sortModel[0]?onSort(model):false}
-              /*pageSize={25}*/
+
               disableSelectionOnClick
               autoHeight              
             />

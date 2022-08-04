@@ -2,6 +2,12 @@ import axios from 'axios';
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
+const token = JSON.parse(localStorage.getItem("loggedUserInfo"))?.token;
+
+axios.defaults.headers.common = {
+  'Authorization': 'Bearer ' + token
+};
+
 export const getMethod = async url => {
   const { data } = await axios.get(`${apiServerUrl}${url}`);
   return data;
