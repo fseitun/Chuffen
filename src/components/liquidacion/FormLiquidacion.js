@@ -129,7 +129,7 @@ export function FormLiquidacion({ contrato, productos, cesion, qCuotasARS, qCuot
             fechaLiquidacion: date_to_YYYYMMDD(values?.fecha), 
             tasaPunitoria: contrato?.fideicomisos[0]?.tasaPunitoria,
             qntDias: contrato?.fideicomisos[0]?.qntDias,            
-            contrato: {id: contrato?.id, nombre: contrato?.nombre, fideicomisoId: contrato?.fideicomisoId, adhesion: contrato?.adhesion},
+            contrato: {id: contrato?.id, nombre: contrato?.nombre, fideicomisoId: contrato?.fideicomisoId, adhesion: contrato?.adhesion, CACbase: contrato?.CACbase},
             link: apiServerUrl + folder + nombreLiq(date_to_YYYYMMDD(values?.fecha)),
        
             creador: loggedUser.id
