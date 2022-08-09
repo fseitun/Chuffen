@@ -2,7 +2,6 @@ import React from 'react';
 import {Text, View, StyleSheet} from '@react-pdf/renderer';
 import { grey, red } from '@mui/material/colors';
 
-
 const styles = StyleSheet.create({
 
   titulo: {
@@ -112,7 +111,7 @@ espacio5: {
                         <Text style={[styles.col2, {margin: 0,}]}></Text>
                         <Text style={[styles.col3, {margin: 0,}]}>Delta CAC:</Text>
                         <Text style={[styles.col4, {margin: 0,}]}>ARS&nbsp;</Text>
-                        <Text style={[styles.col5, {margin: 0}]}>{Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number((parseFloat(liq?.data?.totalDeltaCAC)-parseFloat(liq?.data?.totalDeltaCACAnt)).toFixed(qntDecimals)))}</Text>
+                        <Text style={[styles.col5, {margin: 0}]}>{Intl.NumberFormat('es-AR', { minimumFractionDigits: qntDecimals }).format(Number((liq?.data?.saldoAntARS > 1.? parseFloat(liq?.data?.totalDeltaCAC)-parseFloat(liq?.data?.totalDeltaCACAnt):0.).toFixed(qntDecimals)))}</Text>
                         <Text style={[styles.col6, {margin: 0,}]}></Text>
                         <Text style={[styles.col7, {margin: 0,}]}></Text>
 

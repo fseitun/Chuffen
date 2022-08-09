@@ -13,9 +13,8 @@ import { EstadosContext, RetencionesContext, FormaPagosContext, FondosContext} f
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import { saveAs } from "file-saver";
 
-
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
-//fff
+
 export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRetIVA, certificado, retSUSS, setRetSUSS, OPId, loggedUser, estadoOP, confirmada, formOP, isLoading, error, refetch, empresaId, fideicomiso}) {
 
   const { Prompt } = usePrompt();
@@ -847,7 +846,6 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                         <DesktopDatePicker
                           label="Fecha"
                           inputFormat="dd/MM/yyyy"
-                          // moment.isDate(obj)
                           value={isValidDate(formOP?.OPpago.fecha2)? formOP?.OPpago.fecha2:null}
                           name="fecha2"
                           InputProps={{
@@ -855,7 +853,6 @@ export function FormDetalleOP({ idSociety, _bancos, _cuentasbanco, retIVA, setRe
                           }} 
 
                           onChange={event => handleModification(event, setFieldValue, refetch, 'fecha2', idSociety.id, OPId, 2, 0)}
-                          // onChange={value => setFieldValue(name, value)}
                           renderInput={params => <TextField required size="small" {...params} />}
                         />
                       </LocalizationProvider>

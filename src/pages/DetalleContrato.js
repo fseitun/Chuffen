@@ -5,7 +5,8 @@ import Grid from '@mui/material/Grid';
 import { Container, Box, Typography, Hidden, Button } from '@mui/material';
 import { useQuery } from 'react-query';
 import { TabContrato } from 'src/components/detalleContrato/TabContrato';
-import { mostrarFechaMesTXT, buscarCAC } from 'src/utils/utils';
+import { FormContrato } from 'src/components/detalleContrato/FormContrato';
+import { mostrarFechaMesTXT } from 'src/utils/utils';
 import { getMethod } from 'src/utils/api';
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import RepContrato from "src/components/reportes/contrato/contrato";
@@ -39,6 +40,7 @@ export function DetalleContrato({ idSociety, loggedUser }) {
 
   var conceptosCuota = useContext(ConceptosCuotaContext);
 
+  let acceso = (loggedUser?.['rol.contrato'] !=='vista'); // si es vista, no ve boton agregar 
 
   function nomPdfCargado(obj){
 
@@ -78,6 +80,11 @@ export function DetalleContrato({ idSociety, loggedUser }) {
       
   }
 
+  if (isLoading) {
+    return 'Cargando...';
+  } else if (error) {
+    return `Hubo un error: ${error.message}`;
+  } else
 
   return (  
 
@@ -157,12 +164,28 @@ export function DetalleContrato({ idSociety, loggedUser }) {
               </Grid>   
               <Grid item md={2} >
                 <Typography align="left" color="textPrimary" variant="h5">
-                    Cuotas USD: {qDolar} 
+                    Cuotas USD: {qDolar}
                 </Typography>
-              </Grid>                    
-              <Grid item md={2} >
+              </Grid>  
+              <Grid item md={1} >
+                <Typography align="right" color="textPrimary" variant="h5">
+                    CAC Base: 
+                </Typography>
+              </Grid>                   
+              <Grid item md={1} >
                 <Typography align="left" color="textPrimary" variant="h5">
-                    CAC Base: {buscarCAC(CACs, dataContrato?.cont?.adhesion, "Construción")} 
+                    
+                    <FormContrato                    
+                      
+                      CACs={CACs}
+                      isLoading={isLoading}
+                      error={error}
+                      idSociety={idSociety} 
+                      acceso={acceso}
+                      contrato={dataContrato?.cont}
+
+                    />
+
                 </Typography>
               </Grid>
               <Grid item md={3} >
@@ -177,6 +200,7 @@ export function DetalleContrato({ idSociety, loggedUser }) {
             <TabContrato
               contratoId={contratoId}
               idSociety={idSociety}
+              acceso={acceso}
               loggedUser={loggedUser}
               usuarios={usuarios}
               dataContrato={dataContrato}

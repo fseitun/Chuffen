@@ -16,6 +16,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
 import { NavLink as RouterLink } from 'react-router-dom';
+import { date_to_YYYYMM } from 'src/utils/utils';
 
 
 function not(a, b) {
@@ -30,6 +31,297 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
 
   const { setIsPromptOpen, Prompt } = usePrompt();
   const queryClient = useQueryClient();
+
+  const periodos = [
+    {
+        "periodo": 201901,
+        "id": 201901
+    },
+    {
+        "periodo": 201902,
+        "id": 201902
+    },
+    {
+        "periodo": 201903,
+        "id": 201903
+    },
+    {
+        "periodo": 201904,
+        "id": 201904
+    },
+    {
+        "periodo": 201905,
+        "id": 201905
+    },
+    {
+        "periodo": 201906,
+        "id": 201906
+    },
+    {
+        "periodo": 201907,
+        "id": 201907
+    },
+    {
+        "periodo": 201908,
+        "id": 201908
+    },
+    {
+        "periodo": 201909,
+        "id": 201909
+    },
+    {
+        "periodo": 201910,
+        "id": 201910
+    },
+    {
+        "periodo": 201911,
+        "id": 201911
+    },
+    {
+        "periodo": 201912,
+        "id": 201912
+    },
+    {
+        "periodo": 202001,
+        "id": 202001
+    },
+    {
+        "periodo": 202002,
+        "id": 202002
+    },
+    {
+        "periodo": 202003,
+        "id": 202003
+    },
+    {
+        "periodo": 202004,
+        "id": 202004
+    },
+    {
+        "periodo": 202005,
+        "id": 202005
+    },
+    {
+        "periodo": 202006,
+        "id": 202006
+    },
+    {
+        "periodo": 202007,
+        "id": 202007
+    },
+    {
+        "periodo": 202008,
+        "id": 202008
+    },
+    {
+        "periodo": 202009,
+        "id": 202009
+    },
+    {
+        "periodo": 202010,
+        "id": 202010
+    },
+    {
+        "periodo": 202011,
+        "id": 202011
+    },
+    {
+        "periodo": 202012,
+        "id": 202012
+    },
+    {
+        "periodo": 202101,
+        "id": 202101
+    },
+    {
+        "periodo": 202102,
+        "id": 202102
+    },
+    {
+        "periodo": 202103,
+        "id": 202103
+    },
+    {
+        "periodo": 202104,
+        "id": 202104
+    },
+    {
+        "periodo": 202105,
+        "id": 202105
+    },
+    {
+        "periodo": 202106,
+        "id": 202106
+    },
+    {
+        "periodo": 202107,
+        "id": 202107
+    },
+    {
+        "periodo": 202108,
+        "id": 202108
+    },
+    {
+        "periodo": 202109,
+        "id": 202109
+    },
+    {
+        "periodo": 202110,
+        "id": 202110
+    },
+    {
+        "periodo": 202111,
+        "id": 202111
+    },
+    {
+        "periodo": 202112,
+        "id": 202112
+    },    
+    {
+        "periodo": 202201,
+        "id": 202201
+    },
+    {
+        "periodo": 202202,
+        "id": 202202
+    },
+    {
+        "periodo": 202203,
+        "id": 202203
+    },
+    {
+        "periodo": 202204,
+        "id": 202204
+    },
+    {
+        "periodo": 202205,
+        "id": 202205
+    },
+    {
+        "periodo": 202206,
+        "id": 202206
+    },
+    {
+        "periodo": 202207,
+        "id": 202207
+    },
+    {
+        "periodo": 202208,
+        "id": 202208
+    },
+    {
+        "periodo": 202209,
+        "id": 202209
+    },
+    {
+        "periodo": 202210,
+        "id": 202210
+    },
+    {
+        "periodo": 202211,
+        "id": 202211
+    },    
+    {
+        "periodo": 202212,
+        "id": 202212
+    },   
+    {
+        "periodo": 202301,
+        "id": 202301
+    },
+    {
+        "periodo": 202302,
+        "id": 202302
+    },
+    {
+        "periodo": 202303,
+        "id": 202303
+    },
+    {
+        "periodo": 202304,
+        "id": 202304
+    },
+    {
+        "periodo": 202305,
+        "id": 202305
+    },
+    {
+        "periodo": 202306,
+        "id": 202306
+    },
+    {
+        "periodo": 202307,
+        "id": 202307
+    },
+    {
+        "periodo": 202308,
+        "id": 202308
+    },
+    {
+        "periodo": 202309,
+        "id": 202309
+    },
+    {
+        "periodo": 202310,
+        "id": 202310
+    },
+    {
+        "periodo": 202311,
+        "id": 202311
+    },    
+    {
+        "periodo": 202312,
+        "id": 202312
+    },
+    {
+        "periodo": 202401,
+        "id": 202401
+    },
+    {
+        "periodo": 202402,
+        "id": 202402
+    },
+    {
+        "periodo": 202403,
+        "id": 202403
+    },
+    {
+        "periodo": 202404,
+        "id": 202404
+    },
+    {
+        "periodo": 202405,
+        "id": 202405
+    },
+    {
+        "periodo": 202406,
+        "id": 202406
+    },
+    {
+        "periodo": 202407,
+        "id": 202407
+    },
+    {
+        "periodo": 202408,
+        "id": 202408
+    },
+    {
+        "periodo": 202409,
+        "id": 202409
+    },
+    {
+        "periodo": 202410,
+        "id": 202410
+    },
+    {
+        "periodo": 202411,
+        "id": 202411
+    },    
+    {
+        "periodo": 202412,
+        "id": 202412
+    },
+];
 
   const { mutate: addContrato } = useMutation(
     newContrato => postMethod(`contrato/agregar/${idSociety.id}`, newContrato),
@@ -56,6 +348,11 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
   const [tipoFidu, setTipoFidu] = useState('persona');
   const [cuotas, setCuotas] = useState(0);
   const [open, setOpen] = useState(false);
+
+  let hoy = new Date();
+  let periodo_inicial =   {"periodo": parseInt(date_to_YYYYMM(hoy)), "id": parseInt(date_to_YYYYMM(hoy))};
+
+  const [perInForm, setPerInForm] = useState(periodo_inicial);
   
   function verFidu(e){
     setFiduInForm(null);
@@ -171,6 +468,7 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
               qntCuotas: cuotas,
               montoCuota: values.montoCuota,
               moneda: moneda?.id,
+              periodo1ra: perInForm?.id,
               adhesion: d,
               productos: right,
               creador: loggedUser?.id
@@ -388,7 +686,26 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
                     size="small"
                     style={{ width: '160px'}}
                     name='anticipo'
-                  />   
+                  />  
+
+                  <Field
+                    as={Autocomplete}
+                    size={'small'}
+                    label='Periodo 1ra cuota'
+                    title="Periodo 1ra cuota"
+                    disablePortal
+                    required
+                    style={{ width: '230px', display: 'inline-flex' }}
+                    onChange={(event, newValue) => {
+                      setPerInForm(newValue);
+                    }}
+                    value={perInForm}
+                    getOptionLabel={option => ("" + option.periodo).slice(0,4) + "-" + ("" + option.periodo).slice(4,6)}
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                    options={(periodos? periodos:[])}
+                    renderInput={params => <TextField {...params} label='Periodo 1ra cuota' />}
+                  />
+
 
                   <Field
                     as={TextField}
@@ -410,6 +727,7 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
                       </MenuItem>
                     ))}
                   </Field>
+
 
                   <Field
                     as={TextField}

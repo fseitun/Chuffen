@@ -1,7 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet } from '@react-pdf/renderer';
 import ItemPago from './itemPago';
-// import { mostrarFecha } from 'src/utils/utils';
 
 const styles = StyleSheet.create({
 

@@ -201,6 +201,19 @@ export function date_to_YYYYMMDD_s(fecha) {
   } 
 }
 
+
+// Periodo
+// entra date
+// Devuelve un string con formato YYYY-MM-DD  sin barra ni guion
+export function date_to_YYYYMM(fecha) {
+
+  if(fecha ===undefined || fecha ===null){
+    return null
+  }else{
+    return `${fecha.getFullYear(fecha)}${(1 + fecha.getMonth(fecha)).toString().padStart(2, '0')}`;
+  } 
+}
+
 // entra base de datos
 // Devuelve un string con formato "mar.2021"
 export function DB_to_MMMAAAA(fecha) {

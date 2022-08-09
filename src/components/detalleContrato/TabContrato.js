@@ -9,7 +9,7 @@ import { GrillaItem } from 'src/components/detalleContrato/GrillaItem';
 import { RepeaterCesion } from 'src/components/detalleContrato/RepeaterCesion';
 import { PageCobro } from 'src/components/cobro/PageCobro';
 
-export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota, usuarios, dataContrato, isLoading, error, refetch, moneda, setMoneda, personas, empresas, CACs}) {
+export function TabContrato({ contratoId,  acceso, idSociety, loggedUser, conceptosCuota, usuarios, dataContrato, isLoading, error, refetch, moneda, setMoneda, personas, empresas, CACs}) {
 
 
 
@@ -21,7 +21,7 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
   let qCuotasUSD = dataContrato?.cuotas.filter(p => p.moneda==='USD' && p.concepto > 0).length;
   var tipos = [{id: 0, descripcion: 'Adhesión'}, {id: 1, descripcion: 'Cesión'}, {id: 2, descripcion: 'Adenda'}];
 
-  let verAgregar = (loggedUser?.['rol.contrato'] ==='vista'); // si es vista, no ve boton agregar 
+
 
   if (isLoading) {
     return 'Cargando...';
@@ -81,7 +81,7 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
             </TabPanel>
             <TabPanel value="ARS">
 
-              <Hidden  smUp={verAgregar} >
+              <Hidden  smUp={!acceso} >
                 <Box sx={{ pt: 3 }}>
                   <AltaCuota
                         idSociety={idSociety}
@@ -114,7 +114,7 @@ export function TabContrato({ contratoId,  idSociety, loggedUser, conceptosCuota
 
             <TabPanel value="USD">
 
-              <Hidden  smUp={verAgregar} >
+              <Hidden  smUp={!acceso} >
                 <Box sx={{ pt: 3 }}>
                   <AltaCuota
                         idSociety={idSociety}
