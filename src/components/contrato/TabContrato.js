@@ -3,7 +3,6 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Tab} from '@mui/material';
 import { StepperContrato } from 'src/components/contrato/StepperContrato';
 import { GrillaContrato } from 'src/components/contrato/GrillaContrato';
-import { GrillaCashFlow } from 'src/components/contrato/GrillaCashFlow';
 
 export function TabContrato({idSociety, fideicomisoId,  loggedUser, dataFide, isLoading, error, refetch}) {
 

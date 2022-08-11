@@ -1,20 +1,16 @@
 
 import { useState } from 'react';
 import { useContext } from 'react';
-import { useQuery } from 'react-query';
 import { useMutation, useQueryClient } from 'react-query';
 import { Formik, Form, Field } from 'formik';
 import { getMethod, postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
-import { Typography, TextField, Button, Hidden, Autocomplete } from '@mui/material';
+import { Typography, TextField, Button, Autocomplete } from '@mui/material';
 import { SocietyContext, ConceptosPagoContext, ConceptosCuotaContext, LetrasContext } from 'src/App';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import { date_to_YYYYMMDD, DB_to_MMMAAAA } from 'src/utils/utils';
 import RepLiquidacion from "src/components/reportes/liquidaciones/liquidacion";
 import { pdf } from "@react-pdf/renderer";
-// import { date_to_YYYYMMDD, DB_to_MMMAAAA } from 'src/utils/utils';
-import { ListAltOutlined } from '@mui/icons-material';
+
 
 const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
@@ -64,10 +60,6 @@ export function GenLiquidaciones({ loggedUser, fideicomisos, periodos }) {
 
   const [qntFiles, setQntFiles] = useState(0);
 
-  const [mi_lista, setLista] = useState(null);
-
-
-  
 
   const { mutate: genLiquidacion_0_of_3 } = useMutation(
     List => getMethod(`contrato/listarCuota/${idSociety.id}/${fideInForm?.id}/${perInForm?.id}`, List),
@@ -301,22 +293,3 @@ export function GenLiquidaciones({ loggedUser, fideicomisos, periodos }) {
      </> 
   );
 }
-
-
-function Picker({ field, form }) {
-  const { name, value } = field;
-  const { setFieldValue } = form;
-
-  return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <DesktopDatePicker
-        label="Fecha"
-        inputFormat="dd/MM/yyyy"
-        value={value}
-        onChange={value => setFieldValue(name, value)}
-        renderInput={params => <TextField required size="small" {...params} />}
-      />
-    </LocalizationProvider>
-  );
-}
-
