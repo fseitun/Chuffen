@@ -29,7 +29,7 @@ export function DetalleOP({ idSociety, loggedUser }) {
   
   let f = new Date();
   // let fideicomisoId = 1;
-  console.log(111111, formOP?.item);
+  // console.log(111111, formOP?.item);
 
   const {data: acumulado} = useQuery(['acumulado', idSociety], () => 
     getMethod(`op/acumulado/${idSociety.id}/${idOP}/${empresaId}/${fideicomisoId}/${(f.getMonth() + 1)}/${f.getFullYear()}`)
