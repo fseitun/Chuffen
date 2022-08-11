@@ -66,11 +66,7 @@ export function FormLiquidacion({ contrato, productos, cesion, qCuotasARS, qCuot
   }
   const createPDF_2_of_3 = async (Liquidacion) =>   {
 
-    // GANANCIAS
-    // Si existe una retencion en Ganancias
-    // if(retencionGAN > 0.1){    
-
-      let blobPdf = await pdf(LiqDocument()).toBlob();
+    let blobPdf = await pdf(LiqDocument()).toBlob();
       let formData = new FormData();
       formData.append('file', blobPdf);      
      
@@ -79,7 +75,6 @@ export function FormLiquidacion({ contrato, productos, cesion, qCuotasARS, qCuot
 
       savePDF_3_of_3({formData});
       
-    // }
   }
 
   var qntDecimals = 1;

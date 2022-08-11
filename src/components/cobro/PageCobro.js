@@ -8,7 +8,7 @@ import { getMethod } from 'src/utils/api';
 import { ConceptosPagoContext, FormaPagosFiduContext, EstadosPagoContext} from 'src/App';
 import { FiltroCobro } from 'src/components/cobro/FiltroCobro';
 
-export function PageCobro({ mode, idSociety, loggedUser, contrato}) {
+export function PageCobro({ mode, idSociety, loggedUser, fideicomisos, contrato}) {
 
   const [filtCont, setFiltCont] = useState(-1);
   const [filtFide, setFiltFide] = useState(-1);
@@ -26,10 +26,6 @@ export function PageCobro({ mode, idSociety, loggedUser, contrato}) {
   const { data: contratos } = useQuery(
     ['contratos'],
     () => getMethod(`contrato/listar/${idSociety.id}/0`));
-
-  const { data: fideicomisos } = useQuery(
-    ['fideicomisos'],
-    () => getMethod(`fideicomiso/listarEmpresa/${idSociety.id}`));
 
   const { data: cuentas_destino} = useQuery(
     ['cuentabanco'], 
@@ -72,14 +68,17 @@ export function PageCobro({ mode, idSociety, loggedUser, contrato}) {
           </Hidden>          
      
           <Box sx={{ pt: 3 }}>
-              <GrillaCobro idSociety={idSociety} loggedUser={loggedUser}   
-              formaPagosFidu={formaPagosFidu}
-              mode={mode} 
-              contratoId={contrato?.cont?.id}        
-              dataCobro={dataCobro} 
-              conceptosPago={conceptosPago} isLoading={isLoading}
-              cuentas_destino={cuentas_destino} estados={estados} error={error} refetch={refetch}
-              filtCont={filtCont} filtFide={filtFide} 
+              <GrillaCobro 
+                idSociety={idSociety} loggedUser={loggedUser}   
+                formaPagosFidu={formaPagosFidu}
+                mode={mode} 
+                contratoId={contrato?.cont?.id}        
+                dataCobro={dataCobro} 
+                conceptosPago={conceptosPago} 
+                isLoading={isLoading}
+                cuentas_destino={cuentas_destino} 
+                estados={estados} error={error} refetch={refetch}
+                filtCont={filtCont} filtFide={filtFide} 
             />
          
           </Box>

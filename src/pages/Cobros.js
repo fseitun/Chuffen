@@ -1,10 +1,15 @@
 import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
 import { PageCobro } from 'src/components/cobro/PageCobro';
+import { useQuery } from 'react-query';
+import { getMethod } from 'src/utils/api';
 
 export function Cobros({ idSociety, loggedUser, contrato}) {
 
-  
+  const { data: fideicomisos } = useQuery(
+    ['fideicomisos'],
+    () => getMethod(`fideicomiso/listarEmpresa/${idSociety.id}`));
+
   return (
     <>
       <Helmet>
@@ -21,6 +26,7 @@ export function Cobros({ idSociety, loggedUser, contrato}) {
       
               <PageCobro 
                   mode={"cobro"} 
+                  fideicomisos={fideicomisos}
                   idSociety={idSociety}
                   loggedUser={loggedUser}
                   contrato={contrato}

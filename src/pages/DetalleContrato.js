@@ -25,6 +25,10 @@ export function DetalleContrato({ idSociety, loggedUser }) {
     ['usuarios'],
     () => getMethod(`usuario/listarCombo/${idSociety.id}`));
 
+  const { data: periodos } = useQuery(
+    ['periodos'],
+    () => getMethod(`contrato/periodos_con_cuotas/${idSociety.id}/0/ARS/pasado`));
+
   const { data: empresas } = useQuery(
     ['empresas'],
     () => getMethod(`empresa/listar/${idSociety.id}/1`));
@@ -206,6 +210,7 @@ export function DetalleContrato({ idSociety, loggedUser }) {
               dataContrato={dataContrato}
               empresas={empresas}
               personas={personas}
+              periodos={periodos}
               isLoading={isLoading}
               error={error}
               conceptosCuota={conceptosCuota}

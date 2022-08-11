@@ -7,19 +7,9 @@ import { useQuery } from 'react-query';
 import { getMethod } from 'src/utils/api';
 
 
-export function PageLiquidacion({ modo, contratoId, idSociety, loggedUser, contrato, productos, cesion, qCuotasARS, qCuotasUSD}) {
+export function PageLiquidacion({ modo, contratoId, idSociety, loggedUser, fideActivo, fideicomisos, periodos, contrato, productos, cesion, qCuotasARS, qCuotasUSD}) {
 
-  const { data: fideActivo } = useQuery(
-    ['fideActivo'],
-    () => getMethod(`contrato/fideicomisos_con_cuotas/${idSociety.id}/ARS`));
 
-  const { data: fideicomisos } = useQuery(
-    ['fideicomisos'],
-    () => getMethod(`fideicomiso/listar/${idSociety.id}`));
-
-  const { data: periodos } = useQuery(
-      ['periodos'],
-      () => getMethod(`contrato/periodos_con_cuotas/${idSociety.id}/0/ARS/pasado`));
 
   const { data: contratos} = useQuery(
     ['contratos'], 

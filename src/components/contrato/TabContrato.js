@@ -29,7 +29,8 @@ export function TabContrato({idSociety, fideicomisoId,  loggedUser, dataFide, is
              
                 <Tab label="Nueva adhesión" disabled={(loggedUser?.['rol.contrato'] ==='vista')} value="0" />
                 <Tab label="Adhesiones" value="1" />
-                <Tab label="CashFlow" value="2" />
+             
+             
               </TabList>
             </Box>
             <TabPanel value="0">
@@ -61,16 +62,7 @@ export function TabContrato({idSociety, fideicomisoId,  loggedUser, dataFide, is
                 />
               
               </Box>           
-            </TabPanel>
-     
-            <TabPanel value="2">
-              <Box sx={{ pt: 3 }}>
-              <GrillaCashFlow    />
-          
-              
-              </Box>           
-            </TabPanel>
-           
+            </TabPanel>          
 
           </TabContext>                  
     </>   

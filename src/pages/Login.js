@@ -134,12 +134,12 @@ async function nameToId(nombreSociedad) {
 }
 
 async function userCheck(idSociety, email, password, setLoggedUser) {
+  
   const loggedUserInfo = await postMethod(`usuario/login/${await idSociety}`, {
     mail: email,
     pass: password,
   });
-
-
+  localStorage.setItem("loggedUserInfo", loggedUserInfo);
   setLoggedUser(loggedUserInfo);
   return loggedUserInfo !== null ? true : false;
 }

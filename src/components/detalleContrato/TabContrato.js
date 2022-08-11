@@ -9,7 +9,7 @@ import { GrillaItem } from 'src/components/detalleContrato/GrillaItem';
 import { RepeaterCesion } from 'src/components/detalleContrato/RepeaterCesion';
 import { PageCobro } from 'src/components/cobro/PageCobro';
 
-export function TabContrato({ contratoId,  acceso, idSociety, loggedUser, conceptosCuota, usuarios, dataContrato, isLoading, error, refetch, moneda, setMoneda, personas, empresas, CACs}) {
+export function TabContrato({ contratoId,  acceso, idSociety, loggedUser, conceptosCuota, usuarios, dataContrato, isLoading, error, refetch, moneda, setMoneda, personas, empresas, periodos}) {
 
 
 
@@ -52,6 +52,7 @@ export function TabContrato({ contratoId,  acceso, idSociety, loggedUser, concep
                     mode={"contrato"} 
                     idSociety={idSociety}
                     loggedUser={loggedUser}
+                    fideicomisos={[]}
                     contrato={dataContrato}
                 />
               
@@ -67,6 +68,9 @@ export function TabContrato({ contratoId,  acceso, idSociety, loggedUser, concep
                     contratoId={contratoId}
                     idSociety={idSociety}
                     loggedUser={loggedUser}
+                    fideActivo={[]}
+                    fideicomisos={[]}
+                    periodos={periodos}
                     contrato={dataContrato?.cont}
                     productos={dataContrato?.item}
                     cesion={dataContrato?.cesiones[0]}

@@ -52,7 +52,7 @@ const columns = (acceso, conceptosCuota, setIsPromptOpen, setRowIdToDelete, modi
     preProcessEditCellProps: onlyNumbers,
     headerName: 'Monto',
     width: 130,
-    editable: false,
+    editable: acceso,
     headerAlign: 'center',
     align: 'right',
 

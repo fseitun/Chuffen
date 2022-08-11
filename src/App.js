@@ -56,7 +56,6 @@ import { getMethod } from 'src/utils/api';
 import { useQuery } from 'react-query';
 
 export const SocietyContext = createContext({});
-
 export const EstadosContext = createContext({});
 export const EstadosPagoContext = createContext({});
 export const FormaCobrosContext = createContext({});
@@ -89,9 +88,7 @@ export default function App() {
   const { data: estadosPago } = useQuery(['estadosPago', idSociety], () =>
     getMethod(`listas/listarEstadosPago/${idSociety.id}`)
   );
-  //const { data: formaCobros } = useQuery(['formaCobros', idSociety], () =>
-  //  getMethod(`listas/listarFormaCobros/${idSociety.id}`)
-  //);
+
   const { data: formaPagos } = useQuery(['formaPagos', idSociety], () =>
     getMethod(`listas/listarFormaPagos/${idSociety.id}`)
   );
@@ -161,6 +158,7 @@ export default function App() {
                   setLoggedUser={setLoggedUser}
                   idSociety={idSociety}
                   loggedUser={loggedUser}
+                  
                 />
               }
             >

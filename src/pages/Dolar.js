@@ -4,7 +4,6 @@ import { Container, Box } from '@mui/material';
 import { Helmet } from 'react-helmet';
 import { FormDolar } from 'src/components/dolar/FormDolar';
 import { GrillaDolar } from 'src/components/dolar/GrillaDolar';
-
 import { SocietyContext } from 'src/App';
 
 export function Dolar({loggedUser}) {
