@@ -1,4 +1,4 @@
-import { useState, createContext } from 'react';
+import { useState, useEffect, createContext } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import dotenv from 'dotenv';
 
@@ -50,10 +50,7 @@ import { Factura } from 'src/pages/Factura';
 // *** Orden de Trabajo **********************
 import { OC } from 'src/pages/OC';
 import { DetalleOC } from 'src/pages/DetalleOC';
-//import { Certificado } from 'src/pages/Certificado';
-
 import { getMethod } from 'src/utils/api';
-import { useQuery } from 'react-query';
 
 export const SocietyContext = createContext({});
 export const EstadosContext = createContext({});
@@ -73,63 +70,55 @@ export const CategoriasComboContext = createContext({});
 
 dotenv.config();
 
-export default function App() {
-  const { loggedUser, setLoggedUser } = useAuth();
-    
-  const [idSociety, setIdSociety] = useState(() => {
-    const localStorageIdSociety = localStorage.getItem('idSociety');
-    return localStorageIdSociety ? JSON.parse(localStorageIdSociety) : null;
-  });
+export default function App() { 
 
-  
-  const { data: estados } = useQuery(['estados', idSociety], () =>
-    getMethod(`listas/listarEstados/${idSociety.id}`)
-  );
-  const { data: estadosPago } = useQuery(['estadosPago', idSociety], () =>
-    getMethod(`listas/listarEstadosPago/${idSociety.id}`)
-  );
 
-  const { data: formaPagos } = useQuery(['formaPagos', idSociety], () =>
-    getMethod(`listas/listarFormaPagos/${idSociety.id}`)
-  );
-  const { data: formaPagosFidu } = useQuery(['formaPagosFidu', idSociety], () =>
-    getMethod(`listas/listarFormaPagosFidu/${idSociety.id}`)
-  );
-  const { data: retenciones } = useQuery(['retenciones', idSociety], () =>
-  getMethod(`listas/listarRetenciones/${idSociety.id}`)
-  );
-  const { data: fondos } = useQuery(['fondos', idSociety], () =>
-  getMethod(`listas/listarFondos/${idSociety.id}`)
-  );
-  const { data: tipos } = useQuery(['tipos', idSociety], () =>
-  getMethod(`listas/listarTipos/${idSociety.id}`)
-  );
-  const { data: condicion_de_IVA } = useQuery(['condicion_de_IVA', idSociety], () =>
-  getMethod(`listas/listarCondicion_de_IVA/${idSociety.id}`)
-  );
-  const { data: tipoProductos } = useQuery(['tipoProductos', idSociety], () =>
-  getMethod(`listas/listarTipoProductos/${idSociety.id}`)
-  );
-  const { data: letras } = useQuery(['letras', idSociety], () =>
-  getMethod(`listas/listarLetras/${idSociety.id}`)
-  );
-  const {data: categoriasCombo} = useQuery(['categoriaCombo', idSociety], () => 
-    getMethod(`categoria/listarCombo/${idSociety.id}`)
-  ); 
-  const {data: conceptosCuota} = useQuery(['conceptosCuota', idSociety], () => 
-    getMethod(`listas/conceptosCuota/${idSociety.id}`)
-  ); 
-  const {data: conceptosPago} = useQuery(['conceptosPago', idSociety], () => 
-    getMethod(`listas/conceptosPago/${idSociety.id}`)
-  ); 
-  
-  
+
+const [idSociety, setIdSociety] = useState(() => {
+  const localStorageIdSociety = localStorage.getItem('idSociety');
+  return localStorageIdSociety ? JSON.parse(localStorageIdSociety) : null;
+});
+
+const { loggedUser, setLoggedUser } = useAuth();
+
+const [estados, setEstados] = useState([]);
+const [estadosPago, setEstadosPago] = useState([]);
+const [formaPagos, setFormaPagos] = useState([]);
+const [formaPagosFidu, setFormaPagosFidu] = useState([]);  
+const [retenciones, setRetenciones] = useState([]);
+const [fondos, setFondos] = useState([]);  
+const [tipos, setTipos] = useState([]);
+const [condicion_de_IVA, setCondicion_de_IVA] = useState([]);  
+const [tipoProductos, setTipoProductos] = useState([]);
+const [letras, setLetras] = useState([]); 
+const [categoriasCombo, setCategoriasCombo] = useState([]);
+const [conceptosCuota, setConceptosCuota] = useState([]); 
+const [conceptosPago, setConceptosPago] = useState([]); 
+
+useEffect(
+  (idSociety)=> {
+    let id = idSociety?.id > 0? idSociety.id:JSON.parse(localStorage.getItem("idSociety"))?.id;
+    getMethod(`listas/listarEstados/${idSociety?.id}`).then((items) => setEstados(items));
+    getMethod(`listas/listarFormaPagos/${idSociety?.id}`).then((items) => setEstadosPago(items));
+    getMethod(`listas/listarFormaPagos/${idSociety?.id}`).then((items) => setFormaPagos(items));
+    getMethod(`listas/listarFormaPagosFidu/${idSociety?.id}`).then((items) => setFormaPagosFidu(items));
+    getMethod(`listas/listarRetenciones/${idSociety?.id}`).then((items) => setRetenciones(items));
+    getMethod(`listas/listarFondos/${idSociety?.id}`).then((items) => setFondos(items));
+    getMethod(`listas/listarTipos/${idSociety?.id}`).then((items) => setTipos(items));
+    getMethod(`listas/listarCondicion_de_IVA/${idSociety?.id}`).then((items) => setCondicion_de_IVA(items));
+    getMethod(`listas/listarTipoProductos/${idSociety?.id}`).then((items) => setTipoProductos(items));
+    getMethod(`listas/listarLetras/${idSociety?.id}`).then((items) => setLetras(items));
+    getMethod(`categoria/listarCombo/${id}`).then((items) => setCategoriasCombo(items));
+    getMethod(`listas/conceptosCuota/${id}`).then((items) => setConceptosCuota(items));
+    getMethod(`listas/conceptosPago/${idSociety?.id}`).then((items) => setConceptosPago(items));
+
+  },[])
+
   return (
 
     <SocietyContext.Provider value={idSociety}>
     <EstadosContext.Provider value={estados}>
-    <EstadosPagoContext.Provider value={estadosPago}>    
-    
+    <EstadosPagoContext.Provider value={estadosPago}> 
     <FormaPagosFiduContext.Provider value={formaPagosFidu} >
     <FormaPagosContext.Provider value={formaPagos} >
     <RetencionesContext.Provider value={retenciones}>
@@ -275,7 +264,6 @@ export default function App() {
     </RetencionesContext.Provider>
     </FormaPagosContext.Provider>
     </FormaPagosFiduContext.Provider>
-  
     </EstadosPagoContext.Provider>
     </EstadosContext.Provider>
     </SocietyContext.Provider>

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Tab, Hidden} from '@mui/material';
 import { FormDetalleOC } from 'src/components/detalleOC/FormDetalleOC';
+import { FormOC } from 'src/components/detalleOC/FormOC';
 import { AltaDetalleOC } from 'src/components/detalleOC/AltaDetalleOC';
 import { GrillaTareas } from 'src/components/detalleOC/GrillaTareas';
 import { GrillaPagos } from 'src/components/detalleOC/GrillaPagos';
@@ -30,6 +31,7 @@ export function TabOC({ OCId,  idSociety, loggedUser, formOC, isLoading, error, 
               <TabList onChange={handleChange} aria-label="lab API tabs example">
                 <Tab label="Pesos" value="ARS" />
                 <Tab label="Dolares" value="USD" />
+                <Tab label="Notas & Docs" value="NOTA" />
                 
               </TabList>
             </Box>
@@ -140,6 +142,24 @@ export function TabOC({ OCId,  idSociety, loggedUser, formOC, isLoading, error, 
                           moneda={'USD'}
                     />
                   </Box>
+            
+            </TabPanel>
+            <TabPanel value="NOTA">
+       
+                  <Hidden  smUp={verAgregar} >
+                    <Box sx={{ pt: 3 }}>
+                      <FormOC
+                            OCId={OCId}
+                            idSociety={idSociety}
+                            loggedUser={loggedUser}
+                            formOC={formOC}
+                            isLoading={isLoading}
+                            error={error}
+                            refetch={refetch}
+                      />
+                    </Box>
+                  </Hidden>
+        
             
             </TabPanel>
 

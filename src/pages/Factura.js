@@ -1,6 +1,6 @@
 import { Container, Box, Hidden } from '@mui/material';
-import { useState } from 'react';
-import { useQuery} from 'react-query';
+import { useState, useEffect } from 'react';
+// import { useQuery} from 'react-query';
 import { getMethod } from 'src/utils/api';
 import { Helmet } from 'react-helmet';
 import { FormFactura } from 'src/components/factura/FormFactura';
@@ -13,14 +13,14 @@ export function Factura({ idSociety , loggedUser}) {
   const [filtFide, setFiltFide] = useState(-1);
   const [filtRS, setFiltRS] = useState(-1); 
 
-  const { data: fideicomisos } = useQuery(
-    ['fideicomisos'],
-    () => getMethod(`fideicomiso/listar/${idSociety.id}`));
-
-  const { data: proveedores } = useQuery(
-    ['proveedores'],
-    () => getMethod(`empresa/listar/${idSociety.id}/0`));
-
+  const [fideicomisos, setFideicomisos] = useState([]);  
+  const [proveedores, setProveedores] = useState([]);  
+  
+  useEffect((idSociety) => {
+    let id = idSociety?.id > 0? idSociety.id:JSON.parse(localStorage.getItem("idSociety"))?.id;
+    getMethod(`fideicomiso/listar/${id}`).then((items) => setFideicomisos(items));
+    getMethod(`empresa/listar/${id}/0`).then((items) => setProveedores(items));
+  }, []);
 
   return (
     <>

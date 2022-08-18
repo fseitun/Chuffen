@@ -5,12 +5,6 @@ const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
 const token = JSON.parse(localStorage.getItem("loggedUserInfo"))?.token;
 
-/*
-axios.create.headers.common = {
-  'Authorization': 'Bearer ' + token
-};*/
-
-
 axios.defaults.headers.common = {
   'Authorization': 'Bearer ' + token
 };

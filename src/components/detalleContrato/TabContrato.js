@@ -5,6 +5,7 @@ import { AltaCuota } from 'src/components/detalleContrato/AltaCuota';
 import { PageLiquidacion } from 'src/components/liquidacion/PageLiquidacion';
 import { GrillaCuota } from 'src/components/detalleContrato/GrillaCuota';
 import { FormCesion } from 'src/components/detalleContrato/FormCesion';
+import { FormProducto } from 'src/components/detalleContrato/FormProducto';
 import { GrillaItem } from 'src/components/detalleContrato/GrillaItem';
 import { RepeaterCesion } from 'src/components/detalleContrato/RepeaterCesion';
 import { PageCobro } from 'src/components/cobro/PageCobro';
@@ -185,8 +186,22 @@ export function TabContrato({ contratoId,  acceso, idSociety, loggedUser, concep
               
             </TabPanel>
             <TabPanel value="PRD">
+              <Hidden  smUp={!acceso} >
+                <Box sx={{ pt: 3 }}>
+                  <FormProducto
+                        idSociety={idSociety}
+                        loggedUser={loggedUser}
+                        contratoId={contratoId} 
+                        fideicomisoId={dataContrato?.cont?.fideicomisoId}
+                        refetch={refetch}
+            
+                  />
+                </Box>
+              </Hidden>
+
               <GrillaItem               
                   items={dataContrato?.item}
+                  refetch={refetch}
               />
             </TabPanel>
 

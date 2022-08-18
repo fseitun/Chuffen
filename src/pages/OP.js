@@ -1,5 +1,5 @@
 import { Container, Box, Hidden } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { ManipularOP } from 'src/components/OP/ManipularOP';
 import { FiltroOP } from 'src/components/OP/FiltroOP';
@@ -23,25 +23,18 @@ export function OP({ loggedUser }) {
     // refetch
   } = useQuery(['OP', idSociety], () => getMethod(`OP/listar/${idSociety.id}/todas/nulo/${blue}/0/0/0`));
 
-
-  const { data: fideicomisos } = useQuery(
-    ['fideicomisos'],
-    () => getMethod(`fideicomiso/listar/${idSociety.id}`));
-
-
-  const { data: proveedores } = useQuery(
-    ['proveedores'],
-    () => getMethod(`empresa/listar/${idSociety.id}/0`));
-
-
-  const { data: ddfacturas } = useQuery(
-    ['ddfacturas'],
-    () => getMethod(`factura/listar/${idSociety.id}/opid/0/0`));
-
-  const { data: ddfacturasBlue } = useQuery(
-    ['ddfacturasBlue'],
-    () => getMethod(`factura/listar/${idSociety.id}/opid/0/1`));
-
+  const [fideicomisos, setFideicomisos] = useState([]);  
+  const [proveedores, setProveedores] = useState([]);  
+  const [ddfacturas, setDdfacturas] = useState([]);  
+  const [ddfacturasBlue, setDdfacturasBlue] = useState([]);  
+  
+  useEffect((idSociety) => {
+    let id = idSociety?.id > 0? idSociety.id:JSON.parse(localStorage.getItem("idSociety"))?.id;
+    getMethod(`fideicomiso/listar/${id}`).then((items) => setFideicomisos(items));
+    getMethod(`empresa/listar/${id}/0`).then((items) => setProveedores(items));
+    getMethod(`factura/listar/${id}/opid/0/0`).then((items) => setDdfacturas(items));
+    getMethod(`factura/listar/${id}/opid/0/1`).then((items) => setDdfacturasBlue(items));
+  }, []);
 
   const [filtFide, setFiltFide] = useState(-1);
   const [filtRS, setFiltRS] = useState(-1);

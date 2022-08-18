@@ -397,6 +397,7 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
   var retenciones = useContext(RetencionesContext);
   var fondos_s =  useContext(FondosContext); 
 
+
   var puedeEditar = true;
   const accesoOP = loggedUser?.['rol.op'];
   if( accesoOP ==='vista'){puedeEditar =false}

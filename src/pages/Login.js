@@ -139,7 +139,7 @@ async function userCheck(idSociety, email, password, setLoggedUser) {
     mail: email,
     pass: password,
   });
-  localStorage.setItem("loggedUserInfo", loggedUserInfo);
+ 
   setLoggedUser(loggedUserInfo);
   return loggedUserInfo !== null ? true : false;
 }
