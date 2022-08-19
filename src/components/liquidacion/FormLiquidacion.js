@@ -7,7 +7,7 @@ import { usePrompt } from 'src/utils/usePrompt';
 import { SocietyContext, ConceptosPagoContext, ConceptosCuotaContext, LetrasContext } from 'src/App';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
-import { date_to_YYYYMMDD, DB_to_MMMAAAA } from 'src/utils/utils';
+import { date_to_YYYYMMDD, DB_to_MMMAAAA, nameFile } from 'src/utils/utils';
 import RepLiquidacion from "src/components/reportes/liquidaciones/liquidacion";
 import { pdf } from "@react-pdf/renderer";
 
@@ -60,8 +60,8 @@ export function FormLiquidacion({ contrato, productos, cesion, qCuotasARS, qCuot
   );
 
   function nombreLiq(fecha){
-    let n = contrato?.fideicomisos[0]?.nombre + "-" + cesion?.nombre ;
-    return "Liquidacion-" + n.replace(/ /g,"_") + "-Adhesion_" + contrato?.id + "-" + DB_to_MMMAAAA(fecha);
+    let n = nameFile(contrato?.fideicomisos[0]?.nombre + "-" + cesion?.nombre) ;
+    return "Liquidacion-" + n + "-Adhesion_" + contrato?.id + "-" + DB_to_MMMAAAA(fecha);
   
   }
   const createPDF_2_of_3 = async (Liquidacion) =>   {

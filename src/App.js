@@ -99,7 +99,7 @@ useEffect(
   (idSociety)=> {
     let id = idSociety?.id > 0? idSociety.id:JSON.parse(localStorage.getItem("idSociety"))?.id;
     getMethod(`listas/listarEstados/${idSociety?.id}`).then((items) => setEstados(items));
-    getMethod(`listas/listarFormaPagos/${idSociety?.id}`).then((items) => setEstadosPago(items));
+    getMethod(`listas/listarEstadosPago/${idSociety?.id}`).then((items) => setEstadosPago(items));
     getMethod(`listas/listarFormaPagos/${idSociety?.id}`).then((items) => setFormaPagos(items));
     getMethod(`listas/listarFormaPagosFidu/${idSociety?.id}`).then((items) => setFormaPagosFidu(items));
     getMethod(`listas/listarRetenciones/${idSociety?.id}`).then((items) => setRetenciones(items));

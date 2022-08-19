@@ -7,7 +7,7 @@ import { getMethod, postMethod } from 'src/utils/api';
 import { usePrompt } from 'src/utils/usePrompt';
 import { Typography, TextField, Button, Autocomplete } from '@mui/material';
 import { SocietyContext, ConceptosPagoContext, ConceptosCuotaContext, LetrasContext } from 'src/App';
-import { date_to_YYYYMMDD, DB_to_MMMAAAA } from 'src/utils/utils';
+import { date_to_YYYYMMDD, DB_to_MMMAAAA, nameFile } from 'src/utils/utils';
 import RepLiquidacion from "src/components/reportes/liquidaciones/liquidacion";
 import { pdf } from "@react-pdf/renderer";
 
@@ -60,7 +60,6 @@ export function GenLiquidaciones({ loggedUser, fideicomisos, periodos }) {
 
   const [qntFiles, setQntFiles] = useState(0);
 
-
   const { mutate: genLiquidacion_0_of_3 } = useMutation(
     List => getMethod(`contrato/listarCuota/${idSociety.id}/${fideInForm?.id}/${perInForm?.id}`, List),
     {
@@ -80,27 +79,12 @@ export function GenLiquidaciones({ loggedUser, fideicomisos, periodos }) {
                 setTimeout(() => {
                   
                   addLiqui(element, i)
-                }, i * 700)
+                }, i * 2000)
           });
         
       }
     }
   );
-
-  /*
-  const aver = async function() {
-    // addLiqui(mi_lista[0], 0);
-    
-    mi_lista.forEach((element,i) => {
-
-          setTimeout(() => {
-            
-            addLiqui(element, i)
-          }, i * 700)
-    });
-
-  }
-*/
 
   const addLiqui = async function(item, i) {
       
@@ -150,10 +134,10 @@ export function GenLiquidaciones({ loggedUser, fideicomisos, periodos }) {
 
 
   function nombreLiq(fecha){
-    // console.log(555555, contrato?.id);
 
-    let n = contrato?.fideicomisos[0]?.nombre + "-" + cesion?.nombre ;
-    return "Liquidacion-" + n.replace(/ /g,"_") + "-Adhesion_" + contrato?.id + "-" + DB_to_MMMAAAA(fecha);
+    let n = nameFile(contrato?.fideicomisos[0]?.nombre + "-" + cesion?.nombre) ;
+    
+    return "Liquidacion-" + n + "-Adhesion_" + contrato?.id + "-" + DB_to_MMMAAAA(fecha);
   
   }
   const createPDF_2_of_3 = async (Liquidacion) =>   {
@@ -265,7 +249,7 @@ export function GenLiquidaciones({ loggedUser, fideicomisos, periodos }) {
                 value={perInForm}
                 getOptionLabel={option => ("" + option.periodo).slice(0,4) + "-" + ("" + option.periodo).slice(4,6) }
                 isOptionEqualToValue={(option, value) => option.id === value.id}
-                options={(periodos? periodos:[])}
+                options={(periodos? periodos.filter(p => p.fideicomisoId === fideInForm?.id):[])}
                 renderInput={params => <TextField {...params} label='Periodo' />}
               />
 

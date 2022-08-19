@@ -261,6 +261,19 @@ export function formato_moneda(num) {
   
 }
 
+// Prepara un text sin /, sin espacio, sin acentos, ni \
+export function  nameFile(name){
+
+  let n = name + "" ;
+  n = n.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  n = n.replace(/\//g, "_");
+  n = n.replace("\\\\", "_");
+  n = n.replace(/ /g,"_");
+
+  return n;
+
+}
+
 
 export function buscarCAC(CACs, fechaOP, CACtipo){
 
