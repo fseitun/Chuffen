@@ -24,6 +24,7 @@ const getHoverBackgroundColor = (color, mode) =>
 const columns = (tipo, setIsPromptOpen, setRowIdToDelete) => [
 
   {
+
     field: 'estadoId',
     headerName: 'Requiere autorizar en Obra',
     width: 70,
@@ -32,7 +33,7 @@ const columns = (tipo, setIsPromptOpen, setRowIdToDelete) => [
     hide: (tipo==='obra'),
     editable: false,
     headerAlign: 'center',
-    renderCell: ({ value }) => value!==1?'' :<Avatar sx={{ bgcolor: '#39BC44' }} >Ob</Avatar>,
+    renderCell: ({ row }) => row.estadoId!==1?'' :<Avatar sx={{ bgcolor: row.authOBRA? '#39BC44':'#DD0000' }} >Ob</Avatar>,
   },
   {
     field: 'id',
