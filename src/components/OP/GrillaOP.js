@@ -453,6 +453,7 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
 
    /***** generar y subir pdf ***********************************************************************/
 
+
   const { mutate: cargar_y_subir_OP } = useMutation(
     async el =>         
         result = await getMethod(`op/mostrarConFacturas/${idSociety.id}/${el.id}`),
@@ -487,6 +488,9 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
     
   }
 
+  
+
+
   const NewDocument = () => {
     
     return (
@@ -496,6 +500,17 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
 
   /***** fin generar y subir pdf ************************************************************************/
 
+  /*
+  function aaaa(op){
+
+    getMethod(`op/mostrarConFacturas/${idSociety.id}/${el.id}`)
+
+    miOP = result.op;
+    fa = {item: result.item};
+    getPdfBlob(miOP?.id, miOP?.fideicomisos[0]?.nombre, miOP?.numero, miOP?.empresas[0]?.razonSocial);
+
+    console.log(op?.numero);  
+  }*/
  
   const { mutate: nonAuthObra } = useMutation(
     async el =>
@@ -796,6 +811,7 @@ export function GrillaOP({ filtFide, filtRS, filtEst, filtTerm, idSociety, logge
             fpagoMonto3: OP?.OPpago?.monto3,
             fpagoModo4: OP?.OPpago?.modo4,
             fpagoMonto4: OP?.OPpago?.monto4,
+            /* generarPDF: () => aaaa(OP), */
             onAuthObra: () => nonAuthObra(OP),
             onAuthAdm: () => nonAuthAdm(OP),
             onEnviar: () => enviarCorreo(OP),
@@ -1262,15 +1278,20 @@ function NonAdmAuthRow(params) {
 } 
 
 function DescargarPDF(params) {  
-  
+ 
   var cargarOP = params.row.cargarOP;
   const fideicomiso = params.row.fideicomiso;
   const nom_empresa = params.row.empresa;
   const numero = params.row.numero;
   
+
   var fileName= numero + " OP-" + fideicomiso + "-" +  nom_empresa + ".pdf";
+  
+
+  /* const gen = params.row.generarPDF; */
 
   const archivada = params.row.archivada;
+  
   const apiServerUrl = process.env.REACT_APP_API_SERVER;
 
   
@@ -1303,9 +1324,13 @@ function DescargarPDF(params) {
             
           </Box>
         )) 
-      }, 800);
+      }, 1600);
     };
+
+    // return <Button onClick={()=>gen()} >Para Generar</Button>;
+
   
+
   if(archivada === 0){
     return <Button onClick={notify} >Para Generar</Button>;
   }else{

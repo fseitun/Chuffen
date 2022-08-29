@@ -597,7 +597,7 @@ export function FormContrato({setActTab, iniNombre, setIniNombre, right, setRigh
                             component={RouterLink}
                             to={`/${idSociety.nombre}/fiduciantes`}
                           >
-                            Nuevo fidudiante
+                            Nuevo fiduciante
                           </Button>
                   </Grid>
               </Hidden>
